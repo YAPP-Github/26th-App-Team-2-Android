@@ -5,6 +5,7 @@ import com.yapp.breake.configureKotlinAndroid
 
 plugins {
     id("com.android.library")
+    id("breake.verify.detekt")
 }
 
 configureKotlinAndroid()

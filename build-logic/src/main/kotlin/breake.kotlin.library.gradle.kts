@@ -4,6 +4,7 @@ import com.yapp.breake.configureKotlin
 
 plugins {
     kotlin("jvm")
+    id("breake.verify.detekt")
 }
 
 configureKotlin()
