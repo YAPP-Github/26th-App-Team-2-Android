@@ -1,0 +1,49 @@
+root = true
+
+[*]
+charset = utf-8
+end_of_line = lf
+indent_style = tab
+insert_final_newline = true
+trim_trailing_whitespace = true
+ktlint_function_naming_ignore_when_annotated_with = Composable, Test
+
+[*.{kt,kts}]
+ktlint_code_style = android_studio
+
+## https://pinterest.github.io/ktlint/latest/rules/standard/
+# 한줄 최대 길이를 넘지 않는 선에서 함수 시그니처 작성 필수 여부
+ktlint_standard_function-signature = disabled
+
+# import 순서 필수 여부
+ktlint_standard_import-ordering = disabled
+
+# 주석 // 뒤에 공백 필수 여부
+ktlint_standard_comment-spacing = disabled
+
+# 메소드 시그니처의 공백 제한 여부
+ktlint_standard_no-empty-first-line-in-method-block = disabled
+
+# 중괄호 앞에 공백 제한 여부
+ktlint_standard_no-blank-line-before-rbrace = disabled
+
+# 들여쓰기와 KDoc(코틀린 문서 주석)을 제외하고, 연속된 여러 개의 공백 제한 여부
+ktlint_no-multi-spaces = disabled
+
+# 호출부 Trailing comma 사용 필수 여부
+ktlint_standard_trailing-comma-on-call-site = disabled
+
+# 정의부 Trailing comma 사용 필수 여부
+ktlint_standard_trailing-comma-on-declaration-site = enabled
+
+# = 이후의 표현식이 한 줄에 맞지 않을 때, 줄바꿈 사용 필수 여부
+ktlint_standard_multiline_expression_wrapping = disabled
+
+# Class, fun 의 파라미터가 한 줄에 맞지 않을 때, 줄바꿈을 필수 여부
+ktlint_standard_parameter-list-wrapping = disabled
+
+# Wildcard import 제한 여부
+ktlint_standard_no-wildcard-imports = disabled
+
+# 파일의 마지막 줄에 개행문자 삽입 필수 여부
+ktlint_standard_final-newline = disabled
