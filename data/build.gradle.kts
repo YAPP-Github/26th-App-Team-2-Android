@@ -1,0 +1,24 @@
+import com.yapp.breake.setNamespace
+
+plugins {
+	alias(libs.plugins.breake.android.library)
+	alias(libs.plugins.breake.android.hilt)
+	alias(libs.plugins.kotlin.serialization)
+}
+
+android {
+	setNamespace("data")
+}
+
+dependencies {
+	implementation(projects.core.model)
+	implementation(projects.core.datastore)
+	implementation(projects.core.database)
+
+	implementation(libs.retrofit.core)
+	implementation(libs.retrofit.kotlin.serialization)
+	implementation(libs.okhttp.logging)
+	implementation(libs.kotlinx.serialization.json)
+	implementation(libs.kotlinx.datetime)
+	testImplementation(libs.turbine)
+}

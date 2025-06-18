@@ -1,5 +1,8 @@
 plugins {
 	alias(libs.plugins.breake.android.application)
+	id("com.google.android.gms.oss-licenses-plugin")
+	alias(libs.plugins.baselineprofile)
+	alias(libs.plugins.roborazzi.plugin)
 }
 
 android {
@@ -21,8 +24,19 @@ android {
 			signingConfig = signingConfigs.getByName("debug")
 		}
 	}
+	buildFeatures {
+		buildConfig = true
+	}
 }
 
 dependencies {
+	implementation(projects.core.navigation)
+	implementation(projects.presentation.main)
+	implementation(projects.presentation.home)
 
+	implementation(projects.core.designsystem)
+
+	implementation(libs.androidx.profileinstaller)
+
+	testImplementation(projects.core.testing)
 }

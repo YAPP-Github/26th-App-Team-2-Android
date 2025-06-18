@@ -17,6 +17,29 @@ dependencyResolutionManagement {
 }
 
 rootProject.name = "Breake"
+
+// Application
 include(":app")
-include(":presentation:main")
-include(":presentation:login")
+
+// Presentation
+include(
+	":presentation:main",
+	":presentation:login",
+	":presentation:home"
+)
+
+// Domain
+include(":domain")
+
+// Data
+include(":data")
+
+// Core
+include(
+	":core:datastore",
+	":core:database",
+	":core:model",
+	":core:navigation",
+	":core:designsystem",
+	":core:testing"
+)
