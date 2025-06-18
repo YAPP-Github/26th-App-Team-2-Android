@@ -1,22 +1,265 @@
 [versions]
+## SDK version
+compileSdk = "35"
+minSdk = "28"
+targetSdk = "35"
+
+## App version
+versionCode = "1"
+versionName = "0.0.1"
+
+## Android gradle plugin
 agp = "8.10.1"
-kotlin = "2.0.21"
-coreKtx = "1.16.0"
-junit = "4.13.2"
-junitVersion = "1.2.1"
-espressoCore = "3.6.1"
-appcompat = "1.7.1"
+
+# https://github.com/google/desugar_jdk_libs/blob/master/CHANGELOG.md
+androidDesugarJdkLibs = "2.1.5"
+
+## AndroidX
+# https://developer.android.com/jetpack/androidx/releases/core
+androidxCore = "1.16.0"
+# https://developer.android.com/jetpack/androidx/releases/appcompat
+androidxAppCompat = "1.7.1"
+# https://developer.android.com/jetpack/androidx/releases/lifecycle
+androidxLifecycle = "2.9.1"
+# https://developer.android.com/jetpack/androidx/releases/activity
+androidxActivity = "1.10.1"
+# https://developer.android.com/jetpack/androidx/releases/datastore
+androidxDatastore = "1.1.7"
+# https://developer.android.com/jetpack/androidx/releases/room
+room = "2.7.1"
+# https://developer.android.com/jetpack/androidx/releases/glance
+androidxGlance = "1.1.1"
+glanceExperimentalTools = "0.2.2"
+# https://developer.android.com/jetpack/androidx/releases/profileinstaller
+profileinstaller = "1.4.1"
+# https://androidx.tech/artifacts/benchmark/benchmark-baseline-profile-gradle-plugin/index.html
+baselineprofile = "1.3.4"
+
+## Compose
+# https://developer.android.com/develop/ui/compose/bom/bom-mapping
+androidxComposeBom = "2025.06.00"
+# https://developer.android.com/jetpack/androidx/releases/navigation
+androidxComposeNavigation = "2.9.0"
+# https://developer.android.com/jetpack/androidx/releases/compose-material3
+androidxComposeMaterial3 = "1.3.2"
+# https://developer.android.com/jetpack/androidx/releases/compose-material3-adaptive
+androidxComposeMaterial3Adaptive = "1.1.0"  # 다양한 스크린 사이즈 대응
+# https://developer.android.com/develop/ui/compose/layouts/constraintlayout?hl=ko
+androidxComposeConstraintlayout = "1.1.1"
+
+## Design
+# https://github.com/valentinilk/compose-shimmer
+composeShimmer = "1.3.2"    # Compose에서의 로딩 애니메이션 효과
+# https://github.com/ehsannarmani/ComposeCharts/releases
+composeCharts = "0.1.7"    # Compose에서 차트 그리기
+
+## Kotlin Symbol Processing
+# https://github.com/google/ksp/
+ksp = "2.1.21-2.0.2"
+
+## Hilt
+# https://github.com/google/dagger/releases
+hilt = "2.56.2"
+# https://developer.android.com/jetpack/androidx/releases/hilt
+hiltNavigationCompose = "1.2.0"
+
+## Network
+# okhttp
+# # https://square.github.io/okhttp/
+okhttp = "4.12.0"
+# Retrofit
+# # https://github.com/square/retrofit
+retrofit = "3.0.0"
+
+## Landscapist
+# https://github.com/skydoves/landscapist
+landscapist = "2.4.6"   # 이미지 로딩을 위한 Compose 전용 라이브러리
+
+## Kotlin
+# https://github.com/JetBrains/kotlin
+kotlin = "2.1.21"
+# https://github.com/Kotlin/kotlinx.serialization
+kotlinxSerializationJson = "1.8.1"
+# https://github.com/Kotlin/kotlinx-datetime/releases
+kotlinxDatetime = "0.6.2"
+# https://github.com/Kotlin/kotlinx.collections.immutable
+kotlinxImmutable = "0.4.0"
+
+## Ktlint
+# https://github.com/JLLeitschuh/ktlint-gradle/releases
+ktlint = "12.2.0"
+
+## Coroutine
+# https://github.com/cashapp/turbine
+turbine = "1.2.1"   # Flow 테스트
+# https://github.com/Kotlin/kotlinx.coroutines
+coroutine = "1.10.2"
+
+## license
+# 라이선스 정보 표시
+# https://developers.google.com/android/guides/opensource
+ossLicenses = "17.1.0"
+ossLicensesPlugin = "0.10.6"
+
+## Timber
+# https://github.com/JakeWharton/timber/releases
+timber = "5.0.1"
+
+## Test
+# https://github.com/junit-team/junit4
+junit4 = "4.13.2"
+# https://mvnrepository.com/artifact/org.junit.vintage/junit-vintage-engine
+junitVintageEngine = "5.10.2"   # JUnit 4를 JUnit 5에서 사용하기 위한 엔진
+ui-test-junit4 = "1.8.2"
+# https://developer.android.com/jetpack/androidx/releases/test-uiautomator
+uiAutomator = "2.3.0"    # UI 자동화 테스트
+androidxTestRunner = "1.6.2"
+# https://developer.android.com/jetpack/androidx/releases/benchmark
+benchmarkMacroJunit4 = "1.3.4"  # 앱 성능 측정 벤치마크 도구
+# https://developer.android.com/jetpack/androidx/releases/arch-core
+coreTesting = "2.2.0"
+# # https://developer.android.com/jetpack/androidx/releases/test
+junit = "1.2.1"
+androidxTestExt = "1.2.1"
+androidxEspresso = "3.6.1"
+# https://github.com/takahirom/roborazzi
+roborazzi = "1.40.1"    # 화면 캡처 및 비교 테스트를 위한 라이브러리
+# https://github.com/robolectric/robolectric/releases
+robolectric = "4.14.1"  # JVM 환경에서 Android 테스트 실행 가능하게 하는 라이브러리
+# https://kotest.io/
+kotest = "5.9.0"    # 다양한 스타일의 테스트를 위한 Kotlin 테스트 프레임워크
+# https://github.com/detekt/detekt
+detekt = "1.23.7"   # Kotlin 정적 분석 툴
+# https://mockk.io/
+mockk = "1.13.16"
 material = "1.12.0"
 
 [libraries]
-androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
-junit = { group = "junit", name = "junit", version.ref = "junit" }
-androidx-junit = { group = "androidx.test.ext", name = "junit", version.ref = "junitVersion" }
-androidx-espresso-core = { group = "androidx.test.espresso", name = "espresso-core", version.ref = "espressoCore" }
-androidx-appcompat = { group = "androidx.appcompat", name = "appcompat", version.ref = "appcompat" }
+# Gradle
+android-gradlePlugin = { group = "com.android.tools.build", name = "gradle", version.ref = "agp" }
+android-desugarJdkLibs = { group = "com.android.tools", name = "desugar_jdk_libs", version.ref = "androidDesugarJdkLibs" }
+kotlin-gradlePlugin = { module = "org.jetbrains.kotlin:kotlin-gradle-plugin", version.ref = "kotlin" }
+
+# AndroidX
+androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "androidxCore" }
+androidx-appcompat = { group = "androidx.appcompat", name = "appcompat", version.ref = "androidxAppCompat" }
+
+# Compose
+androidx-lifecycle-runtimeCompose = { group = "androidx.lifecycle", name = "lifecycle-runtime-compose", version.ref = "androidxLifecycle" }
+androidx-lifecycle-viewModelCompose = { group = "androidx.lifecycle", name = "lifecycle-viewmodel-compose", version.ref = "androidxLifecycle" }
+androidx-activity-compose = { group = "androidx.activity", name = "activity-compose", version.ref = "androidxActivity" }
+androidx-compose-bom = { group = "androidx.compose", name = "compose-bom", version.ref = "androidxComposeBom" }
+androidx-compose-material3 = { group = "androidx.compose.material3", name = "material3", version.ref = "androidxComposeMaterial3" }
+androidx-compose-ui = { group = "androidx.compose.ui", name = "ui" }
+androidx-compose-ui-test = { group = "androidx.compose.ui", name = "ui-test-junit4", version.ref = "ui-test-junit4" }
+androidx-compose-ui-tooling = { group = "androidx.compose.ui", name = "ui-tooling" }
+androidx-compose-ui-tooling-preview = { group = "androidx.compose.ui", name = "ui-tooling-preview" }
+androidx-compose-ui-testManifest = { group = "androidx.compose.ui", name = "ui-test-manifest" }
+androidx-compose-navigation = { group = "androidx.navigation", name = "navigation-compose", version.ref = "androidxComposeNavigation" }
+androidx-compose-navigation-test = { group = "androidx.navigation", name = "navigation-testing", version.ref = "androidxComposeNavigation" }
+androidx-compose-material-icon = { module = "androidx.compose.material:material-icons-extended" }
+androidx-constraintlayout-compose = { group = "androidx.constraintlayout", name = "constraintlayout-compose", version.ref = "androidxComposeConstraintlayout" }
+compose-compiler-gradle-plugin = { module = "org.jetbrains.kotlin:compose-compiler-gradle-plugin", version.ref = "kotlin" }
+
+# Design
+compose-charts = { module = "io.github.ehsannarmani:compose-charts", version.ref = "composeCharts" }
+compose-shimmer = { group = "com.valentinilk.shimmer", name = "compose-shimmer", version.ref = "composeShimmer" }
+
+# Room
+room-runtime = {module = "androidx.room:room-runtime",version.ref = "room" }
+room-ktx = {module="androidx.room:room-ktx", version.ref = "room" }
+room-compiler ={module="androidx.room:room-compiler",version.ref = "room" }
+
+# DataStore
+datastore = { group = "androidx.datastore", name = "datastore-preferences", version.ref = "androidxDatastore" }
+
+# Hilt
+hilt-core = { group = "com.google.dagger", name = "hilt-core", version.ref = "hilt" }
+hilt-compiler = { group = "com.google.dagger", name = "hilt-compiler", version.ref = "hilt" }
+hilt-android = { group = "com.google.dagger", name = "hilt-android", version.ref = "hilt" }
+hilt-android-testing = { group = "com.google.dagger", name = "hilt-android-testing", version.ref = "hilt" }
+hilt-android-compiler = { group = "com.google.dagger", name = "hilt-android-compiler", version.ref = "hilt" }
+hilt-navigation-compose = { group = "androidx.hilt", name = "hilt-navigation-compose", version.ref = "hiltNavigationCompose" }
+
+# Retrofit
+okhttp = { group = "com.squareup.okhttp3", name = "okhttp", version.ref = "okhttp" }
+okhttp-logging = { group = "com.squareup.okhttp3", name = "logging-interceptor", version.ref = "okhttp" }
+retrofit-core = { group = "com.squareup.retrofit2", name = "retrofit", version.ref = "retrofit" }
+retrofit-kotlin-serialization = { group = "com.squareup.retrofit2", name = "converter-kotlinx-serialization", version.ref = "retrofit" }
+kotlinx-serialization-json = { group = "org.jetbrains.kotlinx", name = "kotlinx-serialization-json", version.ref = "kotlinxSerializationJson" }
+kotlinx-datetime = { group = "org.jetbrains.kotlinx", name = "kotlinx-datetime", version.ref = "kotlinxDatetime" }
+kotlinx-immutable = { group = "org.jetbrains.kotlinx", name = "kotlinx-collections-immutable", version.ref = "kotlinxImmutable" }
+
+# Landscapist
+landscapist-bom = { group = "com.github.skydoves", name = "landscapist-bom", version.ref = "landscapist" }
+landscapist-coil = { group = "com.github.skydoves", name = "landscapist-coil", version.ref = "landscapist" }
+landscapist-placeholder = { group = "com.github.skydoves", name = "landscapist-placeholder" }
+landscapist-animation = { group = "com.github.skydoves", name = "landscapist-animation", version.ref = "landscapist" }
+
+# Test
+androidx-runner = { group = "androidx.test", name = "runner", version.ref = "androidxTestRunner" }
+androidx-core-testing = { module = "androidx.arch.core:core-testing", version.ref = "coreTesting" }
+androidx-test-ext = { group = "androidx.test.ext", name = "junit-ktx", version.ref = "androidxTestExt" }
+androidx-test-espresso-core = { group = "androidx.test.espresso", name = "espresso-core", version.ref = "androidxEspresso" }
+androidx-profileinstaller = { group = "androidx.profileinstaller", name = "profileinstaller", version.ref = "profileinstaller" }
+junit = { group = "androidx.test.ext", name = "junit", version.ref = "junit" }
+junit4 = { group = "junit", name = "junit", version.ref = "junit4" }
+junit-vintage-engine = { group = "org.junit.vintage", name = "junit-vintage-engine", version.ref = "junitVintageEngine" }
+roborazzi = { group = "io.github.takahirom.roborazzi", name = "roborazzi", version.ref = "roborazzi" }
+roborazziRule = { module = "io.github.takahirom.roborazzi:roborazzi-junit-rule", version.ref = "roborazzi" }
+roborazziCompose = { module = "io.github.takahirom.roborazzi:roborazzi-compose", version.ref = "roborazzi" }
+robolectric = { group = "org.robolectric", name = "robolectric", version.ref = "robolectric" }
+inject = "javax.inject:javax.inject:1"
+kotest-runner = { group = "io.kotest", name = "kotest-runner-junit5", version.ref = "kotest" }
+kotest-assertions = { group = "io.kotest", name = "kotest-assertions-core", version.ref = "kotest" }
+kotlin-test = { group = "org.jetbrains.kotlin", name = "kotlin-test", version.ref = "kotlin" }
+mockk = { group = "io.mockk", name = "mockk", version.ref = "mockk" }
+turbine = { group = "app.cash.turbine", name = "turbine", version.ref = "turbine" }
+mockwebserver = { group = "com.squareup.okhttp3", name = "mockwebserver", version.ref = "okhttp" }
+
+# Coroutines
+coroutines-core = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-core", version.ref = "coroutine" }
+coroutines-android = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-android", version.ref = "coroutine" }
+coroutines-test = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-test", version.ref = "coroutine" }
+
+# Timber
+timber = { group = "com.jakewharton.timber", name = "timber", version.ref = "timber" }
+
+# plugin
+verify-detektPlugin = { module = "io.gitlab.arturbosch.detekt:detekt-gradle-plugin", version.ref = "detekt" }
+oss-licenses-plugin = { group = "com.google.android.gms", name = "oss-licenses-plugin", version.ref = "ossLicensesPlugin" }
+
+# Glance
+androidx-glance = { group = "androidx.glance", name = "glance", version.ref = "androidxGlance" }
+androidx-glance-appwidget = { group = "androidx.glance", name = "glance-appwidget", version.ref = "androidxGlance" }
+glance-tools-appwidget-host = { group = "com.google.android.glance.tools", name = "appwidget-host", version.ref = "glanceExperimentalTools"}
+
+# verify
+verify-detektFormatting = { module = "io.gitlab.arturbosch.detekt:detekt-formatting", version.ref = "detekt" }
 material = { group = "com.google.android.material", name = "material", version.ref = "material" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
+android-library = { id = "com.android.library", version.ref = "agp" }
 kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
+kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }
+kotlin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
+hilt = { id = "com.google.dagger.hilt.android", version.ref = "hilt" }
+ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
+room = { id = "androidx.room", version.ref = "room" }
+ktlint = { id = "org.jlleitschuh.gradle.ktlint", version.ref = "ktlint" }
+verify-detekt = { id = "io.gitlab.arturbosch.detekt", version.ref = "detekt" }
+compose-compiler = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
+android-test = { id = "com.android.test", version.ref = "agp" }
+baselineprofile = { id = "androidx.baselineprofile", version.ref = "baselineprofile" }
+roborazzi-plugin = { id = "io.github.takahirom.roborazzi", version.ref = "roborazzi" }
 
+# Custom Plugins
+breake-android-application = { id = "breake.android.application"}
+breake-android-compose = { id = "breake.android.compose"}
+breake-android-feature = { id = "breake.android.feature"}
+breake-android-library = { id = "breake.android.library"}
+breake-kotlin-library = { id = "breake.kotlin.library"}
+breake-android-room = { id = "breake.android.room"}
+breake-android-hilt = { id = "breake.android.hilt"}
+breake-kotlin-hilt = { id = "breake.kotlin.hilt"}

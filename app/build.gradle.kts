@@ -1,46 +1,42 @@
 plugins {
-	alias(libs.plugins.android.application)
-	alias(libs.plugins.kotlin.android)
+	alias(libs.plugins.breake.android.application)
+	id("com.google.android.gms.oss-licenses-plugin")
+	alias(libs.plugins.baselineprofile)
+	alias(libs.plugins.roborazzi.plugin)
 }
 
 android {
 	namespace = "com.yapp.breake"
-	compileSdk = 35
 
 	defaultConfig {
 		applicationId = "com.yapp.breake"
-		minSdk = 28
-		targetSdk = 35
-		versionCode = 1
-		versionName = "1.0"
-
-		testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
 	}
-
+	packaging {
+		resources {
+			excludes += "/META-INF/{AL2.0,LGPL2.1}"
+			excludes += "META-INF/LICENSE.md"
+		}
+	}
 	buildTypes {
 		release {
 			isMinifyEnabled = false
-			proguardFiles(
-				getDefaultProguardFile("proguard-android-optimize.txt"),
-				"proguard-rules.pro"
-			)
+			proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
+			signingConfig = signingConfigs.getByName("debug")
 		}
 	}
-	compileOptions {
-		sourceCompatibility = JavaVersion.VERSION_11
-		targetCompatibility = JavaVersion.VERSION_11
-	}
-	kotlinOptions {
-		jvmTarget = "11"
+	buildFeatures {
+		buildConfig = true
 	}
 }
 
 dependencies {
+	implementation(projects.core.navigation)
+	implementation(projects.presentation.main)
+	implementation(projects.presentation.home)
 
-	implementation(libs.androidx.core.ktx)
-	implementation(libs.androidx.appcompat)
-	implementation(libs.material)
-	testImplementation(libs.junit)
-	androidTestImplementation(libs.androidx.junit)
-	androidTestImplementation(libs.androidx.espresso.core)
+	implementation(projects.core.designsystem)
+
+	implementation(libs.androidx.profileinstaller)
+
+	testImplementation(projects.core.testing)
 }
