@@ -71,6 +71,10 @@ okhttp = "4.12.0"
 # # https://github.com/square/retrofit
 retrofit = "3.0.0"
 
+## Auth
+# https://developers.kakao.com/docs/latest/ko/android/download#latest
+kakao = "2.21.4"
+
 ## Landscapist
 # https://github.com/skydoves/landscapist
 landscapist = "2.4.6"   # 이미지 로딩을 위한 Compose 전용 라이브러리
@@ -226,6 +230,7 @@ coroutines-test = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-
 timber = { group = "com.jakewharton.timber", name = "timber", version.ref = "timber" }
 
 # plugin
+kakao-user = { module = "com.kakao.sdk:v2-user", version.ref = "kakao" }
 verify-detektPlugin = { module = "io.gitlab.arturbosch.detekt:detekt-gradle-plugin", version.ref = "detekt" }
 oss-licenses-plugin = { group = "com.google.android.gms", name = "oss-licenses-plugin", version.ref = "ossLicensesPlugin" }
 
