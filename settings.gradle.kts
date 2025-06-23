@@ -25,8 +25,12 @@ include(":app")
 // Presentation
 include(
 	":presentation:main",
+	":presentation:signup",
 	":presentation:login",
-	":presentation:home"
+	":presentation:onboarding",
+	":presentation:home",
+	":presentation:report",
+	":presentation:setting",
 )
 
 // Domain
@@ -43,5 +47,5 @@ include(
 	":core:model",
 	":core:navigation",
 	":core:designsystem",
-	":core:testing"
+	":core:testing",
 )
