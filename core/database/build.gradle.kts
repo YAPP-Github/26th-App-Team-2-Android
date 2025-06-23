@@ -8,6 +8,12 @@ plugins {
 
 android {
 	setNamespace("core.database")
+
+	defaultConfig {
+		ksp {
+			arg("room.schemaLocation", "$projectDir/schemas")
+		}
+	}
 }
 
 dependencies {
@@ -15,5 +21,4 @@ dependencies {
 	implementation(libs.androidx.test.ext)
 	implementation(libs.hilt.android.testing)
 	implementation(libs.coroutines.test)
-	implementation(kotlin("reflect"))
 }
