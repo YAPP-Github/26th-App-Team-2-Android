@@ -7,7 +7,7 @@ import androidx.navigation.compose.composable
 import com.yapp.breake.core.navigation.InitialRoute
 import com.yapp.breake.presentation.onboarding.OnboardingRoute
 
-fun NavController.navigateOnboarding(navOptions: NavOptions) {
+fun NavController.navigateOnboarding(navOptions: NavOptions? = null) {
 	navigate(InitialRoute.Onboarding, navOptions)
 }
 

@@ -6,7 +6,8 @@ import androidx.compose.runtime.Composable
 @Composable
 fun SettingRoute(
 	padding: PaddingValues,
-	onShowErrorSnackBar: (Throwable?) -> Unit = {}
+	onShowErrorSnackBar: (Throwable?) -> Unit = {},
+	onChangeDarkTheme: (Boolean) -> Unit
 ) {
 	// ManageScreen()
 }

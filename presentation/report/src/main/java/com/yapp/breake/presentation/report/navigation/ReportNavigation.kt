@@ -5,11 +5,23 @@ import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavOptions
 import androidx.navigation.compose.composable
+import androidx.navigation.navOptions
 import com.yapp.breake.core.navigation.MainTabRoute
 import com.yapp.breake.presentation.report.ReportRoute
 
-fun NavController.navigateReport(navOptions: NavOptions) {
-	navigate(MainTabRoute.Report, navOptions)
+fun NavController.navigateReport(
+	shouldClearBackstack: Boolean = false,
+	navOptions: NavOptions? = null
+) {
+	navigate(
+		route = MainTabRoute.Report,
+		navOptions = navOptions {
+			if (shouldClearBackstack) {
+				popUpTo(graph.id) { inclusive = true }
+			}
+			navOptions
+		},
+	)
 }
 
 fun NavGraphBuilder.reportNavGraph(
