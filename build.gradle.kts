@@ -27,10 +27,20 @@ plugins {
 	alias(libs.plugins.roborazzi.plugin) apply false
 }
 
-allprojects {
-	apply {
-		plugin(rootProject.libs.plugins.ktlint.get().pluginId)
+subprojects {
+	// 모든 subproject에 대해 kotlin 플러그인 적용
+	apply(plugin = rootProject.libs.plugins.ktlint.get().pluginId)
+
+	// ./gradlew build : 모든 kt 파일에 대해 ktlintFormat 실행
+	// android :app build : 어노테이션 미적용 kt 파일에 대해 ktlintFormat 실행
+	tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile>().configureEach {
+		dependsOn("ktlintFormat")
 	}
+}
+
+// gradle sync 시에 모든 kt 파일에 대해 ktlintFormat 실행
+tasks.prepareKotlinBuildScriptModel {
+	dependsOn(subprojects.map { it.tasks.named("ktlintFormat") })
 }
 
 apply {
