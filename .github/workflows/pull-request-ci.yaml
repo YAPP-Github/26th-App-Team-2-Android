@@ -57,7 +57,18 @@ jobs:
           run: |
               git config user.name "github-actions[bot]"
               git config user.email "github-actions[bot]@users.noreply.github.com"
+
+              ISSUE_REF=$(git log -1 --pretty=%B | grep -oE '#[0-9]+' | head -n 1)
+
               git add .
-              git diff --cached --quiet || git commit -m "chore: ci 자동 ktlintFormat 적용"
+
+              if ! git diff --cached --quiet; then
+                COMMIT_MSG="chore: ci 자동 ktlintFormat 적용"
+                if [ -n "$ISSUE_REF" ]; then
+                  COMMIT_MSG="$COMMIT_MSG ($ISSUE_REF)"
+                fi
+                git commit -m "$COMMIT_MSG"
+              fi
+
               git remote set-url origin git@github.com:${{ github.repository }}.git
               git push origin HEAD:${GITHUB_REF_NAME}
