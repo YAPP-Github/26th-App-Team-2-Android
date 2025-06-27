@@ -10,9 +10,9 @@ import kotlinx.coroutines.flow.Flow
 @Dao
 interface SampleDao {
 
-    @Upsert
-    suspend fun upsert(entity: SampleEntity)
+	@Upsert
+	suspend fun upsert(entity: SampleEntity)
 
-    @Query("SELECT * FROM $SAMPLE_TABLE_NAME")
-    fun getListFlow(): Flow<List<SampleEntity>>
+	@Query("SELECT * FROM $SAMPLE_TABLE_NAME")
+	fun getListFlow(): Flow<List<SampleEntity>>
 }

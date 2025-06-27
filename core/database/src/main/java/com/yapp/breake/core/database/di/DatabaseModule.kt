@@ -29,12 +29,12 @@ internal object DatabaseModule {
 //        }
 //    }
 
-    @Provides
-    @Singleton
-    fun providesAppDatabase(
-        @ApplicationContext context: Context,
+	@Provides
+	@Singleton
+	fun providesAppDatabase(
+		@ApplicationContext context: Context,
 //        addCallback: RoomDatabase.Callback
-    ): BreakeDatabase = Room.databaseBuilder(context, BreakeDatabase::class.java, DATABASE_NAME)
+	): BreakeDatabase = Room.databaseBuilder(context, BreakeDatabase::class.java, DATABASE_NAME)
 //        .addCallback(addCallback)
-        .build()
+		.build()
 }

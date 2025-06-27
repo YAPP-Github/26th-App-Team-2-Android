@@ -12,7 +12,7 @@ import javax.inject.Singleton
 @InstallIn(SingletonComponent::class)
 internal object DaoModule {
 
-    @Provides
-    @Singleton
-    fun provideSavingPlanDao(database: BreakeDatabase): SampleDao = database.sampleDao()
+	@Provides
+	@Singleton
+	fun provideSavingPlanDao(database: BreakeDatabase): SampleDao = database.sampleDao()
 }
