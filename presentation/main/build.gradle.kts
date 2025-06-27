@@ -14,8 +14,13 @@ android {
 }
 
 dependencies {
-	implementation(projects.presentation.home)
 	implementation(projects.presentation.login)
+	implementation(projects.presentation.signup)
+	implementation(projects.presentation.onboarding)
+	implementation(projects.presentation.home)
+	implementation(projects.presentation.report)
+	implementation(projects.presentation.setting)
+
 	androidTestImplementation(projects.core.testing)
 
 	implementation(libs.androidx.core.ktx)
