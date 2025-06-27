@@ -763,6 +763,8 @@ style:
 #    active: false
   UnusedImports:
     active: true
+  UnusedParameter:
+    active: false
 #  UnusedPrivateClass:
 #    active: true
   UnusedPrivateMember:
