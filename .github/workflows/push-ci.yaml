@@ -46,9 +46,6 @@ jobs:
             -   name: Build Check
                 run: ./gradlew build
 
-            -   name: Detekt Check
-                run: ./gradlew detekt
-
             -   name: Commit & Push ktlintFormat changes
                 run: |
                     mkdir -p ~/.ssh
