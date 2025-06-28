@@ -20,7 +20,7 @@ internal fun MainNavHost(
 	padding: PaddingValues,
 	onShowErrorSnackBar: (throwable: Throwable?) -> Unit,
 	onChangeDarkTheme: (Boolean) -> Unit,
-	modifier: Modifier = Modifier
+	modifier: Modifier = Modifier,
 ) {
 	val navController = navigator.navController
 

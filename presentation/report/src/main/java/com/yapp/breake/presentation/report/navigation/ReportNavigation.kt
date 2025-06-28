@@ -11,7 +11,7 @@ import com.yapp.breake.presentation.report.ReportRoute
 
 fun NavController.navigateReport(
 	shouldClearBackstack: Boolean = false,
-	navOptions: NavOptions? = null
+	navOptions: NavOptions? = null,
 ) {
 	navigate(
 		route = MainTabRoute.Report,
@@ -26,7 +26,7 @@ fun NavController.navigateReport(
 
 fun NavGraphBuilder.reportNavGraph(
 	padding: PaddingValues,
-	onShowErrorSnackBar: (throwable: Throwable?) -> Unit
+	onShowErrorSnackBar: (throwable: Throwable?) -> Unit,
 ) {
 	composable<MainTabRoute.Report> {
 		ReportRoute(

@@ -8,7 +8,7 @@ import com.yapp.breake.presentation.main.R
 internal enum class MainTab(
 	val iconResId: Int,
 	internal val contentDescription: String,
-	val route: MainTabRoute
+	val route: MainTabRoute,
 ) {
 	REPORT(
 		iconResId = R.drawable.ic_chart_inactive,
@@ -18,13 +18,14 @@ internal enum class MainTab(
 	HOME(
 		iconResId = R.drawable.ic_timer_inactive,
 		contentDescription = "관리",
-		MainTabRoute.Home
+		MainTabRoute.Home,
 	),
 	SETTING(
 		iconResId = R.drawable.ic_user_inactive,
 		contentDescription = "내 정보",
 		MainTabRoute.Setting,
-	);
+	),
+	;
 
 	companion object {
 		@Composable

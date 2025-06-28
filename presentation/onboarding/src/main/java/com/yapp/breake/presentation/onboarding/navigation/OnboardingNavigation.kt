@@ -13,7 +13,7 @@ fun NavController.navigateOnboarding(navOptions: NavOptions? = null) {
 
 fun NavGraphBuilder.onboardingNavGraph(
 	navigateToHome: () -> Unit,
-	onShowErrorSnackBar: (throwable: Throwable?) -> Unit
+	onShowErrorSnackBar: (throwable: Throwable?) -> Unit,
 ) {
 	composable<InitialRoute.Onboarding> {
 		OnboardingRoute(

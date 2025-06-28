@@ -10,7 +10,7 @@ import androidx.compose.ui.Modifier
 @Composable
 fun OnboardingRoute(
 	navigateToHome: () -> Unit,
-	onShowErrorSnackBar: (throwable: Throwable?) -> Unit
+	onShowErrorSnackBar: (throwable: Throwable?) -> Unit,
 ) {
 	OnboardingScreen()
 }

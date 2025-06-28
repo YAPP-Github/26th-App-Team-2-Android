@@ -10,7 +10,7 @@ import androidx.compose.ui.Modifier
 @Composable
 fun SignupRoute(
 	navigateToLogin: () -> Unit,
-	onShowErrorSnackBar: (Throwable?) -> Unit
+	onShowErrorSnackBar: (Throwable?) -> Unit,
 	// viewModel: SignupViewModel = hiltViewModel(),
 ) {
 	SignupScreen()

@@ -12,7 +12,7 @@ fun LoginRoute(
 	navigateToSignup: () -> Unit,
 	navigateToOnboarding: () -> Unit,
 	navigateToHome: () -> Unit,
-	onShowErrorSnackBar: (Throwable?) -> Unit
+	onShowErrorSnackBar: (Throwable?) -> Unit,
 	// viewModel: LoginViewModel = hiltViewModel(),
 ) {
 	LoginScreen()

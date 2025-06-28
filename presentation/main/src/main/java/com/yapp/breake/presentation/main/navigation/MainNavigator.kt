@@ -16,7 +16,7 @@ import com.yapp.breake.presentation.report.navigation.navigateReport
 import com.yapp.breake.presentation.setting.navigation.navigateSetting
 
 internal class MainNavigator(
-	val navController: NavHostController
+	val navController: NavHostController,
 ) {
 	private val currentDestination: NavDestination?
 		@Composable get() = navController.currentBackStackEntryAsState().value?.destination
@@ -65,7 +65,7 @@ internal class MainNavigator(
 
 @Composable
 internal fun rememberMainNavigator(
-	navController: NavHostController = rememberNavController()
+	navController: NavHostController = rememberNavController(),
 ): MainNavigator = remember(navController) {
 	MainNavigator(navController)
 }

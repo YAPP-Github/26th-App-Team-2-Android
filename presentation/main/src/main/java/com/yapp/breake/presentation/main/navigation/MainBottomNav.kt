@@ -38,12 +38,12 @@ internal fun MainBottomNavBar(
 	tabs: ImmutableList<MainTab>,
 	currentTab: MainTab?,
 	onTabSelected: (MainTab) -> Unit,
-	modifier: Modifier = Modifier
+	modifier: Modifier = Modifier,
 ) {
 	AnimatedVisibility(
 		visible = visible,
 		enter = fadeIn() + slideIn { IntOffset(0, it.height) },
-		exit = fadeOut() + slideOut { IntOffset(0, it.height) }
+		exit = fadeOut() + slideOut { IntOffset(0, it.height) },
 	) {
 		Row(
 			modifier = modifier
@@ -73,7 +73,7 @@ private fun RowScope.MainBottomNavItem(
 	tab: MainTab,
 	selected: Boolean,
 	onClick: () -> Unit,
-	modifier: Modifier = Modifier
+	modifier: Modifier = Modifier,
 ) {
 	Column(
 		modifier = modifier

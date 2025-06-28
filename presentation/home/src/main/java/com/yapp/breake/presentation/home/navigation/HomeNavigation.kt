@@ -11,7 +11,7 @@ import com.yapp.breake.presentation.home.HomeRoute
 
 fun NavController.navigateHome(
 	shouldClearBackstack: Boolean = false,
-	navOptions: NavOptions? = null
+	navOptions: NavOptions? = null,
 ) {
 	navigate(
 		route = MainTabRoute.Home,
@@ -26,7 +26,7 @@ fun NavController.navigateHome(
 
 fun NavGraphBuilder.homeNavGraph(
 	padding: PaddingValues,
-	onShowErrorSnackBar: (throwable: Throwable?) -> Unit
+	onShowErrorSnackBar: (throwable: Throwable?) -> Unit,
 ) {
 	composable<MainTabRoute.Home> {
 		HomeRoute(

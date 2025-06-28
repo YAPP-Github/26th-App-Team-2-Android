@@ -25,7 +25,7 @@ import java.net.UnknownHostException
 internal fun MainScreen(
 	navigator: MainNavigator = rememberMainNavigator(),
 	coroutineScope: CoroutineScope = rememberCoroutineScope(),
-	onChangeDarkTheme: (Boolean) -> Unit
+	onChangeDarkTheme: (Boolean) -> Unit,
 ) {
 	val snackBarHostState = remember { SnackbarHostState() }
 
@@ -36,7 +36,7 @@ internal fun MainScreen(
 				when (throwable) {
 					is UnknownHostException -> localResources.getString(R.string.network_error)
 					else -> localResources.getString(R.string.unknown_error)
-				}
+				},
 			)
 		}
 	}
@@ -45,7 +45,7 @@ internal fun MainScreen(
 		navigator = navigator,
 		onShowErrorSnackBar = onShowErrorSnackBar,
 		onChangeDarkTheme = onChangeDarkTheme,
-		snackBarHostState = snackBarHostState
+		snackBarHostState = snackBarHostState,
 	)
 }
 
@@ -55,7 +55,7 @@ private fun MainScreenContent(
 	onShowErrorSnackBar: (throwable: Throwable?) -> Unit,
 	onChangeDarkTheme: (Boolean) -> Unit,
 	snackBarHostState: SnackbarHostState,
-	modifier: Modifier = Modifier
+	modifier: Modifier = Modifier,
 ) {
 	Scaffold(
 		modifier = modifier,
@@ -75,9 +75,9 @@ private fun MainScreenContent(
 				visible = navigator.shouldShowBottomBar(),
 				tabs = MainTab.entries.toPersistentList(),
 				currentTab = navigator.currentTab,
-				onTabSelected = navigator::navigate
+				onTabSelected = navigator::navigate,
 			)
 		},
-		snackbarHost = { SnackbarHost(snackBarHostState) }
+		snackbarHost = { SnackbarHost(snackBarHostState) },
 	)
 }

@@ -11,7 +11,7 @@ import com.yapp.breake.presentation.setting.SettingRoute
 
 fun NavController.navigateSetting(
 	shouldClearBackstack: Boolean = false,
-	navOptions: NavOptions? = null
+	navOptions: NavOptions? = null,
 ) {
 	navigate(
 		route = MainTabRoute.Setting,
@@ -27,7 +27,7 @@ fun NavController.navigateSetting(
 fun NavGraphBuilder.settingNavGraph(
 	padding: PaddingValues,
 	onShowErrorSnackBar: (Throwable?) -> Unit = {},
-	onChangeDarkTheme: (Boolean) -> Unit
+	onChangeDarkTheme: (Boolean) -> Unit,
 ) {
 	composable<MainTabRoute.Setting> {
 		SettingRoute(

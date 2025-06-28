@@ -13,7 +13,7 @@ fun NavController.navigateSignup(navOptions: NavOptions? = null) {
 
 fun NavGraphBuilder.signupNavGraph(
 	navigateToLogin: () -> Unit,
-	onShowErrorSnackBar: (throwable: Throwable?) -> Unit
+	onShowErrorSnackBar: (throwable: Throwable?) -> Unit,
 ) {
 	composable<InitialRoute.SignUp> {
 		SignupRoute(

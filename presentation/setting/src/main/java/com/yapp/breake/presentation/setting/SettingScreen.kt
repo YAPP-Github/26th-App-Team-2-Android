@@ -12,7 +12,7 @@ import androidx.compose.ui.Modifier
 fun SettingRoute(
 	padding: PaddingValues,
 	onShowErrorSnackBar: (Throwable?) -> Unit = {},
-	onChangeDarkTheme: (Boolean) -> Unit
+	onChangeDarkTheme: (Boolean) -> Unit,
 ) {
 	SettingScreen()
 }

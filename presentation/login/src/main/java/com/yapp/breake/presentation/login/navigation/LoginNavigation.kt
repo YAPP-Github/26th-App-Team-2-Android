@@ -15,7 +15,7 @@ fun NavGraphBuilder.loginNavGraph(
 	navigateToSignup: () -> Unit,
 	navigateToOnboarding: () -> Unit,
 	navigateToHome: () -> Unit,
-	onShowErrorSnackBar: (throwable: Throwable?) -> Unit
+	onShowErrorSnackBar: (throwable: Throwable?) -> Unit,
 ) {
 	composable<InitialRoute.Login> {
 		LoginRoute(

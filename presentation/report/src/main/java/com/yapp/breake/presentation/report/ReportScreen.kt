@@ -11,7 +11,7 @@ import androidx.compose.ui.Modifier
 @Composable
 fun ReportRoute(
 	padding: PaddingValues,
-	onShowErrorSnackBar: (throwable: Throwable?) -> Unit
+	onShowErrorSnackBar: (throwable: Throwable?) -> Unit,
 ) {
 	ReportScreen()
 }
