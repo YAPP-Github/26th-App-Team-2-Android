@@ -6,22 +6,22 @@ import com.yapp.breake.core.database.dao.SampleDao
 import com.yapp.breake.core.database.entity.SampleEntity
 
 @Database(
-    entities = [
-        SampleEntity::class,
-    ],
-    version = 1,
-    exportSchema = true,
+	entities = [
+		SampleEntity::class,
+	],
+	version = 1,
+	exportSchema = true,
 )
 //@TypeConverters(
 //    value = [],
 //)
 internal abstract class BreakeDatabase : RoomDatabase() {
 
-    abstract fun sampleDao(): SampleDao
+	abstract fun sampleDao(): SampleDao
 
-    companion object {
-        const val DATABASE_NAME = "breake_database"
+	companion object {
+		const val DATABASE_NAME = "breake_database"
 
-        const val SAMPLE_TABLE_NAME = "sample"
-    }
+		const val SAMPLE_TABLE_NAME = "sample"
+	}
 }

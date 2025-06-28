@@ -15,6 +15,6 @@ internal abstract class AuthModule {
 	@Named("kakaoAuthSDK")
 	@Binds
 	abstract fun bindKakaoAuthSDK(
-		kakaoAuthSDK: KakaoAuthSDK
+		kakaoAuthSDK: KakaoAuthSDK,
 	): LoginAuthSDK
 }
