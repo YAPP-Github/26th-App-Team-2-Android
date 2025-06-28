@@ -64,7 +64,7 @@ jobs:
                     git add .
 
                     if ! git diff --cached --quiet; then
-                        COMMIT_MSG="chore: ci 자동 ktlintFormat 적용"
+                        COMMIT_MSG="style: ci 자동 ktlintFormat 적용"
                         if [ -n "$ISSUE_REF" ]; then
                             COMMIT_MSG="$COMMIT_MSG ($ISSUE_REF)"
                         fi
