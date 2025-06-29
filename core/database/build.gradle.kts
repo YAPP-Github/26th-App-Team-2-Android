@@ -18,9 +18,4 @@ android {
 
 dependencies {
 	implementation(projects.core.model)
-
-	implementation(libs.junit4)
-	implementation(libs.androidx.test.ext)
-	implementation(libs.hilt.android.testing)
-	implementation(libs.coroutines.test)
 }

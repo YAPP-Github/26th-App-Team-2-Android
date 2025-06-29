@@ -2,26 +2,36 @@ package com.yapp.breake.core.database
 
 import androidx.room.Database
 import androidx.room.RoomDatabase
-import com.yapp.breake.core.database.dao.ManagedAppDao
-import com.yapp.breake.core.database.entity.ManagedAppEntity
+import com.yapp.breake.core.database.dao.AppDao
+import com.yapp.breake.core.database.dao.AppGroupDao
+import com.yapp.breake.core.database.dao.SnoozeDao
+import com.yapp.breake.core.database.entity.AppEntity
+import com.yapp.breake.core.database.entity.GroupEntity
+import com.yapp.breake.core.database.entity.SnoozeEntity
 
 @Database(
-    entities = [
-        ManagedAppEntity::class,
-    ],
-    version = 1,
-    exportSchema = true,
+	entities = [
+		AppEntity::class,
+		SnoozeEntity::class,
+		GroupEntity::class,
+	],
+	version = 1,
+	exportSchema = true,
 )
 //@TypeConverters(
 //    value = [],
 //)
 internal abstract class BreakeDatabase : RoomDatabase() {
 
-	abstract fun managedAppDao(): ManagedAppDao
+	abstract fun appGroupDao(): AppGroupDao
+	abstract fun appDao(): AppDao
+	abstract fun snoozeDao(): SnoozeDao
 
-    companion object {
-        const val DATABASE_NAME = "breake_database"
+	companion object {
+		const val DATABASE_NAME = "breake_database"
 
-        const val MANAGED_APP_TABLE_NAME = "managed_app"
-    }
+		const val GROUP_TABLE_NAME = "group"
+		const val APP_TABLE_NAME = "app"
+		const val SNOOZE_TABLE_NAME = "snooze"
+	}
 }
