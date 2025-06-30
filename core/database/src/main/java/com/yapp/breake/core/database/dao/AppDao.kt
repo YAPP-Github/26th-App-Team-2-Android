@@ -15,7 +15,7 @@ interface AppDao {
 	suspend fun insert(entity: AppEntity)
 
 	@Query("SELECT * FROM $APP_TABLE_NAME")
-	fun observeManagedApps(): Flow<List<AppEntity>>
+	fun observeApps(): Flow<List<AppEntity>>
 
 	@Query("SELECT * FROM $APP_TABLE_NAME")
 	suspend fun getManagedApps(): List<AppEntity>

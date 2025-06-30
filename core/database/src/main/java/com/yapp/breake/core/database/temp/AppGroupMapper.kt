@@ -11,8 +11,9 @@ internal fun AppGroupEntity.toAppGroup(): AppGroup {
 	return AppGroup(
 		id = group.groupId,
 		name = group.name,
-		apps = apps.map { it.toApp() },
-		snoozes = snoozes.map { it.toSnooze() }
+		blockingState = group.blockingState,
+		apps = apps.map(AppEntity::toApp),
+		snoozes = snoozes.map(SnoozeEntity::toSnooze),
 	)
 }
 

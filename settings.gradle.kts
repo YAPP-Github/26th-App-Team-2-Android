@@ -32,6 +32,7 @@ include(
 	":presentation:home",
 	":presentation:report",
 	":presentation:setting",
+	":presentation:overlay",
 )
 
 // Domain
@@ -52,6 +53,7 @@ include(
 	":core:navigation",
 	":core:permission",
 	":core:designsystem",
+	":core:service",
 	":core:util",
 	":core:testing",
 )
