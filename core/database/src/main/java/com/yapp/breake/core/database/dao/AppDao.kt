@@ -19,4 +19,8 @@ interface AppDao {
 
 	@Query("SELECT * FROM $APP_TABLE_NAME")
 	suspend fun getManagedApps(): List<AppEntity>
+
+	@Query("SELECT * FROM $APP_TABLE_NAME WHERE packageName = :packageName")
+	suspend fun getAppByPackageName(packageName: String): AppEntity?
+
 }

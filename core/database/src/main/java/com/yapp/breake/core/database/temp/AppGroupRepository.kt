@@ -1,6 +1,6 @@
 package com.yapp.breake.core.database.temp
 
-import com.yapp.breake.core.database.entity.AppGroup
+import com.yapp.breake.core.model.app.AppGroup
 import kotlinx.coroutines.flow.Flow
 
 interface AppGroupRepository {

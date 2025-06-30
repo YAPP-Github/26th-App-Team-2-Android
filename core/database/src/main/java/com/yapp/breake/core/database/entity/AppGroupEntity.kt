@@ -3,7 +3,7 @@ package com.yapp.breake.core.database.entity
 import androidx.room.Embedded
 import androidx.room.Relation
 
-data class AppGroup(
+data class AppGroupEntity(
 	@Embedded val group: GroupEntity,
 	@Relation(
 		parentColumn = GROUP_ID,
@@ -16,9 +16,6 @@ data class AppGroup(
 	)
 	val snoozes: List<SnoozeEntity>,
 ) {
-
-	val snoozeCount: Int
-		get() = snoozes.size
 
 	companion object {
 		const val GROUP_ID = "groupId"

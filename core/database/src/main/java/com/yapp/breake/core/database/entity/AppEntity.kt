@@ -5,8 +5,8 @@ import androidx.room.ForeignKey
 import androidx.room.Index
 import androidx.room.PrimaryKey
 import com.yapp.breake.core.database.BreakeDatabase
-import com.yapp.breake.core.database.entity.AppGroup.Companion.GROUP_ID
-import com.yapp.breake.core.database.entity.AppGroup.Companion.PARENT_GROUP_ID
+import com.yapp.breake.core.database.entity.AppGroupEntity.Companion.GROUP_ID
+import com.yapp.breake.core.database.entity.AppGroupEntity.Companion.PARENT_GROUP_ID
 
 @Entity(
 	tableName = BreakeDatabase.APP_TABLE_NAME,
