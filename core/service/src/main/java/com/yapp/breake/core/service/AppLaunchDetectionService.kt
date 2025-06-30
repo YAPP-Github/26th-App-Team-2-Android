@@ -55,7 +55,7 @@ class AppLaunchDetectionService : AccessibilityService() {
 			val appGroup = findAppGroupUsecase(packageName)
 
 			when (appGroup?.blockingState) {
-				BlockingState.NOTHING -> showTimeSettingOverlay(packageName)
+				BlockingState.NEEDS_SETTING -> showTimeSettingOverlay(packageName)
 				BlockingState.BLOCKING -> showBlockingOverlay(packageName)
 				BlockingState.USING, null -> {
 					Timber.i("$packageName 앱은 사용 상태입니다. 아무 작업도 하지 않습니다.")
@@ -65,7 +65,7 @@ class AppLaunchDetectionService : AccessibilityService() {
 	}
 
 	private fun showTimeSettingOverlay(packageName: String) {
-		startOverlayActivity(packageName, BlockingState.NOTHING)
+		startOverlayActivity(packageName, BlockingState.NEEDS_SETTING)
 		Timber.i("앱 사용 시간을 설정하기 위한 오버레이를 표시합니다: $packageName")
 	}
 

@@ -1,7 +1,7 @@
 package com.yapp.breake.core.model.app
 
 enum class BlockingState {
-	NOTHING,
+	NEEDS_SETTING,
 	BLOCKING,
 	USING,
 }
