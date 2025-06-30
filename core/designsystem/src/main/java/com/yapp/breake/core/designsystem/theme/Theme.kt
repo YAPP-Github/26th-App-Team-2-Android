@@ -46,6 +46,7 @@ fun BrakeTheme(
 
 	CompositionLocalProvider(
 		LocalTypography provides Typography,
+		LocalPadding provides Paddings,
 	) {
 		MaterialTheme(
 			colorScheme = colorScheme,
@@ -55,7 +56,12 @@ fun BrakeTheme(
 }
 
 object BrakeTheme {
+
 	val typography: BrakeTypography
 		@Composable
 		get() = LocalTypography.current
+
+	val paddings: BrakePadding
+		@Composable
+		get() = LocalPadding.current
 }
