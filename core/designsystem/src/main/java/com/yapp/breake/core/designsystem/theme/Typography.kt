@@ -10,7 +10,6 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.sp
 import com.yapp.breake.core.designsystem.R
 
-
 val pretendard = FontFamily(
 	Font(R.font.pretendard_bold, FontWeight.Bold),
 	Font(R.font.pretendard_reqular, FontWeight.SemiBold),
@@ -21,7 +20,7 @@ val pretendard = FontFamily(
 private val pretendardStyle = TextStyle(
 	fontFamily = pretendard,
 	fontWeight = FontWeight.Normal,
-	color = Black,
+	color = White,
 	letterSpacing = 0.sp,
 	platformStyle = PlatformTextStyle(
 		includeFontPadding = false,
