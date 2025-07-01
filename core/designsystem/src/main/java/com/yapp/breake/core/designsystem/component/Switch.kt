@@ -39,8 +39,8 @@ fun BrakeSwitch(
 			),
 			thumbContent = {
 				Canvas(
-                    modifier = Modifier.fillMaxSize(),
-                ) {
+					modifier = Modifier.fillMaxSize(),
+				) {
 					drawCircle(
 						color = White,
 						radius = 38f,

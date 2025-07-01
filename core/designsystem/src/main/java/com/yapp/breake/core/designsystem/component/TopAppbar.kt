@@ -25,12 +25,6 @@ import com.yapp.breake.core.designsystem.modifier.clickableSingle
 import com.yapp.breake.core.designsystem.theme.BrakeTheme
 import com.yapp.breake.core.designsystem.theme.Gray200
 
-sealed interface TopAppbarType {
-	data object Back : TopAppbarType
-	data object Cancel : TopAppbarType
-	data class TextButton(val text: String, val onClick: () -> Unit) : TopAppbarType
-}
-
 @Composable
 fun BrakeTopAppbar(
 	modifier: Modifier = Modifier,
@@ -70,6 +64,7 @@ fun BrakeTopAppbar(
 					modifier = Modifier.align(Alignment.CenterEnd),
 				)
 			}
+
 			is TopAppbarType.TextButton -> {
 				Box(
 					modifier = Modifier
@@ -88,8 +83,13 @@ fun BrakeTopAppbar(
 				}
 			}
 		}
-
 	}
+}
+
+sealed interface TopAppbarType {
+	data object Back : TopAppbarType
+	data object Cancel : TopAppbarType
+	data class TextButton(val text: String, val onClick: () -> Unit) : TopAppbarType
 }
 
 @Composable
