@@ -1,23 +1,33 @@
 package com.yapp.breake.core.designsystem.component
 
+import androidx.annotation.DrawableRes
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.defaultMinSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.dp
+import com.yapp.breake.core.designsystem.R
 import com.yapp.breake.core.designsystem.theme.BrakeTheme
 import com.yapp.breake.core.designsystem.theme.Gray200
 import com.yapp.breake.core.designsystem.theme.Gray700
+import com.yapp.breake.core.designsystem.theme.Gray800
+import com.yapp.breake.core.designsystem.theme.Red
 import com.yapp.breake.core.designsystem.util.BooleanProvider
 import com.yapp.breake.core.designsystem.util.MultipleEventsCutter
 import com.yapp.breake.core.designsystem.util.get
@@ -80,6 +90,58 @@ fun SmallButton(
 	}
 }
 
+@Composable
+fun BoxButton(
+	text: String,
+	onClick: () -> Unit,
+	modifier: Modifier = Modifier,
+	color: Color = Red,
+) {
+	val multipleEventsCutter = remember { MultipleEventsCutter.get() }
+
+	Button(
+		shape = MaterialTheme.shapes.medium,
+		colors = ButtonDefaults.buttonColors(
+			containerColor = color.copy(alpha = 0.18f),
+			contentColor = color,
+		),
+		contentPadding = PaddingValues(vertical = 8.dp, horizontal = 16.dp),
+		onClick = { multipleEventsCutter.processEvent(onClick) },
+		modifier = modifier,
+	) {
+		Text(
+			text = text,
+			style = BrakeTheme.typography.body14M,
+			textAlign = TextAlign.Center,
+		)
+	}
+}
+
+@Composable
+fun CircleButton(
+	@DrawableRes icon: Int,
+	onClick: () -> Unit,
+	modifier: Modifier = Modifier,
+	containerColor: Color = MaterialTheme.colorScheme.secondary,
+	contentColor: Color = Gray800,
+) {
+	val multipleEventsCutter = remember { MultipleEventsCutter.get() }
+
+	Surface(
+		shape = CircleShape,
+		color = containerColor,
+		onClick = { multipleEventsCutter.processEvent(onClick) },
+		modifier = modifier.size(56.dp),
+	) {
+		Icon(
+			painter = painterResource(id = icon),
+			contentDescription = null,
+			tint = contentColor,
+			modifier = Modifier.padding(8.dp),
+		)
+	}
+}
+
 @Preview("Large Buttons")
 @Composable
 private fun LargeButtonPreview(
@@ -104,6 +166,29 @@ private fun SmallButtonPreview(
 			text = "Small Button",
 			onClick = { },
 			enabled = enabled,
+		)
+	}
+}
+
+@Preview("Box Button")
+@Composable
+private fun BoxButtonPreview() {
+	BrakeTheme {
+		BoxButton(
+			text = "Button",
+			onClick = { },
+		)
+	}
+}
+
+
+@Preview("Box Button")
+@Composable
+private fun CircleButtonPreview() {
+	BrakeTheme {
+		CircleButton(
+			icon = R.drawable.ic_close,
+			onClick = { },
 		)
 	}
 }
