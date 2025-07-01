@@ -3,7 +3,7 @@ package com.yapp.breake.core.designsystem.component
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.LocalMinimumInteractiveComponentEnforcement
+import androidx.compose.material3.LocalMinimumInteractiveComponentSize
 import androidx.compose.material3.Switch
 import androidx.compose.material3.SwitchDefaults
 import androidx.compose.runtime.Composable
@@ -12,13 +12,13 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.tooling.preview.PreviewParameter
+import androidx.compose.ui.unit.dp
 import com.yapp.breake.core.designsystem.theme.BrakeTheme
 import com.yapp.breake.core.designsystem.theme.Gray850
 import com.yapp.breake.core.designsystem.theme.Green
 import com.yapp.breake.core.designsystem.theme.White
 import com.yapp.breake.core.designsystem.util.BooleanProvider
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun BrakeSwitch(
 	checked: Boolean,
@@ -26,7 +26,7 @@ fun BrakeSwitch(
 	modifier: Modifier = Modifier,
 	color: Color = Green,
 ) {
-	CompositionLocalProvider(LocalMinimumInteractiveComponentEnforcement provides false) {
+	CompositionLocalProvider(LocalMinimumInteractiveComponentSize provides 0.dp) {
 		Switch(
 			checked = checked,
 			colors = SwitchDefaults.colors(
