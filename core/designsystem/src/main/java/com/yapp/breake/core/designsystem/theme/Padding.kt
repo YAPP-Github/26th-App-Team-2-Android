@@ -5,11 +5,11 @@ import androidx.compose.runtime.staticCompositionLocalOf
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 
+val Paddings = BrakePadding()
+
+val LocalPadding = staticCompositionLocalOf { BrakePadding() }
+
 @Immutable
 data class BrakePadding(
 	val screenPaddingHorizontal: Dp = 16.dp,
 )
-
-val Paddings = BrakePadding()
-
-val LocalPadding = staticCompositionLocalOf { BrakePadding() }
