@@ -12,14 +12,14 @@ import androidx.compose.ui.unit.Dp
 
 @Composable
 fun VerticalSpacer(
-	height: Dp
+	height: Dp,
 ) {
 	Spacer(modifier = Modifier.height(height))
 }
 
 @Composable
 fun HorizontalSpacer(
-	width: Dp
+	width: Dp,
 ) {
 	Spacer(modifier = Modifier.width(width))
 }
@@ -27,7 +27,7 @@ fun HorizontalSpacer(
 @Composable
 fun RowScope.HorizontalSpacer(
 	@FloatRange(from = 0.0, fromInclusive = false)
-	width: Float
+	width: Float,
 ) {
 	Spacer(modifier = Modifier.weight(width))
 }
@@ -35,7 +35,7 @@ fun RowScope.HorizontalSpacer(
 @Composable
 fun ColumnScope.VerticalSpacer(
 	@FloatRange(from = 0.0, fromInclusive = false)
-	height: Float
+	height: Float,
 ) {
 	Spacer(modifier = Modifier.weight(height))
 }

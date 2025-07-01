@@ -21,3 +21,4 @@ val BrakeYellow = Color(0xFFF2FF5E)
 val Error = Color(0xFFE75B5D)
 
 val Red = Color(0xFFFF4343)
+val Green = Color(0xFF32D74B)
