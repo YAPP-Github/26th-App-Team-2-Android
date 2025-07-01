@@ -19,3 +19,5 @@ val Gray50 = Color(0xFFF6F8FC)
 val InsightBlue = Color(0xFF2684FF)
 val BrakeYellow = Color(0xFFF2FF5E)
 val Error = Color(0xFFE75B5D)
+
+val Red = Color(0xFFFF4343)

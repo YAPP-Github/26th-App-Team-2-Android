@@ -48,7 +48,7 @@ fun BrakeTopAppbar(
 	) {
 		if (appbarType == TopAppbarType.Back || appbarType is TopAppbarType.TextButton) {
 			TopAppbarIcon(
-				icon = R.drawable.ic_back,
+				icon = R.drawable.ic_back_28,
 				onClick = onClick,
 				modifier = Modifier.align(Alignment.CenterStart),
 			)
@@ -65,7 +65,7 @@ fun BrakeTopAppbar(
 			TopAppbarType.Back -> {}
 			TopAppbarType.Cancel -> {
 				TopAppbarIcon(
-					icon = R.drawable.ic_cancel,
+					icon = R.drawable.ic_close,
 					onClick = onClick,
 					modifier = Modifier.align(Alignment.CenterEnd),
 				)
