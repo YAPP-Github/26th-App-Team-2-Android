@@ -7,7 +7,7 @@ import androidx.compose.ui.unit.dp
 
 @Immutable
 data class BrakePadding(
-    val screenPaddingHorizontal: Dp = 16.dp,
+	val screenPaddingHorizontal: Dp = 16.dp,
 )
 
 val Paddings = BrakePadding()

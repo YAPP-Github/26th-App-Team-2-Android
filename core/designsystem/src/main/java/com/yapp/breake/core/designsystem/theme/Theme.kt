@@ -24,6 +24,7 @@ private val DarkColorScheme = darkColorScheme(
 	onSurfaceVariant = Gray300,
 	outline = Gray800,
 	background = Gray900,
+	onBackground = White,
 )
 
 val LocalDarkTheme = compositionLocalOf { true }
