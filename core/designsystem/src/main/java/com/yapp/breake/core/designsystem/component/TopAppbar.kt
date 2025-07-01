@@ -76,7 +76,7 @@ fun BrakeTopAppbar(
 						.fillMaxHeight()
 						.clip(MaterialTheme.shapes.large)
 						.align(Alignment.CenterEnd)
-						.clickableSingle(appbarType.onClick)
+						.clickableSingle(appbarType.onClick),
 				) {
 					Text(
 						modifier = Modifier.align(Alignment.Center),
