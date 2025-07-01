@@ -34,12 +34,12 @@ val Typography = BrakeTypography(
 	),
 	title40B = pretendardStyle.copy(
 		fontSize = 40.sp,
-		lineHeight = 40.sp,
+		lineHeight = 60.sp,
 		fontWeight = FontWeight.Bold,
 	),
 	title28B = pretendardStyle.copy(
 		fontSize = 28.sp,
-		lineHeight = 28.sp,
+		lineHeight = 39.2.sp,
 		fontWeight = FontWeight.Bold,
 	),
 	title24B = pretendardStyle.copy(
@@ -49,77 +49,77 @@ val Typography = BrakeTypography(
 	),
 	subtitle22B = pretendardStyle.copy(
 		fontSize = 22.sp,
-		lineHeight = 22.sp,
+		lineHeight = 33.sp,
 		fontWeight = FontWeight.Bold,
 	),
 	subtitle22SB = pretendardStyle.copy(
 		fontSize = 22.sp,
-		lineHeight = 22.sp,
+		lineHeight = 33.sp,
 		fontWeight = FontWeight.SemiBold,
 	),
 	subtitle20B = pretendardStyle.copy(
 		fontSize = 20.sp,
-		lineHeight = 20.sp,
+		lineHeight = 30.sp,
 		fontWeight = FontWeight.Bold,
 	),
 	subtitle20SB = pretendardStyle.copy(
 		fontSize = 20.sp,
-		lineHeight = 20.sp,
+		lineHeight = 30.sp,
 		fontWeight = FontWeight.SemiBold,
 	),
 	subtitle18B = pretendardStyle.copy(
 		fontSize = 18.sp,
-		lineHeight = 18.sp,
+		lineHeight = 27.sp,
 		fontWeight = FontWeight.Bold,
 	),
 	subtitle18SB = pretendardStyle.copy(
 		fontSize = 18.sp,
-		lineHeight = 18.sp,
+		lineHeight = 27.sp,
 		fontWeight = FontWeight.SemiBold,
 	),
 	subtitle16B = pretendardStyle.copy(
 		fontSize = 16.sp,
-		lineHeight = 16.sp,
+		lineHeight = 24.sp,
 		fontWeight = FontWeight.Bold,
 	),
 	subtitle16SB = pretendardStyle.copy(
 		fontSize = 16.sp,
-		lineHeight = 16.sp,
+		lineHeight = 24.sp,
 		fontWeight = FontWeight.SemiBold,
 	),
 	subtitle14B = pretendardStyle.copy(
 		fontSize = 14.sp,
-		lineHeight = 14.sp,
+		lineHeight = 21.sp,
 		fontWeight = FontWeight.Bold,
 	),
 	body16M = pretendardStyle.copy(
 		fontSize = 16.sp,
-		lineHeight = 16.sp,
+		lineHeight = 24.sp,
 		fontWeight = FontWeight.Medium,
 	),
 	body14SB = pretendardStyle.copy(
 		fontSize = 14.sp,
-		lineHeight = 14.sp,
+		lineHeight = 21.sp,
 		fontWeight = FontWeight.SemiBold,
 	),
 	body14M = pretendardStyle.copy(
 		fontSize = 14.sp,
-		lineHeight = 14.sp,
+		lineHeight = 21.sp,
 		fontWeight = FontWeight.Medium,
 	),
 	body12B = pretendardStyle.copy(
 		fontSize = 12.sp,
-		lineHeight = 12.sp,
+		lineHeight = 18.sp,
 		fontWeight = FontWeight.Bold,
 	),
 	body12M = pretendardStyle.copy(
 		fontSize = 12.sp,
-		lineHeight = 12.sp,
+		lineHeight = 18.sp,
 		fontWeight = FontWeight.Medium,
 	),
 	body10B = pretendardStyle.copy(
 		fontSize = 10.sp,
-		lineHeight = 10.sp,
+		lineHeight = 15.sp,
 		fontWeight = FontWeight.Bold,
 	),
 )
