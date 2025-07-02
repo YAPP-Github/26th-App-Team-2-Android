@@ -12,7 +12,7 @@ import com.yapp.breake.core.designsystem.R
 
 val pretendard = FontFamily(
 	Font(R.font.pretendard_bold, FontWeight.Bold),
-	Font(R.font.pretendard_reqular, FontWeight.SemiBold),
+	Font(R.font.pretendard_semi_bold, FontWeight.SemiBold),
 	Font(R.font.pretendard_medium, FontWeight.Medium),
 	Font(R.font.pretendard_reqular, FontWeight.Normal),
 )

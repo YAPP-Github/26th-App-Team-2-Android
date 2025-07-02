@@ -27,11 +27,9 @@ private val DarkColorScheme = darkColorScheme(
 	onBackground = White,
 )
 
-val LocalDarkTheme = compositionLocalOf { true }
-
 @Composable
 fun BrakeTheme(
-	darkTheme: Boolean = isSystemInDarkTheme(),
+	darkTheme: Boolean = true,
 	content: @Composable () -> Unit,
 ) {
 	val colorScheme = DarkColorScheme

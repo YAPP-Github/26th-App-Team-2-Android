@@ -25,6 +25,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
 import com.yapp.breake.core.designsystem.R
+import com.yapp.breake.core.designsystem.modifier.clickableSingle
 import com.yapp.breake.core.designsystem.theme.BrakeTheme
 import com.yapp.breake.core.designsystem.theme.Gray400
 import com.yapp.breake.core.designsystem.theme.Gray850
@@ -69,7 +70,7 @@ fun BaseDialog(
 				modifier = Modifier
 					.padding(16.dp)
 					.align(Alignment.TopEnd)
-					.clickable { onDismissRequest() },
+					.clickableSingle(onDismissRequest),
 			)
 		}
 	}
