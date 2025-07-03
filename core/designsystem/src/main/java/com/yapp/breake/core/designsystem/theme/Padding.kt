@@ -1,0 +1,15 @@
+package com.yapp.breake.core.designsystem.theme
+
+import androidx.compose.runtime.Immutable
+import androidx.compose.runtime.staticCompositionLocalOf
+import androidx.compose.ui.unit.Dp
+import androidx.compose.ui.unit.dp
+
+val Paddings = BrakePadding()
+
+val LocalPadding = staticCompositionLocalOf { BrakePadding() }
+
+@Immutable
+data class BrakePadding(
+	val screenPaddingHorizontal: Dp = 16.dp,
+)
