@@ -36,11 +36,12 @@ android {
 }
 
 dependencies {
+	implementation(projects.core.auth)
 	implementation(projects.core.navigation)
+	implementation(projects.core.designsystem)
+	implementation(projects.data)
 	implementation(projects.presentation.main)
 	implementation(projects.presentation.home)
-
-	implementation(projects.core.designsystem)
 
 	implementation(libs.androidx.profileinstaller)
 	implementation(libs.kakao.user)
