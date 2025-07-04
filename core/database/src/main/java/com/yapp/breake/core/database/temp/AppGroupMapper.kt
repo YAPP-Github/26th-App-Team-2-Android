@@ -20,7 +20,7 @@ internal fun AppGroupEntity.toAppGroup(): AppGroup {
 internal fun AppEntity.toApp(): App {
 	return App(
 		packageName = packageName,
-		category = category
+		category = category,
 	)
 }
 

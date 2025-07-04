@@ -8,7 +8,7 @@ import kotlinx.coroutines.flow.map
 import javax.inject.Inject
 
 class AppRepositoryImpl @Inject constructor(
-	private val appDao: AppDao
+	private val appDao: AppDao,
 ) : AppRepository {
 
 	override fun observeApp(): Flow<List<App>> {

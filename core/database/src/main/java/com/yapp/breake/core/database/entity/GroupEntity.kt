@@ -9,5 +9,5 @@ import com.yapp.breake.core.model.app.BlockingState
 data class GroupEntity(
 	@PrimaryKey(autoGenerate = true) val groupId: Long = 0,
 	val name: String,
-	val blockingState: BlockingState
+	val blockingState: BlockingState,
 )

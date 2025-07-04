@@ -5,7 +5,7 @@ import javax.inject.Inject
 
 class FindAppGroupUsecase @Inject constructor(
 	private val appGroupRepository: AppGroupRepository,
-	private val appRepository: AppRepository
+	private val appRepository: AppRepository,
 ) {
 
 	suspend operator fun invoke(packageName: String): AppGroup? {
