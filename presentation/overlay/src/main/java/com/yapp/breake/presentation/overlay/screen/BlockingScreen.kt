@@ -22,20 +22,19 @@ import com.yapp.breake.core.designsystem.component.SmallButton
 import com.yapp.breake.core.designsystem.component.VerticalSpacer
 import com.yapp.breake.core.designsystem.theme.BrakeTheme
 import com.yapp.breake.core.designsystem.theme.Gray200
-import com.yapp.breake.core.designsystem.theme.Gray300
 import com.yapp.breake.presentation.overlay.R
 
 @Composable
-internal fun CooldownRoute(
-	modifier: Modifier = Modifier,
-) {
+internal fun BlockingRoute() {
 
 }
 
 @Composable
-private fun CooldownScreen(
+private fun BlockingScreen(
+	snoozeCount: Int,
+	snoozeEnabled: Boolean,
 	onExit: () -> Unit,
-	onStartApp: () -> Unit,
+	onSnooze: () -> Unit,
 ) {
 	Column(
 		modifier = Modifier
@@ -51,38 +50,41 @@ private fun CooldownScreen(
 		) {
 			Image(
 				painter = painterResource(id = R.drawable.img_cooldown),
-				contentDescription = stringResource(id = R.string.cooldown_image_content_description),
+				contentDescription = stringResource(
+					id = R.string.blocking_image_content_description,
+				),
 			)
 			VerticalSpacer(30.dp)
 			Text(
-				text = stringResource(id = R.string.cooldown_title),
+				text = stringResource(id = R.string.blocking_title),
 				style = BrakeTheme.typography.title24B,
 				textAlign = TextAlign.Center,
 				modifier = Modifier.fillMaxWidth(),
 			)
 			VerticalSpacer(30.dp)
-			Text(
-				text = stringResource(id = R.string.cooldown_subtitle),
-				style = BrakeTheme.typography.body16M,
-				color = Gray300,
-				textAlign = TextAlign.Center,
-				modifier = Modifier.fillMaxWidth(),
-			)
 		}
 		Column(
 			modifier = Modifier.fillMaxWidth(),
 			horizontalAlignment = Alignment.CenterHorizontally,
 		) {
 			SmallButton(
-				text = stringResource(id = R.string.cooldown_exit),
+				text = if (snoozeEnabled) {
+					stringResource(id = R.string.blocking_exit)
+				} else {
+					stringResource(id = R.string.blocking_complete)
+				},
 				onClick = onExit,
 			)
 			Text(
-				text = stringResource(id = R.string.cooldown_check_time),
+				text = if (snoozeEnabled) {
+					stringResource(id = R.string.blocking_check_time, snoozeCount)
+				} else {
+					""
+				},
 				style = BrakeTheme.typography.subtitle16SB,
 				color = Gray200,
 				modifier = Modifier
-					.clickable(onClick = onStartApp)
+					.clickable(onClick = onSnooze, enabled = snoozeEnabled)
 					.padding(vertical = 13.dp, horizontal = 16.dp),
 			)
 			VerticalSpacer(20.dp)
@@ -90,13 +92,15 @@ private fun CooldownScreen(
 	}
 }
 
-@Preview()
+@Preview
 @Composable
-fun CooldownScreenPreview() {
+fun BlockingScreenPreview() {
 	BrakeTheme {
-		CooldownScreen(
+		BlockingScreen(
+			snoozeCount = 2,
+			snoozeEnabled = true,
 			onExit = { /* Do nothing */ },
-			onStartApp = { /* Do nothing */ },
+			onSnooze = { /* Do nothing */ },
 		)
 	}
 }

@@ -5,4 +5,9 @@
     <string name="cooldown_subtitle">Brake앱에서 남은 쿨타임 시간을 확인할 수 있어요</string>
     <string name="cooldown_exit">나가기</string>
     <string name="cooldown_check_time">앱에서 남은 시간 확인하기</string>
+    <string name="blocking_image_content_description">blocking image</string>
+    <string name="blocking_title"> 시간이\n지났어요</string>
+    <string name="blocking_exit">그만하기</string>
+    <string name="blocking_complete">확인</string>
+    <string name="blocking_check_time">5분 더(%d/2)</string>
 </resources>
