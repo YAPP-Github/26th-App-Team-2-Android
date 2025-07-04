@@ -28,6 +28,17 @@
         tools:targetApi="31" >
 
 		<service
+			android:name=".core.service.ScreenTimeService"
+			android:enabled="true"
+			android:exported="false"
+			android:foregroundServiceType="dataSync" />
+
+		<receiver
+			android:name=".notification.NotificationReceiver"
+			android:enabled="true"
+			android:exported="false" />
+
+		<service
 			android:name=".core.service.AppLaunchDetectionService"
 			android:exported="false"
 			android:label="@string/app_name"

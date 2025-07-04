@@ -14,7 +14,7 @@ import timber.log.Timber
 @AndroidEntryPoint
 class OverlayActivity : ComponentActivity() {
 
-    private val viewModel: OverlayViewModel by viewModels()
+	private val viewModel: OverlayViewModel by viewModels()
 
 	override fun onCreate(savedInstanceState: Bundle?) {
 		super.onCreate(savedInstanceState)
