@@ -1,3 +1,4 @@
+import com.yapp.breake.configureCoroutineKotlin
 import com.yapp.breake.configureKotest
 import com.yapp.breake.configureKotlin
 
@@ -7,4 +8,5 @@ plugins {
 }
 
 configureKotlin()
+configureCoroutineKotlin()
 configureKotest()
