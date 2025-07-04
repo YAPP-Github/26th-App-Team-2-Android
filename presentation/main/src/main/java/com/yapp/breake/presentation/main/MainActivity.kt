@@ -4,7 +4,7 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
-import androidx.compose.material3.MaterialTheme
+import com.yapp.breake.core.designsystem.theme.BrakeTheme
 import com.yapp.breake.presentation.main.navigation.MainNavigator
 import com.yapp.breake.presentation.main.navigation.rememberMainNavigator
 import dagger.hilt.android.AndroidEntryPoint
@@ -20,10 +20,9 @@ class MainActivity : ComponentActivity() {
 		setContent {
 			val navigator: MainNavigator = rememberMainNavigator()
 
-			MaterialTheme {
+			BrakeTheme {
 				MainScreen(
 					navigator = navigator,
-					// TODO : 다크모드 대비 설정
 					onChangeDarkTheme = { false },
 				)
 			}

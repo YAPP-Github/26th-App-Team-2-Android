@@ -9,6 +9,7 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navOptions
+import com.yapp.breake.core.navigation.InitialRoute
 import com.yapp.breake.core.navigation.MainTabRoute
 import com.yapp.breake.core.navigation.Route
 import com.yapp.breake.presentation.home.navigation.navigateHome
@@ -21,7 +22,7 @@ internal class MainNavigator(
 	private val currentDestination: NavDestination?
 		@Composable get() = navController.currentBackStackEntryAsState().value?.destination
 
-	val startDestination = MainTabRoute.Home
+	val startDestination = InitialRoute.Login
 
 	val currentTab: MainTab?
 		@Composable get() = MainTab.Companion.find { tab ->
