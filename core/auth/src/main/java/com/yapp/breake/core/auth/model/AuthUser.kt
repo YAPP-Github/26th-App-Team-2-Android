@@ -1,4 +1,4 @@
-package com.yapp.breake.core.model.auth
+package com.yapp.breake.core.auth.model
 
 interface AuthUser {
 	val name: String?

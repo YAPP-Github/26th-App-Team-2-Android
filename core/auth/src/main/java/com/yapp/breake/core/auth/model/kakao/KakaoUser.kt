@@ -1,6 +1,6 @@
-package com.yapp.breake.core.model.auth.kakao
+package com.yapp.breake.core.auth.model.kakao
 
-import com.yapp.breake.core.model.auth.AuthUser
+import com.yapp.breake.core.auth.model.AuthUser
 
 data class KakaoUser(
 	override val name: String? = null,

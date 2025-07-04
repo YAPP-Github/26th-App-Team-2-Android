@@ -5,9 +5,9 @@ import com.kakao.sdk.auth.model.OAuthToken
 import com.kakao.sdk.common.model.ClientError
 import com.kakao.sdk.common.model.ClientErrorCause
 import com.kakao.sdk.user.UserApiClient
-import com.yapp.breake.core.model.auth.kakao.KakaoUser
-import com.yapp.breake.core.model.auth.LoginAccessToken
-import com.yapp.breake.core.model.auth.kakao.KakaoLoginAccessToken
+import com.yapp.breake.core.auth.model.kakao.KakaoUser
+import com.yapp.breake.core.auth.model.LoginAccessToken
+import com.yapp.breake.core.auth.model.kakao.KakaoLoginAccessToken
 import kotlinx.coroutines.suspendCancellableCoroutine
 import timber.log.Timber
 import java.util.concurrent.CancellationException

@@ -16,6 +16,5 @@ android {
 }
 
 dependencies {
-	implementation(projects.core.model)
 	implementation(libs.kakao.user)
 }
