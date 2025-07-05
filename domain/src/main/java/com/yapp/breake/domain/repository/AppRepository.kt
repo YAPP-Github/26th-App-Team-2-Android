@@ -1,4 +1,4 @@
-package com.yapp.breake.core.database.temp
+package com.yapp.breake.domain.repository
 
 import com.yapp.breake.core.model.app.App
 import kotlinx.coroutines.flow.Flow

@@ -1,4 +1,4 @@
-package com.yapp.breake.core.database.temp
+package com.yapp.breake.data.mapper
 
 import com.yapp.breake.core.database.entity.AppEntity
 import com.yapp.breake.core.database.entity.AppGroupEntity
