@@ -49,7 +49,7 @@ private fun BlockingScreen(
 			horizontalAlignment = Alignment.CenterHorizontally,
 		) {
 			Image(
-				painter = painterResource(id = R.drawable.img_cooldown),
+				painter = painterResource(id = R.drawable.img_blocking),
 				contentDescription = stringResource(
 					id = R.string.blocking_image_content_description,
 				),
