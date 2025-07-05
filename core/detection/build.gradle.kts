@@ -11,5 +11,6 @@ android {
 dependencies {
 	implementation(projects.domain)
 	implementation(projects.core.model)
+	implementation(projects.core.common)
 	implementation(projects.presentation.overlay)
 }

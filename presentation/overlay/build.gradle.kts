@@ -7,3 +7,7 @@ plugins {
 android {
 	setNamespace("presentation.overlay")
 }
+
+dependencies {
+	implementation(projects.core.common)
+}

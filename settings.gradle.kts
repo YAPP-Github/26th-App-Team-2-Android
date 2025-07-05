@@ -47,6 +47,7 @@ include(":data-test")
 // Core
 include(
 	":core:auth",
+	":core:common",
 	":core:datastore",
 	":core:database",
 	":core:model",

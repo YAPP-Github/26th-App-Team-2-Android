@@ -4,12 +4,11 @@ import android.accessibilityservice.AccessibilityService
 import android.accessibilityservice.AccessibilityServiceInfo
 import android.content.Intent
 import android.view.accessibility.AccessibilityEvent
+import com.yapp.breake.core.common.IntentConstants
 import com.yapp.breake.core.model.app.App
 import com.yapp.breake.core.model.app.BlockingState
 import com.yapp.breake.domain.repository.AppRepository
 import com.yapp.breake.domain.usecase.FindAppGroupUsecase
-import com.yapp.breake.presentation.overlay.OverlayViewModel.Companion.EXTRA_BLOCKING_STATE
-import com.yapp.breake.presentation.overlay.OverlayViewModel.Companion.EXTRA_PACKAGE_NAME
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -75,10 +74,10 @@ class AppLaunchDetectionService : AccessibilityService() {
 	}
 
 	private fun startOverlayActivity(packageName: String, blockingState: BlockingState) {
-		val intent = Intent(ACTION_SHOW_OVERLAY).apply {
+		val intent = Intent(IntentConstants.ACTION_SHOW_OVERLAY).apply {
 			addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-			putExtra(EXTRA_PACKAGE_NAME, packageName)
-			putExtra(EXTRA_BLOCKING_STATE, blockingState)
+			putExtra(IntentConstants.EXTRA_PACKAGE_NAME, packageName)
+			putExtra(IntentConstants.EXTRA_BLOCKING_STATE, blockingState)
 		}
 		startActivity(intent)
 	}
@@ -115,9 +114,5 @@ class AppLaunchDetectionService : AccessibilityService() {
 		serviceJob.cancel()
 		super.onDestroy()
 		Timber.d("접근성 서비스가 소멸되었습니다.")
-	}
-
-	companion object {
-		const val ACTION_SHOW_OVERLAY = "com.yapp.breake.SHOW_OVERLAY"
 	}
 }
