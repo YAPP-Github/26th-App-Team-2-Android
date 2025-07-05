@@ -9,7 +9,7 @@ android {
 }
 
 dependencies {
-	implementation(projects.core.database)
+	implementation(projects.domain)
 	implementation(projects.core.model)
 	implementation(projects.presentation.overlay)
 }

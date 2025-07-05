@@ -4,10 +4,10 @@ import android.accessibilityservice.AccessibilityService
 import android.accessibilityservice.AccessibilityServiceInfo
 import android.content.Intent
 import android.view.accessibility.AccessibilityEvent
-import com.yapp.breake.domain.usecase.AppRepository
-import com.yapp.breake.domain.usecase.FindAppGroupUsecase
 import com.yapp.breake.core.model.app.App
 import com.yapp.breake.core.model.app.BlockingState
+import com.yapp.breake.domain.repository.AppRepository
+import com.yapp.breake.domain.usecase.FindAppGroupUsecase
 import com.yapp.breake.presentation.overlay.OverlayViewModel.Companion.EXTRA_BLOCKING_STATE
 import com.yapp.breake.presentation.overlay.OverlayViewModel.Companion.EXTRA_PACKAGE_NAME
 import dagger.hilt.android.AndroidEntryPoint
@@ -23,10 +23,10 @@ import javax.inject.Inject
 class AppLaunchDetectionService : AccessibilityService() {
 
 	@Inject
-	lateinit var findAppGroupUsecase: com.yapp.breake.domain.usecase.FindAppGroupUsecase
+	lateinit var findAppGroupUsecase: FindAppGroupUsecase
 
 	@Inject
-	lateinit var appRepository: com.yapp.breake.domain.usecase.AppRepository
+	lateinit var appRepository: AppRepository
 
 	private val serviceJob = SupervisorJob()
 	private val serviceScope = CoroutineScope(Dispatchers.Main + serviceJob)
