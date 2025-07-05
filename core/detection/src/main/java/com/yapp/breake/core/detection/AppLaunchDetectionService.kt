@@ -1,4 +1,4 @@
-package com.yapp.breake.core.service
+package com.yapp.breake.core.detection
 
 import android.accessibilityservice.AccessibilityService
 import android.accessibilityservice.AccessibilityServiceInfo

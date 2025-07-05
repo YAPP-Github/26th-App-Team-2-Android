@@ -39,6 +39,10 @@ dependencies {
 	implementation(projects.presentation.main)
 	implementation(projects.presentation.home)
 
+	implementation(projects.core.detection)
+	implementation(projects.core.service)
+	testImplementation(projects.core.testing)
+
 	implementation(libs.androidx.profileinstaller)
 
 	testImplementation(projects.core.testing)

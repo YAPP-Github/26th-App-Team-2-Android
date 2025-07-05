@@ -53,6 +53,7 @@ include(
 	":core:navigation",
 	":core:permission",
 	":core:designsystem",
+	":core:detection",
 	":core:service",
 	":core:util",
 	":core:testing",
