@@ -58,6 +58,7 @@ private fun CooldownScreen(
 				text = stringResource(id = R.string.cooldown_title),
 				style = BrakeTheme.typography.title24B,
 				textAlign = TextAlign.Center,
+				color = MaterialTheme.colorScheme.onBackground,
 				modifier = Modifier.fillMaxWidth(),
 			)
 			VerticalSpacer(30.dp)

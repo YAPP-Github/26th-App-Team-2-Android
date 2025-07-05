@@ -29,9 +29,7 @@ import com.yapp.breake.core.designsystem.theme.Gray200
 import com.yapp.breake.presentation.overlay.R
 
 @Composable
-internal fun TimerRoute(
-
-) {
+internal fun TimerRoute() {
 	var time by remember { mutableIntStateOf(0) }
 }
 
@@ -58,6 +56,7 @@ private fun TimerScreen(
 				text = stringResource(id = R.string.timer_title),
 				style = BrakeTheme.typography.title24B,
 				textAlign = TextAlign.Center,
+				color = MaterialTheme.colorScheme.onBackground,
 				modifier = Modifier.fillMaxWidth(),
 			)
 			VerticalSpacer(30.dp)

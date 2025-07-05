@@ -31,76 +31,77 @@ internal fun BlockingRoute() {
 
 @Composable
 private fun BlockingScreen(
-	snoozeCount: Int,
-	snoozeEnabled: Boolean,
-	onExit: () -> Unit,
-	onSnooze: () -> Unit,
+    snoozeCount: Int,
+    snoozeEnabled: Boolean,
+    onExit: () -> Unit,
+    onSnooze: () -> Unit,
 ) {
-	Column(
-		modifier = Modifier
-			.fillMaxSize()
-			.background(MaterialTheme.colorScheme.background),
-	) {
-		Column(
-			modifier = Modifier
-				.fillMaxWidth()
-				.weight(1f),
-			verticalArrangement = Arrangement.Center,
-			horizontalAlignment = Alignment.CenterHorizontally,
-		) {
-			Image(
-				painter = painterResource(id = R.drawable.img_blocking),
-				contentDescription = stringResource(
-					id = R.string.blocking_image_content_description,
-				),
-			)
-			VerticalSpacer(30.dp)
-			Text(
-				text = stringResource(id = R.string.blocking_title),
-				style = BrakeTheme.typography.title24B,
-				textAlign = TextAlign.Center,
-				modifier = Modifier.fillMaxWidth(),
-			)
-			VerticalSpacer(30.dp)
-		}
-		Column(
-			modifier = Modifier.fillMaxWidth(),
-			horizontalAlignment = Alignment.CenterHorizontally,
-		) {
-			SmallButton(
-				text = if (snoozeEnabled) {
-					stringResource(id = R.string.blocking_exit)
-				} else {
-					stringResource(id = R.string.blocking_complete)
-				},
-				onClick = onExit,
-			)
-			Text(
-				text = if (snoozeEnabled) {
-					stringResource(id = R.string.blocking_check_time, snoozeCount)
-				} else {
-					""
-				},
-				style = BrakeTheme.typography.subtitle16SB,
-				color = Gray200,
-				modifier = Modifier
-					.clickable(onClick = onSnooze, enabled = snoozeEnabled)
-					.padding(vertical = 13.dp, horizontal = 16.dp),
-			)
-			VerticalSpacer(20.dp)
-		}
-	}
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(MaterialTheme.colorScheme.background),
+    ) {
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .weight(1f),
+            verticalArrangement = Arrangement.Center,
+            horizontalAlignment = Alignment.CenterHorizontally,
+        ) {
+            Image(
+                painter = painterResource(id = R.drawable.img_blocking),
+                contentDescription = stringResource(
+                    id = R.string.blocking_image_content_description,
+                ),
+            )
+            VerticalSpacer(30.dp)
+            Text(
+                text = stringResource(id = R.string.blocking_title),
+                style = BrakeTheme.typography.title24B,
+                textAlign = TextAlign.Center,
+                color = MaterialTheme.colorScheme.onBackground,
+                modifier = Modifier.fillMaxWidth(),
+            )
+            VerticalSpacer(30.dp)
+        }
+        Column(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalAlignment = Alignment.CenterHorizontally,
+        ) {
+            SmallButton(
+                text = if (snoozeEnabled) {
+                    stringResource(id = R.string.blocking_exit)
+                } else {
+                    stringResource(id = R.string.blocking_complete)
+                },
+                onClick = onExit,
+            )
+            Text(
+                text = if (snoozeEnabled) {
+                    stringResource(id = R.string.blocking_check_time, snoozeCount)
+                } else {
+                    ""
+                },
+                style = BrakeTheme.typography.subtitle16SB,
+                color = Gray200,
+                modifier = Modifier
+                    .clickable(onClick = onSnooze, enabled = snoozeEnabled)
+                    .padding(vertical = 13.dp, horizontal = 16.dp),
+            )
+            VerticalSpacer(20.dp)
+        }
+    }
 }
 
 @Preview
 @Composable
 fun BlockingScreenPreview() {
-	BrakeTheme {
-		BlockingScreen(
-			snoozeCount = 2,
-			snoozeEnabled = true,
-			onExit = { /* Do nothing */ },
-			onSnooze = { /* Do nothing */ },
-		)
-	}
+    BrakeTheme {
+        BlockingScreen(
+            snoozeCount = 2,
+            snoozeEnabled = true,
+            onExit = { /* Do nothing */ },
+            onSnooze = { /* Do nothing */ },
+        )
+    }
 }
