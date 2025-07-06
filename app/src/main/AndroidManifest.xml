@@ -27,14 +27,8 @@
 		android:theme="@style/Theme.Breake"
         tools:targetApi="31" >
 
-		<service
-			android:name=".core.service.ScreenTimeService"
-			android:enabled="true"
-			android:exported="false"
-			android:foregroundServiceType="dataSync" />
-
 		<receiver
-			android:name=".core.service.notification.NotificationReceiver"
+			android:name=".core.alarm.notification.NotificationReceiver"
 			android:enabled="true"
 			android:exported="false" />
 

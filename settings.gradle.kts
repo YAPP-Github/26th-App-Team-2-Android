@@ -57,5 +57,6 @@ include(
 	":core:detection",
 	":core:service",
 	":core:util",
-	":core:testing",
+	":core:alarm",
+	":core:testing"
 )

@@ -40,7 +40,7 @@ dependencies {
 	implementation(projects.presentation.home)
 
 	implementation(projects.core.detection)
-	implementation(projects.core.service)
+	implementation(projects.core.alarm)
 	testImplementation(projects.core.testing)
 
 	implementation(libs.androidx.profileinstaller)
