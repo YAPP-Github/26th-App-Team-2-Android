@@ -21,9 +21,9 @@ class AlarmSchedulerImpl @Inject constructor(
 
 	@RequiresPermission(Manifest.permission.SCHEDULE_EXACT_ALARM)
 	override fun scheduleAlarm(
-		alarmId: Int,
+		alarmId: Long,
 		minute: Int,
-	): Boolean {
+	): Result<Unit> {
 		val alarmManager = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
 		val intent = Intent(context, NotificationReceiver::class.java).apply {
 			action = IntentConstants.ACTION_SHOW_NOTIFICATION
@@ -33,14 +33,14 @@ class AlarmSchedulerImpl @Inject constructor(
 		val pendingIntentFlags = PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
 		val pendingIntent = PendingIntent.getBroadcast(
 			context,
-			alarmId,
+			alarmId.toInt(),
 			intent,
 			pendingIntentFlags,
 		)
 
 		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S && !alarmManager.canScheduleExactAlarms()) {
 			Timber.w("정확한 알람 권한이 없습니다. ID: $alarmId 에 대한 정확한 알람을 예약할 수 없습니다.")
-			return false
+			return Result.failure(SecurityException("정확한 알람 권한이 없습니다."))
 		}
 
 		try {
@@ -54,14 +54,16 @@ class AlarmSchedulerImpl @Inject constructor(
 				pendingIntent,
 			)
 			Timber.i("ID: $alarmId 에 대한 알람이 $triggerAtMillis 에 성공적으로 예약되었습니다.")
-			return true
+			return Result.success(Unit) // 성공적으로 예약됨
 		} catch (se: SecurityException) {
 			Timber.e("SecurityException: ID: $alarmId 에 대한 정확한 알람을 예약할 수 없습니다. $se")
-			return false
+			return Result.failure(se)
 		}
 	}
 
-	override fun cancelAlarm(notificationId: Int) {
+	override fun cancelAlarm(
+		notificationId: Int,
+	) {
 		val alarmManager = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
 		val intent = Intent(context, NotificationReceiver::class.java).apply {
 			action = IntentConstants.ACTION_SHOW_NOTIFICATION
@@ -80,4 +82,3 @@ class AlarmSchedulerImpl @Inject constructor(
 		}
 	}
 }
-
