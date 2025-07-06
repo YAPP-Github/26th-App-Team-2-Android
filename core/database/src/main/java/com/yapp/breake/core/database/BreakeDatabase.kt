@@ -2,6 +2,9 @@ package com.yapp.breake.core.database
 
 import androidx.room.Database
 import androidx.room.RoomDatabase
+import androidx.room.TypeConverters
+import com.yapp.breake.core.database.converter.BlockingStateConverter
+import com.yapp.breake.core.database.converter.LocalDateTimeConverter
 import com.yapp.breake.core.database.dao.AppDao
 import com.yapp.breake.core.database.dao.AppGroupDao
 import com.yapp.breake.core.database.dao.SnoozeDao
@@ -18,9 +21,12 @@ import com.yapp.breake.core.database.entity.SnoozeEntity
 	version = 1,
 	exportSchema = true,
 )
-//@TypeConverters(
-//    value = [],
-//)
+@TypeConverters(
+	value = [
+		BlockingStateConverter::class,
+		LocalDateTimeConverter::class,
+	],
+)
 internal abstract class BreakeDatabase : RoomDatabase() {
 
 	abstract fun appGroupDao(): AppGroupDao
