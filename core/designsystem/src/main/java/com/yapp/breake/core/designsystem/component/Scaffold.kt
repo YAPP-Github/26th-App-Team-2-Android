@@ -18,36 +18,36 @@ import androidx.compose.ui.unit.dp
 
 @Composable
 fun BaseScaffold(
-	modifier: Modifier = Modifier,
-	contentPadding: PaddingValues = PaddingValues(0.dp),
-	topBar: @Composable () -> Unit = {},
-	bottomBar: @Composable () -> Unit = {},
-	snackBarHost: @Composable () -> Unit = {},
-	floatingActionButton: @Composable () -> Unit = {},
-	containerColor: Color = MaterialTheme.colorScheme.surfaceDim,
-	contentColor: Color = contentColorFor(containerColor),
-	statusBarColor: Color = MaterialTheme.colorScheme.background,
-	content: @Composable ColumnScope.() -> Unit
+    modifier: Modifier = Modifier,
+    contentPadding: PaddingValues = PaddingValues(0.dp),
+    topBar: @Composable () -> Unit = {},
+    bottomBar: @Composable () -> Unit = {},
+    snackBarHost: @Composable () -> Unit = {},
+    floatingActionButton: @Composable () -> Unit = {},
+    containerColor: Color = MaterialTheme.colorScheme.background,
+    contentColor: Color = contentColorFor(containerColor),
+    statusBarColor: Color = MaterialTheme.colorScheme.background,
+    content: @Composable ColumnScope.() -> Unit
 ) {
-	Scaffold(
-		topBar = topBar,
-		bottomBar = bottomBar,
-		snackbarHost = snackBarHost,
-		floatingActionButton = floatingActionButton,
-		containerColor = containerColor,
-		contentColor = contentColor,
-		modifier = modifier
-			.navigationBarsPadding()
-			.background(color = statusBarColor)
-			.statusBarsPadding()
-	) {
-		Column(
-			modifier = Modifier
-				.fillMaxSize()
-				.padding(it)
-				.padding(contentPadding)
-		) {
-			content()
-		}
-	}
+    Scaffold(
+        topBar = topBar,
+        bottomBar = bottomBar,
+        snackbarHost = snackBarHost,
+        floatingActionButton = floatingActionButton,
+        containerColor = containerColor,
+        contentColor = contentColor,
+        modifier = modifier
+            .navigationBarsPadding()
+            .background(color = statusBarColor)
+            .statusBarsPadding()
+    ) {
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(it)
+                .padding(contentPadding)
+        ) {
+            content()
+        }
+    }
 }
