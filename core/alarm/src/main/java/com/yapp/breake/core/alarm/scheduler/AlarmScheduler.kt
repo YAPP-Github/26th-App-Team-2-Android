@@ -1,7 +1,6 @@
 package com.yapp.breake.core.alarm.scheduler
 
 import androidx.annotation.RequiresPermission
-import java.time.LocalDateTime
 
 interface AlarmScheduler {
 
@@ -9,7 +8,6 @@ interface AlarmScheduler {
 	fun scheduleAlarm(
 		alarmId: Int,
 		minute: Int,
-		startTime: LocalDateTime,
 	): Boolean
 
 	fun cancelAlarm(notificationId: Int)

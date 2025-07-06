@@ -23,7 +23,6 @@ class AlarmSchedulerImpl @Inject constructor(
 	override fun scheduleAlarm(
 		alarmId: Int,
 		minute: Int,
-		startTime: LocalDateTime,
 	): Boolean {
 		val alarmManager = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
 		val intent = Intent(context, NotificationReceiver::class.java).apply {
@@ -45,6 +44,7 @@ class AlarmSchedulerImpl @Inject constructor(
 		}
 
 		try {
+			val startTime = LocalDateTime.now()
 			val triggerTime = startTime.plusMinutes(minute.toLong())
 			val triggerAtMillis =
 				triggerTime.atZone(ZoneId.systemDefault()).toInstant().toEpochMilli()
