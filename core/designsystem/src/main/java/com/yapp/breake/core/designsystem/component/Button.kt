@@ -165,7 +165,7 @@ fun KakaoLoginButton(
 			disabledContainerColor = Gray700,
 			disabledContentColor = Gray200,
 		),
-		contentPadding = PaddingValues(vertical = 18.dp, horizontal = 16.dp),
+		contentPadding = PaddingValues(16.dp),
 		enabled = enabled,
 		onClick = { multipleEventsCutter.processEvent(onClick) },
 		modifier = modifier.fillMaxWidth(),
