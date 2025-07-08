@@ -10,6 +10,8 @@ android {
 }
 
 dependencies {
+	implementation(projects.core.util)
+
 	implementation(libs.androidx.appcompat)
 
 	implementation(libs.landscapist.bom)
