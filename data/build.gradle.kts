@@ -16,6 +16,7 @@ dependencies {
 	implementation(projects.core.database)
 	implementation(projects.domain)
 
+	implementation(libs.datastore)
 	implementation(libs.retrofit.core)
 	implementation(libs.retrofit.kotlin.serialization)
 	implementation(libs.okhttp.logging)

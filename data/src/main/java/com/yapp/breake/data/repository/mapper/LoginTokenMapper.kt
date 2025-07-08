@@ -9,7 +9,6 @@ internal fun LoginResponse.toData(): UserToken = UserToken(
 	refreshToken = refreshToken,
 	status = when (memberState) {
 		"ACTIVE" -> UserTokenStatus.ACTIVE
-		"INACTIVE" -> UserTokenStatus.INACTIVE
 		else -> UserTokenStatus.HALF_SIGNUP
 	},
 )
