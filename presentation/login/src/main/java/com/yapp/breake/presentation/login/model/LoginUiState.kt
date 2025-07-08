@@ -14,4 +14,7 @@ sealed interface LoginUiState {
 
 	@Immutable
 	data object LoginAsNewUser : LoginUiState
+
+	@Immutable
+	data object LoginInvalidUser : LoginUiState
 }

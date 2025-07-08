@@ -31,7 +31,6 @@ internal fun MainNavHost(
 	) {
 		loginNavGraph(
 			navigateToSignup = navController::navigateSignup,
-			navigateToOnboarding = navController::navigateOnboarding,
 			navigateToHome = {
 				navController.navigateHome(shouldClearBackstack = true)
 			},

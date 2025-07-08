@@ -39,6 +39,9 @@ include(":domain")
 // Data
 include(":data")
 
+// Data Test
+include(":data-test")
+
 // Core
 include(
 	":core:auth",
@@ -49,3 +52,4 @@ include(
 	":core:designsystem",
 	":core:testing",
 )
+

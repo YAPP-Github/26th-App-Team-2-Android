@@ -1,5 +1,6 @@
 package com.yapp.breake.presentation.login
 
+import android.widget.Toast
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.navigationBarsPadding
@@ -26,8 +27,6 @@ import kotlinx.coroutines.flow.collectLatest
 @Composable
 internal fun LoginRoute(
 	navigateToSignup: () -> Unit,
-	// TODO: Signup 화면에서 이동하도록 수정
-	navigateToOnboarding: () -> Unit,
 	navigateToHome: () -> Unit,
 	onShowErrorSnackBar: (Throwable?) -> Unit,
 	viewModel: LoginViewModel = hiltViewModel(),
@@ -45,6 +44,14 @@ internal fun LoginRoute(
 
 				LoginUiState.LoginAsNewUser -> {
 					navigateToSignup()
+				}
+
+				LoginUiState.LoginInvalidUser -> {
+					Toast.makeText(
+						context,
+						R.string.login_invalid_user_message,
+						Toast.LENGTH_SHORT,
+					).show()
 				}
 			}
 		}
