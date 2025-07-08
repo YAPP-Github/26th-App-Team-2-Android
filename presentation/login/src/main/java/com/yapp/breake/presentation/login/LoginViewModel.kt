@@ -47,8 +47,14 @@ internal class LoginViewModel @Inject constructor(
 					}
 				}
 			}.onFailure { error ->
-				_errorFlow.tryEmit(error)
+				_errorFlow.emit(error)
 			}
+		}
+	}
+
+	fun resetUiState() {
+		viewModelScope.launch {
+			_uiState.value = LoginUiState.LoginIdle
 		}
 	}
 }

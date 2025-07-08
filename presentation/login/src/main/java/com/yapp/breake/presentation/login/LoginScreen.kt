@@ -39,10 +39,12 @@ internal fun LoginRoute(
 			when (it) {
 				LoginUiState.LoginIdle -> {}
 				LoginUiState.LoginAsRegistered -> {
+					viewModel.resetUiState()
 					navigateToHome()
 				}
 
 				LoginUiState.LoginAsNewUser -> {
+					viewModel.resetUiState()
 					navigateToSignup()
 				}
 
