@@ -37,6 +37,7 @@ internal fun MainNavHost(
 			onShowErrorSnackBar = onShowErrorSnackBar,
 		)
 		signupNavGraph(
+			navigateToBack = navController::popBackStack,
 			navigateToLogin = navController::navigateOnboarding,
 			onShowErrorSnackBar = onShowErrorSnackBar,
 		)

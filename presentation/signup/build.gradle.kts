@@ -7,3 +7,7 @@ plugins {
 android {
 	setNamespace("presentation.signup")
 }
+
+dependencies {
+	implementation(projects.core.util)
+}
