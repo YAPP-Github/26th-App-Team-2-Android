@@ -5,13 +5,13 @@ import kotlinx.serialization.Serializable
 @Serializable
 data class UserProfile(
 	val nickname: String,
-	val state: String,
+	val state: UserTokenStatus,
 	val imageUrl: String? = null,
 ) {
 	companion object {
 		val EMPTY = UserProfile(
 			nickname = "",
-			state = "",
+			state = UserTokenStatus.INACTIVE,
 			imageUrl = null,
 		)
 	}
