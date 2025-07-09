@@ -21,7 +21,7 @@ internal object ApiModule {
 		brakeNetwork: BrakeNetwork,
 	): LoginApi =
 		brakeNetwork.create(
-			baseUrl = ApiConfig.ServerDomain.baseUrl,
+			baseUrl = ApiConfig.ServerDomain.BASE_URL,
 		)
 
 	@Provides
@@ -30,6 +30,6 @@ internal object ApiModule {
 		brakeNetwork: BrakeNetwork,
 	): MemberApi =
 		brakeNetwork.create(
-			baseUrl = ApiConfig.ServerDomain.baseUrl,
+			baseUrl = ApiConfig.ServerDomain.BASE_URL,
 		)
 }

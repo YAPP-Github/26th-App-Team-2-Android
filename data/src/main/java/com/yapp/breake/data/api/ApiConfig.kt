@@ -18,6 +18,6 @@ sealed interface ApiConfig {
 	}
 
 	data object ServerDomain : ApiConfig {
-		val baseUrl = "https://brake.r-e.kr/"
+		const val BASE_URL = "https://brake.r-e.kr/"
 	}
 }
