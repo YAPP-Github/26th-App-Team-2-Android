@@ -1,0 +1,10 @@
+package com.yapp.breake.data.repository.mapper
+
+import com.yapp.breake.core.model.user.UserProfile
+import com.yapp.breake.data.api.model.MemberResponse
+
+internal fun MemberResponse.toData(): UserProfile = UserProfile(
+	nickname = this.data.nickname,
+	state = this.data.state,
+	imageUrl = null,
+)

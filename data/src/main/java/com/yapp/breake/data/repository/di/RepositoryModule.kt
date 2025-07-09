@@ -1,8 +1,10 @@
 package com.yapp.breake.data.repository.di
 
 import com.yapp.breake.data.repository.LoginRepositoryImpl
+import com.yapp.breake.data.repository.UserProfileRepositoryImpl
 import com.yapp.breake.data.repository.UserTokenRepositoryImpl
 import com.yapp.breake.domain.repository.LoginRepository
+import com.yapp.breake.domain.repository.UserProfileRepository
 import com.yapp.breake.domain.repository.UserTokenRepository
 import dagger.Binds
 import dagger.Module
@@ -26,4 +28,10 @@ internal abstract class RepositoryModule {
 	abstract fun bindUserTokenRepository(
 		userTokenRepository: UserTokenRepositoryImpl,
 	): UserTokenRepository
+
+	@Binds
+	@Singleton
+	abstract fun bindUserProfileRepository(
+		userProfileRepository: UserProfileRepositoryImpl,
+	): UserProfileRepository
 }

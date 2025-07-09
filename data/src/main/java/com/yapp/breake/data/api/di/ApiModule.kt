@@ -2,6 +2,7 @@ package com.yapp.breake.data.api.di
 
 import com.yapp.breake.data.api.ApiConfig
 import com.yapp.breake.data.api.LoginApi
+import com.yapp.breake.data.api.MemberApi
 import com.yapp.breake.data.network.BrakeNetwork
 import com.yapp.breake.data.network.create
 import dagger.Module
@@ -19,6 +20,15 @@ internal object ApiModule {
 	fun provideLoginApi(
 		brakeNetwork: BrakeNetwork,
 	): LoginApi =
+		brakeNetwork.create(
+			baseUrl = ApiConfig.ServerDomain.baseUrl,
+		)
+
+	@Provides
+	@Singleton
+	fun provideMemberApi(
+		brakeNetwork: BrakeNetwork,
+	): MemberApi =
 		brakeNetwork.create(
 			baseUrl = ApiConfig.ServerDomain.baseUrl,
 		)
