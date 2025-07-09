@@ -35,6 +35,7 @@ import com.yapp.breake.core.designsystem.component.VerticalSpacer
 import com.yapp.breake.core.designsystem.theme.BrakeTheme
 import com.yapp.breake.core.designsystem.theme.LocalPadding
 import com.yapp.breake.core.designsystem.modifier.clearFocusOnKeyboardDismiss
+import com.yapp.breake.core.util.isValidInput
 import com.yapp.breake.presentation.signup.model.SignupUiState
 import com.yapp.breake.core.designsystem.R as D
 
@@ -51,13 +52,17 @@ fun SignupRoute(
 
 	LaunchedEffect(true) {
 		viewModel.uiState.collect { uiState ->
-			typedName = when (uiState) {
+			when (uiState) {
 				is SignupUiState.SignupIdle -> {
-					uiState.name
+					typedName = uiState.name
 				}
 
 				is SignupUiState.SignupTypedName -> {
-					uiState.name
+					typedName = uiState.name
+				}
+
+				SignupUiState.SignupSuccess -> {
+					navigateToOnboarding()
 				}
 			}
 		}
@@ -68,10 +73,8 @@ fun SignupRoute(
 		focusManager = focusManager,
 		typedName = typedName,
 		onBackClick = navigateToBack,
-		onNameType = {
-			viewModel.onNameType(it)
-		},
-		onContinueClick = navigateToOnboarding,
+		onNameType = viewModel::onNameType,
+		onContinueClick = viewModel::onNameSubmit,
 	)
 }
 
@@ -82,7 +85,7 @@ fun SignupScreen(
 	typedName: String,
 	onBackClick: () -> Unit,
 	onNameType: (String) -> Unit,
-	onContinueClick: () -> Unit,
+	onContinueClick: (String) -> Unit,
 ) {
 	Scaffold(
 		modifier = Modifier
@@ -138,7 +141,9 @@ fun SignupScreen(
 				VerticalSpacer(36.dp)
 
 				BrakeTextField(
-					modifier = Modifier.fillMaxWidth().clearFocusOnKeyboardDismiss(),
+					modifier = Modifier
+						.fillMaxWidth()
+						.clearFocusOnKeyboardDismiss(),
 					value = typedName,
 					onValueChange = {
 						onNameType(it)
@@ -152,7 +157,7 @@ fun SignupScreen(
 
 			LargeButton(
 				text = stringResource(R.string.signup_continue_button_text),
-				onClick = onContinueClick,
+				onClick = { onContinueClick(typedName) },
 				modifier = Modifier
 					.constrainAs(continueButton) {
 						bottom.linkTo(parent.bottom)
@@ -162,12 +167,8 @@ fun SignupScreen(
 					.padding(bottom = 24.dp)
 					.imePadding(),
 				// 임의 제한 조건
-				enabled = typedName.isValidName(),
+				enabled = typedName.isValidInput(),
 			)
 		}
 	}
 }
-
-internal fun String.isValidName(): Boolean = this.length in 2..10 &&
-	!this.contains(" ") &&
-	this.all { it.isLetterOrDigit() }
