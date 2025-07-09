@@ -15,15 +15,9 @@ class UpdateNicknameUseCaseImpl @Inject constructor(
 
 	@OptIn(ExperimentalCoroutinesApi::class)
 	override suspend fun invoke(nickname: String): Flow<Unit> = flow {
-		try {
-			// TODO: 서버 안정화 후 네트워크 호출로 변경 예정
-			fakeUserProfileRepository.updateUserProfile(nickname).first().let {
-				emit(Unit)
-			}
-		} catch (e: Exception) {
-			throw e
-		} catch (e: Exception) {
-			throw e
+		// TODO: 서버 안정화 후 네트워크 호출로 변경 예정
+		fakeUserProfileRepository.updateUserProfile(nickname).first().let {
+			emit(Unit)
 		}
 	}
 }

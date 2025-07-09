@@ -3,8 +3,8 @@ package com.yapp.breake.data.repository
 import androidx.datastore.core.DataStore
 import com.yapp.breake.core.datastore.model.DatastoreUserToken
 import com.yapp.breake.core.model.user.UserTokenStatus
-import com.yapp.breake.data.model.LocalException
 import com.yapp.breake.data.model.LocalException.DataEmptyException
+import com.yapp.breake.data.util.safeLocalCall
 import com.yapp.breake.domain.repository.UserTokenRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
@@ -21,49 +21,51 @@ internal class UserTokenRepositoryImpl @Inject constructor(
 		userRefreshToken: String?,
 		userStatus: UserTokenStatus?,
 	): Flow<Unit> = flow<Unit> {
-		emit(
-			try {
-				userTokenDataSource.updateData {
-					it.copy(
-						accessToken = userAccessToken ?: it.accessToken,
-						refreshToken = userRefreshToken ?: it.refreshToken,
-						status = userStatus ?: it.status,
-					)
-				}.let { }
-			} catch (e: LocalException) {
-				throw e
-			},
-		)
-	}
-
-	override suspend fun getUserAccessToken(): Flow<String> = userTokenDataSource.data.map {
-		it.accessToken.isBlank().let { isBlank ->
-			if (isBlank) {
-				throw DataEmptyException()
-			} else {
-				it.accessToken
+		safeLocalCall {
+			userTokenDataSource.updateData {
+				it.copy(
+					accessToken = userAccessToken ?: it.accessToken,
+					refreshToken = userRefreshToken ?: it.refreshToken,
+					status = userStatus ?: it.status,
+				)
 			}
 		}
 	}
 
-	override suspend fun getUserRefreshToken(): Flow<String> = userTokenDataSource.data.map {
-		it.refreshToken.isBlank().let { isBlank ->
-			if (isBlank) {
-				throw DataEmptyException()
-			} else {
-				it.refreshToken
+	override suspend fun getUserAccessToken(): Flow<String> = safeLocalCall {
+		userTokenDataSource.data.map {
+			it.accessToken.isBlank().let { isBlank ->
+				if (isBlank) {
+					throw DataEmptyException()
+				} else {
+					it.accessToken
+				}
 			}
 		}
 	}
 
-	override suspend fun getUserStatus(): Flow<UserTokenStatus> = userTokenDataSource.data.map {
-		if (it.accessToken.isBlank() ||
-			it.refreshToken.isBlank() ||
-			it.status == UserTokenStatus.INACTIVE
-		) {
-			UserTokenStatus.INACTIVE
-		} else {
-			it.status
+	override suspend fun getUserRefreshToken(): Flow<String> = safeLocalCall {
+		userTokenDataSource.data.map {
+			it.refreshToken.isBlank().let { isBlank ->
+				if (isBlank) {
+					throw DataEmptyException()
+				} else {
+					it.refreshToken
+				}
+			}
+		}
+	}
+
+	override suspend fun getUserStatus(): Flow<UserTokenStatus> = safeLocalCall {
+		userTokenDataSource.data.map {
+			if (it.accessToken.isBlank() ||
+				it.refreshToken.isBlank() ||
+				it.status == UserTokenStatus.INACTIVE
+			) {
+				UserTokenStatus.INACTIVE
+			} else {
+				it.status
+			}
 		}
 	}
 }
