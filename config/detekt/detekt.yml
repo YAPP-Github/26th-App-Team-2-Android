@@ -327,8 +327,8 @@ formatting:
   NoEmptyClassBody:
     active: true
 #    autoCorrect: true
-#  NoEmptyFirstLineInMethodBlock:
-#    active: false
+  NoEmptyFirstLineInMethodBlock:
+    active: false
 #    autoCorrect: true
   NoLineBreakAfterElse:
     active: true
@@ -768,6 +768,8 @@ style:
 #  UnusedPrivateClass:
 #    active: true
   UnusedPrivateMember:
+    active: false
+  UnusedPrivateProperty:
     active: false
 #    allowedNames: '(_|ignored|expected|serialVersionUID)'
 #  UseArrayLiteralsInAnnotations:
