@@ -31,6 +31,7 @@ internal abstract class RepositoryModule {
 
 	@Binds
 	@Singleton
+	@Named("UserProfileRepo")
 	abstract fun bindUserProfileRepository(
 		userProfileRepository: UserProfileRepositoryImpl,
 	): UserProfileRepository

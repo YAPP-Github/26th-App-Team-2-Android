@@ -6,17 +6,22 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flow
 import javax.inject.Inject
+import javax.inject.Named
 
 class UpdateNicknameUseCaseImpl @Inject constructor(
-	private val userProfileRepository: UserProfileRepository,
+	@Named("UserProfileRepo") private val userProfileRepository: UserProfileRepository,
+	@Named("FakeUserProfileRepo") private val fakeUserProfileRepository: UserProfileRepository,
 ) : UpdateNicknameUseCase {
 
 	@OptIn(ExperimentalCoroutinesApi::class)
 	override suspend fun invoke(nickname: String): Flow<Unit> = flow {
 		try {
-			userProfileRepository.updateUserProfile(nickname).first().let {
+			// TODO: 서버 안정화 후 네트워크 호출로 변경 예정
+			fakeUserProfileRepository.updateUserProfile(nickname).first().let {
 				emit(Unit)
 			}
+		} catch (e: Exception) {
+			throw e
 		} catch (e: Exception) {
 			throw e
 		}
