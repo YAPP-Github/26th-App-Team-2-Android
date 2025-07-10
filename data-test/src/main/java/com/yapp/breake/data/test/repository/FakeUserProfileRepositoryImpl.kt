@@ -9,7 +9,7 @@ import javax.inject.Inject
 
 internal class FakeUserProfileRepositoryImpl @Inject constructor() : UserProfileRepository {
 
-	override suspend fun getUserProfile(): Flow<UserProfile> = flow {
+	override fun getUserProfile(): Flow<UserProfile> = flow {
 		emit(
 			UserProfile(
 				nickname = "FakeUser",
@@ -19,7 +19,7 @@ internal class FakeUserProfileRepositoryImpl @Inject constructor() : UserProfile
 		)
 	}
 
-	override suspend fun updateUserProfile(nickname: String): Flow<UserProfile> = flow {
+	override fun updateUserProfile(nickname: String): Flow<UserProfile> = flow {
 		emit(
 			UserProfile(
 				nickname = nickname,

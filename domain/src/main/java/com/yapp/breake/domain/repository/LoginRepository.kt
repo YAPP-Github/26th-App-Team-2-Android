@@ -4,7 +4,7 @@ import com.yapp.breake.core.model.user.UserToken
 import kotlinx.coroutines.flow.Flow
 
 interface LoginRepository {
-	suspend fun flowLogin(
+	fun flowLogin(
 		provider: String,
 		authorizationCode: String,
 	): Flow<UserToken>

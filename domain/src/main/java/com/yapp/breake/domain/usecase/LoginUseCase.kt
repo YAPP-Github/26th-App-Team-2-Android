@@ -4,7 +4,7 @@ import com.yapp.breake.core.model.user.UserTokenStatus
 import kotlinx.coroutines.flow.Flow
 
 interface LoginUseCase {
-	suspend operator fun invoke(
+	operator fun invoke(
 		authAccessToken: String,
 		provider: String = "KAKAO",
 	): Flow<UserTokenStatus>

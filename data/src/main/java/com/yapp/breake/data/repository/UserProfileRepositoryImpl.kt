@@ -14,13 +14,13 @@ class UserProfileRepositoryImpl @Inject constructor(
 	private val memberApi: MemberApi,
 ) : UserProfileRepository {
 
-	override suspend fun getUserProfile(): Flow<UserProfile> = flow {
+	override fun getUserProfile(): Flow<UserProfile> = flow {
 		safeNetworkCall {
 			memberApi.getMemberInfo().toData()
 		}.let { emit(it) }
 	}
 
-	override suspend fun updateUserProfile(nickname: String): Flow<UserProfile> = flow {
+	override fun updateUserProfile(nickname: String): Flow<UserProfile> = flow {
 		safeNetworkCall {
 			memberApi.updateMemberInfo(MemberRequest(nickname)).toData()
 		}.let { emit(it) }

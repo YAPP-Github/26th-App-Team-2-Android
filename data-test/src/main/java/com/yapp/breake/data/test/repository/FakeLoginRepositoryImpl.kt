@@ -8,7 +8,7 @@ import kotlinx.coroutines.flow.flow
 import javax.inject.Inject
 
 internal class FakeLoginRepositoryImpl @Inject constructor() : LoginRepository {
-	override suspend fun flowLogin(
+	override fun flowLogin(
 		provider: String,
 		authorizationCode: String,
 	): Flow<UserToken> = flow {
