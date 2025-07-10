@@ -15,14 +15,18 @@ class UserProfileRepositoryImpl @Inject constructor(
 ) : UserProfileRepository {
 
 	override fun getUserProfile(): Flow<UserProfile> = flow {
-		safeNetworkCall {
-			memberApi.getMemberInfo().toData()
-		}.let { emit(it) }
+		emit(
+			safeNetworkCall {
+				memberApi.getMemberInfo().toData()
+			},
+		)
 	}
 
 	override fun updateUserProfile(nickname: String): Flow<UserProfile> = flow {
-		safeNetworkCall {
-			memberApi.updateMemberInfo(MemberRequest(nickname)).toData()
-		}.let { emit(it) }
+		emit(
+			safeNetworkCall {
+				memberApi.updateMemberInfo(MemberRequest(nickname)).toData()
+			},
+		)
 	}
 }

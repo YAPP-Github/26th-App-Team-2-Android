@@ -18,13 +18,15 @@ internal class LoginRepositoryImpl @Inject constructor(
 		provider: String,
 		authorizationCode: String,
 	): Flow<UserToken> = flow {
-		safeNetworkCall {
-			loginApi.getTokens(
-				LoginRequest(
-					provider = provider,
-					authorizationCode = authorizationCode,
-				),
-			)
-		}.let { emit(it.toData()) }
+		emit(
+			safeNetworkCall {
+				loginApi.getTokens(
+					LoginRequest(
+						provider = provider,
+						authorizationCode = authorizationCode,
+					),
+				)
+			}.toData(),
+		)
 	}
 }
