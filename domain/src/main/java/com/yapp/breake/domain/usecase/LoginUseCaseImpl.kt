@@ -24,13 +24,12 @@ class LoginUseCaseImpl @Inject constructor(
 		provider = provider,
 		authorizationCode = authAccessToken,
 	).onEach { response ->
-//		try {
-//			userTokenRepository.updateUserToken(
-//				userAccessToken = response.accessToken,
-//				userRefreshToken = response.refreshToken,
-//				userStatus = response.status,
-//			)
-//		} catch (_: Exception) {
-//		}
+		runCatching {
+			userTokenRepository.updateUserToken(
+				userAccessToken = response.accessToken,
+				userRefreshToken = response.refreshToken,
+				userStatus = response.status,
+			)
+		}
 	}.map { it.status }
 }
