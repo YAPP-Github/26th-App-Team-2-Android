@@ -14,6 +14,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.unit.dp
 import com.yapp.breake.core.designsystem.theme.BrakeTheme
+import com.yapp.breake.core.designsystem.theme.Gray600
 import com.yapp.breake.core.designsystem.theme.Gray850
 import com.yapp.breake.core.designsystem.theme.Green
 import com.yapp.breake.core.designsystem.theme.Red
@@ -37,7 +38,11 @@ fun BrakeTextField(
 			onValueChange(it)
 		},
 		placeholder = {
-			Text(text = placeholder)
+			Text(
+				text = placeholder,
+				color = Gray600,
+				style = BrakeTheme.typography.body16M,
+			)
 		},
 		singleLine = true,
 		trailingIcon = {
