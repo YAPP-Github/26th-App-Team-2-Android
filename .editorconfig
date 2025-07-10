@@ -15,6 +15,9 @@ ktlint_code_style = android_studio
 # 한줄 최대 길이를 넘지 않는 선에서 함수 시그니처 작성 필수 여부
 ktlint_standard_function-signature = disabled
 
+# 한 줄의 최대 길이 제한 여부
+ktlint_standard_max-line-length = disabled
+
 # import 순서 필수 여부
 ktlint_standard_import-ordering = disabled
 

@@ -38,11 +38,6 @@ subprojects {
 	}
 }
 
-// gradle sync 시에 모든 kt 파일에 대해 ktlintFormat 실행
-tasks.prepareKotlinBuildScriptModel {
-	dependsOn(subprojects.map { it.tasks.named("ktlintFormat") })
-}
-
 apply {
 	from("gradle/dependencyGraph.gradle")
 }
