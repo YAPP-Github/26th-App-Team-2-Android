@@ -6,7 +6,7 @@ import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavOptions
 import androidx.navigation.compose.composable
 import androidx.navigation.navOptions
-import com.yapp.breake.core.navigation.MainTabRoute
+import com.yapp.breake.core.navigation.route.MainTabRoute
 import com.yapp.breake.presentation.setting.SettingRoute
 
 fun NavController.navigateSetting(

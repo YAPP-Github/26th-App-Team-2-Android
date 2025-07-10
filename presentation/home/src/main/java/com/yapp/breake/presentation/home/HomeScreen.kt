@@ -11,7 +11,6 @@ import androidx.compose.ui.Modifier
 @Composable
 fun HomeRoute(
 	padding: PaddingValues,
-	onShowErrorSnackBar: (throwable: Throwable?) -> Unit,
 	// viewModel: HomeViewModel = hiltViewModel(),
 ) {
 	HomeScreen()

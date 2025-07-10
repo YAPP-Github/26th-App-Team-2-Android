@@ -6,7 +6,7 @@ import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavOptions
 import androidx.navigation.compose.composable
 import androidx.navigation.navOptions
-import com.yapp.breake.core.navigation.MainTabRoute
+import com.yapp.breake.core.navigation.route.MainTabRoute
 import com.yapp.breake.presentation.report.ReportRoute
 
 fun NavController.navigateReport(
@@ -26,12 +26,8 @@ fun NavController.navigateReport(
 
 fun NavGraphBuilder.reportNavGraph(
 	padding: PaddingValues,
-	onShowErrorSnackBar: (throwable: Throwable?) -> Unit,
 ) {
 	composable<MainTabRoute.Report> {
-		ReportRoute(
-			padding = padding,
-			onShowErrorSnackBar = onShowErrorSnackBar,
-		)
+		ReportRoute(padding = padding)
 	}
 }

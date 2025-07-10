@@ -6,10 +6,10 @@ import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavOptions
 import androidx.navigation.compose.composable
 import androidx.navigation.navOptions
-import com.yapp.breake.core.navigation.MainTabRoute
+import com.yapp.breake.core.navigation.route.MainTabRoute
 import com.yapp.breake.presentation.home.HomeRoute
 
-fun NavController.navigateHome(
+fun NavController.navigateToHome(
 	shouldClearBackstack: Boolean = false,
 	navOptions: NavOptions? = null,
 ) {
@@ -24,14 +24,8 @@ fun NavController.navigateHome(
 	)
 }
 
-fun NavGraphBuilder.homeNavGraph(
-	padding: PaddingValues,
-	onShowErrorSnackBar: (throwable: Throwable?) -> Unit,
-) {
+fun NavGraphBuilder.homeNavGraph(padding: PaddingValues) {
 	composable<MainTabRoute.Home> {
-		HomeRoute(
-			padding = padding,
-			onShowErrorSnackBar = onShowErrorSnackBar,
-		)
+		HomeRoute(padding = padding)
 	}
 }

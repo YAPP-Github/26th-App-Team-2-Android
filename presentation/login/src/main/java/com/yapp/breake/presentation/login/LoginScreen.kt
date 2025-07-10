@@ -20,29 +20,34 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import com.yapp.breake.core.designsystem.component.KakaoLoginButton
 import com.yapp.breake.core.designsystem.theme.BrakeTheme
 import com.yapp.breake.core.designsystem.theme.LocalPadding
+import com.yapp.breake.core.navigation.compositionlocal.LocalMainAction
+import com.yapp.breake.core.navigation.compositionlocal.LocalNavigatorAction
 import com.yapp.breake.presentation.login.model.LoginEffect.NavigateToHome
 import com.yapp.breake.presentation.login.model.LoginEffect.NavigateToSignup
 import kotlinx.coroutines.launch
+import timber.log.Timber
 
 @Composable
 internal fun LoginRoute(
-	navigateToSignup: () -> Unit,
-	navigateToHome: () -> Unit,
-	onShowErrorSnackBar: (Throwable?) -> Unit,
 	viewModel: LoginViewModel = hiltViewModel(),
 ) {
 	val context = LocalContext.current
 	val padding = LocalPadding.current.screenPaddingHorizontal
+	val navAction = LocalNavigatorAction.current
+	val mainAction = LocalMainAction.current
 
 	LaunchedEffect(true) {
 		launch {
-			viewModel.errorFlow.collect { onShowErrorSnackBar(it) }
+			viewModel.errorFlow.collect { mainAction.onShowSnackBar(it) }
 		}
 		launch {
 			viewModel.navigationFlow.collect { navigation ->
 				when (navigation) {
-					NavigateToHome -> navigateToHome()
-					NavigateToSignup -> navigateToSignup()
+					NavigateToHome -> {
+						Timber.e("Navigating to Home")
+						navAction.navigateToHome()
+					}
+					NavigateToSignup -> navAction.navigateToSignup()
 				}
 			}
 		}
