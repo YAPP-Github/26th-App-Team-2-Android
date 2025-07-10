@@ -1,6 +1,5 @@
 package com.yapp.breake.presentation.login
 
-import android.widget.Toast
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.navigationBarsPadding
@@ -21,8 +20,9 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import com.yapp.breake.core.designsystem.component.KakaoLoginButton
 import com.yapp.breake.core.designsystem.theme.BrakeTheme
 import com.yapp.breake.core.designsystem.theme.LocalPadding
-import com.yapp.breake.presentation.login.model.LoginUiState
-import kotlinx.coroutines.flow.collectLatest
+import com.yapp.breake.presentation.login.model.LoginEffect.NavigateToHome
+import com.yapp.breake.presentation.login.model.LoginEffect.NavigateToSignup
+import kotlinx.coroutines.launch
 
 @Composable
 internal fun LoginRoute(
@@ -35,29 +35,17 @@ internal fun LoginRoute(
 	val padding = LocalPadding.current.screenPaddingHorizontal
 
 	LaunchedEffect(true) {
-		viewModel.uiState.collectLatest {
-			when (it) {
-				LoginUiState.LoginIdle -> {}
-				LoginUiState.LoginAsRegistered -> {
-					viewModel.resetUiState()
-					navigateToHome()
-				}
-
-				LoginUiState.LoginAsNewUser -> {
-					viewModel.resetUiState()
-					navigateToSignup()
-				}
-
-				LoginUiState.LoginInvalidUser -> {
-					Toast.makeText(
-						context,
-						R.string.login_invalid_user_message,
-						Toast.LENGTH_SHORT,
-					).show()
+		launch {
+			viewModel.errorFlow.collect { onShowErrorSnackBar(it) }
+		}
+		launch {
+			viewModel.navigationFlow.collect { navigation ->
+				when (navigation) {
+					NavigateToHome -> navigateToHome()
+					NavigateToSignup -> navigateToSignup()
 				}
 			}
 		}
-		viewModel.errorFlow.collect { onShowErrorSnackBar(it) }
 	}
 
 	LoginScreen(

@@ -14,10 +14,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.saveable.rememberSaveable
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusManager
 import androidx.compose.ui.platform.LocalFocusManager
@@ -28,6 +25,7 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.yapp.breake.core.designsystem.component.BrakeTextField
 import com.yapp.breake.core.designsystem.component.BrakeTopAppbar
 import com.yapp.breake.core.designsystem.component.LargeButton
@@ -36,7 +34,9 @@ import com.yapp.breake.core.designsystem.theme.BrakeTheme
 import com.yapp.breake.core.designsystem.theme.LocalPadding
 import com.yapp.breake.core.designsystem.modifier.clearFocusOnKeyboardDismiss
 import com.yapp.breake.core.util.isValidInput
-import com.yapp.breake.presentation.signup.model.SignupUiState
+import com.yapp.breake.presentation.signup.model.SignupEffect.NavigateToBack
+import com.yapp.breake.presentation.signup.model.SignupEffect.NavigateToOnboarding
+import kotlinx.coroutines.launch
 import com.yapp.breake.core.designsystem.R as D
 
 @Composable
@@ -48,31 +48,27 @@ fun SignupRoute(
 ) {
 	val padding = LocalPadding.current.screenPaddingHorizontal
 	val focusManager = LocalFocusManager.current
-	var typedName: String by rememberSaveable { mutableStateOf("") }
+	val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
 	LaunchedEffect(true) {
-		viewModel.uiState.collect { uiState ->
-			when (uiState) {
-				is SignupUiState.SignupIdle -> {
-					typedName = uiState.name
-				}
-
-				is SignupUiState.SignupTypedName -> {
-					typedName = uiState.name
-				}
-
-				SignupUiState.SignupSuccess -> {
-					navigateToOnboarding()
+		launch {
+			viewModel.navigationFlow.collect {
+				when (it) {
+					NavigateToBack -> navigateToBack()
+					NavigateToOnboarding -> navigateToOnboarding()
 				}
 			}
+		}
+		launch {
+			viewModel.errorFlow.collect { onShowErrorSnackBar(it) }
 		}
 	}
 
 	SignupScreen(
 		padding = padding,
 		focusManager = focusManager,
-		typedName = typedName,
-		onBackClick = navigateToBack,
+		typedName = uiState.name,
+		onBackClick = viewModel::onBackPressed,
 		onNameType = viewModel::onNameType,
 		onContinueClick = viewModel::onNameSubmit,
 	)

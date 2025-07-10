@@ -6,10 +6,9 @@ import androidx.lifecycle.viewModelScope
 import com.yapp.breake.core.auth.KakaoAuthSDK
 import com.yapp.breake.core.model.user.UserTokenStatus
 import com.yapp.breake.domain.usecase.LoginUseCase
-import com.yapp.breake.presentation.login.model.LoginUiState
+import com.yapp.breake.presentation.login.model.LoginEffect
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableSharedFlow
-import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.launch
 import timber.log.Timber
@@ -24,8 +23,8 @@ internal class LoginViewModel @Inject constructor(
 	private val _errorFlow = MutableSharedFlow<Throwable>()
 	val errorFlow = _errorFlow.asSharedFlow()
 
-	private val _uiState = MutableStateFlow<LoginUiState>(LoginUiState.LoginIdle)
-	val uiState = _uiState.asSharedFlow()
+	private val _navigationFlow = MutableSharedFlow<LoginEffect>()
+	val navigationFlow = _navigationFlow.asSharedFlow()
 
 	fun loginWithKakao(context: Context) {
 		viewModelScope.launch {
@@ -34,27 +33,22 @@ internal class LoginViewModel @Inject constructor(
 					when (userTokenStatus) {
 						UserTokenStatus.ACTIVE -> {
 							Timber.d("Login successful with active user token.")
-							_uiState.value = LoginUiState.LoginAsRegistered
+							_navigationFlow.emit(LoginEffect.NavigateToHome)
 						}
+
 						UserTokenStatus.HALF_SIGNUP -> {
 							Timber.d("Login successful with half-signed up user token.")
-							_uiState.value = LoginUiState.LoginAsNewUser
+							_navigationFlow.emit(LoginEffect.NavigateToSignup)
 						}
+
 						UserTokenStatus.INACTIVE -> {
-							Timber.d("Login failed with inactive user token.")
-							_uiState.value = LoginUiState.LoginInvalidUser
+							_errorFlow.emit(Throwable("카카오 계정에 문제가 있습니다."))
 						}
 					}
 				}
 			}.onFailure { error ->
 				_errorFlow.emit(error)
 			}
-		}
-	}
-
-	fun resetUiState() {
-		viewModelScope.launch {
-			_uiState.value = LoginUiState.LoginIdle
 		}
 	}
 }

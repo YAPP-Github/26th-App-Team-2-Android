@@ -14,7 +14,4 @@ sealed interface SignupUiState {
 
 	@Immutable
 	data class SignupTypedName(override val name: String) : SignupUiState
-
-	@Immutable
-	data object SignupSuccess : SignupUiState
 }
