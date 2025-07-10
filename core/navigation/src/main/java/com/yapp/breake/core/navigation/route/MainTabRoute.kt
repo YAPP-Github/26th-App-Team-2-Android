@@ -1,4 +1,4 @@
-package com.yapp.breake.core.navigation
+package com.yapp.breake.core.navigation.route
 
 import kotlinx.serialization.Serializable
 
