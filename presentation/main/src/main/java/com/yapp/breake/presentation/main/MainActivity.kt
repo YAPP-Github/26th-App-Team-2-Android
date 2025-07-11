@@ -34,7 +34,7 @@ class MainActivity : ComponentActivity() {
 
 			val mainAction = object : MainAction {
 				override fun onFinish() = finish()
-				override fun onShowSnackBar(throwable: Throwable?): (Throwable?) -> Unit = { throwable ->
+				override fun onShowSnackBar(throwable: Throwable?) {
 					coroutineScope.launch {
 						snackBarHostState.showSnackbar(
 							when (throwable) {
