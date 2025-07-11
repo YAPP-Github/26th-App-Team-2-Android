@@ -1,7 +1,8 @@
 package com.yapp.breake.domain.usecase
 
+import com.yapp.breake.core.model.response.ResponseResult
+import kotlinx.coroutines.flow.Flow
+
 interface UpdateNicknameUseCase {
-	suspend operator fun invoke(
-		nickname: String,
-	)
+	suspend operator fun invoke(nickname: String): Flow<ResponseResult<Unit>>
 }
