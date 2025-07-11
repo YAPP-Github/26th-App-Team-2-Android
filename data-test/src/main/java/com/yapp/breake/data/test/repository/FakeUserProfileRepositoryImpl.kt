@@ -1,5 +1,6 @@
 package com.yapp.breake.data.test.repository
 
+import com.yapp.breake.core.model.response.ResponseResult
 import com.yapp.breake.core.model.user.UserProfile
 import com.yapp.breake.core.model.user.UserTokenStatus
 import com.yapp.breake.domain.repository.UserProfileRepository
@@ -9,22 +10,26 @@ import javax.inject.Inject
 
 internal class FakeUserProfileRepositoryImpl @Inject constructor() : UserProfileRepository {
 
-	override fun getUserProfile(): Flow<UserProfile> = flow {
+	override fun getUserProfile(): Flow<ResponseResult<UserProfile>> = flow {
 		emit(
-			UserProfile(
-				nickname = "FakeUser",
-				state = UserTokenStatus.ACTIVE,
-				imageUrl = null,
+			ResponseResult.Success(
+				UserProfile(
+					nickname = "FakeUser",
+					state = UserTokenStatus.ACTIVE,
+					imageUrl = null,
+				),
 			),
 		)
 	}
 
-	override fun updateUserProfile(nickname: String): Flow<UserProfile> = flow {
+	override fun updateUserProfile(nickname: String): Flow<ResponseResult<UserProfile>> = flow {
 		emit(
-			UserProfile(
-				nickname = nickname,
-				state = UserTokenStatus.ACTIVE,
-				imageUrl = null,
+			ResponseResult.Success(
+				UserProfile(
+					nickname = nickname,
+					state = UserTokenStatus.ACTIVE,
+					imageUrl = null,
+				),
 			),
 		)
 	}

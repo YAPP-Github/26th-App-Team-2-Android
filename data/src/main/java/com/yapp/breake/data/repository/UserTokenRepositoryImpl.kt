@@ -2,12 +2,11 @@ package com.yapp.breake.data.repository
 
 import androidx.datastore.core.DataStore
 import com.yapp.breake.core.datastore.model.DatastoreUserToken
+import com.yapp.breake.core.model.response.ResponseResult
 import com.yapp.breake.core.model.user.UserTokenStatus
-import com.yapp.breake.data.model.LocalException.DataEmptyException
 import com.yapp.breake.data.util.safeLocalCall
 import com.yapp.breake.domain.repository.UserTokenRepository
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.map
 import javax.inject.Inject
 import javax.inject.Named
 
@@ -20,45 +19,37 @@ internal class UserTokenRepositoryImpl @Inject constructor(
 		userRefreshToken: String?,
 		userStatus: UserTokenStatus?,
 	) {
-		safeLocalCall {
-			userTokenDataSource.updateData {
-				it.copy(
-					accessToken = userAccessToken ?: it.accessToken,
-					refreshToken = userRefreshToken ?: it.refreshToken,
-					status = userStatus ?: it.status,
-				)
-			}
+		userTokenDataSource.updateData { tokenObject ->
+			tokenObject.copy(
+				accessToken = userAccessToken ?: tokenObject.accessToken,
+				refreshToken = userRefreshToken ?: tokenObject.refreshToken,
+				status = userStatus ?: tokenObject.status,
+			)
 		}
 	}
 
-	override fun getUserAccessToken(): Flow<String> = userTokenDataSource.data.map {
-		it.accessToken.isBlank().let { isBlank ->
-			if (isBlank) {
-				throw DataEmptyException()
-			} else {
-				it.accessToken
-			}
-		}
-	}
+	override fun getUserAccessToken(): Flow<ResponseResult<String>> =
+		safeLocalCall(
+			localCall = userTokenDataSource.data,
+			mapper = { it.accessToken },
+			predicateOnSuccess = { it.accessToken.isNotBlank() },
+		)
 
-	override fun getUserRefreshToken(): Flow<String> = userTokenDataSource.data.map {
-		it.refreshToken.isBlank().let { isBlank ->
-			if (isBlank) {
-				throw DataEmptyException()
-			} else {
-				it.refreshToken
-			}
-		}
-	}
+	override fun getUserRefreshToken(): Flow<ResponseResult<String>> =
+		safeLocalCall(
+			localCall = userTokenDataSource.data,
+			mapper = { it.refreshToken },
+			predicateOnSuccess = { it.refreshToken.isNotBlank() },
+		)
 
-	override fun getUserStatus(): Flow<UserTokenStatus> = userTokenDataSource.data.map {
-		if (it.accessToken.isBlank() ||
-			it.refreshToken.isBlank() ||
-			it.status == UserTokenStatus.INACTIVE
-		) {
-			UserTokenStatus.INACTIVE
-		} else {
-			it.status
-		}
-	}
+	override fun getUserStatus(): Flow<ResponseResult<UserTokenStatus>> =
+		safeLocalCall(
+			localCall = userTokenDataSource.data,
+			mapper = { it.status },
+			predicateOnSuccess = {
+				it.accessToken.isNotBlank() &&
+					it.refreshToken.isNotBlank() &&
+					it.status != UserTokenStatus.INACTIVE
+			},
+		)
 }

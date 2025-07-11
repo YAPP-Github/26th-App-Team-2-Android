@@ -1,5 +1,6 @@
 package com.yapp.breake.domain.repository
 
+import com.yapp.breake.core.model.response.ResponseResult
 import com.yapp.breake.core.model.user.UserTokenStatus
 import kotlinx.coroutines.flow.Flow
 
@@ -10,9 +11,9 @@ interface UserTokenRepository {
 		userStatus: UserTokenStatus? = null,
 	)
 
-	fun getUserAccessToken(): Flow<String>
+	fun getUserAccessToken(): Flow<ResponseResult<String>>
 
-	fun getUserRefreshToken(): Flow<String>
+	fun getUserRefreshToken(): Flow<ResponseResult<String>>
 
-	fun getUserStatus(): Flow<UserTokenStatus>
+	fun getUserStatus(): Flow<ResponseResult<UserTokenStatus>>
 }
