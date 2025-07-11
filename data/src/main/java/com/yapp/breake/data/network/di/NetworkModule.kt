@@ -1,5 +1,6 @@
 package com.yapp.breake.data.network.di
 
+import com.skydoves.sandwich.retrofit.adapters.ApiResponseCallAdapterFactory
 import com.yapp.breake.data.network.BrakeNetwork
 import com.yapp.breake.data.network.BrakeNetworkImpl
 import dagger.Module
@@ -59,6 +60,7 @@ internal object NetworkModule {
 	): Retrofit.Builder =
 		Retrofit.Builder()
 			.addConverterFactory(converterFactory)
+			.addCallAdapterFactory(ApiResponseCallAdapterFactory.create())
 			.client(okHttpClient)
 
 	@Provides
