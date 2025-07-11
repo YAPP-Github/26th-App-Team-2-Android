@@ -4,5 +4,5 @@ import com.yapp.breake.core.model.response.ResponseResult
 import kotlinx.coroutines.flow.Flow
 
 interface UpdateNicknameUseCase {
-	suspend operator fun invoke(nickname: String): Flow<ResponseResult<Unit>>
+	operator fun invoke(nickname: String): Flow<ResponseResult<Unit>>
 }

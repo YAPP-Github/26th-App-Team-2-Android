@@ -12,7 +12,7 @@ class UpdateNicknameUseCaseImpl @Inject constructor(
 	@Named("FakeUserProfileRepo") private val fakeUserProfileRepository: UserProfileRepository,
 ) : UpdateNicknameUseCase {
 
-	override suspend fun invoke(nickname: String): Flow<ResponseResult<Unit>> =
+	override fun invoke(nickname: String): Flow<ResponseResult<Unit>> =
 		// TODO: 서버 안정화 후 네트워크 호출로 변경 예정
 		fakeUserProfileRepository.updateUserProfile(nickname).map {
 			when (it) {
