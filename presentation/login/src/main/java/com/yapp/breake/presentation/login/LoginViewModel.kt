@@ -51,7 +51,7 @@ internal class LoginViewModel @Inject constructor(
 							}
 
 							is ResponseResult.Error -> {
-								_navigationFlow.emit(LoginEffect.NavigateToSignup)
+								_errorFlow.emit(Throwable(result.message))
 							}
 
 							is ResponseResult.Exception -> {
