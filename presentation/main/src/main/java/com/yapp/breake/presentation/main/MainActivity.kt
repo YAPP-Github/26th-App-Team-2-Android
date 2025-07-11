@@ -54,6 +54,7 @@ class MainActivity : ComponentActivity() {
 					MainScreen(
 						navigator = navigator,
 						onChangeDarkTheme = { false },
+						snackBarHostState = snackBarHostState,
 					)
 				}
 			}

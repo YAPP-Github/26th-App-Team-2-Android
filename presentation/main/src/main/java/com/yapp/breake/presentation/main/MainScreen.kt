@@ -5,7 +5,6 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.yapp.breake.presentation.main.navigation.MainBottomNavBar
@@ -19,9 +18,8 @@ import kotlinx.collections.immutable.toPersistentList
 internal fun MainScreen(
 	navigator: MainNavigator = rememberMainNavigator(),
 	onChangeDarkTheme: (Boolean) -> Unit,
+	snackBarHostState: SnackbarHostState,
 ) {
-	val snackBarHostState = remember { SnackbarHostState() }
-
 	MainScreenContent(
 		navigator = navigator,
 		onChangeDarkTheme = onChangeDarkTheme,
