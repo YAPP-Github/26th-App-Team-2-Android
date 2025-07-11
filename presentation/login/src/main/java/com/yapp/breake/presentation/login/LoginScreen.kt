@@ -24,7 +24,6 @@ import com.yapp.breake.core.navigation.compositionlocal.LocalMainAction
 import com.yapp.breake.core.navigation.compositionlocal.LocalNavigatorAction
 import com.yapp.breake.presentation.login.model.LoginEffect.NavigateToHome
 import com.yapp.breake.presentation.login.model.LoginEffect.NavigateToSignup
-import kotlinx.coroutines.launch
 import timber.log.Timber
 
 @Composable
@@ -37,18 +36,18 @@ internal fun LoginRoute(
 	val mainAction = LocalMainAction.current
 
 	LaunchedEffect(true) {
-		launch {
-			viewModel.errorFlow.collect { mainAction.onShowSnackBar(it) }
-		}
-		launch {
-			viewModel.navigationFlow.collect { navigation ->
-				when (navigation) {
-					NavigateToHome -> {
-						Timber.e("Navigating to Home")
-						navAction.navigateToHome()
-					}
-					NavigateToSignup -> navAction.navigateToSignup()
+		viewModel.errorFlow.collect { mainAction.onShowSnackBar(it) }
+	}
+
+	LaunchedEffect(true) {
+		viewModel.navigationFlow.collect { navigation ->
+			when (navigation) {
+				NavigateToHome -> {
+					Timber.e("Navigating to Home")
+					navAction.navigateToHome()
 				}
+
+				NavigateToSignup -> navAction.navigateToSignup()
 			}
 		}
 	}

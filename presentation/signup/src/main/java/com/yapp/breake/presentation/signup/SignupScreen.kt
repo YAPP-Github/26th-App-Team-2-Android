@@ -38,7 +38,6 @@ import com.yapp.breake.core.navigation.compositionlocal.LocalNavigatorAction
 import com.yapp.breake.core.util.isValidInput
 import com.yapp.breake.presentation.signup.model.SignupEffect.NavigateToBack
 import com.yapp.breake.presentation.signup.model.SignupEffect.NavigateToOnboarding
-import kotlinx.coroutines.launch
 import com.yapp.breake.core.designsystem.R as D
 
 @Composable
@@ -50,17 +49,16 @@ fun SignupRoute(viewModel: SignupViewModel = hiltViewModel()) {
 	val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
 	LaunchedEffect(true) {
-		launch {
-			viewModel.navigationFlow.collect {
-				when (it) {
-					NavigateToBack -> navAction.popBackStack()
-					NavigateToOnboarding -> navAction.navigateToOnboarding()
-				}
+		viewModel.navigationFlow.collect {
+			when (it) {
+				NavigateToBack -> navAction.popBackStack()
+				NavigateToOnboarding -> navAction.navigateToOnboarding()
 			}
 		}
-		launch {
-			viewModel.errorFlow.collect { mainAction.onShowSnackBar(it) }
-		}
+	}
+
+	LaunchedEffect(true) {
+		viewModel.errorFlow.collect { mainAction.onShowSnackBar(it) }
 	}
 
 	SignupScreen(
