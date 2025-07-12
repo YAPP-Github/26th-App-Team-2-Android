@@ -2,7 +2,6 @@ package com.yapp.breake.presentation.signup
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.yapp.breake.core.model.response.ResponseResult
 import com.yapp.breake.domain.usecase.UpdateNicknameUseCase
 import com.yapp.breake.presentation.signup.model.SignupEffect
 import com.yapp.breake.presentation.signup.model.SignupUiState
@@ -11,8 +10,6 @@ import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.catch
-import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -42,24 +39,14 @@ class SignupViewModel @Inject constructor(
 
 	fun onNameSubmit(name: String) {
 		viewModelScope.launch {
-			updateNicknameUseCase(name)
-				.catch { e ->
+			runCatching {
+				updateNicknameUseCase(name) { e ->
 					_errorFlow.emit(e)
+					return@updateNicknameUseCase
 				}
-				.firstOrNull { result ->
-					when (result) {
-						is ResponseResult.Success -> {
-							_navigationFlow.emit(SignupEffect.NavigateToOnboarding)
-						}
-						is ResponseResult.Error -> {
-							_errorFlow.emit(Exception(result.message))
-						}
-						is ResponseResult.Exception -> {
-							_errorFlow.emit(result.exception)
-						}
-					}
-					true
-				}
+			}.onSuccess {
+				_navigationFlow.emit(SignupEffect.NavigateToOnboarding)
+			}
 		}
 	}
 }

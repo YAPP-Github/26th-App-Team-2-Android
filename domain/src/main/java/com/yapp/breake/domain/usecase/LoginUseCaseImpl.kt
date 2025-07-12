@@ -1,10 +1,8 @@
 package com.yapp.breake.domain.usecase
 
-import com.yapp.breake.core.model.response.ResponseResult
 import com.yapp.breake.core.model.user.UserTokenStatus
 import com.yapp.breake.domain.repository.LoginRepository
 import com.yapp.breake.domain.repository.UserTokenRepository
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import javax.inject.Inject
@@ -16,29 +14,21 @@ class LoginUseCaseImpl @Inject constructor(
 	private val userTokenRepository: UserTokenRepository,
 ) : LoginUseCase {
 
-	@OptIn(ExperimentalCoroutinesApi::class)
 	override operator fun invoke(
 		authAccessToken: String,
 		provider: String,
-	): Flow<ResponseResult<UserTokenStatus>> = fakeLoginRepository.flowLogin(
+		onError: suspend (Throwable) -> Unit,
+	): Flow<UserTokenStatus> = fakeLoginRepository.flowLogin(
 		provider = provider,
 		authorizationCode = authAccessToken,
-	).map { response ->
-		when (response) {
-			is ResponseResult.Success -> {
-				userTokenRepository.updateUserToken(
-					userAccessToken = response.data.accessToken,
-					userRefreshToken = response.data.refreshToken,
-					userStatus = response.data.status,
-				)
-				ResponseResult.Success(response.data.status)
-			}
-			is ResponseResult.Error -> {
-				ResponseResult.Error(response.message)
-			}
-			is ResponseResult.Exception -> {
-				ResponseResult.Exception(response.exception)
-			}
-		}
+		onError = onError,
+	).map {
+		userTokenRepository.updateUserToken(
+			userAccessToken = it.accessToken,
+			userRefreshToken = it.refreshToken,
+			userStatus = it.status,
+			onError = onError,
+		)
+		it.status
 	}
 }

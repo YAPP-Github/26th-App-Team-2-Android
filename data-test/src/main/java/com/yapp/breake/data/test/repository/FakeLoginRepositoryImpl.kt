@@ -1,6 +1,5 @@
 package com.yapp.breake.data.test.repository
 
-import com.yapp.breake.core.model.response.ResponseResult
 import com.yapp.breake.core.model.user.UserToken
 import com.yapp.breake.core.model.user.UserTokenStatus
 import com.yapp.breake.domain.repository.LoginRepository
@@ -12,14 +11,13 @@ internal class FakeLoginRepositoryImpl @Inject constructor() : LoginRepository {
 	override fun flowLogin(
 		provider: String,
 		authorizationCode: String,
-	): Flow<ResponseResult<UserToken>> = flow {
+		onError: suspend (Throwable) -> Unit,
+	): Flow<UserToken> = flow {
 		emit(
-			ResponseResult.Success(
-				UserToken(
-					accessToken = "FakeAccessToken",
-					refreshToken = "FakeRefreshToken",
-					status = UserTokenStatus.HALF_SIGNUP,
-				),
+			UserToken(
+				accessToken = "FakeAccessToken",
+				refreshToken = "FakeRefreshToken",
+				status = UserTokenStatus.HALF_SIGNUP,
 			),
 		)
 	}
