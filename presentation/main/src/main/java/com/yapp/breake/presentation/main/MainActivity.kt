@@ -36,12 +36,7 @@ class MainActivity : ComponentActivity() {
 				override fun onFinish() = finish()
 				override fun onShowSnackBar(throwable: Throwable?) {
 					coroutineScope.launch {
-						snackBarHostState.showSnackbar(
-							when (throwable) {
-								is UnknownHostException -> getString(R.string.network_error)
-								else -> getString(R.string.unknown_error)
-							},
-						)
+						snackBarHostState.showSnackbar(throwable?.message ?: "알 수 없는 오류가 발생했습니다.")
 					}
 				}
 			}
