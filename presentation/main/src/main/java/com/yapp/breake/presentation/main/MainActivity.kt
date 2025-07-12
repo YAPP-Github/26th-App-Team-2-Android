@@ -17,7 +17,6 @@ import com.yapp.breake.presentation.main.navigation.rememberMainNavigator
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
-import java.net.UnknownHostException
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
