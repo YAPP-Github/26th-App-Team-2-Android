@@ -27,22 +27,23 @@ class NotificationReceiver : BroadcastReceiver() {
 	private val serviceScope = CoroutineScope(Dispatchers.Main + serviceJob)
 
 	override fun onReceive(context: Context, intent: Intent) {
-		Timber.d("onReceive 호출됨, action: ${intent.action}")
 		if (intent.action == IntentConstants.ACTION_ALARM_FINISH) {
+
 			alarmFinishedEvent(context, intent)
 		}
 	}
 
 	private fun alarmFinishedEvent(context: Context, intent: Intent) {
-		Timber.d("${IntentConstants.ACTION_ALARM_FINISH} 수신됨.")
 		serviceScope.launch {
 			val groupId = intent.getLongExtra(EXTRA_ALARM_ID, 0)
+			Timber.i("ID: $groupId 에 대한 사용 시간이 종료되었습니다")
 			val appGroup = appGroupRepository.getAppGroupById(groupId)
 			val appsPackageNames = appGroup?.apps?.map { it.packageName } ?: emptyList()
 			val lastForegroundPackage = lastForegroundPackageName(context)
 
-			// 해당 앱 그룹에 현재 사용중인 패키지 앱이 포함되어 있다면, Blocking 화면을 띄움
 			if (lastForegroundPackage in appsPackageNames && appGroup != null) {
+				Timber.i("ID: $groupId 현재 앱이 사용 중이므로, 차단 오버레이를 표시합니다")
+
 				OverlayLauncher.showBlockingOverlay(
 					context = context,
 					appGroup = appGroup,

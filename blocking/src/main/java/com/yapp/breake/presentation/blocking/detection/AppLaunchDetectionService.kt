@@ -4,11 +4,10 @@ import android.accessibilityservice.AccessibilityService
 import android.accessibilityservice.AccessibilityServiceInfo
 import android.view.accessibility.AccessibilityEvent
 import com.yapp.breake.core.model.app.App
-import com.yapp.breake.core.model.app.AppGroup
 import com.yapp.breake.core.model.app.BlockingState
-import com.yapp.breake.presentation.blocking.overlay.util.OverlayLauncher
 import com.yapp.breake.domain.repository.AppRepository
 import com.yapp.breake.domain.usecase.FindAppGroupUsecase
+import com.yapp.breake.presentation.blocking.overlay.util.OverlayLauncher
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -43,18 +42,10 @@ class AppLaunchDetectionService : AccessibilityService() {
 			val className = event.className?.toString()
 
 			if (packageName != null && className != null) {
-				Timber.i("감지된 앱: $packageName, 클래스: $className, 실제 Activity 창입니다.")
-				if (packageName == youtube && isActivity(className)) {
-					OverlayLauncher.showTimeSettingOverlay(
-						this,
-						AppGroup(
-							id = 1L,
-							name = "YouTube",
-							blockingState = BlockingState.NEEDS_SETTING,
-							apps = listOf(),
-							snoozes = listOf(),
-						),
-					)
+
+				if (isActivity(className)) {
+					Timber.i("감지된 앱: $packageName")
+					findAppGroupAndAction(packageName)
 				}
 			}
 		}
@@ -67,8 +58,10 @@ class AppLaunchDetectionService : AccessibilityService() {
 	private fun findAppGroupAndAction(packageName: String) {
 		serviceScope.launch {
 			val appGroup = findAppGroupUsecase(packageName)
+			val blockingState = appGroup?.blockingState
+			Timber.i("앱 그룹: ${appGroup?.name}, 상태: $blockingState")
 
-			when (appGroup?.blockingState) {
+			when (blockingState) {
 				BlockingState.NEEDS_SETTING -> OverlayLauncher.showTimeSettingOverlay(
 					this@AppLaunchDetectionService,
 					appGroup,

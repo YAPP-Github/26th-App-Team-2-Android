@@ -1,7 +1,6 @@
 package com.yapp.breake.presentation.blocking.overlay.screen.timer
 
 import android.widget.Toast
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -25,13 +24,12 @@ import com.yapp.breake.core.designsystem.component.BaseScaffold
 import com.yapp.breake.core.designsystem.component.LargeButton
 import com.yapp.breake.core.designsystem.component.VerticalSpacer
 import com.yapp.breake.core.designsystem.theme.BrakeTheme
-import com.yapp.breake.core.designsystem.theme.Gray200
 import com.yapp.breake.overlay.R
 
 @Composable
 internal fun TimerOverlay(
 	groupId: Long,
-	onGoBack: () -> Unit,
+	onFinishApp: () -> Unit,
 	viewModel: TimerViewModel = hiltViewModel(),
 ) {
 	val context = LocalContext.current
@@ -41,7 +39,7 @@ internal fun TimerOverlay(
 		onTimeChange = viewModel::setTime,
 		onComplete = {
 			viewModel.setBreakTimeAlarm(context, groupId)
-			onGoBack()
+			onFinishApp()
 		},
 	)
 
@@ -76,19 +74,19 @@ private fun TimerScreen(
 			)
 			VerticalSpacer(30.dp)
 			TextField(
-				value = time.toString(),
+				value = if (time == 0) "" else time.toString(),
 				onValueChange = {
-					val newValue = it.toIntOrNull() ?: 0
+					val newValue = if (it.isEmpty()) 0 else it.toIntOrNull() ?: 0
 					onTimeChange(newValue)
 				},
 				keyboardOptions = KeyboardOptions.Default.copy(
 					keyboardType = KeyboardType.Number,
 				),
 				singleLine = true,
+				placeholder = { Text("분 입력") },
 				modifier = Modifier
 					.fillMaxWidth()
-					.padding(horizontal = 16.dp)
-					.background(Gray200),
+					.padding(horizontal = 16.dp),
 			)
 		}
 		Column(
@@ -98,6 +96,7 @@ private fun TimerScreen(
 			LargeButton(
 				text = stringResource(id = R.string.timer_complete),
 				onClick = onComplete,
+				enabled = time > 0,
 				modifier = Modifier
 					.padding(horizontal = 16.dp),
 			)

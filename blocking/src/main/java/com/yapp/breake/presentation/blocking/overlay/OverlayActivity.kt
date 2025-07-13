@@ -250,10 +250,8 @@ class OverlayActivity : ComponentActivity() {
 		when (action) {
 			IntentConstants.ACTION_SHOW_OVERLAY -> {
 				overlayViewHolder.show {
-					setContent {
-						BrakeTheme {
-							OverlayScreens(overlayData)
-						}
+					BrakeTheme {
+						OverlayScreens(overlayData)
 					}
 				}
 			}
@@ -273,7 +271,7 @@ class OverlayActivity : ComponentActivity() {
 			BlockingState.NEEDS_SETTING -> {
 				TimerOverlay(
 					groupId = overlayData.groupId,
-					onGoBack = overlayViewHolder::remove,
+					onFinishApp = ::finish,
 				)
 			}
 			BlockingState.BLOCKING -> {

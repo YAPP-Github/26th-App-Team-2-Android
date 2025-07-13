@@ -52,7 +52,7 @@ object AlarmScheduler {
 				triggerAtMillis,
 				pendingIntent,
 			)
-			Timber.i("ID: $alarmId 에 대한 알람이 $triggerAtMillis 에 성공적으로 예약되었습니다.")
+			Timber.i("ID: $alarmId 에 대한 사용 시간을 ${minute}분 ($triggerAtMillis)으로 설정하였습니다.")
 			return Result.success(Unit) // 성공적으로 예약됨
 		} catch (se: SecurityException) {
 			Timber.e("SecurityException: ID: $alarmId 에 대한 정확한 알람을 예약할 수 없습니다. $se")
