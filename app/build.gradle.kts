@@ -38,9 +38,8 @@ dependencies {
 	implementation(projects.domain)
 	implementation(projects.presentation.main)
 	implementation(projects.presentation.home)
+	implementation(projects.blocking)
 
-	implementation(projects.core.detection)
-	implementation(projects.core.alarm)
 	implementation(projects.data)
 	testImplementation(projects.core.testing)
 

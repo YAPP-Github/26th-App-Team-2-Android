@@ -32,8 +32,10 @@ include(
 	":presentation:home",
 	":presentation:report",
 	":presentation:setting",
-	":presentation:overlay",
 )
+
+// overlay
+include(":blocking")
 
 // Domain
 include(":domain")
@@ -58,5 +60,5 @@ include(
 	":core:service",
 	":core:util",
 	":core:alarm",
-	":core:testing"
+	":core:testing",
 )
