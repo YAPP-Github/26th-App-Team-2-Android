@@ -41,6 +41,7 @@ dependencies {
 
 	implementation(projects.core.detection)
 	implementation(projects.core.alarm)
+	implementation(projects.data)
 	testImplementation(projects.core.testing)
 
 	implementation(libs.androidx.profileinstaller)

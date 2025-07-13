@@ -13,7 +13,10 @@ class OverlayViewModel @Inject constructor(
 	private val savedStateHandle: SavedStateHandle,
 ) : ViewModel() {
 
-	val packageName: StateFlow<String> get() = savedStateHandle.getStateFlow(IntentConstants.EXTRA_PACKAGE_NAME, "")
+	val packageName: StateFlow<String> get() = savedStateHandle.getStateFlow(
+		IntentConstants.EXTRA_PACKAGE_NAME,
+		"",
+	)
 	val blockingState: StateFlow<BlockingState> get() = savedStateHandle.getStateFlow(
 		IntentConstants.EXTRA_BLOCKING_STATE,
 		BlockingState.NEEDS_SETTING,

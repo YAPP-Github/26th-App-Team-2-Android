@@ -6,9 +6,11 @@ import android.content.Intent
 import android.view.accessibility.AccessibilityEvent
 import com.yapp.breake.core.common.IntentConstants
 import com.yapp.breake.core.model.app.App
+import com.yapp.breake.core.model.app.AppGroup
 import com.yapp.breake.core.model.app.BlockingState
 import com.yapp.breake.domain.repository.AppRepository
 import com.yapp.breake.domain.usecase.FindAppGroupUsecase
+import com.yapp.breake.presentation.overlay.OverlayData
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -30,7 +32,12 @@ class AppLaunchDetectionService : AccessibilityService() {
 	private val serviceJob = SupervisorJob()
 	private val serviceScope = CoroutineScope(Dispatchers.Main + serviceJob)
 
-	private var managedPackageNames: List<String> = emptyList()
+//	private var managedPackageNames: List<String> = emptyList()
+
+	private var managedPackageNames: List<String> = listOf(
+		"com.google.android.youtube",
+	)
+	private val youtube = "com.google.android.youtube"
 
 	override fun onAccessibilityEvent(event: AccessibilityEvent?) {
 		if (event?.eventType == AccessibilityEvent.TYPE_WINDOW_STATE_CHANGED) {
@@ -38,8 +45,21 @@ class AppLaunchDetectionService : AccessibilityService() {
 			val className = event.className?.toString()
 
 			if (packageName != null && className != null) {
-				if (packageName in managedPackageNames && isActivity(className)) {
-					findAppGroupAndAction(packageName)
+				Timber.i("감지된 앱: $packageName, 클래스: $className, 실제 Activity 창입니다.")
+				val b = packageName == youtube && isActivity(className)
+				Timber.d("isActivity: $b")
+				if (b) {
+//					findAppGroupAndAction(packageName)
+					showTimeSettingOverlay(
+						packageName,
+						AppGroup(
+							id = 1L,
+							name = "YouTube",
+							blockingState = BlockingState.NEEDS_SETTING,
+							apps = listOf(),
+							snoozes = listOf(),
+						),
+					)
 				}
 			}
 		}
@@ -54,8 +74,8 @@ class AppLaunchDetectionService : AccessibilityService() {
 			val appGroup = findAppGroupUsecase(packageName)
 
 			when (appGroup?.blockingState) {
-				BlockingState.NEEDS_SETTING -> showTimeSettingOverlay(packageName)
-				BlockingState.BLOCKING -> showBlockingOverlay(packageName)
+				BlockingState.NEEDS_SETTING -> showTimeSettingOverlay(packageName, appGroup)
+				BlockingState.BLOCKING -> showBlockingOverlay(packageName, appGroup)
 				BlockingState.USING, null -> {
 					Timber.i("$packageName 앱은 사용 상태입니다. 아무 작업도 하지 않습니다.")
 				}
@@ -63,21 +83,34 @@ class AppLaunchDetectionService : AccessibilityService() {
 		}
 	}
 
-	private fun showTimeSettingOverlay(packageName: String) {
-		startOverlayActivity(packageName, BlockingState.NEEDS_SETTING)
+	private fun showTimeSettingOverlay(packageName: String, appGroup: AppGroup) {
+		startOverlayActivity(packageName, BlockingState.NEEDS_SETTING, appGroup)
 		Timber.i("앱 사용 시간을 설정하기 위한 오버레이를 표시합니다: $packageName")
 	}
 
-	private fun showBlockingOverlay(packageName: String) {
-		startOverlayActivity(packageName, BlockingState.BLOCKING)
+	private fun showBlockingOverlay(packageName: String, appGroup: AppGroup) {
+		startOverlayActivity(packageName, BlockingState.BLOCKING, appGroup)
 		Timber.i("앱이 차단 상태입니다. 차단 오버레이를 표시합니다: $packageName")
 	}
 
-	private fun startOverlayActivity(packageName: String, blockingState: BlockingState) {
+	private fun startOverlayActivity(
+		packageName: String,
+		blockingState: BlockingState,
+		appGroup: AppGroup,
+	) {
+		Timber.d("startOverlayActivity 호출")
+
+		val overlayData = OverlayData(
+			packageName = packageName,
+			blockingState = blockingState,
+			groupId = appGroup.id,
+			canCooldown = appGroup.canCooldown,
+		)
+
 		val intent = Intent(IntentConstants.ACTION_SHOW_OVERLAY).apply {
 			addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-			putExtra(IntentConstants.EXTRA_PACKAGE_NAME, packageName)
-			putExtra(IntentConstants.EXTRA_BLOCKING_STATE, blockingState)
+			addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
+			putExtra(IntentConstants.EXTRA_OVERLAY_DATA, overlayData)
 		}
 		startActivity(intent)
 	}

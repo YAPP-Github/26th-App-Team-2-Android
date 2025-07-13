@@ -141,6 +141,7 @@ detekt = "1.23.7"   # Kotlin 정적 분석 툴
 # https://mockk.io/
 mockk = "1.13.16"
 material = "1.12.0"
+accompanistPermissions = "0.37.0"
 
 [libraries]
 # Gradle
@@ -249,6 +250,9 @@ sandwich-retrofit = { group = "com.github.skydoves", name = "sandwich-retrofit",
 # verify
 verify-detektFormatting = { module = "io.gitlab.arturbosch.detekt:detekt-formatting", version.ref = "detekt" }
 material = { group = "com.google.android.material", name = "material", version.ref = "material" }
+
+# permissions
+accompanist-permissions = { module = "com.google.accompanist:accompanist-permissions", version.ref = "accompanistPermissions" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }

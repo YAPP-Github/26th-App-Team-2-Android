@@ -6,4 +6,8 @@ data class AppGroup(
 	val blockingState: BlockingState,
 	val apps: List<App>,
 	val snoozes: List<Snooze>,
-)
+) {
+
+	val canCooldown: Boolean
+		get() = snoozes.size < 2
+}
