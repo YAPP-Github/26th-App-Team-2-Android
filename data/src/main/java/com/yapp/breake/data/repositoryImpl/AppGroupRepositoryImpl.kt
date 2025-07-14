@@ -3,6 +3,7 @@ package com.yapp.breake.data.repositoryImpl
 import com.yapp.breake.core.database.dao.AppGroupDao
 import com.yapp.breake.core.database.entity.AppGroupEntity
 import com.yapp.breake.core.model.app.AppGroup
+import com.yapp.breake.core.model.app.BlockingState
 import com.yapp.breake.data.mapper.toAppGroup
 import com.yapp.breake.domain.repository.AppGroupRepository
 import kotlinx.coroutines.flow.Flow
@@ -25,5 +26,20 @@ class AppGroupRepositoryImpl @Inject constructor(
 
 	override suspend fun getAppGroupById(groupId: Long): AppGroup? {
 		return appGroupDao.getAppGroupById(groupId)?.toAppGroup()
+	}
+
+	override suspend fun updateAppGroupState(
+		groupId: Long,
+		blockingState: BlockingState,
+	): Result<Unit> {
+		return try {
+			appGroupDao.updateAppGroupState(
+				groupId = groupId,
+				blockingState = blockingState.name,
+			)
+			Result.success(Unit)
+		} catch (e: Exception) {
+			Result.failure(e)
+		}
 	}
 }

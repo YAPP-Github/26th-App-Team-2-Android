@@ -4,6 +4,8 @@ import android.content.Context
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.yapp.breake.core.model.app.BlockingState
+import com.yapp.breake.domain.repository.AppGroupRepository
 import com.yapp.breake.presentation.blocking.scheduler.AlarmScheduler
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -12,7 +14,9 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-internal class TimerViewModel @Inject constructor() : ViewModel() {
+internal class TimerViewModel @Inject constructor(
+	private val appGroupRepository: AppGroupRepository,
+) : ViewModel() {
 
 	var time = mutableIntStateOf(0)
 		private set
@@ -27,9 +31,21 @@ internal class TimerViewModel @Inject constructor() : ViewModel() {
 			alarmId = groupId,
 		).onSuccess {
 			sendToastMessage("알람이 설정되었습니다. ${time.intValue} 분 후에 휴식 시간이 시작됩니다.")
+			updateAppGroupState(groupId)
 		}.onFailure {
 			sendToastMessage("알람 설정에 실패했습니다. 정확한 알람 권한을 확인해주세요.")
 			it.printStackTrace()
+		}
+	}
+
+	private fun updateAppGroupState(groupId: Long) {
+		viewModelScope.launch {
+			appGroupRepository.updateAppGroupState(
+				groupId = groupId,
+				blockingState = BlockingState.USING,
+			).onFailure { error ->
+				sendToastMessage("앱 그룹 상태 변경에 실패했습니다: ${error.message}")
+			}
 		}
 	}
 

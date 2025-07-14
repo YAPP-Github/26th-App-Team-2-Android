@@ -9,7 +9,7 @@
 			android:name="com.yapp.breake.presentation.blocking.overlay.OverlayActivity"
 			android:configChanges="uiMode"
 			android:exported="true"
-			android:launchMode="singleTask"
+			android:launchMode="singleTop"
 			android:theme="@null">
 
 			<intent-filter>
@@ -21,6 +21,7 @@
 			<intent-filter>
 				<action android:name="com.yapp.breake.alarm.action.SHOW_BREAK_TIME_OVERLAY" />
 				<action android:name="com.yapp.breake.SHOW_OVERLAY" />
+
 				<category android:name="android.intent.category.DEFAULT" />
 			</intent-filter>
 		</activity>

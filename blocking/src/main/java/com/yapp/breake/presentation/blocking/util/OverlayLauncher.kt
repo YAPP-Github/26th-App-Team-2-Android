@@ -1,11 +1,11 @@
-package com.yapp.breake.presentation.blocking.overlay.util
+package com.yapp.breake.presentation.blocking.util
 
 import android.content.Context
 import android.content.Intent
 import com.yapp.breake.core.common.IntentConstants
 import com.yapp.breake.core.model.app.AppGroup
 import com.yapp.breake.core.model.app.BlockingState
-import com.yapp.breake.presentation.blocking.overlay.OverlayData
+import com.yapp.breake.presentation.blocking.overlay.OverlayActivity
 import timber.log.Timber
 
 object OverlayLauncher {
@@ -29,12 +29,12 @@ object OverlayLauncher {
 		val overlayData = OverlayData(
 			blockingState = blockingState,
 			groupId = appGroup.id,
-			canCooldown = appGroup.canCooldown,
+			snoozesCount = appGroup.snoozesCount,
 		)
 
-		val intent = Intent(IntentConstants.ACTION_SHOW_OVERLAY).apply {
-			addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-			addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
+		val intent = Intent(context, OverlayActivity::class.java).apply {
+			flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+			action = IntentConstants.ACTION_SHOW_OVERLAY
 			putExtra(IntentConstants.EXTRA_OVERLAY_DATA, overlayData)
 		}
 		context.startActivity(intent)

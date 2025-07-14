@@ -6,6 +6,7 @@ import android.os.Bundle
 import android.view.Gravity
 import android.view.WindowManager
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.compositionLocalOf
 import androidx.compose.ui.platform.ComposeView
 import androidx.lifecycle.Lifecycle
@@ -15,6 +16,7 @@ import androidx.lifecycle.ViewModelStore
 import androidx.lifecycle.ViewModelStoreOwner
 import androidx.lifecycle.setViewTreeLifecycleOwner
 import androidx.lifecycle.setViewTreeViewModelStoreOwner
+import androidx.lifecycle.viewmodel.compose.LocalViewModelStoreOwner
 import androidx.savedstate.SavedStateRegistry
 import androidx.savedstate.SavedStateRegistryController
 import androidx.savedstate.SavedStateRegistryOwner
@@ -29,6 +31,7 @@ class OverlayViewHolder(private val context: Context) {
 	var lifecycleManager: OverlayLifecycleManager? = null
 
 	fun show(
+		viewModelStoreOwner: ViewModelStoreOwner,
 		content: @Composable () -> Unit,
 	) {
 		val windowManager = context.getSystemService(Context.WINDOW_SERVICE) as WindowManager
@@ -46,7 +49,11 @@ class OverlayViewHolder(private val context: Context) {
 			setViewTreeSavedStateRegistryOwner(lifecycleManager)
 			setViewTreeViewModelStoreOwner(lifecycleManager)
 			setContent {
-				content()
+				CompositionLocalProvider(
+					LocalViewModelStoreOwner provides viewModelStoreOwner,
+				) {
+					content()
+				}
 			}
 		}
 		this.view = composeView

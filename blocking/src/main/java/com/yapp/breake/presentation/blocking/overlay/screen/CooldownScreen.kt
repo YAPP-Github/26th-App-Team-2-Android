@@ -26,10 +26,11 @@ import com.yapp.breake.core.designsystem.theme.Gray300
 import com.yapp.breake.overlay.R
 
 @Composable
-internal fun CooldownRoute(
-	modifier: Modifier = Modifier,
-) {
-
+internal fun CooldownRoute() {
+	CooldownScreen(
+		onExit = { /* Handle exit action */ },
+		onStartApp = { /* Handle start app action */ },
+	)
 }
 
 @Composable

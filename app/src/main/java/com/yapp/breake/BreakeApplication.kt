@@ -16,7 +16,9 @@ class BreakeApplication : Application() {
 			Timber.plant(
 				object : Timber.DebugTree() {
 					override fun createStackElementTag(element: StackTraceElement): String {
-						return "BRAKE"
+						val fullClassName = element.className
+						val className = fullClassName.substringAfterLast('.')
+						return "BRAKE/$className"
 					}
 				},
 			)

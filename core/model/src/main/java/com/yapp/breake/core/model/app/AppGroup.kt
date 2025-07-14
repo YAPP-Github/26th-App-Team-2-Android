@@ -8,6 +8,6 @@ data class AppGroup(
 	val snoozes: List<Snooze>,
 ) {
 
-	val canCooldown: Boolean
-		get() = snoozes.size < 2
+	val snoozesCount: Int
+		get() = snoozes.size
 }

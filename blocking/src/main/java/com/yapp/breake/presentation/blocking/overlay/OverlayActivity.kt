@@ -32,9 +32,9 @@ import com.yapp.breake.core.common.IntentConstants
 import com.yapp.breake.core.designsystem.theme.BrakeTheme
 import com.yapp.breake.core.model.app.BlockingState
 import com.yapp.breake.presentation.blocking.overlay.component.PermissionRequestScreen
-import com.yapp.breake.presentation.blocking.overlay.screen.BlockingRoute
-import com.yapp.breake.presentation.blocking.overlay.screen.CooldownRoute
+import com.yapp.breake.presentation.blocking.overlay.screen.blocking.BlockingRoute
 import com.yapp.breake.presentation.blocking.overlay.screen.timer.TimerOverlay
+import com.yapp.breake.presentation.blocking.util.OverlayData
 import dagger.hilt.android.AndroidEntryPoint
 import timber.log.Timber
 
@@ -48,6 +48,7 @@ class OverlayActivity : ComponentActivity() {
 		enableEdgeToEdge()
 		super.onCreate(savedInstanceState)
 		Timber.d("OverlayActivity onCreate called")
+		showOverlay(intent.action)
 
 		setContent {
 			BrakeTheme {
@@ -249,7 +250,7 @@ class OverlayActivity : ComponentActivity() {
 		Timber.d("showOverlay called with overlayData: $overlayData")
 		when (action) {
 			IntentConstants.ACTION_SHOW_OVERLAY -> {
-				overlayViewHolder.show {
+				overlayViewHolder.show(this) {
 					BrakeTheme {
 						OverlayScreens(overlayData)
 					}
@@ -275,11 +276,10 @@ class OverlayActivity : ComponentActivity() {
 				)
 			}
 			BlockingState.BLOCKING -> {
-				if (overlayData.canCooldown) {
-					CooldownRoute()
-				} else {
-					BlockingRoute()
-				}
+				BlockingRoute(
+					snoozeCount = overlayData.snoozesCount,
+					snoozeEnabled = overlayData.snoozeEnabled,
+				)
 			}
 			BlockingState.USING -> {}
 		}

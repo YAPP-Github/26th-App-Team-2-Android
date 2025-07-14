@@ -7,7 +7,7 @@ import com.yapp.breake.core.model.app.App
 import com.yapp.breake.core.model.app.BlockingState
 import com.yapp.breake.domain.repository.AppRepository
 import com.yapp.breake.domain.usecase.FindAppGroupUsecase
-import com.yapp.breake.presentation.blocking.overlay.util.OverlayLauncher
+import com.yapp.breake.presentation.blocking.util.OverlayLauncher
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -44,7 +44,6 @@ class AppLaunchDetectionService : AccessibilityService() {
 			if (packageName != null && className != null) {
 
 				if (isActivity(className)) {
-					Timber.i("감지된 앱: $packageName")
 					findAppGroupAndAction(packageName)
 				}
 			}
@@ -63,12 +62,12 @@ class AppLaunchDetectionService : AccessibilityService() {
 
 			when (blockingState) {
 				BlockingState.NEEDS_SETTING -> OverlayLauncher.showTimeSettingOverlay(
-					this@AppLaunchDetectionService,
+					applicationContext,
 					appGroup,
 				)
 
 				BlockingState.BLOCKING -> OverlayLauncher.showBlockingOverlay(
-					this@AppLaunchDetectionService,
+					applicationContext,
 					appGroup,
 				)
 

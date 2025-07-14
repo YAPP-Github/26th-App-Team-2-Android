@@ -1,4 +1,4 @@
-package com.yapp.breake.presentation.blocking.overlay.screen
+package com.yapp.breake.presentation.blocking.overlay.screen.blocking
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -25,8 +25,16 @@ import com.yapp.breake.core.designsystem.theme.Gray200
 import com.yapp.breake.overlay.R
 
 @Composable
-internal fun BlockingRoute() {
-
+internal fun BlockingRoute(
+	snoozeCount: Int,
+	snoozeEnabled: Boolean,
+) {
+	BlockingScreen(
+		snoozeCount = snoozeCount,
+		snoozeEnabled = snoozeEnabled,
+		onExit = { /* Handle exit action */ },
+		onSnooze = { /* Handle snooze action */ },
+	)
 }
 
 @Composable
