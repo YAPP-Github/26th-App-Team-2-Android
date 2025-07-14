@@ -1,7 +1,3 @@
-import com.android.build.gradle.internal.cxx.configure.gradleLocalProperties
-private val kakaoNativeAppKey: String =
-	gradleLocalProperties(rootDir, providers).getProperty("KAKAO_NATIVE_APP_KEY")
-
 plugins {
 	alias(libs.plugins.breake.android.application)
 	id("com.google.android.gms.oss-licenses-plugin")
@@ -14,8 +10,6 @@ android {
 
 	defaultConfig {
 		applicationId = "com.yapp.breake"
-
-		buildConfigField("String", "KAKAO_NATIVE_APP_KEY", "\"${kakaoNativeAppKey}\"")
 	}
 	packaging {
 		resources {
@@ -45,7 +39,6 @@ dependencies {
 	implementation(projects.presentation.home)
 
 	implementation(libs.androidx.profileinstaller)
-	implementation(libs.kakao.user)
 
 	testImplementation(projects.core.testing)
 }

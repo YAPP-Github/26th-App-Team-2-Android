@@ -1,20 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
+	<queries>
+		<package android:name="com.kakao.talk" />
+	</queries>
 
-    <application>
-        <activity
-            android:name="com.kakao.sdk.auth.AuthCodeHandlerActivity"
-            android:exported="true"
-            android:launchMode="singleTask">
-            <intent-filter>
-                <action android:name="android.intent.action.VIEW" />
-                <category android:name="android.intent.category.DEFAULT" />
-                <category android:name="android.intent.category.BROWSABLE" />
-
-                <data
-                    android:host="oauth"
-                    android:scheme="kakao${KAKAO_NATIVE_APP_KEY}" />
-            </intent-filter>
-        </activity>
-    </application>
 </manifest>
