@@ -13,14 +13,12 @@ fun NavController.navigateLogin(navOptions: NavOptions? = null) {
 
 fun NavGraphBuilder.loginNavGraph(
 	navigateToSignup: () -> Unit,
-	navigateToOnboarding: () -> Unit,
 	navigateToHome: () -> Unit,
 	onShowErrorSnackBar: (throwable: Throwable?) -> Unit,
 ) {
 	composable<InitialRoute.Login> {
 		LoginRoute(
 			navigateToSignup = navigateToSignup,
-			navigateToOnboarding = navigateToOnboarding,
 			navigateToHome = navigateToHome,
 			onShowErrorSnackBar = onShowErrorSnackBar,
 		)

@@ -7,3 +7,7 @@ plugins {
 android {
 	setNamespace("presentation.login")
 }
+
+dependencies {
+	implementation(projects.core.auth)
+}

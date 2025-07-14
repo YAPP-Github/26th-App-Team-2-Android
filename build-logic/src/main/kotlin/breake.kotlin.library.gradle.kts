@@ -8,5 +8,6 @@ plugins {
 }
 
 configureKotlin()
+configureCoroutineKotlin()
 configureKotest()
 configureCoroutineKotlin()

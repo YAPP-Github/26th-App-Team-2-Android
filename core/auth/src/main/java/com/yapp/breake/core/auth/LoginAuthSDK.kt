@@ -1,8 +1,8 @@
 package com.yapp.breake.core.auth
 
 import android.content.Context
-import com.yapp.breake.core.model.auth.AuthUser
-import com.yapp.breake.core.model.auth.LoginAccessToken
+import com.yapp.breake.core.auth.model.AuthUser
+import com.yapp.breake.core.auth.model.LoginAccessToken
 
 interface LoginAuthSDK {
 	suspend fun login(context: Context): Result<LoginAccessToken>

@@ -109,6 +109,10 @@ ossLicensesPlugin = "0.10.6"
 # https://github.com/JakeWharton/timber/releases
 timber = "5.0.1"
 
+## Sandwich
+# https://github.com/skydoves/sandwich/releases
+sandwich = "2.1.2"   # 네트워크 응답을 처리하기 위한 라이브러리
+
 ## Test
 # https://github.com/junit-team/junit4
 junit4 = "4.13.2"
@@ -238,6 +242,9 @@ oss-licenses-plugin = { group = "com.google.android.gms", name = "oss-licenses-p
 androidx-glance = { group = "androidx.glance", name = "glance", version.ref = "androidxGlance" }
 androidx-glance-appwidget = { group = "androidx.glance", name = "glance-appwidget", version.ref = "androidxGlance" }
 glance-tools-appwidget-host = { group = "com.google.android.glance.tools", name = "appwidget-host", version.ref = "glanceExperimentalTools"}
+
+# Sandwich
+sandwich-retrofit = { group = "com.github.skydoves", name = "sandwich-retrofit", version.ref = "sandwich" }
 
 # verify
 verify-detektFormatting = { module = "io.gitlab.arturbosch.detekt:detekt-formatting", version.ref = "detekt" }

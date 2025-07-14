@@ -14,11 +14,14 @@ dependencies {
 	implementation(projects.core.model)
 	implementation(projects.core.datastore)
 	implementation(projects.core.database)
+	implementation(projects.domain)
 
+	implementation(libs.datastore)
 	implementation(libs.retrofit.core)
 	implementation(libs.retrofit.kotlin.serialization)
 	implementation(libs.okhttp.logging)
 	implementation(libs.kotlinx.serialization.json)
 	implementation(libs.kotlinx.datetime)
+	implementation(libs.sandwich.retrofit)
 	testImplementation(libs.turbine)
 }

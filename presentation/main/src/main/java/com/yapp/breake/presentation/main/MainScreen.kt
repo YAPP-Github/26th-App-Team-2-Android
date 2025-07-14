@@ -1,6 +1,5 @@
 package com.yapp.breake.presentation.main
 
-import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHost
@@ -70,7 +69,6 @@ private fun MainScreenContent(
 		bottomBar = {
 			MainBottomNavBar(
 				modifier = Modifier
-					.navigationBarsPadding()
 					.padding(start = 48.dp, end = 48.dp, bottom = 50.dp),
 				visible = navigator.shouldShowBottomBar(),
 				tabs = MainTab.entries.toPersistentList(),

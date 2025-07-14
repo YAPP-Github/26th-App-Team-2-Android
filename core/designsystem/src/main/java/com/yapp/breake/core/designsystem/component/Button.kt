@@ -1,11 +1,15 @@
 package com.yapp.breake.core.designsystem.component
 
 import androidx.annotation.DrawableRes
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.defaultMinSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
@@ -15,6 +19,7 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
@@ -27,6 +32,7 @@ import com.yapp.breake.core.designsystem.theme.BrakeTheme
 import com.yapp.breake.core.designsystem.theme.Gray200
 import com.yapp.breake.core.designsystem.theme.Gray700
 import com.yapp.breake.core.designsystem.theme.Gray800
+import com.yapp.breake.core.designsystem.theme.KakaoYellow
 import com.yapp.breake.core.designsystem.theme.Red
 import com.yapp.breake.core.designsystem.util.BooleanProvider
 import com.yapp.breake.core.designsystem.util.MultipleEventsCutter
@@ -142,6 +148,71 @@ fun CircleButton(
 	}
 }
 
+@Composable
+fun KakaoLoginButton(
+	modifier: Modifier = Modifier,
+	text: String = "카카오 로그인",
+	onClick: () -> Unit,
+	enabled: Boolean = true,
+) {
+	val multipleEventsCutter = remember { MultipleEventsCutter.get() }
+
+	Button(
+		shape = MaterialTheme.shapes.large,
+		colors = ButtonDefaults.buttonColors(
+			containerColor = KakaoYellow,
+			contentColor = MaterialTheme.colorScheme.onPrimary,
+			disabledContainerColor = Gray700,
+			disabledContentColor = Gray200,
+		),
+		contentPadding = PaddingValues(16.dp),
+		enabled = enabled,
+		onClick = { multipleEventsCutter.processEvent(onClick) },
+		modifier = modifier.fillMaxWidth(),
+	) {
+		Row(
+			modifier = Modifier.fillMaxWidth(),
+			verticalAlignment = Alignment.CenterVertically,
+			horizontalArrangement = Arrangement.Start,
+		) {
+			// 왼쪽 카카오 로고 영역 (전체 폭의 20%)
+			Box(
+				modifier = Modifier
+					.weight(0.2f)
+					.wrapContentHeight(),
+				contentAlignment = Alignment.Center,
+			) {
+				Icon(
+					painter = painterResource(id = R.drawable.ic_kakao_logo),
+					contentDescription = "카카오 로고",
+					tint = MaterialTheme.colorScheme.onPrimary,
+					modifier = Modifier.padding(end = 8.dp),
+				)
+			}
+
+			// 가운데 텍스트 영역 (전체 폭의 60%)
+			Box(
+				modifier = Modifier
+					.weight(0.6f)
+					.wrapContentHeight(),
+				contentAlignment = Alignment.Center,
+			) {
+				Text(
+					text = text,
+					style = BrakeTheme.typography.subtitle16B,
+				)
+			}
+
+			// 오른쪽 빈 공간 영역 (전체 폭의 20%)
+			Box(
+				modifier = Modifier
+					.weight(0.2f)
+					.wrapContentHeight(),
+			)
+		}
+	}
+}
+
 @Preview("Large Buttons")
 @Composable
 private fun LargeButtonPreview(
@@ -188,6 +259,20 @@ private fun CircleButtonPreview() {
 		CircleButton(
 			icon = R.drawable.ic_close,
 			onClick = { },
+		)
+	}
+}
+
+@Preview
+@Composable
+private fun KakaoLoginButtonPreview(
+	@PreviewParameter(BooleanProvider::class) enabled: Boolean,
+) {
+	BrakeTheme {
+		KakaoLoginButton(
+			text = "카카오 로그인",
+			onClick = { },
+			enabled = enabled,
 		)
 	}
 }

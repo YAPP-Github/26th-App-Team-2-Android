@@ -28,7 +28,7 @@ plugins {
 }
 
 subprojects {
-	// 모든 subproject에 대해 kotlin 플러그인 적용
+	// 모든 subproject에 대해 ktlint 플러그인 적용
 	apply(plugin = rootProject.libs.plugins.ktlint.get().pluginId)
 
 	// ./gradlew build : 모든 kt 파일에 대해 ktlintFormat 실행

@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+	<string name="login_main_message">계획한 만큼만 사용하도록\n도와드릴게요</string>
+	<string name="login_invalid_user_message">로그인에 실패했습니다.카카오 계정을 확인해주세요.</string>
+</resources>
