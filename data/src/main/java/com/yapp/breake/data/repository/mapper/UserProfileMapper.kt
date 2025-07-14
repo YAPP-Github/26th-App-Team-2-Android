@@ -8,7 +8,7 @@ internal fun MemberResponse.toData(): UserProfile = UserProfile(
 	nickname = this.data.nickname,
 	state = when (this.data.state) {
 		"ACTIVE" -> UserTokenStatus.ACTIVE
-		"HALF_SIGNUP" -> UserTokenStatus.HALF_SIGNUP
+		"HOLD" -> UserTokenStatus.HALF_SIGNUP
 		else -> UserTokenStatus.INACTIVE
 	},
 	imageUrl = null,
