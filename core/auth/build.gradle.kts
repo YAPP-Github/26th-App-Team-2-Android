@@ -35,4 +35,7 @@ android {
 
 dependencies {
 	implementation(libs.kakao.user)
+
+	// BackHandler 사용을 위한 의존성
+	implementation(libs.androidx.activity.compose)
 }
