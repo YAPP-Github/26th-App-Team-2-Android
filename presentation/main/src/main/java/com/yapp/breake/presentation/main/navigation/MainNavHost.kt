@@ -5,20 +5,16 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.navigation.compose.NavHost
 import com.yapp.breake.presentation.home.navigation.homeNavGraph
-import com.yapp.breake.presentation.home.navigation.navigateHome
 import com.yapp.breake.presentation.login.navigation.loginNavGraph
-import com.yapp.breake.presentation.onboarding.navigation.navigateOnboarding
 import com.yapp.breake.presentation.onboarding.navigation.onboardingNavGraph
 import com.yapp.breake.presentation.report.navigation.reportNavGraph
 import com.yapp.breake.presentation.setting.navigation.settingNavGraph
-import com.yapp.breake.presentation.signup.navigation.navigateSignup
 import com.yapp.breake.presentation.signup.navigation.signupNavGraph
 
 @Composable
 internal fun MainNavHost(
 	navigator: MainNavigator,
 	padding: PaddingValues,
-	onShowErrorSnackBar: (throwable: Throwable?) -> Unit,
 	onChangeDarkTheme: (Boolean) -> Unit,
 	modifier: Modifier = Modifier,
 ) {
@@ -29,35 +25,13 @@ internal fun MainNavHost(
 		navController = navController,
 		startDestination = navigator.startDestination,
 	) {
-		loginNavGraph(
-			navigateToSignup = navController::navigateSignup,
-			navigateToHome = {
-				navController.navigateHome(shouldClearBackstack = true)
-			},
-			onShowErrorSnackBar = onShowErrorSnackBar,
-		)
-		signupNavGraph(
-			navigateToBack = navController::popBackStack,
-			navigateToLogin = navController::navigateOnboarding,
-			onShowErrorSnackBar = onShowErrorSnackBar,
-		)
-		onboardingNavGraph(
-			navigateToHome = {
-				navController.navigateHome(shouldClearBackstack = true)
-			},
-			onShowErrorSnackBar = onShowErrorSnackBar,
-		)
-		reportNavGraph(
-			padding = padding,
-			onShowErrorSnackBar = onShowErrorSnackBar,
-		)
-		homeNavGraph(
-			padding = padding,
-			onShowErrorSnackBar = onShowErrorSnackBar,
-		)
+		loginNavGraph()
+		signupNavGraph()
+		onboardingNavGraph()
+		reportNavGraph(padding = padding)
+		homeNavGraph(padding = padding)
 		settingNavGraph(
 			padding = padding,
-			onShowErrorSnackBar = onShowErrorSnackBar,
 			onChangeDarkTheme = onChangeDarkTheme,
 		)
 	}

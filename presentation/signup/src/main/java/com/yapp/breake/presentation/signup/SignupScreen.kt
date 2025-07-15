@@ -33,35 +33,32 @@ import com.yapp.breake.core.designsystem.component.VerticalSpacer
 import com.yapp.breake.core.designsystem.theme.BrakeTheme
 import com.yapp.breake.core.designsystem.theme.LocalPadding
 import com.yapp.breake.core.designsystem.modifier.clearFocusOnKeyboardDismiss
+import com.yapp.breake.core.navigation.compositionlocal.LocalMainAction
+import com.yapp.breake.core.navigation.compositionlocal.LocalNavigatorAction
 import com.yapp.breake.core.util.isValidInput
 import com.yapp.breake.presentation.signup.model.SignupEffect.NavigateToBack
 import com.yapp.breake.presentation.signup.model.SignupEffect.NavigateToOnboarding
-import kotlinx.coroutines.launch
 import com.yapp.breake.core.designsystem.R as D
 
 @Composable
-fun SignupRoute(
-	navigateToBack: () -> Unit,
-	navigateToOnboarding: () -> Unit,
-	onShowErrorSnackBar: (Throwable?) -> Unit,
-	viewModel: SignupViewModel = hiltViewModel(),
-) {
+fun SignupRoute(viewModel: SignupViewModel = hiltViewModel()) {
 	val padding = LocalPadding.current.screenPaddingHorizontal
+	val navAction = LocalNavigatorAction.current
+	val mainAction = LocalMainAction.current
 	val focusManager = LocalFocusManager.current
 	val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
 	LaunchedEffect(true) {
-		launch {
-			viewModel.navigationFlow.collect {
-				when (it) {
-					NavigateToBack -> navigateToBack()
-					NavigateToOnboarding -> navigateToOnboarding()
-				}
+		viewModel.navigationFlow.collect {
+			when (it) {
+				NavigateToBack -> navAction.popBackStack()
+				NavigateToOnboarding -> navAction.navigateToOnboarding()
 			}
 		}
-		launch {
-			viewModel.errorFlow.collect { onShowErrorSnackBar(it) }
-		}
+	}
+
+	LaunchedEffect(true) {
+		viewModel.errorFlow.collect { mainAction.onShowSnackBar(it) }
 	}
 
 	SignupScreen(
