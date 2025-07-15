@@ -5,10 +5,11 @@ import com.yapp.breake.core.model.user.UserTokenStatus
 import com.yapp.breake.data.api.model.LoginResponse
 
 internal fun LoginResponse.toData(): UserToken = UserToken(
-	accessToken = accessToken,
-	refreshToken = refreshToken,
-	status = when (memberState) {
+	accessToken = this.data.accessToken,
+	refreshToken = this.data.refreshToken,
+	status = when (this.data.memberState) {
 		"ACTIVE" -> UserTokenStatus.ACTIVE
-		else -> UserTokenStatus.HALF_SIGNUP
+		"HOLD" -> UserTokenStatus.HALF_SIGNUP
+		else -> UserTokenStatus.INACTIVE
 	},
 )

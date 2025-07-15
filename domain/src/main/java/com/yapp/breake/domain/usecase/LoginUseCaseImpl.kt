@@ -18,7 +18,7 @@ class LoginUseCaseImpl @Inject constructor(
 		authAccessToken: String,
 		provider: String,
 		onError: suspend (Throwable) -> Unit,
-	): Flow<UserTokenStatus> = fakeLoginRepository.flowLogin(
+	): Flow<UserTokenStatus> = loginRepository.flowLogin(
 		provider = provider,
 		authorizationCode = authAccessToken,
 		onError = onError,
@@ -27,7 +27,7 @@ class LoginUseCaseImpl @Inject constructor(
 			userAccessToken = it.accessToken,
 			userRefreshToken = it.refreshToken,
 			userStatus = it.status,
-			onError = onError,
+			onError = {},
 		)
 		it.status
 	}
