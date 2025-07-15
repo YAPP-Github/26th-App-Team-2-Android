@@ -1,12 +1,12 @@
 package com.yapp.breake.domain.usecase
 
-import com.yapp.breake.core.model.user.UserTokenStatus
+import com.yapp.breake.core.model.user.UserStatus
 import kotlinx.coroutines.flow.Flow
 
 interface LoginUseCase {
 	operator fun invoke(
-		authAccessToken: String,
+		authCode: String,
 		provider: String = "KAKAO",
 		onError: suspend (Throwable) -> Unit,
-	): Flow<UserTokenStatus>
+	): Flow<UserStatus>
 }
