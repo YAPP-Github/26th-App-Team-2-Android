@@ -2,7 +2,7 @@ package com.yapp.breake.presentation.login
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.yapp.breake.core.model.user.UserTokenStatus
+import com.yapp.breake.core.model.user.UserStatus
 import com.yapp.breake.domain.usecase.LoginUseCase
 import com.yapp.breake.presentation.login.model.LoginEffect
 import com.yapp.breake.presentation.login.model.LoginUiState
@@ -12,8 +12,9 @@ import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.firstOrNull
+import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.launch
+import timber.log.Timber
 import javax.inject.Inject
 
 @HiltViewModel
@@ -49,28 +50,31 @@ internal class LoginViewModel @Inject constructor(
 		loginJob?.cancel()
 		loginJob = viewModelScope.launch {
 			_uiState.value = LoginUiState.LoginLoading
-			loginUseCase(authCode) { throwable ->
-				_uiState.value = LoginUiState.LoginIdle
-				_errorFlow.emit(throwable)
-				return@loginUseCase
-			}.firstOrNull { result ->
+			loginUseCase(
+				authCode = authCode,
+				onError = { throwable ->
+					_uiState.value = LoginUiState.LoginIdle
+					_errorFlow.emit(throwable)
+				},
+			).catch {
+				Timber.e(it, "로그인 중 에러 발생")
+			}.collect { result ->
 				when (result) {
-					UserTokenStatus.ACTIVE -> {
+					UserStatus.ACTIVE -> {
 						_uiState.value = LoginUiState.LoginIdle
 						_navigationFlow.emit(LoginEffect.NavigateToHome)
 					}
 
-					UserTokenStatus.HALF_SIGNUP -> {
+					UserStatus.HALF_SIGNUP -> {
 						_uiState.value = LoginUiState.LoginIdle
 						_navigationFlow.emit(LoginEffect.NavigateToSignup)
 					}
 
-					UserTokenStatus.INACTIVE -> {
+					UserStatus.INACTIVE -> {
 						_uiState.value = LoginUiState.LoginIdle
 						_errorFlow.emit(Throwable("서버에서 사용자 정보를 찾을 수 없습니다"))
 					}
 				}
-				true
 			}
 		}
 	}

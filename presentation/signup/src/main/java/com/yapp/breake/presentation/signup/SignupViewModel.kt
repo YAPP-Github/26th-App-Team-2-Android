@@ -2,6 +2,7 @@ package com.yapp.breake.presentation.signup
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.yapp.breake.core.model.user.exception.LocalException
 import com.yapp.breake.domain.usecase.UpdateNicknameUseCase
 import com.yapp.breake.presentation.signup.model.SignupEffect
 import com.yapp.breake.presentation.signup.model.SignupUiState
@@ -11,6 +12,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
+import timber.log.Timber
 import javax.inject.Inject
 
 @HiltViewModel
@@ -39,13 +41,29 @@ class SignupViewModel @Inject constructor(
 
 	fun onNameSubmit(name: String) {
 		viewModelScope.launch {
-			runCatching {
-				updateNicknameUseCase(name) { e ->
-					_errorFlow.emit(e)
-					return@updateNicknameUseCase
+			viewModelScope.launch {
+				runCatching {
+					var success = true
+					updateNicknameUseCase(
+						nickname = name,
+						onError = {
+							success = false
+							_errorFlow.emit(it)
+
+							// 유효 시간(5분)이 지나 AuthCode 가 DataStore에 없을 경우 카카오 로그인 화면으로 이동
+							if (it is LocalException.DataStoreEmptyException) {
+								_uiState.value = SignupUiState.SignupIdle("")
+								_navigationFlow.emit(SignupEffect.NavigateToBack)
+							}
+						},
+					)
+
+					if (success) {
+						_navigationFlow.emit(SignupEffect.NavigateToOnboarding)
+					}
+				}.onFailure {
+					Timber.e(it, "닉네임 업데이트 중 에러 발생")
 				}
-			}.onSuccess {
-				_navigationFlow.emit(SignupEffect.NavigateToOnboarding)
 			}
 		}
 	}
