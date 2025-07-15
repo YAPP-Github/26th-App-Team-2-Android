@@ -2,20 +2,20 @@ package com.yapp.breake.data.repository
 
 import com.skydoves.sandwich.suspendOnFailure
 import com.skydoves.sandwich.suspendOnSuccess
-import com.yapp.breake.core.model.user.UserProfile
+import com.yapp.breake.core.model.user.UserName
 import com.yapp.breake.data.api.MemberApi
 import com.yapp.breake.data.api.model.MemberRequest
 import com.yapp.breake.data.repository.mapper.toData
-import com.yapp.breake.domain.repository.UserProfileRepository
+import com.yapp.breake.domain.repository.RemoteNameRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import javax.inject.Inject
 
-class UserProfileRepositoryImpl @Inject constructor(
+class RemoteNameRepositoryImpl @Inject constructor(
 	private val memberApi: MemberApi,
-) : UserProfileRepository {
+) : RemoteNameRepository {
 
-	override fun getUserProfile(onError: suspend (Throwable) -> Unit): Flow<UserProfile> = flow {
+	override fun getUserName(onError: suspend (Throwable) -> Unit): Flow<UserName> = flow {
 		memberApi.getMemberInfo()
 			.suspendOnSuccess {
 				emit(this.data.toData())
@@ -24,11 +24,12 @@ class UserProfileRepositoryImpl @Inject constructor(
 			}
 	}
 
-	override fun updateUserProfile(
+	override fun updateUserName(
+		authCode: String,
 		nickname: String,
 		onError: suspend (Throwable) -> Unit,
-	): Flow<UserProfile> = flow {
-		memberApi.updateMemberInfo(MemberRequest(nickname))
+	): Flow<UserName> = flow {
+		memberApi.updateMemberInfo(authCode, MemberRequest(nickname))
 			.suspendOnSuccess {
 				emit(this.data.toData())
 			}.suspendOnFailure {
