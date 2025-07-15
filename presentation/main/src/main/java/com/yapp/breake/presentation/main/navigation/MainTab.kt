@@ -1,8 +1,8 @@
 package com.yapp.breake.presentation.main.navigation
 
 import androidx.compose.runtime.Composable
-import com.yapp.breake.core.navigation.MainTabRoute
-import com.yapp.breake.core.navigation.Route
+import com.yapp.breake.core.navigation.route.MainTabRoute
+import com.yapp.breake.core.navigation.route.Route
 import com.yapp.breake.presentation.main.R
 
 internal enum class MainTab(
@@ -11,17 +11,17 @@ internal enum class MainTab(
 	val route: MainTabRoute,
 ) {
 	REPORT(
-		iconResId = R.drawable.ic_chart_inactive,
+		iconResId = R.drawable.ic_chart,
 		contentDescription = "리포트",
 		MainTabRoute.Report,
 	),
 	HOME(
-		iconResId = R.drawable.ic_timer_inactive,
+		iconResId = R.drawable.ic_timer,
 		contentDescription = "관리",
 		MainTabRoute.Home,
 	),
 	SETTING(
-		iconResId = R.drawable.ic_user_inactive,
+		iconResId = R.drawable.ic_user,
 		contentDescription = "내 정보",
 		MainTabRoute.Setting,
 	),

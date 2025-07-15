@@ -9,10 +9,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 
 @Composable
-fun ReportRoute(
-	padding: PaddingValues,
-	onShowErrorSnackBar: (throwable: Throwable?) -> Unit,
-) {
+fun ReportRoute(padding: PaddingValues) {
 	ReportScreen()
 }
 
