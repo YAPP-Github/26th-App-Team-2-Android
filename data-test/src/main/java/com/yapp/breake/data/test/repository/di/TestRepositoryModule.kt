@@ -1,9 +1,9 @@
 package com.yapp.breake.data.test.repository.di
 
-import com.yapp.breake.data.test.repository.FakeLoginRepositoryImpl
-import com.yapp.breake.data.test.repository.FakeUserProfileRepositoryImpl
-import com.yapp.breake.domain.repository.LoginRepository
-import com.yapp.breake.domain.repository.UserProfileRepository
+import com.yapp.breake.data.test.repository.FakeRemoteLoginRepositoryImpl
+import com.yapp.breake.data.test.repository.FakeRemoteNameRepositoryImpl
+import com.yapp.breake.domain.repository.RemoteLoginRepository
+import com.yapp.breake.domain.repository.RemoteNameRepository
 import dagger.Binds
 import dagger.Module
 import dagger.hilt.InstallIn
@@ -17,12 +17,12 @@ internal abstract class TestRepositoryModule {
 	@Binds
 	@Named("FakeLoginRepo")
 	abstract fun bindFakeLoginRepository(
-		fakeLoginRepository: FakeLoginRepositoryImpl,
-	): LoginRepository
+		fakeLoginRepository: FakeRemoteLoginRepositoryImpl,
+	): RemoteLoginRepository
 
 	@Binds
 	@Named("FakeUserProfileRepo")
 	abstract fun bindFakeUserProfileRepository(
-		fakeUserProfileRepository: FakeUserProfileRepositoryImpl,
-	): UserProfileRepository
+		fakeUserProfileRepository: FakeRemoteNameRepositoryImpl,
+	): RemoteNameRepository
 }

@@ -1,11 +1,13 @@
 package com.yapp.breake.data.repository.di
 
-import com.yapp.breake.data.repository.LoginRepositoryImpl
-import com.yapp.breake.data.repository.UserProfileRepositoryImpl
-import com.yapp.breake.data.repository.UserTokenRepositoryImpl
-import com.yapp.breake.domain.repository.LoginRepository
-import com.yapp.breake.domain.repository.UserProfileRepository
-import com.yapp.breake.domain.repository.UserTokenRepository
+import com.yapp.breake.data.repository.LocalInfoRepositoryImpl
+import com.yapp.breake.data.repository.RemoteLoginRepositoryImpl
+import com.yapp.breake.data.repository.RemoteNameRepositoryImpl
+import com.yapp.breake.data.repository.LocalTokenRepositoryImpl
+import com.yapp.breake.domain.repository.LocalInfoRepository
+import com.yapp.breake.domain.repository.RemoteLoginRepository
+import com.yapp.breake.domain.repository.RemoteNameRepository
+import com.yapp.breake.domain.repository.LocalTokenRepository
 import dagger.Binds
 import dagger.Module
 import dagger.hilt.InstallIn
@@ -18,21 +20,27 @@ import javax.inject.Singleton
 internal abstract class RepositoryModule {
 
 	@Binds
-	@Named("LoginRepo")
-	abstract fun bindLoginRepository(
-		loginRepository: LoginRepositoryImpl,
-	): LoginRepository
+	@Named("RemoteLoginRepo")
+	abstract fun bindRemoteLoginRepository(
+		remoteLoginRepository: RemoteLoginRepositoryImpl,
+	): RemoteLoginRepository
 
 	@Binds
 	@Singleton
-	abstract fun bindUserTokenRepository(
-		userTokenRepository: UserTokenRepositoryImpl,
-	): UserTokenRepository
+	abstract fun bindLocalTokenRepository(
+		localTokenRepository: LocalTokenRepositoryImpl,
+	): LocalTokenRepository
 
 	@Binds
 	@Singleton
-	@Named("UserProfileRepo")
-	abstract fun bindUserProfileRepository(
-		userProfileRepository: UserProfileRepositoryImpl,
-	): UserProfileRepository
+	@Named("RemoteNameRepo")
+	abstract fun bindRemoteNameRepository(
+		remoteNameRepository: RemoteNameRepositoryImpl,
+	): RemoteNameRepository
+
+	@Binds
+	@Singleton
+	abstract fun bindLocalInfoRepository(
+		localInfoRepository: LocalInfoRepositoryImpl,
+	): LocalInfoRepository
 }
