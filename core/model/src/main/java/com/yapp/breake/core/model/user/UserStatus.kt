@@ -1,6 +1,6 @@
 package com.yapp.breake.core.model.user
 
-enum class UserTokenStatus {
+enum class UserStatus {
 	ACTIVE,
 	HALF_SIGNUP,
 	INACTIVE,
