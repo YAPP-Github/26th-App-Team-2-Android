@@ -25,29 +25,28 @@ import com.yapp.breake.core.auth.KakaoScreen
 import com.yapp.breake.core.designsystem.component.KakaoLoginButton
 import com.yapp.breake.core.designsystem.theme.BrakeTheme
 import com.yapp.breake.core.designsystem.theme.LocalPadding
+import com.yapp.breake.core.navigation.compositionlocal.LocalMainAction
+import com.yapp.breake.core.navigation.compositionlocal.LocalNavigatorAction
 import com.yapp.breake.presentation.login.model.LoginEffect.NavigateToHome
 import com.yapp.breake.presentation.login.model.LoginEffect.NavigateToSignup
 import com.yapp.breake.presentation.login.model.LoginUiState
 
 @Composable
-internal fun LoginRoute(
-	navigateToSignup: () -> Unit,
-	navigateToHome: () -> Unit,
-	onShowErrorSnackBar: (Throwable?) -> Unit,
-	viewModel: LoginViewModel = hiltViewModel(),
-) {
+internal fun LoginRoute(viewModel: LoginViewModel = hiltViewModel()) {
 	val padding = LocalPadding.current.screenPaddingHorizontal
+	val navAction = LocalNavigatorAction.current
+	val mainAction = LocalMainAction.current
 	val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
 	LaunchedEffect(true) {
-		viewModel.errorFlow.collect { onShowErrorSnackBar(it) }
+		viewModel.errorFlow.collect { mainAction.onShowSnackBar(it) }
 	}
 
 	LaunchedEffect(true) {
 		viewModel.navigationFlow.collect { navigation ->
 			when (navigation) {
-				NavigateToHome -> navigateToHome()
-				NavigateToSignup -> navigateToSignup()
+				NavigateToHome -> navAction.navigateToHome()
+				NavigateToSignup -> navAction.navigateToSignup()
 			}
 		}
 	}
@@ -62,7 +61,9 @@ internal fun LoginRoute(
 	// 서버 응답 대기 시간이 1초가 넘어 로딩창 추가
 	if (uiState == LoginUiState.LoginLoading) {
 		Box(
-			modifier = Modifier.fillMaxSize().statusBarsPadding(),
+			modifier = Modifier
+				.fillMaxSize()
+				.statusBarsPadding(),
 			contentAlignment = Alignment.Center,
 		) {
 			BackHandler { viewModel.loginCancel() }
