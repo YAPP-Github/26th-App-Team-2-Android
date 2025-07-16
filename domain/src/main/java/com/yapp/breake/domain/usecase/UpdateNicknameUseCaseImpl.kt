@@ -8,7 +8,7 @@ import javax.inject.Inject
 import javax.inject.Named
 
 class UpdateNicknameUseCaseImpl @Inject constructor(
-	@Named("UserRepo") private val nicknameRepository: NicknameRepository,
+	@Named("NicknameRepo") private val nicknameRepository: NicknameRepository,
 	@Named("LoginRepo") private val loginRepository: LoginRepository,
 ) : UpdateNicknameUseCase {
 
