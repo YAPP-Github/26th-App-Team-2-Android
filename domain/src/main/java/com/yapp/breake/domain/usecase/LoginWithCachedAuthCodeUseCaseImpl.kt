@@ -1,19 +1,19 @@
 package com.yapp.breake.domain.usecase
 
-import com.yapp.breake.domain.repository.LoginRepository
+import com.yapp.breake.domain.repository.TokenRepository
 import javax.inject.Inject
 import javax.inject.Named
 
 class LoginWithCachedAuthCodeUseCaseImpl @Inject constructor(
-	@Named("LoginRepo") private val loginRepository: LoginRepository,
+	@Named("TokenRepo") private val tokenRepository: TokenRepository,
 ) : LoginWithCachedAuthCodeUseCase {
 	override suspend fun invoke(
 		provider: String,
 		onError: suspend (Throwable) -> Unit,
 	) {
-		if (loginRepository.isLoginRetryAvailable) {
+		if (tokenRepository.isLoginRetryAvailable) {
 			// 로그인 재시도 가능 시, 캐시된 authCode로 로그인 시도
-			loginRepository.loginRetry(
+			tokenRepository.loginRetry(
 				provider = "KAKAO",
 				onError = onError,
 			)

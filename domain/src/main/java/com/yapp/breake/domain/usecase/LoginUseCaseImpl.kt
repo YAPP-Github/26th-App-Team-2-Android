@@ -1,7 +1,7 @@
 package com.yapp.breake.domain.usecase
 
 import com.yapp.breake.core.model.user.UserStatus
-import com.yapp.breake.domain.repository.LoginRepository
+import com.yapp.breake.domain.repository.TokenRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import javax.inject.Inject
@@ -13,14 +13,14 @@ import javax.inject.Named
  * 로그인 성공 시 UserStatus를 반환하며, 실패 시 onError 콜백을 호출
  */
 class LoginUseCaseImpl @Inject constructor(
-	@Named("LoginRepo") private val loginRepository: LoginRepository,
+	@Named("TokenRepo") private val tokenRepository: TokenRepository,
 ) : LoginUseCase {
 
 	override operator fun invoke(
 		authCode: String,
 		provider: String,
 		onError: suspend (Throwable) -> Unit,
-	): Flow<UserStatus> = loginRepository.login(
+	): Flow<UserStatus> = tokenRepository.login(
 		provider = provider,
 		authorizationCode = authCode,
 		onError = onError,

@@ -1,8 +1,8 @@
 package com.yapp.breake.data.repository.di
 
-import com.yapp.breake.data.repository.LoginRepositoryImpl
+import com.yapp.breake.data.repository.TokenRepositoryImpl
 import com.yapp.breake.data.repository.NicknameRepositoryImpl
-import com.yapp.breake.domain.repository.LoginRepository
+import com.yapp.breake.domain.repository.TokenRepository
 import com.yapp.breake.domain.repository.NicknameRepository
 import dagger.Binds
 import dagger.Module
@@ -15,10 +15,10 @@ import javax.inject.Named
 internal abstract class RepositoryModule {
 
 	@Binds
-	@Named("LoginRepo")
-	abstract fun bindLoginRepository(
-		remoteLoginRepository: LoginRepositoryImpl,
-	): LoginRepository
+	@Named("TokenRepo")
+	abstract fun bindTokenRepository(
+		remoteTokenRepository: TokenRepositoryImpl,
+	): TokenRepository
 
 	@Binds
 	@Named("NicknameRepo")

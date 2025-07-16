@@ -1,8 +1,8 @@
 package com.yapp.breake.data.test.repository.di
 
-import com.yapp.breake.data.test.repository.FakeLoginRepositoryImpl
+import com.yapp.breake.data.test.repository.FakeTokenRepositoryImpl
 import com.yapp.breake.data.test.repository.FakeNicknameRepositoryImpl
-import com.yapp.breake.domain.repository.LoginRepository
+import com.yapp.breake.domain.repository.TokenRepository
 import com.yapp.breake.domain.repository.NicknameRepository
 import dagger.Binds
 import dagger.Module
@@ -15,10 +15,10 @@ import javax.inject.Named
 internal abstract class TestRepositoryModule {
 
 	@Binds
-	@Named("FakeLoginRepo")
-	abstract fun bindFakeLoginRepository(
-		fakeLoginRepository: FakeLoginRepositoryImpl,
-	): LoginRepository
+	@Named("FakeTokenRepo")
+	abstract fun bindFakeTokenRepository(
+		fakeTokenRepository: FakeTokenRepositoryImpl,
+	): TokenRepository
 
 	@Binds
 	@Named("FakeNicknameRepo")

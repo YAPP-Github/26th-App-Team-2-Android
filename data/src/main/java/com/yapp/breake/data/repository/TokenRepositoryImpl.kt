@@ -5,7 +5,7 @@ import com.yapp.breake.core.model.user.UserToken
 import com.yapp.breake.data.local.AuthLocalDataSource
 import com.yapp.breake.data.local.TokenLocalDataSource
 import com.yapp.breake.data.remote.source.TokenRemoteDataSource
-import com.yapp.breake.domain.repository.LoginRepository
+import com.yapp.breake.domain.repository.TokenRepository
 import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.delay
@@ -17,11 +17,11 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import javax.inject.Inject
 
-internal class LoginRepositoryImpl @Inject constructor(
+internal class TokenRepositoryImpl @Inject constructor(
 	private val tokenRemoteDataSource: TokenRemoteDataSource,
 	private val tokenLocalDataSource: TokenLocalDataSource,
 	private val authLocalDataSource: AuthLocalDataSource,
-) : LoginRepository {
+) : TokenRepository {
 
 	override fun login(
 		provider: String,

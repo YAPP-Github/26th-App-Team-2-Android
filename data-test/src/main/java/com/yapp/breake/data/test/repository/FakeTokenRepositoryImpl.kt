@@ -2,12 +2,12 @@ package com.yapp.breake.data.test.repository
 
 import com.yapp.breake.core.model.user.UserToken
 import com.yapp.breake.core.model.user.UserStatus
-import com.yapp.breake.domain.repository.LoginRepository
+import com.yapp.breake.domain.repository.TokenRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import javax.inject.Inject
 
-internal class FakeLoginRepositoryImpl @Inject constructor() : LoginRepository {
+internal class FakeTokenRepositoryImpl @Inject constructor() : TokenRepository {
 	override fun login(
 		provider: String,
 		authorizationCode: String,
