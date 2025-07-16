@@ -150,7 +150,10 @@ fun SignupScreen(
 
 			LargeButton(
 				text = stringResource(R.string.signup_continue_button_text),
-				onClick = { onContinueClick(typedName) },
+				onClick = {
+					focusManager.clearFocus()
+					onContinueClick(typedName)
+				},
 				modifier = Modifier
 					.constrainAs(continueButton) {
 						bottom.linkTo(parent.bottom)
