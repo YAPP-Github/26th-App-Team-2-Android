@@ -2,7 +2,6 @@ package com.yapp.breake.presentation.signup
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.yapp.breake.core.model.user.exception.LocalException
 import com.yapp.breake.domain.usecase.UpdateNicknameUseCase
 import com.yapp.breake.presentation.signup.model.SignupEffect
 import com.yapp.breake.presentation.signup.model.SignupUiState
@@ -49,12 +48,6 @@ class SignupViewModel @Inject constructor(
 						onError = {
 							success = false
 							_errorFlow.emit(it)
-
-							// 유효 시간(5분)이 지나 AuthCode 가 DataStore에 없을 경우 카카오 로그인 화면으로 이동
-							if (it is LocalException.DataStoreEmptyException) {
-								_uiState.value = SignupUiState.SignupIdle("")
-								_navigationFlow.emit(SignupEffect.NavigateToBack)
-							}
 						},
 					)
 
