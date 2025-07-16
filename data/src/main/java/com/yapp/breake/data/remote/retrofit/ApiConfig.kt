@@ -1,4 +1,4 @@
-package com.yapp.breake.data.api
+package com.yapp.breake.data.remote.retrofit
 
 import android.os.Build
 

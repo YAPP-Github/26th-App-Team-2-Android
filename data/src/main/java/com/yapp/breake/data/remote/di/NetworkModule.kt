@@ -1,8 +1,8 @@
-package com.yapp.breake.data.network.di
+package com.yapp.breake.data.remote.di
 
 import com.skydoves.sandwich.retrofit.adapters.ApiResponseCallAdapterFactory
-import com.yapp.breake.data.network.BrakeNetwork
-import com.yapp.breake.data.network.BrakeNetworkImpl
+import com.yapp.breake.data.remote.retrofit.ApiConfig
+import com.yapp.breake.data.remote.retrofit.RetrofitBrakeApi
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -64,10 +64,13 @@ internal object NetworkModule {
 			.client(okHttpClient)
 
 	@Provides
-	fun provideBrakeNetwork(
+	@Singleton
+	fun provideBrakeApi(
 		retrofitBuilder: Retrofit.Builder,
-	): BrakeNetwork =
-		BrakeNetworkImpl(retrofitBuilder)
+	): RetrofitBrakeApi = retrofitBuilder
+		.baseUrl(ApiConfig.ServerDomain.BASE_URL)
+		.build()
+		.create(RetrofitBrakeApi::class.java)
 
 	@Provides
 	@Singleton
