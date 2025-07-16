@@ -31,11 +31,7 @@ internal class FakeNicknameRepositoryImpl @Inject constructor() : NicknameReposi
 		)
 	}
 
-	override suspend fun getLocalAccessToken(onError: suspend (Throwable) -> Unit): Flow<String> {
-		TODO("Not yet implemented")
-	}
-
-	override suspend fun clearLocalUserStorage(onError: suspend (Throwable) -> Unit) {
-		TODO("Not yet implemented")
+	override suspend fun clearLocalName(onError: suspend (Throwable) -> Unit) {
+		// Fake 구현체에서는 아무 동작도 하지 않음
 	}
 }

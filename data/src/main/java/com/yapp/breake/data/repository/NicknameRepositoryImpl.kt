@@ -1,7 +1,6 @@
 package com.yapp.breake.data.repository
 
 import com.yapp.breake.core.model.user.UserName
-import com.yapp.breake.data.local.TokenLocalDataSource
 import com.yapp.breake.data.local.UserLocalDataSource
 import com.yapp.breake.data.remote.source.NameRemoteDataSource
 import com.yapp.breake.domain.repository.NicknameRepository
@@ -12,7 +11,6 @@ import javax.inject.Inject
 internal class NicknameRepositoryImpl @Inject constructor(
 	private val nameRemoteDataSource: NameRemoteDataSource,
 	private val userLocalDataSource: UserLocalDataSource,
-	private val tokenLocalDataSource: TokenLocalDataSource,
 ) : NicknameRepository {
 
 	override fun getRemoteUserName(onError: suspend (Throwable) -> Unit): Flow<UserName> =
@@ -31,11 +29,7 @@ internal class NicknameRepositoryImpl @Inject constructor(
 		userLocalDataSource.updateNickname(nickname, onError = onError)
 	}
 
-	override suspend fun getLocalAccessToken(onError: suspend (Throwable) -> Unit): Flow<String> =
-		tokenLocalDataSource.getUserAccessToken(onError = onError)
-
-	override suspend fun clearLocalUserStorage(onError: suspend (Throwable) -> Unit) {
+	override suspend fun clearLocalName(onError: suspend (Throwable) -> Unit) {
 		userLocalDataSource.clearNickname(onError = onError)
-		tokenLocalDataSource.clearUserToken(onError = onError)
 	}
 }

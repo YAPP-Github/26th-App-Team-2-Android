@@ -15,7 +15,7 @@ class UpdateNicknameUseCaseImpl @Inject constructor(
 	override suspend fun invoke(nickname: String, onError: suspend (Throwable) -> Unit) {
 
 		// DataStore에서 AccessToken 가져오기
-		val accessToken = nicknameRepository.getLocalAccessToken(onError = onError)
+		val accessToken = tokenRepository.getLocalAccessToken(onError = onError)
 			.firstOrNull() ?: run {
 			// AccessToken DataStore에 없으면 에러 처리
 			onError(Throwable("세션이 만료되었습니다"))
@@ -32,7 +32,7 @@ class UpdateNicknameUseCaseImpl @Inject constructor(
 				// 닉네임 업데이트 성공 시
 				UserStatus.ACTIVE -> {
 					// DataStore에 저장된 authCode 삭제
-					tokenRepository.clearAuthCode(onError = onError)
+					tokenRepository.clearLocalAuthCode(onError = onError)
 				}
 
 				// 닉네임 업데이트 실패 시

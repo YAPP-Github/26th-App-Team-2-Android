@@ -23,7 +23,7 @@ internal class TokenRepositoryImpl @Inject constructor(
 	private val authLocalDataSource: AuthLocalDataSource,
 ) : TokenRepository {
 
-	override fun login(
+	override fun getRemoteTokens(
 		provider: String,
 		authorizationCode: String,
 		onError: suspend (Throwable) -> Unit,
@@ -55,12 +55,12 @@ internal class TokenRepositoryImpl @Inject constructor(
 		}
 	}
 
-	override fun loginRetry(
+	override fun getRemoteTokensRetry(
 		provider: String,
 		onError: suspend (Throwable) -> Unit,
 	): Flow<UserToken> = flow {
 		authLocalDataSource.getAuthCode(onError = onError).collect { authCode ->
-			login(
+			getRemoteTokens(
 				provider = provider,
 				authorizationCode = authCode,
 				onError = onError,
@@ -70,7 +70,10 @@ internal class TokenRepositoryImpl @Inject constructor(
 		}
 	}
 
-	override suspend fun logout(onError: suspend (Throwable) -> Unit) {
+	override suspend fun getLocalAccessToken(onError: suspend (Throwable) -> Unit): Flow<String> =
+		tokenLocalDataSource.getUserAccessToken(onError = onError)
+
+	override suspend fun clearLocalTokens(onError: suspend (Throwable) -> Unit) {
 		authLocalDataSource.updateAuthCode(
 			authCode = null,
 			onError = onError,
@@ -83,11 +86,11 @@ internal class TokenRepositoryImpl @Inject constructor(
 		)
 	}
 
-	override suspend fun clearAuthCode(onError: suspend (Throwable) -> Unit) {
+	override suspend fun clearLocalAuthCode(onError: suspend (Throwable) -> Unit) {
 		authLocalDataSource.clearAuthCode(onError = onError)
 	}
 
-	override val isLoginRetryAvailable
+	override val canGetLocalTokensRetry
 		get() = runBlocking {
 			var isAvailable = true
 			authLocalDataSource.getAuthCode(

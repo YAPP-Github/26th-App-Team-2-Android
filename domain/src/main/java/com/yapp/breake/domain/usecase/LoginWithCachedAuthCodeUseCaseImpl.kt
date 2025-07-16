@@ -11,9 +11,9 @@ class LoginWithCachedAuthCodeUseCaseImpl @Inject constructor(
 		provider: String,
 		onError: suspend (Throwable) -> Unit,
 	) {
-		if (tokenRepository.isLoginRetryAvailable) {
+		if (tokenRepository.canGetLocalTokensRetry) {
 			// 로그인 재시도 가능 시, 캐시된 authCode로 로그인 시도
-			tokenRepository.loginRetry(
+			tokenRepository.getRemoteTokensRetry(
 				provider = "KAKAO",
 				onError = onError,
 			)

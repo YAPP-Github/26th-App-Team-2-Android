@@ -9,5 +9,5 @@ class CheckAuthCodeUseCaseImpl @Inject constructor(
 ) : CheckAuthCodeUseCase {
 	override suspend fun invoke(
 		onError: suspend (Throwable) -> Unit,
-	): Boolean = tokenRepository.isLoginRetryAvailable
+	): Boolean = tokenRepository.canGetLocalTokensRetry
 }

@@ -20,7 +20,7 @@ class LoginUseCaseImpl @Inject constructor(
 		authCode: String,
 		provider: String,
 		onError: suspend (Throwable) -> Unit,
-	): Flow<UserStatus> = tokenRepository.login(
+	): Flow<UserStatus> = tokenRepository.getRemoteTokens(
 		provider = provider,
 		authorizationCode = authCode,
 		onError = onError,

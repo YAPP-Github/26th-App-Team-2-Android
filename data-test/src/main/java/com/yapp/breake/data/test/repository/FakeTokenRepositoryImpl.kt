@@ -8,7 +8,7 @@ import kotlinx.coroutines.flow.flow
 import javax.inject.Inject
 
 internal class FakeTokenRepositoryImpl @Inject constructor() : TokenRepository {
-	override fun login(
+	override fun getRemoteTokens(
 		provider: String,
 		authorizationCode: String,
 		onError: suspend (Throwable) -> Unit,
@@ -22,22 +22,27 @@ internal class FakeTokenRepositoryImpl @Inject constructor() : TokenRepository {
 		)
 	}
 
-	override fun loginRetry(
+	override fun getRemoteTokensRetry(
 		provider: String,
 		onError: suspend (Throwable) -> Unit,
-	): Flow<UserToken> = login(
+	): Flow<UserToken> = getRemoteTokens(
 		provider = provider,
 		authorizationCode = "Fake",
 		onError = onError,
 	)
 
-	override suspend fun logout(onError: suspend (Throwable) -> Unit) {
+	override suspend fun getLocalAccessToken(onError: suspend (Throwable) -> Unit): Flow<String> =
+		flow {
+			emit("FakeAccessToken")
+		}
+
+	override suspend fun clearLocalTokens(onError: suspend (Throwable) -> Unit) {
 		// Fake 구현체 에서는 아무 동작도 하지 않음
 	}
 
-	override suspend fun clearAuthCode(onError: suspend (Throwable) -> Unit) {
-		TODO("Not yet implemented")
+	override suspend fun clearLocalAuthCode(onError: suspend (Throwable) -> Unit) {
+		// Fake 구현체에서는 아무 동작도 하지 않음
 	}
 
-	override val isLoginRetryAvailable: Boolean = true
+	override val canGetLocalTokensRetry: Boolean = true
 }

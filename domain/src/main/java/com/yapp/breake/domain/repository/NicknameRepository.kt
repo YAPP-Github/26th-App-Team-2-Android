@@ -27,17 +27,9 @@ interface NicknameRepository {
 	): Flow<UserName>
 
 	/**
-	 * 로컬에서 액세스 토큰을 가져오는 메서드
-	 *
-	 * @param onError 오류 발생 시 호출되는 콜백
-	 * @return [Flow]로 감싸진 액세스 토큰 문자열
-	 */
-	suspend fun getLocalAccessToken(onError: suspend (Throwable) -> Unit): Flow<String>
-
-	/**
 	 * 로컬 사용자 저장소를 비우는 메서드
 	 *
 	 * @param onError 오류 발생 시 호출되는 콜백
 	 */
-	suspend fun clearLocalUserStorage(onError: suspend (Throwable) -> Unit)
+	suspend fun clearLocalName(onError: suspend (Throwable) -> Unit)
 }
