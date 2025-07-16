@@ -2,7 +2,7 @@ package com.yapp.breake.data.repository.mapper
 
 import com.yapp.breake.core.model.user.UserToken
 import com.yapp.breake.core.model.user.UserStatus
-import com.yapp.breake.data.api.model.LoginResponse
+import com.yapp.breake.data.remote.model.LoginResponse
 
 internal fun LoginResponse.toData(): UserToken = UserToken(
 	accessToken = this.data.accessToken,

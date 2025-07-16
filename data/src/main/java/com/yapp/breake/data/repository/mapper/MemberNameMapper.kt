@@ -2,7 +2,7 @@ package com.yapp.breake.data.repository.mapper
 
 import com.yapp.breake.core.model.user.UserName
 import com.yapp.breake.core.model.user.UserStatus
-import com.yapp.breake.data.api.model.MemberResponse
+import com.yapp.breake.data.remote.model.MemberResponse
 
 internal fun MemberResponse.toData(): UserName = UserName(
 	nickname = this.data.nickname,

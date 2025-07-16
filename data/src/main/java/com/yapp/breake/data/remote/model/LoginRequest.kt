@@ -1,6 +1,6 @@
-package com.yapp.breake.data.api.model
+package com.yapp.breake.data.remote.model
 
-import com.yapp.breake.data.api.ApiConfig
+import com.yapp.breake.data.remote.retrofit.ApiConfig
 import kotlinx.serialization.Serializable
 
 @Serializable

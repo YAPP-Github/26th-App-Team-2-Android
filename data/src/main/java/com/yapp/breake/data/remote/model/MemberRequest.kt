@@ -1,4 +1,4 @@
-package com.yapp.breake.data.api.model
+package com.yapp.breake.data.remote.model
 
 import kotlinx.serialization.Serializable
 
