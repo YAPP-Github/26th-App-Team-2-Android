@@ -1,4 +1,4 @@
-package com.yapp.breake.data.local
+package com.yapp.breake.data.local.source
 
 import androidx.datastore.core.DataStore
 import com.yapp.breake.core.datastore.model.DatastoreUserToken
@@ -8,10 +8,10 @@ import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.flow
 import javax.inject.Inject
 
-internal class TokenLocalDataSource @Inject constructor(
+internal class TokenLocalDataSourceImpl @Inject constructor(
 	private val userTokenDataSource: DataStore<DatastoreUserToken>,
-) {
-	suspend fun updateUserToken(
+) : TokenLocalDataSource {
+	override suspend fun updateUserToken(
 		userAccessToken: String?,
 		userRefreshToken: String?,
 		userStatus: UserStatus?,
@@ -30,7 +30,7 @@ internal class TokenLocalDataSource @Inject constructor(
 		}
 	}
 
-	fun getUserAccessToken(onError: suspend (Throwable) -> Unit): Flow<String> = flow {
+	override fun getUserAccessToken(onError: suspend (Throwable) -> Unit): Flow<String> = flow {
 		userTokenDataSource.data
 			.catch {
 				onError(Throwable("유저 인증을 가져오는데 실패했습니다"))
@@ -44,7 +44,7 @@ internal class TokenLocalDataSource @Inject constructor(
 			}
 	}
 
-	fun getUserRefreshToken(onError: suspend (Throwable) -> Unit): Flow<String> = flow {
+	override fun getUserRefreshToken(onError: suspend (Throwable) -> Unit): Flow<String> = flow {
 		userTokenDataSource.data
 			.catch {
 				onError(Throwable("유저 인증을 가져오는데 실패했습니다"))
@@ -58,7 +58,7 @@ internal class TokenLocalDataSource @Inject constructor(
 			}
 	}
 
-	fun getUserStatus(onError: suspend (Throwable) -> Unit): Flow<UserStatus> = flow {
+	override fun getUserStatus(onError: suspend (Throwable) -> Unit): Flow<UserStatus> = flow {
 		userTokenDataSource.data
 			.catch {
 				onError(it)
@@ -68,7 +68,7 @@ internal class TokenLocalDataSource @Inject constructor(
 			}
 	}
 
-	suspend fun clearUserToken(onError: suspend (Throwable) -> Unit) {
+	override suspend fun clearUserToken(onError: suspend (Throwable) -> Unit) {
 		userTokenDataSource.updateData { tokenObject ->
 			tokenObject.copy(
 				accessToken = null,

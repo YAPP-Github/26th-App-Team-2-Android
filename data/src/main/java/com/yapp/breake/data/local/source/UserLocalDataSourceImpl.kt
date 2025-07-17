@@ -1,4 +1,4 @@
-package com.yapp.breake.data.local
+package com.yapp.breake.data.local.source
 
 import androidx.datastore.core.DataStore
 import com.yapp.breake.core.datastore.model.DatastoreUserInfo
@@ -7,10 +7,10 @@ import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.flow
 import javax.inject.Inject
 
-internal class UserLocalDataSource @Inject constructor(
+internal class UserLocalDataSourceImpl @Inject constructor(
 	private val userInfoDataStore: DataStore<DatastoreUserInfo>,
-) {
-	suspend fun updateNickname(
+) : UserLocalDataSource {
+	override suspend fun updateNickname(
 		nickname: String,
 		onError: suspend (Throwable) -> Unit,
 	) {
@@ -23,7 +23,7 @@ internal class UserLocalDataSource @Inject constructor(
 		}
 	}
 
-	suspend fun clearNickname(onError: suspend (Throwable) -> Unit) {
+	override suspend fun clearNickname(onError: suspend (Throwable) -> Unit) {
 		userInfoDataStore.updateData {
 			it.copy(nickname = null)
 		}.runCatching {
@@ -33,7 +33,7 @@ internal class UserLocalDataSource @Inject constructor(
 		}
 	}
 
-	fun getNickname(onError: suspend (Throwable) -> Unit): Flow<String> = flow {
+	override fun getNickname(onError: suspend (Throwable) -> Unit): Flow<String> = flow {
 		userInfoDataStore.data
 			.catch {
 				onError(Throwable("유저 닉네임을 가져오는데 실패했습니다"))

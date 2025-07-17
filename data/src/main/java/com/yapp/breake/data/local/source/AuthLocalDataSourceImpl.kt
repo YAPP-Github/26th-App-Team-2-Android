@@ -1,4 +1,4 @@
-package com.yapp.breake.data.local
+package com.yapp.breake.data.local.source
 
 import androidx.datastore.core.DataStore
 import com.yapp.breake.core.datastore.model.DatastoreAuthCode
@@ -8,11 +8,11 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.flow
 
-internal class AuthLocalDataSource @Inject constructor(
+internal class AuthLocalDataSourceImpl @Inject constructor(
 	private val authCodeDataStore: DataStore<DatastoreAuthCode>,
-) {
+) : AuthLocalDataSource {
 
-	suspend fun updateAuthCode(authCode: String?, onError: suspend (Throwable) -> Unit) {
+	override suspend fun updateAuthCode(authCode: String?, onError: suspend (Throwable) -> Unit) {
 		authCodeDataStore.updateData { authCodeObj ->
 			authCodeObj.copy(authCode = authCode)
 		}.runCatching {
@@ -22,7 +22,7 @@ internal class AuthLocalDataSource @Inject constructor(
 		}
 	}
 
-	fun getAuthCode(onError: suspend (Throwable) -> Unit): Flow<String> = flow {
+	override fun getAuthCode(onError: suspend (Throwable) -> Unit): Flow<String> = flow {
 		authCodeDataStore.data
 			.catch {
 				onError(it)
@@ -36,7 +36,7 @@ internal class AuthLocalDataSource @Inject constructor(
 			}
 	}
 
-	suspend fun clearAuthCode(onError: suspend (Throwable) -> Unit) {
+	override suspend fun clearAuthCode(onError: suspend (Throwable) -> Unit) {
 		authCodeDataStore.updateData {
 			it.copy(authCode = null)
 		}.runCatching {
