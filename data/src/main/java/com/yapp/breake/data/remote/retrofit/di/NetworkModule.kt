@@ -1,4 +1,4 @@
-package com.yapp.breake.data.remote.di
+package com.yapp.breake.data.remote.retrofit.di
 
 import com.skydoves.sandwich.retrofit.adapters.ApiResponseCallAdapterFactory
 import com.yapp.breake.data.remote.retrofit.ApiConfig
