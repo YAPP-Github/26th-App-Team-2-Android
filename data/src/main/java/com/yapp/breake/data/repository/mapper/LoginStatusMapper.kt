@@ -1,0 +1,9 @@
+package com.yapp.breake.data.repository.mapper
+
+import com.yapp.breake.core.model.user.UserStatus
+
+internal fun String.toLoginStatus(): UserStatus = when (this) {
+	"ACTIVE" -> UserStatus.ACTIVE
+	"HOLD" -> UserStatus.HALF_SIGNUP
+	else -> UserStatus.INACTIVE
+}

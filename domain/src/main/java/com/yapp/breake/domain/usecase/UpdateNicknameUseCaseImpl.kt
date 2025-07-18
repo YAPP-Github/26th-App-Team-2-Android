@@ -1,17 +1,35 @@
 package com.yapp.breake.domain.usecase
 
-import com.yapp.breake.domain.repository.UserProfileRepository
-import kotlinx.coroutines.flow.first
+import com.yapp.breake.core.model.user.UserStatus
+import com.yapp.breake.domain.repository.TokenRepository
+import com.yapp.breake.domain.repository.NicknameRepository
 import javax.inject.Inject
 import javax.inject.Named
 
 class UpdateNicknameUseCaseImpl @Inject constructor(
-	@Named("UserProfileRepo") private val userProfileRepository: UserProfileRepository,
-	@Named("FakeUserProfileRepo") private val fakeUserProfileRepository: UserProfileRepository,
+	@Named("NicknameRepo") private val nicknameRepository: NicknameRepository,
+	@Named("TokenRepo") private val tokenRepository: TokenRepository,
 ) : UpdateNicknameUseCase {
 
 	override suspend fun invoke(nickname: String, onError: suspend (Throwable) -> Unit) {
-		// TODO: 서버 안정화 후 네트워크 호출로 변경 예정
-		userProfileRepository.updateUserProfile(nickname, onError).first()
+		// AccessToken을 사용하여 닉네임 업데이트, 로컬에 닉네임 저장
+		nicknameRepository.updateUserName(
+			nickname = nickname,
+			onError = onError,
+		).collect {
+			when (it.state) {
+				// 닉네임 업데이트 성공 시
+				UserStatus.ACTIVE -> {
+					// DataStore에 저장된 authCode 삭제
+					tokenRepository.clearLocalAuthCode(onError = onError)
+				}
+
+				// 닉네임 업데이트 실패 시
+				else -> {
+					// 에러 처리
+					onError(Throwable("닉네임 업데이트에 실패했습니다"))
+				}
+			}
+		}
 	}
 }

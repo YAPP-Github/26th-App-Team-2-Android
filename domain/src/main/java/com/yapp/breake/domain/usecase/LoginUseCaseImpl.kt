@@ -1,34 +1,30 @@
 package com.yapp.breake.domain.usecase
 
-import com.yapp.breake.core.model.user.UserTokenStatus
-import com.yapp.breake.domain.repository.LoginRepository
-import com.yapp.breake.domain.repository.UserTokenRepository
+import com.yapp.breake.core.model.user.UserStatus
+import com.yapp.breake.domain.repository.TokenRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import javax.inject.Inject
 import javax.inject.Named
 
+/**
+ * 카카오 로그인 이후 AuthCode를 이용하여 로그인하는 UseCase
+ *
+ * 로그인 성공 시 UserStatus를 반환하며, 실패 시 onError 콜백을 호출
+ */
 class LoginUseCaseImpl @Inject constructor(
-	@Named("LoginRepo") private val loginRepository: LoginRepository,
-	@Named("FakeLoginRepo") private val fakeLoginRepository: LoginRepository,
-	private val userTokenRepository: UserTokenRepository,
+	@Named("TokenRepo") private val tokenRepository: TokenRepository,
 ) : LoginUseCase {
 
 	override operator fun invoke(
-		authAccessToken: String,
+		authCode: String,
 		provider: String,
 		onError: suspend (Throwable) -> Unit,
-	): Flow<UserTokenStatus> = loginRepository.flowLogin(
+	): Flow<UserStatus> = tokenRepository.getRemoteTokens(
 		provider = provider,
-		authorizationCode = authAccessToken,
+		authorizationCode = authCode,
 		onError = onError,
 	).map {
-		userTokenRepository.updateUserToken(
-			userAccessToken = it.accessToken,
-			userRefreshToken = it.refreshToken,
-			userStatus = it.status,
-			onError = {},
-		)
 		it.status
 	}
 }

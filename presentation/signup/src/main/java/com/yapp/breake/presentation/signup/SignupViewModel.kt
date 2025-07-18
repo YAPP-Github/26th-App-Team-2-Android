@@ -11,6 +11,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
+import timber.log.Timber
 import javax.inject.Inject
 
 @HiltViewModel
@@ -39,13 +40,23 @@ class SignupViewModel @Inject constructor(
 
 	fun onNameSubmit(name: String) {
 		viewModelScope.launch {
-			runCatching {
-				updateNicknameUseCase(name) { e ->
-					_errorFlow.emit(e)
-					return@updateNicknameUseCase
+			viewModelScope.launch {
+				runCatching {
+					var success = true
+					updateNicknameUseCase(
+						nickname = name,
+						onError = {
+							success = false
+							_errorFlow.emit(it)
+						},
+					)
+
+					if (success) {
+						_navigationFlow.emit(SignupEffect.NavigateToOnboarding)
+					}
+				}.onFailure {
+					Timber.e(it, "닉네임 업데이트 중 에러 발생")
 				}
-			}.onSuccess {
-				_navigationFlow.emit(SignupEffect.NavigateToOnboarding)
 			}
 		}
 	}

@@ -3,8 +3,7 @@ package com.yapp.breake.core.model.user
 import kotlinx.serialization.Serializable
 
 @Serializable
-data class UserToken(
-	val accessToken: String,
-	val refreshToken: String,
-	val status: UserStatus,
+data class UserName(
+	val nickname: String,
+	val state: UserStatus,
 )
