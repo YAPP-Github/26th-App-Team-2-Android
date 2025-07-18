@@ -4,6 +4,6 @@ import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
 @Serializable
-data class MemberResponse(
-	@SerialName("data") val data: MemberData,
-) : BaseResponse(code = 0)
+open class BaseResponse(
+	@SerialName("code") val code: Int,
+)
