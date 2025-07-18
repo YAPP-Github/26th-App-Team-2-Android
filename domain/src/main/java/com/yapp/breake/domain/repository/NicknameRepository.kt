@@ -15,13 +15,11 @@ interface NicknameRepository {
 	/**
 	 * 사용자 이름을 업데이트하고 로컬에 저장하는 메서드
 	 *
-	 * @param accessToken 사용자의 액세스 토큰
 	 * @param nickname 새로 설정할 사용자 이름
 	 * @param onError 오류 발생 시 호출되는 콜백
 	 * @return [Flow]로 감싸진 [UserName] 객체
 	 */
 	fun updateUserName(
-		accessToken: String,
 		nickname: String,
 		onError: suspend (Throwable) -> Unit,
 	): Flow<UserName>

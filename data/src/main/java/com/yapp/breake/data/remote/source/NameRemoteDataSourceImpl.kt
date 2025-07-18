@@ -13,11 +13,10 @@ internal class NameRemoteDataSourceImpl @Inject constructor(
 	private val retrofitBrakeApi: RetrofitBrakeApi,
 ) : NameRemoteDataSource {
 	override fun updateUserName(
-		accessToken: String,
 		nickname: String,
 		onError: suspend (Throwable) -> Unit,
 	): Flow<MemberResponse> = flow {
-		retrofitBrakeApi.updateMemberName("Bearer $accessToken", MemberRequest(nickname))
+		retrofitBrakeApi.updateMemberName(MemberRequest(nickname))
 			.suspendOnSuccess {
 				emit(this.data)
 			}.suspendOnFailure {

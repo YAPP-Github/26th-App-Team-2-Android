@@ -19,7 +19,6 @@ internal class FakeNicknameRepositoryImpl @Inject constructor() : NicknameReposi
 	}
 
 	override fun updateUserName(
-		accessToken: String,
 		nickname: String,
 		onError: suspend (Throwable) -> Unit,
 	): Flow<UserName> = flow {

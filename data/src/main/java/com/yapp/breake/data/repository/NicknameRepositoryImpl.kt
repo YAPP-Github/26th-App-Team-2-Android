@@ -19,11 +19,9 @@ internal class NicknameRepositoryImpl @Inject constructor(
 		nameRemoteDataSource.getUserName(onError = onError).map { it.toData() }
 
 	override fun updateUserName(
-		accessToken: String,
 		nickname: String,
 		onError: suspend (Throwable) -> Unit,
 	): Flow<UserName> = nameRemoteDataSource.updateUserName(
-		accessToken = accessToken,
 		nickname = nickname,
 		onError = onError,
 	).onEach {

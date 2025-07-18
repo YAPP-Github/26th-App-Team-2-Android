@@ -7,7 +7,6 @@ import com.yapp.breake.data.remote.model.MemberRequest
 import com.yapp.breake.data.remote.model.MemberResponse
 import retrofit2.http.Body
 import retrofit2.http.GET
-import retrofit2.http.Header
 import retrofit2.http.PATCH
 import retrofit2.http.POST
 
@@ -19,7 +18,6 @@ internal interface RetrofitBrakeApi {
 
 	@PATCH("/v1/members/me")
 	suspend fun updateMemberName(
-		@Header("Authorization") authCode: String,
 		@Body request: MemberRequest,
 	): ApiResponse<MemberResponse>
 

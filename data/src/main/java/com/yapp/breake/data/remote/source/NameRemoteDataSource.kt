@@ -5,7 +5,6 @@ import kotlinx.coroutines.flow.Flow
 
 interface NameRemoteDataSource {
 	fun updateUserName(
-		accessToken: String,
 		nickname: String,
 		onError: suspend (Throwable) -> Unit,
 	): Flow<MemberResponse>
