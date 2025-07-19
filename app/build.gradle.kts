@@ -43,6 +43,7 @@ dependencies {
 	implementation(projects.data)
 	implementation(projects.overlay.main)
 	implementation(projects.presentation.main)
+	implementation(projects.core.alarm)
 	implementation(projects.core.detection)
 	testImplementation(projects.core.testing)
 

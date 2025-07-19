@@ -270,7 +270,7 @@ class OverlayActivity : ComponentActivity() {
 			return
 		}
 
-		when (overlayData.appGroupState) {
+		when (AppGroupState.fromName(overlayData.appGroupState)) {
 			AppGroupState.NeedSetting -> {
 				TimerOverlay(
 					groupId = overlayData.groupId,

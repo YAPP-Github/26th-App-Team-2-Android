@@ -5,6 +5,7 @@ import android.content.Intent
 import com.yapp.breake.core.common.BlockingConstants
 import com.yapp.breake.core.model.app.AppGroup
 import com.yapp.breake.core.model.app.AppGroupState
+import com.yapp.breake.core.model.app.AppGroupState.Companion.name
 import timber.log.Timber
 
 object OverlayLauncher {
@@ -17,7 +18,7 @@ object OverlayLauncher {
 		Timber.d("startOverlayActivity 호출")
 
 		val overlayData = OverlayData(
-			appGroupState = appGroupState,
+			appGroupState = appGroupState.name,
 			groupId = appGroup.id,
 		)
 

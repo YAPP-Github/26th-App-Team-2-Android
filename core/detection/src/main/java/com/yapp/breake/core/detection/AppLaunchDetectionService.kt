@@ -3,7 +3,6 @@ package com.yapp.breake.core.detection
 import android.accessibilityservice.AccessibilityService
 import android.accessibilityservice.AccessibilityServiceInfo
 import android.view.accessibility.AccessibilityEvent
-import com.yapp.breake.core.model.app.App
 import com.yapp.breake.core.model.app.AppGroupState
 import com.yapp.breake.domain.repository.AppRepository
 import com.yapp.breake.domain.usecase.FindAppGroupUsecase
@@ -12,7 +11,6 @@ import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
-import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.launch
 import timber.log.Timber
 import javax.inject.Inject
@@ -28,13 +26,6 @@ class AppLaunchDetectionService : AccessibilityService() {
 
 	private val serviceJob = SupervisorJob()
 	private val serviceScope = CoroutineScope(Dispatchers.Main + serviceJob)
-
-//	private var managedPackageNames: List<String> = emptyList()
-
-	private var managedPackageNames: List<String> = listOf(
-		"com.google.android.youtube",
-	)
-	private val youtube = "com.google.android.youtube"
 
 	override fun onAccessibilityEvent(event: AccessibilityEvent?) {
 		if (event?.eventType == AccessibilityEvent.TYPE_WINDOW_STATE_CHANGED) {
@@ -58,23 +49,23 @@ class AppLaunchDetectionService : AccessibilityService() {
 		serviceScope.launch {
 			val appGroup = findAppGroupUsecase(packageName)
 			val blockingState = appGroup?.appGroupState
-			Timber.i("앱 그룹: ${appGroup?.name}, 상태: $blockingState")
+
+			blockingState?.let {
+				Timber.i("앱 그룹: ${appGroup.name}, 상태: $it")
+			}
 
 			when (blockingState) {
 				AppGroupState.NeedSetting, AppGroupState.Blocking -> {
-					com.yapp.breake.core.utils.OverlayLauncher.startOverlay(
+					OverlayLauncher.startOverlay(
 						context = applicationContext,
 						appGroup = appGroup,
 						appGroupState = blockingState,
 					)
 				}
-				is AppGroupState.SnoozeBlocking -> {
-					Timber.i("SNOOZE_BLOCKING은 불가능한 상태입니다.")
-				}
-				AppGroupState.Using, null -> {
+				AppGroupState.Using -> {
 					Timber.i("$packageName 앱은 사용 상태입니다. 아무 작업도 하지 않습니다.")
 				}
-
+				else -> {}
 			}
 		}
 	}
@@ -86,15 +77,6 @@ class AppLaunchDetectionService : AccessibilityService() {
 
 	override fun onServiceConnected() {
 		super.onServiceConnected()
-		serviceScope.launch {
-			appRepository.observeApp()
-				.distinctUntilChanged()
-				.collect { managedApps ->
-					val packageNames = managedApps.map(App::packageName)
-					managedPackageNames = packageNames
-					updateServiceInfo(packageNames.toTypedArray())
-				}
-		}
 	}
 
 	private fun updateServiceInfo(packageNames: Array<String>) {

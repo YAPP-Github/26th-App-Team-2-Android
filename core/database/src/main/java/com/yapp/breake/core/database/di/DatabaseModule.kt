@@ -31,7 +31,7 @@ internal object DatabaseModule {
 				runBlocking {
 					db.execSQL(
 						"""
-						INSERT INTO `group` (groupId, name, blockingState) VALUES
+						INSERT INTO `group` (groupId, name, appGroupState) VALUES
 						(1, 'YouTube', '${AppGroupState.NeedSetting.name}'),
 						(2, 'Instagram', '${AppGroupState.Blocking.name}'),
 						(3, 'TikTok', '${AppGroupState.Using.name}')
