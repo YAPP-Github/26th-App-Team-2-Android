@@ -1,4 +1,4 @@
-package com.yapp.breake.core.util
+package com.yapp.breake.core.common
 
 enum class AlarmAction {
 	ACTION_USING_FINISH,

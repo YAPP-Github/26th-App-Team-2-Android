@@ -7,11 +7,8 @@ import android.content.Context
 import android.content.Intent
 import android.os.Build
 import com.yapp.breake.core.alarm.notification.NotificationReceiver
-import com.yapp.breake.core.common.Constants
-import com.yapp.breake.core.model.app.AppGroupState
-import com.yapp.breake.core.util.AlarmAction
+import com.yapp.breake.core.common.AlarmAction
 import com.yapp.breake.domain.repository.AlarmScheduler
-import com.yapp.breake.domain.repository.AppGroupRepository
 import timber.log.Timber
 import java.time.LocalDateTime
 import java.time.ZoneId
@@ -19,45 +16,33 @@ import javax.inject.Inject
 
 class AlarmSchedulerImpl @Inject constructor(
 	private val alarmManager: AlarmManager,
-	private val appGroupRepository: AppGroupRepository,
 	private val context: Context,
 ) : AlarmScheduler {
 
-	override suspend fun scheduleAlarm(
+	override fun scheduleAlarm(
 		groupId: Long,
-		appGroupState: AppGroupState,
 		second: Int,
+		action: AlarmAction,
 	): Result<Unit> {
-		return when (appGroupState) {
-			AppGroupState.NeedSetting -> return Result.failure(IllegalStateException("알람을 예약하지 않는 상태입니다."))
-			AppGroupState.Using -> {
-				scheduleAlarmWithAction(
-					groupId = groupId,
-					second = second,
-					action = AlarmAction.ACTION_USING_FINISH,
-					appGroupState = appGroupState,
-				)
-			}
-			AppGroupState.Blocking -> {
-				scheduleAlarmWithAction(
-					groupId = groupId,
-					second = Constants.TEST_BLOCKING_TIME,
-					action = AlarmAction.ACTION_BLOCKING_FINISH,
-					appGroupState = appGroupState,
-				)
-			}
-			is AppGroupState.SnoozeBlocking -> {
-				scheduleAlarmWithAction(
-					groupId = groupId,
-					second = Constants.TEST_SNOOZE_TIME,
-					action = AlarmAction.ACTION_SNOOZE_FINISH,
-					appGroupState = appGroupState,
-				)
-			}
+		if (!canScheduleExactAlarms()) {
+			val errorMessage = "정확한 알람 권한이 없습니다. ID: $groupId 에 대한 정확한 알람을 예약할 수 없습니다."
+			Timber.w(errorMessage)
+			return Result.failure(SecurityException("정확한 알람 권한이 없습니다."))
+		}
+
+		val intent = getPendingIntent(groupId, action.name)
+		Timber.d("$second 초 후에 알람을 예약합니다. ID: $groupId, 액션: ${action.name}")
+
+		return try {
+			scheduleAlarm(second, intent)
+			Result.success(Unit)
+		} catch (se: SecurityException) {
+			Timber.e("SecurityException: ID: $groupId 에 대한 정확한 알람을 예약할 수 없습니다. $se")
+			Result.failure(se)
 		}
 	}
 
-	override suspend fun cancelAlarm(groupId: Long) {
+	override fun cancelAlarm(groupId: Long) {
 		val alarmManager = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
 		val intent = Intent(context, NotificationReceiver::class.java).apply {
 			action = AlarmAction.ACTION_USING_FINISH.name
@@ -74,31 +59,6 @@ class AlarmSchedulerImpl @Inject constructor(
 		pendingIntent?.let {
 			alarmManager.cancel(it)
 			it.cancel()
-		}
-	}
-
-	private suspend fun scheduleAlarmWithAction(
-		groupId: Long,
-		second: Int,
-		action: AlarmAction,
-		appGroupState: AppGroupState,
-	): Result<Unit> {
-		if (!canScheduleExactAlarms()) {
-			val errorMessage = "정확한 알람 권한이 없습니다. ID: $groupId 에 대한 정확한 알람을 예약할 수 없습니다."
-			Timber.w(errorMessage)
-			return Result.failure(SecurityException("정확한 알람 권한이 없습니다."))
-		}
-
-		val intent = getPendingIntent(groupId, action.name)
-		Timber.d("$second 초 후에 알람을 예약합니다. ID: $groupId, 액션: ${action.name}")
-
-		return try {
-			scheduleAlarm(second, intent)
-			appGroupRepository.setAppGroupState(groupId = groupId, appGroupState = appGroupState)
-			Result.success(Unit)
-		} catch (se: SecurityException) {
-			Timber.e("SecurityException: ID: $groupId 에 대한 정확한 알람을 예약할 수 없습니다. $se")
-			Result.failure(se)
 		}
 	}
 
@@ -143,6 +103,7 @@ class AlarmSchedulerImpl @Inject constructor(
 			pendingIntent,
 		)
 	}
+
 	companion object {
 		const val EXTRA_GROUP_ID = "EXTRA_GROUP_ID"
 	}

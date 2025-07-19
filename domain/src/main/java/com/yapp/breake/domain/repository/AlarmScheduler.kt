@@ -1,16 +1,16 @@
 package com.yapp.breake.domain.repository
 
-import com.yapp.breake.core.model.app.AppGroupState
+import com.yapp.breake.core.common.AlarmAction
 
 interface AlarmScheduler {
 
-	suspend fun scheduleAlarm(
+	fun scheduleAlarm(
 		groupId: Long,
-		appGroupState: AppGroupState,
 		second: Int = 0,
+		action: AlarmAction,
 	): Result<Unit>
 
-	suspend fun cancelAlarm(
+	fun cancelAlarm(
 		groupId: Long,
 	)
 }

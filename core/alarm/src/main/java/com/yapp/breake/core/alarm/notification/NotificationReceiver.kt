@@ -4,13 +4,13 @@ import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import com.yapp.breake.core.alarm.scheduler.AlarmSchedulerImpl.Companion.EXTRA_GROUP_ID
+import com.yapp.breake.core.common.AlarmAction
 import com.yapp.breake.core.model.app.AppGroup
 import com.yapp.breake.core.model.app.AppGroupState
-import com.yapp.breake.core.util.AlarmAction
 import com.yapp.breake.core.util.AppLaunchUtil
 import com.yapp.breake.core.util.OverlayLauncher
-import com.yapp.breake.domain.repository.AlarmScheduler
 import com.yapp.breake.domain.repository.AppGroupRepository
+import com.yapp.breake.domain.usecase.SetAlarmUsecase
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -26,7 +26,7 @@ class NotificationReceiver : BroadcastReceiver() {
 	lateinit var appGroupRepository: AppGroupRepository
 
 	@Inject
-	lateinit var alarmScheduler: AlarmScheduler
+	lateinit var setAlarmUsecase: SetAlarmUsecase
 
 	private val serviceJob = SupervisorJob()
 	private val serviceScope = CoroutineScope(Dispatchers.Main + serviceJob)
@@ -70,7 +70,7 @@ class NotificationReceiver : BroadcastReceiver() {
 			)
 		}
 
-		alarmScheduler.scheduleAlarm(
+		setAlarmUsecase(
 			groupId = appGroup.id,
 			appGroupState = AppGroupState.Blocking,
 		)

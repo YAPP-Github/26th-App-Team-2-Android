@@ -1,9 +1,9 @@
-package com.yapp.breake.core.alarm.scheduler
+package com.yapp.breake.core.alarm.di
 
 import android.app.AlarmManager
 import android.content.Context
+import com.yapp.breake.core.alarm.scheduler.AlarmSchedulerImpl
 import com.yapp.breake.domain.repository.AlarmScheduler
-import com.yapp.breake.domain.repository.AppGroupRepository
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -25,11 +25,9 @@ internal object AlarmSchedulerModule {
 	@Singleton
 	fun provideAlarmScheduler(
 		alarmManager: AlarmManager,
-		appGroupRepository: AppGroupRepository,
 		@ApplicationContext context: Context,
 	): AlarmScheduler = AlarmSchedulerImpl(
 		alarmManager = alarmManager,
-		appGroupRepository = appGroupRepository,
 		context = context,
 	)
 }

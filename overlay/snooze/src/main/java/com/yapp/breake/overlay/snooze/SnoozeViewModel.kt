@@ -6,6 +6,7 @@ import androidx.lifecycle.viewModelScope
 import com.yapp.breake.core.model.app.AppGroupState
 import com.yapp.breake.domain.repository.AlarmScheduler
 import com.yapp.breake.domain.repository.AppGroupRepository
+import com.yapp.breake.domain.usecase.SetAlarmUsecase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.SharedFlow
@@ -14,7 +15,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 internal class SnoozeViewModel @Inject constructor(
-	private val alarmScheduler: AlarmScheduler,
+	private val setAlarmUsecase: SetAlarmUsecase,
 	private val appGroupRepository: AppGroupRepository,
 ) : ViewModel() {
 
@@ -25,7 +26,7 @@ internal class SnoozeViewModel @Inject constructor(
 
 	fun setSnooze(groupId: Long) {
 		viewModelScope.launch {
-			alarmScheduler.scheduleAlarm(
+			setAlarmUsecase(
 				groupId = groupId,
 				appGroupState = AppGroupState.SnoozeBlocking(),
 			).onSuccess {

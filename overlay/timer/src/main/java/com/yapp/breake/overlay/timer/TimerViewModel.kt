@@ -4,6 +4,7 @@ import androidx.compose.runtime.mutableIntStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.yapp.breake.core.model.app.AppGroupState
+import com.yapp.breake.domain.usecase.SetAlarmUsecase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.SharedFlow
@@ -12,7 +13,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 internal class TimerViewModel @Inject constructor(
-	private val alarmScheduler: AlarmScheduler,
+	private val setAlarmUsecase: SetAlarmUsecase,
 ) : ViewModel() {
 
 	var time = mutableIntStateOf(0)
@@ -23,7 +24,7 @@ internal class TimerViewModel @Inject constructor(
 
 	fun setBreakTimeAlarm(groupId: Long) {
 		viewModelScope.launch {
-			alarmScheduler.scheduleAlarm(
+			setAlarmUsecase(
 				second = time.intValue,
 				groupId = groupId,
 				appGroupState = AppGroupState.Using,
