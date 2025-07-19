@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="guide_continue_button_next">다음</string>
+	<string name="guide_continue_button_confirm">확인</string>
+</resources>
