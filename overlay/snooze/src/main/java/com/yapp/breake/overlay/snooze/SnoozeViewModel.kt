@@ -36,7 +36,7 @@ internal class SnoozeViewModel @Inject constructor(
 		}
 	}
 
-	fun setAppGroupTOBlocking(groupId: Long) {
+	fun setAppGroupToBlocking(groupId: Long) {
 		viewModelScope.launch {
 			appGroupRepository.setAppGroupState(
 				groupId = groupId,

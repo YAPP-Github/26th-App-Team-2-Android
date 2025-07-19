@@ -33,7 +33,9 @@ private fun SnoozeOverlay(
 		SnoozeScreen(
 			snoozeCount = snoozeCount,
 			onFinishApp = onFinishApp,
-			onSnooze = { /* Handle snooze action */ },
+			onSnooze = {
+				viewModel.setSnooze(groupId)
+			},
 		)
 	} else {
 		SnoozeBlocking(
