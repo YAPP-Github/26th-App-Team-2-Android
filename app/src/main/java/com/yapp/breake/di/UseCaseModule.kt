@@ -1,4 +1,4 @@
-package com.yapp.breake.data.usecase.di
+package com.yapp.breake.di
 
 import com.yapp.breake.domain.usecase.CheckAuthCodeUseCase
 import com.yapp.breake.domain.usecase.CheckAuthCodeUseCaseImpl

@@ -35,6 +35,7 @@ dependencies {
 	implementation(projects.core.designsystem)
 	implementation(projects.data)
 	implementation(projects.dataTest)
+	implementation(projects.domain)
 	implementation(projects.presentation.main)
 	implementation(projects.presentation.home)
 
