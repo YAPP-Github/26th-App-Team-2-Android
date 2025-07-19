@@ -270,7 +270,7 @@ class OverlayActivity : ComponentActivity() {
 			return
 		}
 
-		when (AppGroupState.fromName(overlayData.appGroupState)) {
+		when (val appGroupState = AppGroupState.fromName(overlayData.appGroupState)) {
 			AppGroupState.NeedSetting -> {
 				TimerOverlay(
 					groupId = overlayData.groupId,
@@ -280,7 +280,7 @@ class OverlayActivity : ComponentActivity() {
 			is AppGroupState.SnoozeBlocking -> {
 				SnoozeRoute(
 					groupId = overlayData.groupId,
-					snoozeCount = (overlayData.appGroupState as AppGroupState.SnoozeBlocking).snoozeCount,
+					snoozeCount = appGroupState.snoozeCount,
 				)
 			}
 			AppGroupState.Blocking -> {

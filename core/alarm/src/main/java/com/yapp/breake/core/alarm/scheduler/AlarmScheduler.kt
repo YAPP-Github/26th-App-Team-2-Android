@@ -7,7 +7,7 @@ interface AlarmScheduler {
 	suspend fun scheduleAlarm(
 		groupId: Long,
 		appGroupState: AppGroupState,
-		minute: Int = 0,
+		second: Int = 0,
 	): Result<Unit>
 
 	suspend fun cancelAlarm(

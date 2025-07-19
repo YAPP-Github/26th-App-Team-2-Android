@@ -25,11 +25,11 @@ internal class TimerViewModel @Inject constructor(
 	fun setBreakTimeAlarm(groupId: Long) {
 		viewModelScope.launch {
 			alarmScheduler.scheduleAlarm(
-				minute = time.intValue,
+				second = time.intValue,
 				groupId = groupId,
 				appGroupState = AppGroupState.Using,
 			).onSuccess {
-				sendToastMessage("알람이 설정되었습니다. ${time.intValue} 분 후에 휴식 시간이 시작됩니다.")
+				sendToastMessage("알람이 설정되었습니다. ${time.intValue} 초 후에 휴식 시간이 시작됩니다.")
 			}.onFailure {
 				sendToastMessage("알람 설정에 실패했습니다. 정확한 알람 권한을 확인해주세요.")
 			}

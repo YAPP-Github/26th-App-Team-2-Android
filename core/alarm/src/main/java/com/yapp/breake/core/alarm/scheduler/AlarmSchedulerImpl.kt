@@ -1,5 +1,6 @@
 package com.yapp.breake.core.alarm.scheduler
 
+import android.annotation.SuppressLint
 import android.app.AlarmManager
 import android.app.PendingIntent
 import android.content.Context
@@ -24,14 +25,14 @@ class AlarmSchedulerImpl @Inject constructor(
 	override suspend fun scheduleAlarm(
 		groupId: Long,
 		appGroupState: AppGroupState,
-		minute: Int,
+		second: Int,
 	): Result<Unit> {
 		return when (appGroupState) {
 			AppGroupState.NeedSetting -> return Result.failure(IllegalStateException("알람을 예약하지 않는 상태입니다."))
 			AppGroupState.Using -> {
 				scheduleAlarmWithAction(
 					groupId = groupId,
-					minute = minute,
+					second = second,
 					action = AlarmAction.ACTION_USING_FINISH,
 					appGroupState = appGroupState,
 				)
@@ -39,7 +40,7 @@ class AlarmSchedulerImpl @Inject constructor(
 			AppGroupState.Blocking -> {
 				scheduleAlarmWithAction(
 					groupId = groupId,
-					minute = Constants.BLOCKING_TIME,
+					second = Constants.TEST_BLOCKING_TIME,
 					action = AlarmAction.ACTION_BLOCKING_FINISH,
 					appGroupState = appGroupState,
 				)
@@ -47,7 +48,7 @@ class AlarmSchedulerImpl @Inject constructor(
 			is AppGroupState.SnoozeBlocking -> {
 				scheduleAlarmWithAction(
 					groupId = groupId,
-					minute = Constants.SNOOZE_TIME,
+					second = Constants.TEST_SNOOZE_TIME,
 					action = AlarmAction.ACTION_SNOOZE_FINISH,
 					appGroupState = appGroupState,
 				)
@@ -77,7 +78,7 @@ class AlarmSchedulerImpl @Inject constructor(
 
 	private suspend fun scheduleAlarmWithAction(
 		groupId: Long,
-		minute: Int,
+		second: Int,
 		action: AlarmAction,
 		appGroupState: AppGroupState,
 	): Result<Unit> {
@@ -88,9 +89,10 @@ class AlarmSchedulerImpl @Inject constructor(
 		}
 
 		val intent = getPendingIntent(groupId, action.name)
+		Timber.d("$second 초 후에 알람을 예약합니다. ID: $groupId, 액션: ${action.name}")
 
 		return try {
-			scheduleAlarm(minute, intent)
+			scheduleAlarm(second, intent)
 			appGroupRepository.setAppGroupState(groupId = groupId, appGroupState = appGroupState)
 			Result.success(Unit)
 		} catch (se: SecurityException) {
@@ -125,12 +127,13 @@ class AlarmSchedulerImpl @Inject constructor(
 		)
 	}
 
+	@SuppressLint("MissingPermission")
 	private fun scheduleAlarm(
-		minute: Int,
+		second: Int,
 		pendingIntent: PendingIntent,
 	) {
 		val startTime = LocalDateTime.now()
-		val triggerTime = startTime.plusMinutes(minute.toLong())
+		val triggerTime = startTime.plusSeconds(second.toLong())
 		val triggerAtMillis =
 			triggerTime.atZone(ZoneId.systemDefault()).toInstant().toEpochMilli()
 		alarmManager.setExactAndAllowWhileIdle(
