@@ -13,4 +13,5 @@ dependencies {
 	implementation(projects.core.alarm)
 	implementation(projects.core.utils)
 
+	implementation(projects.overlay.ui)
 }

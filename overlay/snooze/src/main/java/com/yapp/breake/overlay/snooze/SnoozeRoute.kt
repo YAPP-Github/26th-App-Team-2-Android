@@ -2,6 +2,7 @@ package com.yapp.breake.overlay.snooze
 
 import androidx.compose.runtime.Composable
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.yapp.breake.core.common.Constants
 import com.yapp.breake.overlay.snooze.component.SnoozeBlocking
 import com.yapp.breake.overlay.snooze.component.SnoozeScreen
 
@@ -9,33 +10,35 @@ import com.yapp.breake.overlay.snooze.component.SnoozeScreen
 fun SnoozeRoute(
 	groupId: Long,
 	snoozeCount: Int,
+	onFinishApp: () -> Unit,
+	onStartHome: () -> Unit,
 ) {
+	SnoozeOverlay(
+		groupId = groupId,
+		snoozeCount = snoozeCount,
+		onFinishApp = onFinishApp,
+		onStartHome = onStartHome,
+	)
 }
 
 @Composable
 private fun SnoozeOverlay(
 	groupId: Long,
 	snoozeCount: Int,
+	onFinishApp: () -> Unit,
+	onStartHome: () -> Unit,
 	viewModel: SnoozeViewModel = hiltViewModel(),
 ) {
-
-}
-
-@Composable
-private fun SnoozeContent(
-	snoozeCount: Int,
-	snoozeEnabled: Boolean,
-) {
-	if (snoozeEnabled) {
+	if (snoozeCount < Constants.MAX_SNOOZE_COUNT) {
 		SnoozeScreen(
 			snoozeCount = snoozeCount,
-			onExit = { /* Handle exit action */ },
+			onFinishApp = onFinishApp,
 			onSnooze = { /* Handle snooze action */ },
 		)
 	} else {
 		SnoozeBlocking(
-			onExit = { /* Handle exit action */ },
-			onSnooze = { /* Handle snooze action */ },
+			onFinishApp = onFinishApp,
+			onStartHome = onStartHome,
 		)
 	}
 }

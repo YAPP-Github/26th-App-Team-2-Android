@@ -37,6 +37,7 @@ include(
 // overlay
 include(
 	"overlay:main",
+	"overlay:ui",
 	"overlay:timer",
 	"overlay:snooze",
 	"overlay:blocking",

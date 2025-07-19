@@ -281,10 +281,17 @@ class OverlayActivity : ComponentActivity() {
 				SnoozeRoute(
 					groupId = overlayData.groupId,
 					snoozeCount = appGroupState.snoozeCount,
+					onFinishApp = ::finish,
+					onStartHome = {
+					},
 				)
 			}
 			AppGroupState.Blocking -> {
-				BlockingOverlay()
+				BlockingOverlay(
+					onStartHome = {
+					},
+					onFinishApp = ::finish,
+				)
 			}
 			AppGroupState.Using -> {}
 		}
