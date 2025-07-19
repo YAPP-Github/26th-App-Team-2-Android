@@ -11,7 +11,7 @@ android {
 
 dependencies {
 	implementation(projects.domain)
-	implementation(projects.core.utils)
+	implementation(projects.core.util)
 	implementation(projects.core.common)
 	implementation(projects.core.model)
 }

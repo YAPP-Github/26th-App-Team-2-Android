@@ -6,7 +6,7 @@ import android.view.accessibility.AccessibilityEvent
 import com.yapp.breake.core.model.app.AppGroupState
 import com.yapp.breake.domain.repository.AppRepository
 import com.yapp.breake.domain.usecase.FindAppGroupUsecase
-import com.yapp.breake.core.utils.OverlayLauncher
+import com.yapp.breake.core.util.OverlayLauncher
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers

@@ -31,7 +31,7 @@ import com.google.accompanist.permissions.rememberMultiplePermissionsState
 import com.yapp.breake.core.common.BlockingConstants
 import com.yapp.breake.core.designsystem.theme.BrakeTheme
 import com.yapp.breake.core.model.app.AppGroupState
-import com.yapp.breake.core.utils.OverlayData
+import com.yapp.breake.core.util.OverlayData
 import com.yapp.breake.overlay.blocking.BlockingOverlay
 import com.yapp.breake.overlay.snooze.SnoozeRoute
 import com.yapp.breake.overlay.timer.TimerOverlay

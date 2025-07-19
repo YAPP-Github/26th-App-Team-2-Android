@@ -1,4 +1,4 @@
-package com.yapp.breake.core.utils
+package com.yapp.breake.core.util
 
 import android.app.usage.UsageEvents
 import android.app.usage.UsageStatsManager

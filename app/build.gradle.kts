@@ -38,14 +38,12 @@ dependencies {
 	implementation(projects.domain)
 	implementation(projects.presentation.main)
 	implementation(projects.presentation.home)
-	implementation(projects.blocking)
 
 	implementation(projects.data)
 	implementation(projects.overlay.main)
 	implementation(projects.presentation.main)
 	implementation(projects.core.alarm)
 	implementation(projects.core.detection)
-	testImplementation(projects.core.testing)
 
 	implementation(libs.androidx.profileinstaller)
 

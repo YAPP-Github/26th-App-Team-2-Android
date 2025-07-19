@@ -1,4 +1,4 @@
-package com.yapp.breake.core.utils
+package com.yapp.breake.core.util
 
 import android.os.Parcelable
 import kotlinx.parcelize.Parcelize
