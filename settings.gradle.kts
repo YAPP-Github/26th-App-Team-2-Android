@@ -50,6 +50,7 @@ include(
 	":core:model",
 	":core:navigation",
 	":core:designsystem",
+	":core:permission",
 	":core:util",
 	":core:testing",
 )
