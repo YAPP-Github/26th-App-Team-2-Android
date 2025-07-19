@@ -1,7 +1,7 @@
 package com.yapp.breake.domain.repository
 
 import com.yapp.breake.core.model.app.AppGroup
-import com.yapp.breake.core.model.app.BlockingState
+import com.yapp.breake.core.model.app.AppGroupState
 import kotlinx.coroutines.flow.Flow
 
 interface AppGroupRepository {
@@ -12,8 +12,8 @@ interface AppGroupRepository {
 
 	suspend fun getAppGroupById(groupId: Long): AppGroup?
 
-	suspend fun updateAppGroupState(
+	suspend fun setAppGroupState(
 		groupId: Long,
-		blockingState: BlockingState,
+		appGroupState: AppGroupState,
 	): Result<Unit>
 }

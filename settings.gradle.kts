@@ -35,7 +35,12 @@ include(
 )
 
 // overlay
-include(":blocking")
+include(
+	"overlay:main",
+	"overlay:timer",
+	"overlay:snooze",
+	"overlay:blocking",
+)
 
 // Domain
 include(":domain")
@@ -49,9 +54,11 @@ include(":data-test")
 // Core
 include(
 	":core:auth",
+	":core:alarm",
 	":core:common",
 	":core:datastore",
 	":core:database",
+	":core:detection",
 	":core:model",
 	":core:navigation",
 	":core:permission",
@@ -61,4 +68,5 @@ include(
 	":core:util",
 	":core:alarm",
 	":core:testing",
+	":core:utils",
 )

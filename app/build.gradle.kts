@@ -41,6 +41,9 @@ dependencies {
 	implementation(projects.blocking)
 
 	implementation(projects.data)
+	implementation(projects.overlay.main)
+	implementation(projects.presentation.main)
+	implementation(projects.core.detection)
 	testImplementation(projects.core.testing)
 
 	implementation(libs.androidx.profileinstaller)

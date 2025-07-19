@@ -4,6 +4,7 @@ import androidx.room.Dao
 import androidx.room.Query
 import androidx.room.Transaction
 import com.yapp.breake.core.database.entity.AppGroupEntity
+import com.yapp.breake.core.model.app.AppGroupState
 import kotlinx.coroutines.flow.Flow
 
 @Dao
@@ -24,6 +25,6 @@ interface AppGroupDao {
 	@Query("DELETE FROM `group` WHERE groupId = :groupId")
 	suspend fun deleteAppGroupById(groupId: Long)
 
-	@Query("UPDATE `group` SET blockingState = :blockingState WHERE groupId = :groupId")
-	suspend fun updateAppGroupState(groupId: Long, blockingState: String)
+	@Query("UPDATE `group` SET appGroupState = :appGroupState WHERE groupId = :groupId")
+	suspend fun setAppGroupState(groupId: Long, appGroupState: AppGroupState)
 }

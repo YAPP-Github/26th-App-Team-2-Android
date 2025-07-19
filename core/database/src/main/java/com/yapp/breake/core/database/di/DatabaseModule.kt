@@ -6,7 +6,8 @@ import androidx.room.RoomDatabase
 import androidx.sqlite.db.SupportSQLiteDatabase
 import com.yapp.breake.core.database.BreakeDatabase
 import com.yapp.breake.core.database.BreakeDatabase.Companion.DATABASE_NAME
-import com.yapp.breake.core.model.app.BlockingState
+import com.yapp.breake.core.model.app.AppGroupState
+import com.yapp.breake.core.model.app.AppGroupState.Companion.name
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -31,9 +32,9 @@ internal object DatabaseModule {
 					db.execSQL(
 						"""
 						INSERT INTO `group` (groupId, name, blockingState) VALUES
-						(1, 'YouTube', '${BlockingState.NEEDS_SETTING.name}'),
-						(2, 'Instagram', '${BlockingState.BLOCKING.name}'),
-						(3, 'TikTok', '${BlockingState.USING.name}')
+						(1, 'YouTube', '${AppGroupState.NeedSetting.name}'),
+						(2, 'Instagram', '${AppGroupState.Blocking.name}'),
+						(3, 'TikTok', '${AppGroupState.Using.name}')
 						""".trimIndent(),
 					)
 

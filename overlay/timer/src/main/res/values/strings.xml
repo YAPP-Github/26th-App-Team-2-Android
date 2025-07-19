@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="timer_title">타이머가 작동 중입니다</string>
+    <string name="timer_complete">완료</string>
+    <string name="timer_check_time">앱에서 남은 시간 확인하기</string>
+</resources>

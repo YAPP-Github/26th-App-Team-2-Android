@@ -3,7 +3,7 @@ package com.yapp.breake.core.database
 import androidx.room.Database
 import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
-import com.yapp.breake.core.database.converter.BlockingStateConverter
+import com.yapp.breake.core.database.converter.AppGroupStateConverter
 import com.yapp.breake.core.database.converter.LocalDateTimeConverter
 import com.yapp.breake.core.database.dao.AppDao
 import com.yapp.breake.core.database.dao.AppGroupDao
@@ -23,7 +23,7 @@ import com.yapp.breake.core.database.entity.SnoozeEntity
 )
 @TypeConverters(
 	value = [
-		BlockingStateConverter::class,
+		AppGroupStateConverter::class,
 		LocalDateTimeConverter::class,
 	],
 )
