@@ -23,8 +23,7 @@ import com.yapp.breake.core.designsystem.theme.BrakeTheme
 import com.yapp.breake.core.designsystem.theme.Gray200
 
 @Composable
-fun BlockingOverlay(
-) {
+fun BlockingOverlay() {
 	BlockingScreen(
 		onExit = { /* Handle exit action */ },
 		onSnooze = { /* Handle snooze action */ },

@@ -13,7 +13,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 internal class TimerViewModel @Inject constructor(
-    private val alarmScheduler: AlarmScheduler,
+	private val alarmScheduler: AlarmScheduler,
 ) : ViewModel() {
 
 	var time = mutableIntStateOf(0)
@@ -27,7 +27,7 @@ internal class TimerViewModel @Inject constructor(
 			alarmScheduler.scheduleAlarm(
 				minute = time.intValue,
 				groupId = groupId,
-				appGroupState = AppGroupState.Using
+				appGroupState = AppGroupState.Using,
 			).onSuccess {
 				sendToastMessage("알람이 설정되었습니다. ${time.intValue} 분 후에 휴식 시간이 시작됩니다.")
 			}.onFailure {

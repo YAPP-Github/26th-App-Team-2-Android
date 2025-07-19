@@ -27,20 +27,20 @@ import com.yapp.breake.core.designsystem.theme.BrakeTheme
 
 @Composable
 fun TimerOverlay(
-    groupId: Long,
-    onFinishApp: () -> Unit,
+	groupId: Long,
+	onFinishApp: () -> Unit,
 ) {
 	TimerContent(
 		groupId = groupId,
-		onFinishApp = onFinishApp
+		onFinishApp = onFinishApp,
 	)
 }
 
 @Composable
 private fun TimerContent(
-    groupId: Long,
-    onFinishApp: () -> Unit,
-    viewModel: TimerViewModel = hiltViewModel(),
+	groupId: Long,
+	onFinishApp: () -> Unit,
+	viewModel: TimerViewModel = hiltViewModel(),
 ) {
 	val context = LocalContext.current
 

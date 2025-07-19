@@ -18,12 +18,10 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.yapp.breake.core.common.Constants
 import com.yapp.breake.core.designsystem.component.SmallButton
 import com.yapp.breake.core.designsystem.component.VerticalSpacer
 import com.yapp.breake.core.designsystem.theme.BrakeTheme
 import com.yapp.breake.core.designsystem.theme.Gray200
-import com.yapp.breake.core.model.app.AppGroupState
 import com.yapp.breake.snooze.R
 
 @Composable

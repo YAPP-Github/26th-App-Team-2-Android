@@ -29,8 +29,8 @@ class AppGroupRepositoryImpl @Inject constructor(
 	}
 
 	override suspend fun setAppGroupState(
-        groupId: Long,
-        appGroupState: AppGroupState,
+		groupId: Long,
+		appGroupState: AppGroupState,
 	): Result<Unit> {
 		return try {
 			appGroupDao.setAppGroupState(

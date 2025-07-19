@@ -2,7 +2,7 @@
   "formatVersion": 1,
   "database": {
     "version": 1,
-    "identityHash": "7f3a40a3bfa135e3457b86fb5a3c76bb",
+    "identityHash": "8ba79824415990c30b41c7e747278c04",
     "entities": [
       {
         "tableName": "app",
@@ -114,7 +114,7 @@
       },
       {
         "tableName": "group",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`groupId` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `name` TEXT NOT NULL, `blockingState` TEXT NOT NULL)",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`groupId` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `name` TEXT NOT NULL, `appGroupState` TEXT NOT NULL)",
         "fields": [
           {
             "fieldPath": "groupId",
@@ -129,8 +129,8 @@
             "notNull": true
           },
           {
-            "fieldPath": "blockingState",
-            "columnName": "blockingState",
+            "fieldPath": "appGroupState",
+            "columnName": "appGroupState",
             "affinity": "TEXT",
             "notNull": true
           }
@@ -145,7 +145,7 @@
     ],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '7f3a40a3bfa135e3457b86fb5a3c76bb')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '8ba79824415990c30b41c7e747278c04')"
     ]
   }
 }
