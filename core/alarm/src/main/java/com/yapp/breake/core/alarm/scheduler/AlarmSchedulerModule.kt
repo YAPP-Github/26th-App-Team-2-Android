@@ -2,6 +2,7 @@ package com.yapp.breake.core.alarm.scheduler
 
 import android.app.AlarmManager
 import android.content.Context
+import com.yapp.breake.domain.repository.AlarmScheduler
 import com.yapp.breake.domain.repository.AppGroupRepository
 import dagger.Module
 import dagger.Provides

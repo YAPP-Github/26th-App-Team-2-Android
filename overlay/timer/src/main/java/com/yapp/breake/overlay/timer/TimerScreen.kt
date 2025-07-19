@@ -1,6 +1,5 @@
 package com.yapp.breake.overlay.timer
 
-import android.widget.Toast
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -24,6 +23,7 @@ import com.yapp.breake.core.designsystem.component.BaseScaffold
 import com.yapp.breake.core.designsystem.component.LargeButton
 import com.yapp.breake.core.designsystem.component.VerticalSpacer
 import com.yapp.breake.core.designsystem.theme.BrakeTheme
+import com.yapp.breake.core.navigation.compositionlocal.LocalMainAction
 
 @Composable
 fun TimerOverlay(
@@ -42,7 +42,7 @@ private fun TimerContent(
 	onFinishApp: () -> Unit,
 	viewModel: TimerViewModel = hiltViewModel(),
 ) {
-	val context = LocalContext.current
+	val mainAction = LocalMainAction.current
 
 	TimerScreen(
 		time = viewModel.time.intValue,
@@ -55,7 +55,7 @@ private fun TimerContent(
 
 	LaunchedEffect(Unit) {
 		viewModel.toastEffect.collect { message ->
-			Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
+			mainAction.onShowToast(message)
 		}
 	}
 }

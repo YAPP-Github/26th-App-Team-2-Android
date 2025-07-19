@@ -10,7 +10,6 @@ android {
 
 dependencies {
 	implementation(projects.core.common)
-	implementation(projects.core.alarm)
 	implementation(projects.core.util)
 
 	implementation(projects.overlay.ui)

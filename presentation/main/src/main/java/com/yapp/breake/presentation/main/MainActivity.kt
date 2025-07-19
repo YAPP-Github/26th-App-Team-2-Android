@@ -1,6 +1,7 @@
 package com.yapp.breake.presentation.main
 
 import android.os.Bundle
+import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
@@ -38,6 +39,7 @@ class MainActivity : ComponentActivity() {
 			val navigator: MainNavigator = rememberMainNavigator(startDestination)
 			val coroutineScope: CoroutineScope = rememberCoroutineScope()
 			val snackBarHostState = remember { SnackbarHostState() }
+			val context = this
 
 			val mainAction = object : MainAction {
 				override fun onFinish() = finish()
@@ -46,6 +48,7 @@ class MainActivity : ComponentActivity() {
 						snackBarHostState.showSnackbar(throwable?.message ?: "알 수 없는 오류가 발생했습니다.")
 					}
 				}
+				override fun onShowToast(message: String) = Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
 			}
 
 			CompositionLocalProvider(

@@ -1,4 +1,4 @@
-package com.yapp.breake.core.alarm.scheduler
+package com.yapp.breake.domain.repository
 
 import com.yapp.breake.core.model.app.AppGroupState
 

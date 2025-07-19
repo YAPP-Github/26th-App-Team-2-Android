@@ -3,8 +3,8 @@ package com.yapp.breake.overlay.snooze
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.yapp.breake.core.alarm.scheduler.AlarmScheduler
 import com.yapp.breake.core.model.app.AppGroupState
+import com.yapp.breake.domain.repository.AlarmScheduler
 import com.yapp.breake.domain.repository.AppGroupRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableSharedFlow
