@@ -14,6 +14,7 @@ import androidx.lifecycle.LifecycleEventObserver
 import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.yapp.breake.core.designsystem.theme.LocalPadding
+import com.yapp.breake.core.navigation.compositionlocal.LocalMainAction
 import com.yapp.breake.core.navigation.compositionlocal.LocalNavigatorAction
 import com.yapp.breake.presentation.onboarding.model.OnboardingEffect
 import com.yapp.breake.presentation.onboarding.model.OnboardingUiState
@@ -31,6 +32,11 @@ fun OnboardingRoute(
 	val screenWidth = LocalConfiguration.current.screenWidthDp.dp
 	val screenHorizontalPadding = LocalPadding.current.screenPaddingHorizontal
 	val navAction = LocalNavigatorAction.current
+	val manAction = LocalMainAction.current
+
+	LaunchedEffect(true) {
+		viewModel.errorFlow.collect { manAction.onShowSnackBar(it) }
+	}
 
 	// 외부 화면으로 이동 side effect 처리
 	LaunchedEffect(true) {
