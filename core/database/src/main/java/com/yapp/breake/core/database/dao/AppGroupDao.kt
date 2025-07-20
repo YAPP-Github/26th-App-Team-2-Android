@@ -6,6 +6,7 @@ import androidx.room.Transaction
 import com.yapp.breake.core.database.entity.AppGroupEntity
 import com.yapp.breake.core.model.app.AppGroupState
 import kotlinx.coroutines.flow.Flow
+import java.time.LocalDateTime
 
 @Dao
 interface AppGroupDao {
@@ -26,5 +27,8 @@ interface AppGroupDao {
 	suspend fun deleteAppGroupById(groupId: Long)
 
 	@Query("UPDATE `group` SET appGroupState = :appGroupState WHERE groupId = :groupId")
-	suspend fun setAppGroupState(groupId: Long, appGroupState: AppGroupState)
+	suspend fun updateAppGroupState(groupId: Long, appGroupState: AppGroupState)
+
+	@Query("INSERT INTO `snooze` (parentGroupId, snoozeTime) VALUES (:parentGroupId, :snoozeTime)")
+	suspend fun insertSnooze(parentGroupId: Long, snoozeTime: LocalDateTime)
 }

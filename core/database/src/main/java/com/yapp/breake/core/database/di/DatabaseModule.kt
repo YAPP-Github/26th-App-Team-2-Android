@@ -7,7 +7,6 @@ import androidx.sqlite.db.SupportSQLiteDatabase
 import com.yapp.breake.core.database.BreakeDatabase
 import com.yapp.breake.core.database.BreakeDatabase.Companion.DATABASE_NAME
 import com.yapp.breake.core.model.app.AppGroupState
-import com.yapp.breake.core.model.app.AppGroupState.Companion.name
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -33,8 +32,6 @@ internal object DatabaseModule {
 						"""
 						INSERT INTO `group` (groupId, name, appGroupState) VALUES
 						(1, 'YouTube', '${AppGroupState.NeedSetting.name}'),
-						(2, 'Instagram', '${AppGroupState.Blocking.name}'),
-						(3, 'TikTok', '${AppGroupState.Using.name}')
 						""".trimIndent(),
 					)
 
@@ -42,8 +39,6 @@ internal object DatabaseModule {
 						"""
 						INSERT INTO `app` (packageName, category, parentGroupId) VALUES
 						('com.google.android.youtube', 'Entertainment', 1),
-						('com.instagram.android', 'Social', 2),
-						('com.zhiliaoapp.musically', 'Entertainment', 3)
 						""".trimIndent(),
 					)
 				}

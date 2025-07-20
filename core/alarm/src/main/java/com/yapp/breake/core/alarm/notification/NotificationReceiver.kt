@@ -41,7 +41,6 @@ class NotificationReceiver : BroadcastReceiver() {
 				when (AlarmAction.valueOf(intentAction)) {
 					AlarmAction.ACTION_USING -> startBlocking(context, appGroup)
 					AlarmAction.ACTION_BLOCKING -> stopBlocking(context, appGroup)
-					AlarmAction.ACTION_SNOOZE -> TODO()
 				}
 			}
 		}
@@ -66,7 +65,8 @@ class NotificationReceiver : BroadcastReceiver() {
 			OverlayLauncher.startOverlay(
 				context = context,
 				appGroup = appGroup,
-				appGroupState = AppGroupState.SnoozeBlocking(appGroup.snoozesCount),
+				appGroupState = AppGroupState.SnoozeBlocking,
+				snoozesCount = appGroup.snoozesCount,
 			)
 		}
 
@@ -81,12 +81,12 @@ class NotificationReceiver : BroadcastReceiver() {
 		isUserUsingApp: Boolean,
 	) {
 		val newAppGroupState = if (isUserUsingApp) {
-			AppGroupState.SnoozeBlocking(appGroup.snoozesCount)
+			AppGroupState.SnoozeBlocking
 		} else {
 			AppGroupState.Blocking
 		}
 
-		appGroupRepository.setAppGroupState(
+		appGroupRepository.updateAppGroupState(
 			groupId = appGroup.id,
 			appGroupState = newAppGroupState,
 		)
@@ -94,7 +94,7 @@ class NotificationReceiver : BroadcastReceiver() {
 
 	private suspend fun stopBlocking(context: Context, appGroup: AppGroup) {
 		Timber.i("ID: ${appGroup.id} 차단이 해제되었습니다")
-		appGroupRepository.setAppGroupState(
+		appGroupRepository.updateAppGroupState(
 			groupId = appGroup.id,
 			appGroupState = AppGroupState.NeedSetting,
 		)

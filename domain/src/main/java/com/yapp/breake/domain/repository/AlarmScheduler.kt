@@ -12,5 +12,6 @@ interface AlarmScheduler {
 
 	fun cancelAlarm(
 		groupId: Long,
+		action: AlarmAction,
 	)
 }

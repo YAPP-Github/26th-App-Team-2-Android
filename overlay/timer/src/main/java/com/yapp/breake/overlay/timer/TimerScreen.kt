@@ -92,7 +92,7 @@ private fun TimerScreen(
 					keyboardType = KeyboardType.Number,
 				),
 				singleLine = true,
-				placeholder = { Text("분 입력") },
+				placeholder = { Text("초 입력") },
 				modifier = Modifier
 					.fillMaxWidth()
 					.padding(horizontal = 16.dp),

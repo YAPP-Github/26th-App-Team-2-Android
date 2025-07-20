@@ -12,8 +12,12 @@ interface AppGroupRepository {
 
 	suspend fun getAppGroupById(groupId: Long): AppGroup?
 
-	suspend fun setAppGroupState(
+	suspend fun updateAppGroupState(
 		groupId: Long,
 		appGroupState: AppGroupState,
+	): Result<Unit>
+
+	suspend fun insertSnooze(
+		groupId: Long,
 	): Result<Unit>
 }

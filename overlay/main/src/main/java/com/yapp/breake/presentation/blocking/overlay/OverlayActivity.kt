@@ -302,7 +302,7 @@ class OverlayActivity : ComponentActivity() {
 			LocalMainAction provides mainAction,
 		) {
 			BrakeTheme {
-				when (val appGroupState = AppGroupState.fromName(overlayData.appGroupState)) {
+				when (overlayData.appGroupState) {
 					AppGroupState.NeedSetting -> {
 						TimerOverlay(
 							groupId = overlayData.groupId,
@@ -310,10 +310,10 @@ class OverlayActivity : ComponentActivity() {
 						)
 					}
 
-					is AppGroupState.SnoozeBlocking -> {
+					AppGroupState.SnoozeBlocking -> {
 						SnoozeRoute(
 							groupId = overlayData.groupId,
-							snoozeCount = appGroupState.snoozeCount,
+							snoozesCount = overlayData.snoozesCount,
 							onFinishApp = ::finish,
 							onStartHome = {
 							},

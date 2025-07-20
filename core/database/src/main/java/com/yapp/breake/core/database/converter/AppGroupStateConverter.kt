@@ -2,7 +2,6 @@ package com.yapp.breake.core.database.converter
 
 import androidx.room.TypeConverter
 import com.yapp.breake.core.model.app.AppGroupState
-import com.yapp.breake.core.model.app.AppGroupState.Companion.name
 
 internal class AppGroupStateConverter {
 
@@ -13,6 +12,6 @@ internal class AppGroupStateConverter {
 
 	@TypeConverter
 	fun toAppGroupState(value: String): AppGroupState {
-		return AppGroupState.fromName(value)
+		return AppGroupState.valueOf(value)
 	}
 }
