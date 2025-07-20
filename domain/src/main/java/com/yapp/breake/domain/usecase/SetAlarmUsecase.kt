@@ -20,9 +20,9 @@ class SetAlarmUsecase @Inject constructor(
 
 		val (action, time) = when (appGroupState) {
 			AppGroupState.NeedSetting -> return Result.failure(IllegalStateException("알람을 예약하지 않는 상태입니다."))
-			AppGroupState.Using -> AlarmAction.ACTION_USING_FINISH to second
-			AppGroupState.Blocking -> AlarmAction.ACTION_BLOCKING_FINISH to Constants.TEST_BLOCKING_TIME
-			is AppGroupState.SnoozeBlocking -> AlarmAction.ACTION_SNOOZE_FINISH to Constants.TEST_SNOOZE_TIME
+			AppGroupState.Using -> AlarmAction.ACTION_USING to second
+			AppGroupState.Blocking -> AlarmAction.ACTION_BLOCKING to Constants.TEST_BLOCKING_TIME
+			is AppGroupState.SnoozeBlocking -> AlarmAction.ACTION_SNOOZE to Constants.TEST_SNOOZE_TIME
 		}
 
 		return alarmScheduler.scheduleAlarm(

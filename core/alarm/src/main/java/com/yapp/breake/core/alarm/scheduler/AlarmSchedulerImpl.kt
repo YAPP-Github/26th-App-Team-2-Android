@@ -45,7 +45,7 @@ class AlarmSchedulerImpl @Inject constructor(
 	override fun cancelAlarm(groupId: Long) {
 		val alarmManager = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
 		val intent = Intent(context, NotificationReceiver::class.java).apply {
-			action = AlarmAction.ACTION_USING_FINISH.name
+			action = AlarmAction.ACTION_USING.name
 		}
 
 		val pendingIntentFlags = PendingIntent.FLAG_NO_CREATE or PendingIntent.FLAG_IMMUTABLE

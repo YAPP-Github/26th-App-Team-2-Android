@@ -4,7 +4,6 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.yapp.breake.core.model.app.AppGroupState
-import com.yapp.breake.domain.repository.AlarmScheduler
 import com.yapp.breake.domain.repository.AppGroupRepository
 import com.yapp.breake.domain.usecase.SetAlarmUsecase
 import dagger.hilt.android.lifecycle.HiltViewModel

@@ -39,9 +39,9 @@ class NotificationReceiver : BroadcastReceiver() {
 
 			if (appGroup != null && intentAction != null) {
 				when (AlarmAction.valueOf(intentAction)) {
-					AlarmAction.ACTION_USING_FINISH -> startBlocking(context, appGroup)
-					AlarmAction.ACTION_BLOCKING_FINISH -> stopBlocking(context, appGroup)
-					AlarmAction.ACTION_SNOOZE_FINISH -> TODO()
+					AlarmAction.ACTION_USING -> startBlocking(context, appGroup)
+					AlarmAction.ACTION_BLOCKING -> stopBlocking(context, appGroup)
+					AlarmAction.ACTION_SNOOZE -> TODO()
 				}
 			}
 		}
