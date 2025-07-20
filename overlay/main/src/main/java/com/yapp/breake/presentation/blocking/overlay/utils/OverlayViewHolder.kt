@@ -1,4 +1,4 @@
-package com.yapp.breake.presentation.blocking.overlay.utils // 패키지 변경
+package com.yapp.breake.presentation.blocking.overlay.utils
 
 import android.content.Context
 import android.graphics.PixelFormat
@@ -43,6 +43,7 @@ class OverlayViewHolder(private val context: Context) {
 			setViewTreeLifecycleOwner(lifecycleManager)
 			setViewTreeSavedStateRegistryOwner(lifecycleManager)
 			setViewTreeViewModelStoreOwner(lifecycleManager)
+
 			setContent {
 				CompositionLocalProvider(
 					LocalViewModelStoreOwner provides viewModelStoreOwner,

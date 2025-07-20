@@ -2,6 +2,7 @@ package com.yapp.breake.overlay.timer
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.text.KeyboardOptions
@@ -65,11 +66,25 @@ private fun TimerScreen(
 	onTimeChange: (Int) -> Unit,
 	onComplete: () -> Unit,
 ) {
-	BaseScaffold {
+	BaseScaffold(
+		bottomBar = {
+			Column(
+				modifier = Modifier.fillMaxWidth(),
+				horizontalAlignment = Alignment.CenterHorizontally,
+			) {
+				LargeButton(
+					text = stringResource(id = R.string.timer_complete),
+					onClick = onComplete,
+					enabled = time > 0,
+					modifier = Modifier
+						.padding(horizontal = 16.dp),
+				)
+				VerticalSpacer(20.dp)
+			}
+		},
+	) {
 		Column(
-			modifier = Modifier
-				.fillMaxWidth()
-				.weight(1f),
+			modifier = Modifier.fillMaxSize(),
 			verticalArrangement = Arrangement.Center,
 			horizontalAlignment = Alignment.CenterHorizontally,
 		) {
@@ -97,19 +112,6 @@ private fun TimerScreen(
 					.fillMaxWidth()
 					.padding(horizontal = 16.dp),
 			)
-		}
-		Column(
-			modifier = Modifier.fillMaxWidth(),
-			horizontalAlignment = Alignment.CenterHorizontally,
-		) {
-			LargeButton(
-				text = stringResource(id = R.string.timer_complete),
-				onClick = onComplete,
-				enabled = time > 0,
-				modifier = Modifier
-					.padding(horizontal = 16.dp),
-			)
-			VerticalSpacer(20.dp)
 		}
 	}
 }

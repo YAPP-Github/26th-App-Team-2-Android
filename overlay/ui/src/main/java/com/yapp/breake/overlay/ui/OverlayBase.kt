@@ -3,7 +3,6 @@ package com.yapp.breake.overlay.ui
 import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -20,6 +19,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.yapp.breake.core.designsystem.component.BaseScaffold
 import com.yapp.breake.core.designsystem.component.SmallButton
 import com.yapp.breake.core.designsystem.component.VerticalSpacer
 import com.yapp.breake.core.designsystem.theme.BrakeTheme
@@ -36,16 +36,18 @@ fun OverlayBase(
 	contentDescriptionRes: String? = null,
 	onTextButtonClick: () -> Unit = {},
 ) {
-	Column(
-		horizontalAlignment = Alignment.CenterHorizontally,
-		modifier = Modifier
-			.fillMaxSize()
-			.background(MaterialTheme.colorScheme.background),
+	BaseScaffold(
+		bottomBar = {
+			OverlayButtons(
+				buttonText = buttonText,
+				onButtonClick = onButtonClick,
+				textButtonText = textButtonText,
+				onTextButtonClick = onTextButtonClick,
+			)
+		},
 	) {
 		Column(
-			modifier = Modifier
-				.fillMaxWidth()
-				.weight(1f),
+			modifier = Modifier.fillMaxSize(),
 			verticalArrangement = Arrangement.Center,
 			horizontalAlignment = Alignment.CenterHorizontally,
 		) {
@@ -81,12 +83,6 @@ fun OverlayBase(
 			}
 			VerticalSpacer(30.dp)
 		}
-		OverlayButtons(
-			buttonText = buttonText,
-			onButtonClick = onButtonClick,
-			textButtonText = textButtonText,
-			onTextButtonClick = onTextButtonClick,
-		)
 	}
 }
 
@@ -100,7 +96,7 @@ private fun OverlayButtons(
 ) {
 	Column(
 		horizontalAlignment = Alignment.CenterHorizontally,
-		modifier = modifier,
+		modifier = modifier.fillMaxWidth(),
 	) {
 		SmallButton(
 			text = buttonText,
