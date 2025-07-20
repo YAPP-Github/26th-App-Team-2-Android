@@ -98,11 +98,14 @@ class NotificationReceiver : BroadcastReceiver() {
 			groupId = appGroup.id,
 			appGroupState = AppGroupState.NeedSetting,
 		)
+		val isUserUsingApp = AppLaunchUtil.isAppLaunching(context, appGroup)
 
-		OverlayLauncher.startOverlay(
-			context = context,
-			appGroup = appGroup,
-			appGroupState = AppGroupState.NeedSetting,
-		)
+		if (isUserUsingApp) {
+			OverlayLauncher.startOverlay(
+				context = context,
+				appGroup = appGroup,
+				appGroupState = AppGroupState.NeedSetting,
+			)
+		}
 	}
 }

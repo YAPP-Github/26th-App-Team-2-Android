@@ -291,6 +291,7 @@ class OverlayActivity : ComponentActivity() {
 					snackBarHostState.showSnackbar(throwable?.message ?: "알 수 없는 오류가 발생했습니다.")
 				}
 			}
+
 			override fun onShowToast(message: String) = Toast.makeText(
 				context,
 				message,
@@ -306,7 +307,7 @@ class OverlayActivity : ComponentActivity() {
 					AppGroupState.NeedSetting -> {
 						TimerOverlay(
 							groupId = overlayData.groupId,
-							onFinishApp = ::finish,
+							onCloseOverlay = ::finish,
 						)
 					}
 
@@ -314,9 +315,9 @@ class OverlayActivity : ComponentActivity() {
 						SnoozeRoute(
 							groupId = overlayData.groupId,
 							snoozesCount = overlayData.snoozesCount,
-							onFinishApp = ::finish,
-							onStartHome = {
-							},
+							onCloseOverlay = ::finish,
+							onStartHome = {},
+							onExitManageApp = ::onExitManageApp,
 						)
 					}
 
@@ -324,7 +325,7 @@ class OverlayActivity : ComponentActivity() {
 						BlockingOverlay(
 							onStartHome = {
 							},
-							onFinishApp = ::finish,
+							onExitManageApp = ::onExitManageApp,
 						)
 					}
 
@@ -345,6 +346,15 @@ class OverlayActivity : ComponentActivity() {
 		Timber.d("onNewIntent called with action: ${intent.action}")
 		setIntent(intent)
 		showOverlay(intent.action)
+	}
+
+	private fun onExitManageApp() {
+		val homeIntent = Intent(Intent.ACTION_MAIN).apply {
+			addCategory(Intent.CATEGORY_HOME)
+			flags = Intent.FLAG_ACTIVITY_NEW_TASK
+		}
+		finish()
+		startActivity(homeIntent)
 	}
 }
 

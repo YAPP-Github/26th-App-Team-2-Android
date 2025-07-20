@@ -27,11 +27,11 @@ import com.yapp.breake.core.navigation.compositionlocal.LocalMainAction
 @Composable
 fun TimerOverlay(
 	groupId: Long,
-	onFinishApp: () -> Unit,
+	onCloseOverlay: () -> Unit,
 ) {
 	TimerContent(
 		groupId = groupId,
-		onFinishApp = onFinishApp,
+		onFinishApp = onCloseOverlay,
 	)
 }
 

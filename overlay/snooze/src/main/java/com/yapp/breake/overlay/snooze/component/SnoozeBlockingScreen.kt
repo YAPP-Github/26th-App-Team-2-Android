@@ -10,7 +10,7 @@ import com.yapp.breake.overlay.ui.R as UiRes
 
 @Composable
 internal fun SnoozeBlocking(
-	onFinishApp: () -> Unit,
+	onExitManageApp: () -> Unit,
 	onStartHome: () -> Unit,
 ) {
 	OverlayBase(
@@ -19,7 +19,7 @@ internal fun SnoozeBlocking(
 		buttonText = stringResource(id = UiRes.string.btn_check_time),
 		onButtonClick = onStartHome,
 		textButtonText = stringResource(id = UiRes.string.btn_exit),
-		onTextButtonClick = onFinishApp,
+		onTextButtonClick = onExitManageApp,
 		contentDescriptionRes = stringResource(
 			id = UiRes.string.cooldown_description,
 			Constants.SNOOZE_MINUTES,
@@ -32,7 +32,7 @@ internal fun SnoozeBlocking(
 private fun SnoozeBlockingPreview() {
 	BrakeTheme {
 		SnoozeBlocking(
-			onFinishApp = { /* Do nothing */ },
+			onExitManageApp = { /* Do nothing */ },
 			onStartHome = { /* Do nothing */ },
 		)
 	}

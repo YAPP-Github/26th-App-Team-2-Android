@@ -12,14 +12,16 @@ import com.yapp.breake.overlay.snooze.component.SnoozeScreen
 fun SnoozeRoute(
 	groupId: Long,
 	snoozesCount: Int,
-	onFinishApp: () -> Unit,
+	onCloseOverlay: () -> Unit,
 	onStartHome: () -> Unit,
+	onExitManageApp: () -> Unit,
 ) {
 	SnoozeOverlay(
 		groupId = groupId,
 		snoozesCount = snoozesCount,
-		onFinishApp = onFinishApp,
+		onCloseOverlay = onCloseOverlay,
 		onStartHome = onStartHome,
+		onExitManageApp = onExitManageApp,
 	)
 }
 
@@ -27,8 +29,9 @@ fun SnoozeRoute(
 private fun SnoozeOverlay(
 	groupId: Long,
 	snoozesCount: Int,
-	onFinishApp: () -> Unit,
+	onCloseOverlay: () -> Unit,
 	onStartHome: () -> Unit,
+	onExitManageApp: () -> Unit,
 	viewModel: SnoozeViewModel = hiltViewModel(),
 ) {
 	val mainAction = LocalMainAction.current
@@ -36,15 +39,15 @@ private fun SnoozeOverlay(
 	if (snoozesCount < Constants.MAX_SNOOZE_COUNT) {
 		SnoozeScreen(
 			snoozeCount = snoozesCount,
-			onFinishApp = onFinishApp,
+			onExitManageApp = onExitManageApp,
 			onSnooze = {
 				viewModel.setSnooze(groupId)
-				onFinishApp()
+				onCloseOverlay()
 			},
 		)
 	} else {
 		SnoozeBlocking(
-			onFinishApp = onFinishApp,
+			onExitManageApp = onExitManageApp,
 			onStartHome = onStartHome,
 		)
 	}

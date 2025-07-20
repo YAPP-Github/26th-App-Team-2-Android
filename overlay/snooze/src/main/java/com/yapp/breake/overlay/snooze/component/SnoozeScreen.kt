@@ -11,14 +11,14 @@ import com.yapp.breake.overlay.ui.R as UiRes
 @Composable
 internal fun SnoozeScreen(
 	snoozeCount: Int,
-	onFinishApp: () -> Unit,
+	onExitManageApp: () -> Unit,
 	onSnooze: () -> Unit,
 ) {
 	OverlayBase(
 		imageRes = UiRes.drawable.img_blocking,
 		titleRes = UiRes.string.blocking_title,
 		buttonText = stringResource(id = UiRes.string.btn_exit),
-		onButtonClick = onFinishApp,
+		onButtonClick = onExitManageApp,
 		textButtonText = stringResource(
 			id = UiRes.string.blocking_check_time,
 			snoozeCount,
@@ -34,7 +34,7 @@ private fun SnoozeScreenPreview() {
 	BrakeTheme {
 		SnoozeScreen(
 			snoozeCount = 2,
-			onFinishApp = { /* Do nothing */ },
+			onExitManageApp = { /* Do nothing */ },
 			onSnooze = { /* Do nothing */ },
 		)
 	}

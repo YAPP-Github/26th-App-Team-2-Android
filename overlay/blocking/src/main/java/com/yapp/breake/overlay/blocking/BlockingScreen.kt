@@ -11,18 +11,18 @@ import com.yapp.breake.overlay.ui.R as UiRes
 @Composable
 fun BlockingOverlay(
 	onStartHome: () -> Unit,
-	onFinishApp: () -> Unit,
+	onExitManageApp: () -> Unit,
 ) {
 	BlockingScreen(
 		onStartHome = onStartHome,
-		onFinishApp = onFinishApp,
+		onExitManageApp = onExitManageApp,
 	)
 }
 
 @Composable
 private fun BlockingScreen(
 	onStartHome: () -> Unit,
-	onFinishApp: () -> Unit,
+	onExitManageApp: () -> Unit,
 ) {
 	OverlayBase(
 		imageRes = UiRes.drawable.img_cooldown,
@@ -30,7 +30,7 @@ private fun BlockingScreen(
 		buttonText = stringResource(id = UiRes.string.btn_check_time),
 		onButtonClick = onStartHome,
 		textButtonText = stringResource(id = UiRes.string.btn_exit),
-		onTextButtonClick = onFinishApp,
+		onTextButtonClick = onExitManageApp,
 		contentDescriptionRes = stringResource(
 			id = UiRes.string.blocking_description,
 			Constants.SNOOZE_MINUTES,
@@ -44,7 +44,7 @@ private fun BlockingScreenPreview() {
 	BrakeTheme {
 		BlockingScreen(
 			onStartHome = {},
-			onFinishApp = {},
+			onExitManageApp = {},
 		)
 	}
 }
