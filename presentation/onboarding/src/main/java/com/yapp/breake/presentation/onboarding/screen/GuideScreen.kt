@@ -1,4 +1,4 @@
-package com.yapp.breake.presentation.onboarding
+package com.yapp.breake.presentation.onboarding.screen
 
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.Image
@@ -39,19 +39,22 @@ import com.yapp.breake.core.designsystem.component.VerticalSpacer
 import com.yapp.breake.core.designsystem.theme.BrakeTheme
 import com.yapp.breake.core.designsystem.theme.Gray700
 import com.yapp.breake.core.designsystem.theme.White
+import com.yapp.breake.presentation.onboarding.R
 import kotlinx.collections.immutable.persistentListOf
 import kotlinx.coroutines.launch
 
 @Composable
 fun GuideScreen(
+	startIndex: Int,
 	screenWidth: Dp,
 	screenHorizontalPadding: Dp,
 	onBackClick: () -> Unit,
 	onNextClick: () -> Unit,
 ) {
-	val pagerState = rememberPagerState(pageCount = { 3 })
+	val pagerState = rememberPagerState(initialPage = startIndex, pageCount = { 3 })
 	val scope = rememberCoroutineScope()
 	val handleBackPress: () -> Unit = {
+
 		if (pagerState.currentPage == 0) {
 			onBackClick()
 		} else {
@@ -96,9 +99,9 @@ fun GuideScreen(
 			) { index ->
 				// 각 페이지 이미지 및 설명 리스트
 				val imgList = persistentListOf(
-					R.drawable.img_onboarding1,
-					R.drawable.img_onboarding2,
-					R.drawable.img_onboarding3,
+					R.drawable.img_guide1,
+					R.drawable.img_guide2,
+					R.drawable.img_guide3,
 				)
 				val descriptionList = persistentListOf(
 					"앱을 켤 때, 사용 시간을\n설정해보세요.",
@@ -185,7 +188,7 @@ fun GuideScreen(
 							pagerState.animateScrollToPage(pagerState.currentPage + 1)
 						}
 					} else {
-						onNextClick
+						onNextClick()
 					}
 				},
 				modifier = Modifier
