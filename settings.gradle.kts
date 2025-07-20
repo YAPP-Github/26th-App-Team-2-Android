@@ -51,7 +51,6 @@ include(
 	":core:navigation",
 	":core:permission",
 	":core:designsystem",
-	":core:permission",
 	":core:util",
 	":core:testing",
 )
