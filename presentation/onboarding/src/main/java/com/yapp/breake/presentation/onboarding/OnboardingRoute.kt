@@ -18,6 +18,7 @@ import com.yapp.breake.core.navigation.compositionlocal.LocalMainAction
 import com.yapp.breake.core.navigation.compositionlocal.LocalNavigatorAction
 import com.yapp.breake.presentation.onboarding.model.OnboardingEffect
 import com.yapp.breake.presentation.onboarding.model.OnboardingUiState
+import com.yapp.breake.presentation.onboarding.screen.CompleteScreen
 import com.yapp.breake.presentation.onboarding.screen.GuideScreen
 import com.yapp.breake.presentation.onboarding.screen.PermissionScreen
 
@@ -79,7 +80,7 @@ fun OnboardingRoute(
 				startIndex = state.startPage,
 				screenWidth = screenWidth,
 				screenHorizontalPadding = screenHorizontalPadding,
-				onBackClick = navAction::popBackStack,
+				onBackClick = viewModel::popBackStack,
 				onNextClick = { viewModel.continueFromGuide(context) },
 			)
 		}
@@ -98,8 +99,10 @@ fun OnboardingRoute(
 		}
 
 		OnboardingUiState.Complete -> {
-			// 준비 완료 화면으로 이동
-			// 예: MainScreen 또는 HomeScreen 등으로 이동
+			CompleteScreen(
+				screenHorizontalPadding = screenHorizontalPadding,
+				onStartClick = viewModel::navigateToMain,
+			)
 		}
 	}
 }
