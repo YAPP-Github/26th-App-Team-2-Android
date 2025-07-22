@@ -16,4 +16,8 @@
 	<string name="permission_accessibility_description">앱이 실행되는 것을 감지해요.</string>
 
 	<string name="permission_allow_button">허용하기</string>
+
+	<string name="complete_title">반가워요</string>
+	<string name="complete_description">목표를 세우고 지키는\n새로운 일상을 경험해보세요"</string>
+	<string name="complete_button">시작하기</string>
 </resources>

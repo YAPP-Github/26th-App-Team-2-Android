@@ -47,6 +47,7 @@ class OnboardingViewModel @Inject constructor(
 			if (!permissionManager.isGranted(context, PermissionType.ACCESSIBILITY)) {
 				permissionList.add(PermissionItem.ACCESSIBILITY)
 			}
+
 			if (permissionList.isEmpty()) {
 				_uiState.value = OnboardingUiState.Complete
 			} else {
@@ -75,6 +76,18 @@ class OnboardingViewModel @Inject constructor(
 					permissionManager.getIntent(context, parsePermissionItemToType(type)),
 				),
 			)
+		}
+	}
+
+	fun popBackStack() {
+		viewModelScope.launch {
+			_navigationFlow.emit(OnboardingEffect.NavigateToBack)
+		}
+	}
+
+	fun navigateToMain() {
+		viewModelScope.launch {
+			_navigationFlow.emit(OnboardingEffect.NavigateToMain)
 		}
 	}
 

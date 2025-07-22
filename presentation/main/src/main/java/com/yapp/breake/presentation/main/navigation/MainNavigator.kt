@@ -40,7 +40,8 @@ internal class MainNavigator(
 
 			override fun navigateToOnboarding() = navController.navigateToOnboarding()
 
-			override fun navigateToHome() = navController.navigateToHome()
+			override fun navigateToHome() =
+				navController.navigateToHome(shouldClearBackstack = true)
 		}
 	}
 
