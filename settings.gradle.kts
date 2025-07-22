@@ -49,6 +49,7 @@ include(
 	":core:database",
 	":core:model",
 	":core:navigation",
+	":core:permission",
 	":core:designsystem",
 	":core:util",
 	":core:testing",

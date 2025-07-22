@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">Breake</string>
+	<string name="accessibility_service_label">Breake 접근성 서비스</string>
 </resources>
