@@ -4,7 +4,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import com.yapp.breake.core.designsystem.theme.BrakeTheme
-import com.yapp.breake.overlay.timer.utils.addJosaEulReul
+import com.yapp.breake.core.util.addJosaEulReul
 import com.yapp.breake.overlay.ui.OverlayBase
 import com.yapp.breake.overlay.ui.R as UiRes
 

@@ -4,10 +4,10 @@ import androidx.annotation.DrawableRes
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -24,6 +24,7 @@ import com.yapp.breake.core.designsystem.component.LargeButton
 import com.yapp.breake.core.designsystem.component.VerticalSpacer
 import com.yapp.breake.core.designsystem.theme.BrakeTheme
 import com.yapp.breake.core.designsystem.theme.Gray200
+import com.yapp.breake.core.designsystem.theme.Gray300
 
 @Composable
 fun OverlayBase(
@@ -57,9 +58,7 @@ fun OverlayBase(
 					id = R.string.blocking_image_content_description,
 				),
 				modifier = modifier
-					.padding(horizontal = 70.dp)
-					.fillMaxWidth()
-					.aspectRatio(1f),
+					.size(160.dp),
 			)
 			VerticalSpacer(24.dp)
 			Text(
@@ -69,13 +68,13 @@ fun OverlayBase(
 				color = MaterialTheme.colorScheme.onSurface,
 				modifier = Modifier.fillMaxWidth(),
 			)
-			VerticalSpacer(14.dp)
+			VerticalSpacer(16.dp)
 			if (contentDescriptionRes != null) {
 				Text(
 					text = contentDescriptionRes,
 					style = BrakeTheme.typography.subtitle16SB,
 					textAlign = TextAlign.Center,
-					color = MaterialTheme.colorScheme.onSurfaceVariant,
+					color = Gray300,
 					modifier = Modifier
 						.fillMaxWidth()
 						.padding(horizontal = 16.dp)
@@ -133,12 +132,12 @@ private fun OverlayBasePreview() {
 	BrakeTheme {
 		OverlayBase(
 			imageRes = R.drawable.img_init,
-			title = stringResource(R.string.blocking_title),
+			title = stringResource(R.string.blocking_content),
 			buttonText = "Exit",
 			onButtonClick = { /* Do nothing */ },
 			textButtonText = "Check Time",
 			onTextButtonClick = { /* Do nothing */ },
-			contentDescriptionRes = stringResource(id = R.string.blocking_description, 3),
+			contentDescriptionRes = stringResource(id = R.string.blocking_title, 3, "AppName"),
 		)
 	}
 }

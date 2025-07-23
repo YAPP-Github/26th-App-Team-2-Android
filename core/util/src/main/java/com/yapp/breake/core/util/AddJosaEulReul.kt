@@ -1,6 +1,6 @@
-package com.yapp.breake.overlay.timer.utils
+package com.yapp.breake.core.util
 
-internal fun String.addJosaEulReul(): String {
+fun String.addJosaEulReul(): String {
 	if (this.isEmpty()) return "${this}를"
 
 	val lastChar = this.last()

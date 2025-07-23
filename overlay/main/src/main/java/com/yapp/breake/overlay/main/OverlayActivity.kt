@@ -123,6 +123,7 @@ class OverlayActivity : ComponentActivity() {
 
 				AppGroupState.Blocking -> {
 					BlockingOverlay(
+						appName = overlayData.appName ?: "Unknown App",
 						onStartHome = {
 						},
 						onExitManageApp = ::onExitManageApp,

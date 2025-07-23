@@ -5,9 +5,9 @@
 
 	<string name="blocking_image_content_description">blocking image</string>
 	<string name="cooldown_image_content_description">cooldown image</string>
-	<string name="blocking_title">약속한 시간이\n지났어요</string>
+	<string name="blocking_title">이제 %d분간 %s\n사용할 수 없어요.</string>
+	<string name="blocking_content">사용 시간이 모두 끝났어요.</string>
 	<string name="blocking_check_time">5분 더(%d/%d)</string>
-	<string name="blocking_description">%d분간 관리앱을 사용할 수 없어요.</string>
 	<string name="cooldown_title">연장한 시간도\n모두 끝났어요</string>
 	<string name="cooldown_description">이제 %d분간 관리앱을 사용할 수 없어요.</string>
 	<string name="init_title">%s\n꼭 사용하실건가요?</string>

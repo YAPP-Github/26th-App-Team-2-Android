@@ -1,8 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<resources>
-    <string name="blocking_image_content_description">blocking image</string>
-    <string name="blocking_title"> 시간이\n지났어요</string>
-    <string name="blocking_exit">그만하기</string>
-    <string name="blocking_complete">확인</string>
-    <string name="blocking_check_time">5분 더(%d/%d)</string>
-</resources>
