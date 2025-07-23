@@ -18,10 +18,11 @@ internal class SnoozeViewModel @Inject constructor(
 	private val _toastEffect: MutableSharedFlow<String> = MutableSharedFlow()
 	val toastEffect: SharedFlow<String> get() = _toastEffect
 
-	fun setSnooze(groupId: Long) {
+	fun setSnooze(groupId: Long, appName: String) {
 		viewModelScope.launch {
 			setSnoozeAlarmUsecase(
 				groupId = groupId,
+				appName = appName,
 			).onSuccess {
 				sendToastMessage("알람이 ${Constants.SNOOZE_TIME}초 후에 다시 울립니다.")
 			}.onFailure {

@@ -5,16 +5,20 @@
 
 	<string name="blocking_image_content_description">blocking image</string>
 	<string name="cooldown_image_content_description">cooldown image</string>
-	<string name="blocking_title">이제 %d분간 %s\n사용할 수 없어요.</string>
-	<string name="blocking_content">사용 시간이 모두 끝났어요.</string>
-	<string name="blocking_check_time">5분 더(%d/%d)</string>
-	<string name="cooldown_title">연장한 시간도\n모두 끝났어요</string>
-	<string name="cooldown_description">이제 %d분간 관리앱을 사용할 수 없어요.</string>
+
+	<string name="blocking_title">지금은 %s\n사용할 수 없어요</string>
+	<string name="blocking_description">%d분간 %s 앱을 사용할 수 없어요.</string>
+
+	<string name="snooze_title">약속한 시간이\n지났어요</string>
+	<string name="snooze_blocking_title">이제 %d분간 %s 앱을\n 사용할 수 없어요</string>
+	<string name="snooze_blocking_description">사용 시간이 모두 끝났어요.</string>
+
 	<string name="init_title">%s\n꼭 사용하실건가요?</string>
 	<string name="timer_title">%s\n얼마나 사용할까요?</string>
 	<string name="timer_content"><![CDATA[이미 오늘 <b><font color="#F2FF5E">%s</font></b> 사용했어요]]></string>
 	<string name="timer_complete_time">%s\까지</string>
 
+	<string name="btn_more_time">5분 더(%d/%d)</string>
 	<string name="btn_check_time">남은 시간 확인</string>
 	<string name="btn_use">사용하기</string>
 	<string name="btn_not_use">안하기</string>

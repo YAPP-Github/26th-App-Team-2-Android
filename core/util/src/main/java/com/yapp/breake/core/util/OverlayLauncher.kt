@@ -12,6 +12,7 @@ object OverlayLauncher {
 	fun startOverlay(
 		context: Context,
 		appGroup: AppGroup,
+		appName: String?,
 		appGroupState: AppGroupState,
 		snoozesCount: Int = 0,
 	) {
@@ -21,6 +22,8 @@ object OverlayLauncher {
 			appGroupState = appGroupState,
 			groupId = appGroup.id,
 			snoozesCount = snoozesCount,
+			appName = appName ?: "Unknown App",
+			groupName = appGroup.name,
 		)
 
 		val intent = Intent(BlockingConstants.ACTION_SHOW_OVERLAY).apply {

@@ -16,11 +16,11 @@ internal fun SnoozeScreen(
 ) {
 	OverlayBase(
 		imageRes = UiRes.drawable.img_blocking,
-		title = stringResource(UiRes.string.blocking_content),
+		title = stringResource(UiRes.string.snooze_title),
 		buttonText = stringResource(id = UiRes.string.btn_exit),
 		onButtonClick = onExitManageApp,
 		textButtonText = stringResource(
-			id = UiRes.string.blocking_check_time,
+			id = UiRes.string.btn_more_time,
 			snoozeCount,
 			Constants.MAX_SNOOZE_COUNT,
 		),

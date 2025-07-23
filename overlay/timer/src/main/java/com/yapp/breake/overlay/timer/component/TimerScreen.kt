@@ -20,8 +20,8 @@ import com.yapp.breake.core.designsystem.component.BaseScaffold
 import com.yapp.breake.core.designsystem.component.LargeButton
 import com.yapp.breake.core.designsystem.component.VerticalSpacer
 import com.yapp.breake.core.designsystem.theme.BrakeTheme
+import com.yapp.breake.core.util.addJosaEulReul
 import com.yapp.breake.core.util.extensions.toLocalizedTime
-import com.yapp.breake.overlay.timer.utils.addJosaEulReul
 import java.time.LocalDateTime
 import com.yapp.breake.overlay.ui.R as UiRes
 

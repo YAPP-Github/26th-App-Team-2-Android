@@ -12,11 +12,13 @@ import com.yapp.breake.overlay.ui.R as UiRes
 @Composable
 fun BlockingOverlay(
 	appName: String,
+	groupName: String,
 	onStartHome: () -> Unit,
 	onExitManageApp: () -> Unit,
 ) {
 	BlockingScreen(
 		appName = appName,
+		groupName = groupName,
 		onStartHome = onStartHome,
 		onExitManageApp = onExitManageApp,
 	)
@@ -25,6 +27,7 @@ fun BlockingOverlay(
 @Composable
 private fun BlockingScreen(
 	appName: String,
+	groupName: String,
 	onStartHome: () -> Unit,
 	onExitManageApp: () -> Unit,
 ) {
@@ -32,14 +35,17 @@ private fun BlockingScreen(
 		imageRes = UiRes.drawable.img_cooldown,
 		title = stringResource(
 			id = UiRes.string.blocking_title,
-			Constants.SNOOZE_MINUTES,
 			appName.addJosaEulReul(),
 		),
 		buttonText = stringResource(id = UiRes.string.btn_check_time),
 		onButtonClick = onStartHome,
 		textButtonText = stringResource(id = UiRes.string.btn_exit),
 		onTextButtonClick = onExitManageApp,
-		contentDescriptionRes = stringResource(UiRes.string.blocking_content),
+		contentDescriptionRes = stringResource(
+			UiRes.string.blocking_description,
+			Constants.SNOOZE_MINUTES,
+			groupName,
+		),
 	)
 }
 
@@ -48,7 +54,8 @@ private fun BlockingScreen(
 private fun BlockingScreenPreview() {
 	BrakeTheme {
 		BlockingScreen(
-			"유튜브",
+			appName = "Instagram",
+			groupName = "SNS",
 			onStartHome = {},
 			onExitManageApp = {},
 		)

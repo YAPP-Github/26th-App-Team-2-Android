@@ -50,21 +50,6 @@ class OverlayActivity : ComponentActivity() {
 		}
 	}
 
-	private fun hasUsageStatsPermission(context: Context): Boolean {
-		val appOps = context.getSystemService(Context.APP_OPS_SERVICE) as AppOpsManager
-		val mode = appOps.checkOpNoThrow(
-			AppOpsManager.OPSTR_GET_USAGE_STATS,
-			android.os.Process.myUid(),
-			context.packageName,
-		)
-		return mode == AppOpsManager.MODE_ALLOWED
-	}
-
-	private fun isIgnoringBatteryOptimizations(context: Context): Boolean {
-		val pm = context.getSystemService(Context.POWER_SERVICE) as PowerManager
-		return pm.isIgnoringBatteryOptimizations(context.packageName)
-	}
-
 	private fun showOverlay(action: String?) {
 		if (action == null) {
 			Timber.w("Action is null, cannot show overlay.")
@@ -104,7 +89,7 @@ class OverlayActivity : ComponentActivity() {
 			when (overlayData.appGroupState) {
 				AppGroupState.NeedSetting -> {
 					TimerRoute(
-						appName = overlayData.appName ?: "Unknown App",
+						appName = overlayData.appName,
 						groupId = overlayData.groupId,
 						onExitManageApp = ::onExitManageApp,
 						onCloseOverlay = ::finish,
@@ -114,6 +99,8 @@ class OverlayActivity : ComponentActivity() {
 				AppGroupState.SnoozeBlocking -> {
 					SnoozeRoute(
 						groupId = overlayData.groupId,
+						appName = overlayData.appName,
+						groupName = overlayData.groupName,
 						snoozesCount = overlayData.snoozesCount,
 						onCloseOverlay = ::finish,
 						onStartHome = {},
@@ -123,7 +110,8 @@ class OverlayActivity : ComponentActivity() {
 
 				AppGroupState.Blocking -> {
 					BlockingOverlay(
-						appName = overlayData.appName ?: "Unknown App",
+						appName = overlayData.appName,
+						groupName = overlayData.groupName,
 						onStartHome = {
 						},
 						onExitManageApp = ::onExitManageApp,

@@ -15,6 +15,7 @@ class SetSnoozeAlarmUsecase @Inject constructor(
 
 	suspend operator fun invoke(
 		groupId: Long,
+		appName: String,
 	): Result<LocalDateTime> {
 		alarmScheduler.cancelAlarm(
 			groupId = groupId,
@@ -23,6 +24,7 @@ class SetSnoozeAlarmUsecase @Inject constructor(
 
 		return alarmScheduler.scheduleAlarm(
 			groupId = groupId,
+			appName = appName,
 			second = Constants.TEST_SNOOZE_TIME,
 			action = AlarmAction.ACTION_USING,
 		).onSuccess {

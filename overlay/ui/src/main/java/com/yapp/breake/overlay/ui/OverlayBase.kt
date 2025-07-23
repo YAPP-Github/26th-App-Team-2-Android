@@ -132,7 +132,7 @@ private fun OverlayBasePreview() {
 	BrakeTheme {
 		OverlayBase(
 			imageRes = R.drawable.img_init,
-			title = stringResource(R.string.blocking_content),
+			title = stringResource(R.string.blocking_description),
 			buttonText = "Exit",
 			onButtonClick = { /* Do nothing */ },
 			textButtonText = "Check Time",

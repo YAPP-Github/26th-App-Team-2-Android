@@ -12,6 +12,8 @@ import com.yapp.breake.overlay.snooze.component.SnoozeScreen
 @Composable
 fun SnoozeRoute(
 	groupId: Long,
+	appName: String,
+	groupName: String,
 	snoozesCount: Int,
 	onCloseOverlay: () -> Unit,
 	onStartHome: () -> Unit,
@@ -19,6 +21,8 @@ fun SnoozeRoute(
 ) {
 	SnoozeOverlay(
 		groupId = groupId,
+		appName = appName,
+		groupName = groupName,
 		snoozesCount = snoozesCount,
 		onCloseOverlay = onCloseOverlay,
 		onStartHome = onStartHome,
@@ -29,6 +33,8 @@ fun SnoozeRoute(
 @Composable
 private fun SnoozeOverlay(
 	groupId: Long,
+	appName: String,
+	groupName: String,
 	snoozesCount: Int,
 	onCloseOverlay: () -> Unit,
 	onStartHome: () -> Unit,
@@ -42,12 +48,13 @@ private fun SnoozeOverlay(
 			snoozeCount = snoozesCount,
 			onExitManageApp = onExitManageApp,
 			onSnooze = {
-				viewModel.setSnooze(groupId)
+				viewModel.setSnooze(groupId, appName)
 				onCloseOverlay()
 			},
 		)
 	} else {
 		SnoozeBlocking(
+			groupName = groupName,
 			onExitManageApp = onExitManageApp,
 			onStartHome = onStartHome,
 		)

@@ -3,6 +3,7 @@ package com.yapp.breake.core.alarm.notification
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
+import com.yapp.breake.core.alarm.scheduler.AlarmSchedulerImpl.Companion.EXTRA_APP_NAME_ID
 import com.yapp.breake.core.alarm.scheduler.AlarmSchedulerImpl.Companion.EXTRA_GROUP_ID
 import com.yapp.breake.core.common.AlarmAction
 import com.yapp.breake.core.model.app.AppGroup
@@ -34,13 +35,14 @@ class NotificationReceiver : BroadcastReceiver() {
 	override fun onReceive(context: Context, intent: Intent) {
 		serviceScope.launch {
 			val groupId = intent.getLongExtra(EXTRA_GROUP_ID, 0)
+			val appName = intent.getStringExtra(EXTRA_APP_NAME_ID)
 			val appGroup = appGroupRepository.getAppGroupById(groupId)
 			val intentAction = intent.action
 
 			if (appGroup != null && intentAction != null) {
 				when (AlarmAction.valueOf(intentAction)) {
-					AlarmAction.ACTION_USING -> startBlocking(context, appGroup)
-					AlarmAction.ACTION_BLOCKING -> stopBlocking(context, appGroup)
+					AlarmAction.ACTION_USING -> startBlocking(context, appGroup, appName)
+					AlarmAction.ACTION_BLOCKING -> stopBlocking(context, appGroup, appName)
 				}
 			}
 		}
@@ -52,7 +54,7 @@ class NotificationReceiver : BroadcastReceiver() {
 	 *  2. 오버레이 시작 - 사용 중이면 오버레이 시작
 	 *  3. 알람 스케줄러 시작 - 차단이 완료되면 알람 스케줄러를 시작
 	 * */
-	private suspend fun startBlocking(context: Context, appGroup: AppGroup) {
+	private suspend fun startBlocking(context: Context, appGroup: AppGroup, appName: String?) {
 		Timber.i("ID: ${appGroup.id} 차단이 시작되었습니다")
 
 		val isUserUsingApp = AppLaunchUtil.isAppLaunching(context, appGroup)
@@ -65,6 +67,7 @@ class NotificationReceiver : BroadcastReceiver() {
 			OverlayLauncher.startOverlay(
 				context = context,
 				appGroup = appGroup,
+				appName = appName,
 				appGroupState = AppGroupState.SnoozeBlocking,
 				snoozesCount = appGroup.snoozesCount,
 			)
@@ -73,6 +76,7 @@ class NotificationReceiver : BroadcastReceiver() {
 		setAlarmUsecase(
 			groupId = appGroup.id,
 			appGroupState = AppGroupState.Blocking,
+			appName = appName ?: "Unknown App",
 		)
 	}
 
@@ -92,7 +96,7 @@ class NotificationReceiver : BroadcastReceiver() {
 		)
 	}
 
-	private suspend fun stopBlocking(context: Context, appGroup: AppGroup) {
+	private suspend fun stopBlocking(context: Context, appGroup: AppGroup, appName: String?) {
 		Timber.i("ID: ${appGroup.id} 차단이 해제되었습니다")
 		appGroupRepository.updateAppGroupState(
 			groupId = appGroup.id,
@@ -104,6 +108,7 @@ class NotificationReceiver : BroadcastReceiver() {
 			OverlayLauncher.startOverlay(
 				context = context,
 				appGroup = appGroup,
+				appName = appName,
 				appGroupState = AppGroupState.NeedSetting,
 			)
 		}

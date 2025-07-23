@@ -8,6 +8,7 @@ import kotlinx.parcelize.Parcelize
 data class OverlayData(
 	val appGroupState: AppGroupState,
 	val groupId: Long,
+	val appName: String,
+	val groupName: String,
 	val snoozesCount: Int = 0,
-	val appName: String? = null,
 ) : Parcelable

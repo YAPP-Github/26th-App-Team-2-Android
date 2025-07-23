@@ -4,9 +4,9 @@ import android.accessibilityservice.AccessibilityService
 import android.accessibilityservice.AccessibilityServiceInfo
 import android.view.accessibility.AccessibilityEvent
 import com.yapp.breake.core.model.app.AppGroupState
-import com.yapp.breake.domain.repository.AppRepository
-import com.yapp.breake.domain.usecase.FindAppGroupUsecase
 import com.yapp.breake.core.util.OverlayLauncher
+import com.yapp.breake.core.util.getAppNameFromPackage
+import com.yapp.breake.domain.usecase.FindAppGroupUsecase
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -20,9 +20,6 @@ class AppLaunchDetectionService : AccessibilityService() {
 
 	@Inject
 	lateinit var findAppGroupUsecase: FindAppGroupUsecase
-
-	@Inject
-	lateinit var appRepository: AppRepository
 
 	private val serviceJob = SupervisorJob()
 	private val serviceScope = CoroutineScope(Dispatchers.Main + serviceJob)
@@ -59,12 +56,15 @@ class AppLaunchDetectionService : AccessibilityService() {
 					OverlayLauncher.startOverlay(
 						context = applicationContext,
 						appGroup = appGroup,
+						appName = getAppNameFromPackage(packageName),
 						appGroupState = blockingState,
 					)
 				}
+
 				AppGroupState.Using -> {
 					Timber.i("$packageName 앱은 사용 상태입니다. 아무 작업도 하지 않습니다.")
 				}
+
 				else -> {}
 			}
 		}

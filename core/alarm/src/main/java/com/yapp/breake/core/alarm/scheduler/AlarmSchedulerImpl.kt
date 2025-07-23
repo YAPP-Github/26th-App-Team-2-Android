@@ -21,6 +21,7 @@ class AlarmSchedulerImpl @Inject constructor(
 
 	override fun scheduleAlarm(
 		groupId: Long,
+		appName: String,
 		second: Int,
 		action: AlarmAction,
 	): Result<LocalDateTime> {
@@ -30,7 +31,7 @@ class AlarmSchedulerImpl @Inject constructor(
 			return Result.failure(SecurityException("정확한 알람 권한이 없습니다."))
 		}
 
-		val intent = getPendingIntent(groupId, action.name)
+		val intent = getPendingIntent(groupId, appName, action.name)
 		Timber.d("$second 초 후에 알람을 예약합니다. ID: $groupId, 액션: ${action.name}")
 
 		return try {
@@ -43,7 +44,7 @@ class AlarmSchedulerImpl @Inject constructor(
 	}
 
 	override fun cancelAlarm(groupId: Long, action: AlarmAction) {
-		val intent = getPendingIntent(groupId, action.name)
+		val intent = getPendingIntent(groupId, "", action.name)
 
 		intent.let {
 			alarmManager.cancel(it)
@@ -61,11 +62,13 @@ class AlarmSchedulerImpl @Inject constructor(
 
 	private fun getPendingIntent(
 		groupId: Long,
+		appName: String,
 		intentAction: String,
 	): PendingIntent {
 		val intent = Intent(context, NotificationReceiver::class.java).apply {
 			action = intentAction
 			putExtra(EXTRA_GROUP_ID, groupId)
+			putExtra(EXTRA_APP_NAME_ID, appName)
 		}
 
 		val pendingIntentFlags = PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
@@ -97,5 +100,6 @@ class AlarmSchedulerImpl @Inject constructor(
 
 	companion object {
 		const val EXTRA_GROUP_ID = "EXTRA_GROUP_ID"
+		const val EXTRA_APP_NAME_ID = "EXTRA_APP_NAME_ID"
 	}
 }

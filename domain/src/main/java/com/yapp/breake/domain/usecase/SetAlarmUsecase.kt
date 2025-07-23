@@ -15,6 +15,7 @@ class SetAlarmUsecase @Inject constructor(
 
 	suspend operator fun invoke(
 		groupId: Long,
+		appName: String,
 		appGroupState: AppGroupState,
 		second: Int = 0,
 	): Result<LocalDateTime> {
@@ -29,6 +30,7 @@ class SetAlarmUsecase @Inject constructor(
 
 		return alarmScheduler.scheduleAlarm(
 			groupId = groupId,
+			appName = appName,
 			second = time,
 			action = action,
 		).onSuccess {
