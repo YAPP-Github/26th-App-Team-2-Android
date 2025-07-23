@@ -20,6 +20,7 @@ import retrofit2.Converter
 import retrofit2.Retrofit
 import retrofit2.converter.kotlinx.serialization.asConverterFactory
 import timber.log.Timber
+import java.util.concurrent.TimeUnit
 import javax.inject.Provider
 import javax.inject.Singleton
 
@@ -36,6 +37,9 @@ internal object NetworkModule {
 			.apply {
 				interceptors.get().forEach { addInterceptor(it) }
 			}
+			.connectTimeout(30, TimeUnit.SECONDS)
+			.readTimeout(60, TimeUnit.SECONDS)
+			.writeTimeout(60, TimeUnit.SECONDS)
 			.build()
 
 	@Provides
