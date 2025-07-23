@@ -5,6 +5,7 @@ import com.yapp.breake.core.common.Constants
 import com.yapp.breake.core.model.app.AppGroupState
 import com.yapp.breake.domain.repository.AlarmScheduler
 import com.yapp.breake.domain.repository.AppGroupRepository
+import java.time.LocalDateTime
 import javax.inject.Inject
 
 class SetSnoozeAlarmUsecase @Inject constructor(
@@ -14,7 +15,7 @@ class SetSnoozeAlarmUsecase @Inject constructor(
 
 	suspend operator fun invoke(
 		groupId: Long,
-	): Result<Unit> {
+	): Result<LocalDateTime> {
 		alarmScheduler.cancelAlarm(
 			groupId = groupId,
 			action = AlarmAction.ACTION_BLOCKING,

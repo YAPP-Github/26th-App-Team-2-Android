@@ -26,7 +26,7 @@ private fun BlockingScreen(
 ) {
 	OverlayBase(
 		imageRes = UiRes.drawable.img_cooldown,
-		titleRes = UiRes.string.blocking_title,
+		title = stringResource(UiRes.string.blocking_title),
 		buttonText = stringResource(id = UiRes.string.btn_check_time),
 		onButtonClick = onStartHome,
 		textButtonText = stringResource(id = UiRes.string.btn_exit),

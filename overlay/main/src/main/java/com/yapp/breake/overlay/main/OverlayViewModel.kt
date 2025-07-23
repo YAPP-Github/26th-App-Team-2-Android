@@ -1,4 +1,4 @@
-package com.yapp.breake.presentation.blocking.overlay
+package com.yapp.breake.overlay.main
 
 import androidx.lifecycle.ViewModel
 import com.yapp.breake.domain.repository.AppGroupRepository

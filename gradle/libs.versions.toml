@@ -142,6 +142,7 @@ detekt = "1.23.7"   # Kotlin 정적 분석 툴
 mockk = "1.13.16"
 material = "1.12.0"
 accompanistPermissions = "0.37.0"
+snapper = "0.3.0"
 
 [libraries]
 # Gradle
@@ -253,6 +254,9 @@ material = { group = "com.google.android.material", name = "material", version.r
 
 # permissions
 accompanist-permissions = { module = "com.google.accompanist:accompanist-permissions", version.ref = "accompanistPermissions" }
+
+# Snapper
+snapper = { module = "dev.chrisbanes.snapper:snapper", version.ref = "snapper" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }

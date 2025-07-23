@@ -16,7 +16,7 @@ internal fun SnoozeScreen(
 ) {
 	OverlayBase(
 		imageRes = UiRes.drawable.img_blocking,
-		titleRes = UiRes.string.blocking_title,
+		title = stringResource(UiRes.string.blocking_title),
 		buttonText = stringResource(id = UiRes.string.btn_exit),
 		onButtonClick = onExitManageApp,
 		textButtonText = stringResource(

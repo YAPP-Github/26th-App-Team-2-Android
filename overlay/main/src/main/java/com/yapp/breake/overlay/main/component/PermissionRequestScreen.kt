@@ -1,4 +1,4 @@
-package com.yapp.breake.presentation.blocking.overlay.component
+package com.yapp.breake.overlay.main.component
 
 import android.os.Build
 import androidx.compose.foundation.layout.Arrangement

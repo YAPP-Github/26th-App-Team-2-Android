@@ -6,7 +6,7 @@
 	<application>
 
 		<activity
-			android:name="com.yapp.breake.timer.blocking.overlay.OverlayActivity"
+			android:name=".OverlayActivity"
 			android:configChanges="uiMode"
 			android:exported="true"
 			android:launchMode="singleTop"

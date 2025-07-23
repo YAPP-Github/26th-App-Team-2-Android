@@ -1,10 +1,11 @@
 package com.yapp.breake.overlay.snooze
 
+import android.widget.Toast
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.ui.platform.LocalContext
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.yapp.breake.core.common.Constants
-import com.yapp.breake.core.navigation.compositionlocal.LocalMainAction
 import com.yapp.breake.overlay.snooze.component.SnoozeBlocking
 import com.yapp.breake.overlay.snooze.component.SnoozeScreen
 
@@ -34,7 +35,7 @@ private fun SnoozeOverlay(
 	onExitManageApp: () -> Unit,
 	viewModel: SnoozeViewModel = hiltViewModel(),
 ) {
-	val mainAction = LocalMainAction.current
+	val context = LocalContext.current
 
 	if (snoozesCount < Constants.MAX_SNOOZE_COUNT) {
 		SnoozeScreen(
@@ -54,7 +55,7 @@ private fun SnoozeOverlay(
 
 	LaunchedEffect(Unit) {
 		viewModel.toastEffect.collect { message ->
-			mainAction.onShowToast(message)
+			Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
 		}
 	}
 }

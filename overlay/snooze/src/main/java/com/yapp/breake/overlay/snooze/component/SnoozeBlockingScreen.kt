@@ -15,7 +15,7 @@ internal fun SnoozeBlocking(
 ) {
 	OverlayBase(
 		imageRes = UiRes.drawable.img_cooldown,
-		titleRes = UiRes.string.cooldown_title,
+		title = stringResource(UiRes.string.cooldown_title),
 		buttonText = stringResource(id = UiRes.string.btn_check_time),
 		onButtonClick = onStartHome,
 		textButtonText = stringResource(id = UiRes.string.btn_exit),

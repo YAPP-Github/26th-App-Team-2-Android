@@ -5,6 +5,7 @@ import com.yapp.breake.core.common.Constants
 import com.yapp.breake.core.model.app.AppGroupState
 import com.yapp.breake.domain.repository.AlarmScheduler
 import com.yapp.breake.domain.repository.AppGroupRepository
+import java.time.LocalDateTime
 import javax.inject.Inject
 
 class SetAlarmUsecase @Inject constructor(
@@ -16,7 +17,7 @@ class SetAlarmUsecase @Inject constructor(
 		groupId: Long,
 		appGroupState: AppGroupState,
 		second: Int = 0,
-	): Result<Unit> {
+	): Result<LocalDateTime> {
 
 		val (action, time) = when (appGroupState) {
 			AppGroupState.Using -> AlarmAction.ACTION_USING to second

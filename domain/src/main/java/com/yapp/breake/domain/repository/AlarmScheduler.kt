@@ -1,6 +1,7 @@
 package com.yapp.breake.domain.repository
 
 import com.yapp.breake.core.common.AlarmAction
+import java.time.LocalDateTime
 
 interface AlarmScheduler {
 
@@ -8,7 +9,7 @@ interface AlarmScheduler {
 		groupId: Long,
 		second: Int = 0,
 		action: AlarmAction,
-	): Result<Unit>
+	): Result<LocalDateTime>
 
 	fun cancelAlarm(
 		groupId: Long,

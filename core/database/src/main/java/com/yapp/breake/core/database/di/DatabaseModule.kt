@@ -30,15 +30,15 @@ internal object DatabaseModule {
 				runBlocking {
 					db.execSQL(
 						"""
-						INSERT INTO `group` (groupId, name, appGroupState) VALUES
-						(1, 'YouTube', '${AppGroupState.NeedSetting.name}'),
+						INSERT INTO `group_table` (groupId, name, appGroupState) VALUES
+						(1, 'YouTube', '${AppGroupState.NeedSetting}')
 						""".trimIndent(),
 					)
 
 					db.execSQL(
 						"""
-						INSERT INTO `app` (packageName, category, parentGroupId) VALUES
-						('com.google.android.youtube', 'Entertainment', 1),
+						INSERT INTO `app_table` (packageName, category, parentGroupId) VALUES
+						('com.google.android.youtube', 'Entertainment', 1)
 						""".trimIndent(),
 					)
 				}

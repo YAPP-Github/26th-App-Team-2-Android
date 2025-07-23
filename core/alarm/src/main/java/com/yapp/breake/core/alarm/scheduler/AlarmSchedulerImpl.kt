@@ -23,7 +23,7 @@ class AlarmSchedulerImpl @Inject constructor(
 		groupId: Long,
 		second: Int,
 		action: AlarmAction,
-	): Result<Unit> {
+	): Result<LocalDateTime> {
 		if (!canScheduleExactAlarms()) {
 			val errorMessage = "정확한 알람 권한이 없습니다. ID: $groupId 에 대한 정확한 알람을 예약할 수 없습니다."
 			Timber.w(errorMessage)
@@ -34,8 +34,8 @@ class AlarmSchedulerImpl @Inject constructor(
 		Timber.d("$second 초 후에 알람을 예약합니다. ID: $groupId, 액션: ${action.name}")
 
 		return try {
-			scheduleAlarm(second, intent)
-			Result.success(Unit)
+			val triggerTime = scheduleAlarm(second, intent)
+			Result.success(triggerTime)
 		} catch (se: SecurityException) {
 			Timber.e("SecurityException: ID: $groupId 에 대한 정확한 알람을 예약할 수 없습니다. $se")
 			Result.failure(se)
@@ -81,7 +81,7 @@ class AlarmSchedulerImpl @Inject constructor(
 	private fun scheduleAlarm(
 		second: Int,
 		pendingIntent: PendingIntent,
-	) {
+	): LocalDateTime {
 		val startTime = LocalDateTime.now()
 		val triggerTime = startTime.plusSeconds(second.toLong())
 		val triggerAtMillis =
@@ -91,6 +91,8 @@ class AlarmSchedulerImpl @Inject constructor(
 			triggerAtMillis,
 			pendingIntent,
 		)
+
+		return triggerTime
 	}
 
 	companion object {

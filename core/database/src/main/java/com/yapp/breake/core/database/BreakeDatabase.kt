@@ -36,8 +36,8 @@ internal abstract class BreakeDatabase : RoomDatabase() {
 	companion object {
 		const val DATABASE_NAME = "breake_database"
 
-		const val GROUP_TABLE_NAME = "group"
-		const val APP_TABLE_NAME = "app"
-		const val SNOOZE_TABLE_NAME = "snooze"
+		const val GROUP_TABLE_NAME = "group_table"
+		const val APP_TABLE_NAME = "app_table"
+		const val SNOOZE_TABLE_NAME = "snooze_table"
 	}
 }

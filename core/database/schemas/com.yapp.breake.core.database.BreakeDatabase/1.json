@@ -2,11 +2,11 @@
   "formatVersion": 1,
   "database": {
     "version": 1,
-    "identityHash": "8ba79824415990c30b41c7e747278c04",
+    "identityHash": "2871d43a189a54c0722d098244d140ec",
     "entities": [
       {
-        "tableName": "app",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`packageName` TEXT NOT NULL, `category` TEXT NOT NULL, `parentGroupId` INTEGER NOT NULL, PRIMARY KEY(`packageName`), FOREIGN KEY(`parentGroupId`) REFERENCES `group`(`groupId`) ON UPDATE NO ACTION ON DELETE CASCADE )",
+        "tableName": "app_table",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`packageName` TEXT NOT NULL, `category` TEXT NOT NULL, `parentGroupId` INTEGER NOT NULL, PRIMARY KEY(`packageName`), FOREIGN KEY(`parentGroupId`) REFERENCES `group_table`(`groupId`) ON UPDATE NO ACTION ON DELETE CASCADE )",
         "fields": [
           {
             "fieldPath": "packageName",
@@ -35,18 +35,18 @@
         },
         "indices": [
           {
-            "name": "index_app_parentGroupId",
+            "name": "index_app_table_parentGroupId",
             "unique": false,
             "columnNames": [
               "parentGroupId"
             ],
             "orders": [],
-            "createSql": "CREATE INDEX IF NOT EXISTS `index_app_parentGroupId` ON `${TABLE_NAME}` (`parentGroupId`)"
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_app_table_parentGroupId` ON `${TABLE_NAME}` (`parentGroupId`)"
           }
         ],
         "foreignKeys": [
           {
-            "table": "group",
+            "table": "group_table",
             "onDelete": "CASCADE",
             "onUpdate": "NO ACTION",
             "columns": [
@@ -59,8 +59,8 @@
         ]
       },
       {
-        "tableName": "snooze",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `snoozeTime` TEXT NOT NULL, `parentGroupId` INTEGER NOT NULL, FOREIGN KEY(`parentGroupId`) REFERENCES `group`(`groupId`) ON UPDATE NO ACTION ON DELETE CASCADE )",
+        "tableName": "snooze_table",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `snoozeTime` TEXT NOT NULL, `parentGroupId` INTEGER NOT NULL, FOREIGN KEY(`parentGroupId`) REFERENCES `group_table`(`groupId`) ON UPDATE NO ACTION ON DELETE CASCADE )",
         "fields": [
           {
             "fieldPath": "id",
@@ -89,18 +89,18 @@
         },
         "indices": [
           {
-            "name": "index_snooze_parentGroupId",
+            "name": "index_snooze_table_parentGroupId",
             "unique": false,
             "columnNames": [
               "parentGroupId"
             ],
             "orders": [],
-            "createSql": "CREATE INDEX IF NOT EXISTS `index_snooze_parentGroupId` ON `${TABLE_NAME}` (`parentGroupId`)"
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_snooze_table_parentGroupId` ON `${TABLE_NAME}` (`parentGroupId`)"
           }
         ],
         "foreignKeys": [
           {
-            "table": "group",
+            "table": "group_table",
             "onDelete": "CASCADE",
             "onUpdate": "NO ACTION",
             "columns": [
@@ -113,7 +113,7 @@
         ]
       },
       {
-        "tableName": "group",
+        "tableName": "group_table",
         "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`groupId` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `name` TEXT NOT NULL, `appGroupState` TEXT NOT NULL)",
         "fields": [
           {
@@ -145,7 +145,7 @@
     ],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '8ba79824415990c30b41c7e747278c04')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '2871d43a189a54c0722d098244d140ec')"
     ]
   }
 }
