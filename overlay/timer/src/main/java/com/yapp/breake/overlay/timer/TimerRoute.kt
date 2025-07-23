@@ -58,7 +58,7 @@ private fun TimerOverlay(
 			onCloseOverlay = onCloseOverlay,
 			onExitManageApp = onExitManageApp,
 			onTimerConfirm = {
-				viewModel.setBreakTimeAlarm(groupId)
+				viewModel.setBreakTimeAlarm(groupId, appName)
 			},
 			timerUiState = timerUiState,
 		)

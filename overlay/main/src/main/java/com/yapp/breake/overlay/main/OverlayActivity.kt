@@ -1,11 +1,8 @@
 package com.yapp.breake.overlay.main
 
-import android.app.AppOpsManager
-import android.content.Context
 import android.content.Intent
 import android.os.Build
 import android.os.Bundle
-import android.os.PowerManager
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.BackHandler
 import androidx.activity.compose.setContent
