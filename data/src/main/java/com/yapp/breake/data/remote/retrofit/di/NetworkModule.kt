@@ -5,6 +5,7 @@ import com.skydoves.sandwich.retrofit.adapters.ApiResponseCallAdapterFactory
 import com.yapp.breake.core.datastore.model.DatastoreUserToken
 import com.yapp.breake.data.remote.retrofit.ApiConfig
 import com.yapp.breake.data.remote.retrofit.HeaderSelectionInterceptor
+import com.yapp.breake.data.remote.retrofit.HttpNetworkLogger
 import com.yapp.breake.data.remote.retrofit.RetrofitBrakeApi
 import dagger.Module
 import dagger.Provides
@@ -15,11 +16,9 @@ import kotlinx.serialization.json.Json
 import okhttp3.Interceptor
 import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.OkHttpClient
-import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Converter
 import retrofit2.Retrofit
 import retrofit2.converter.kotlinx.serialization.asConverterFactory
-import timber.log.Timber
 import java.util.concurrent.TimeUnit
 import javax.inject.Provider
 import javax.inject.Singleton
@@ -46,11 +45,7 @@ internal object NetworkModule {
 	@Singleton
 	@IntoSet
 	fun providerHttpLoggingInterceptor(): Interceptor =
-		HttpLoggingInterceptor {
-			Timber.d("BrakeNetwork: $it")
-		}.apply {
-			level = HttpLoggingInterceptor.Level.BODY
-		}
+		HttpNetworkLogger()
 
 	@Provides
 	@Singleton
