@@ -3,7 +3,7 @@ package com.yapp.breake.overlay.snooze
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.yapp.breake.core.common.Constants
-import com.yapp.breake.domain.usecase.SetSnoozeAlarmUsecase
+import com.yapp.breake.domain.usecaseImpl.SetSnoozeAlarmUsecase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.SharedFlow
@@ -12,7 +12,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 internal class SnoozeViewModel @Inject constructor(
-	private val setSnoozeAlarmUsecase: SetSnoozeAlarmUsecase,
+    private val setSnoozeAlarmUsecase: SetSnoozeAlarmUsecase,
 ) : ViewModel() {
 
 	private val _toastEffect: MutableSharedFlow<String> = MutableSharedFlow()

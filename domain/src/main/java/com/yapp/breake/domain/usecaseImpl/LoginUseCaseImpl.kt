@@ -1,7 +1,8 @@
-package com.yapp.breake.domain.usecase
+package com.yapp.breake.domain.usecaseImpl
 
 import com.yapp.breake.core.model.user.UserStatus
 import com.yapp.breake.domain.repository.TokenRepository
+import com.yapp.breake.domain.usecase.LoginUseCase
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import javax.inject.Inject

@@ -11,7 +11,7 @@ import com.yapp.breake.core.model.app.AppGroupState
 import com.yapp.breake.core.util.AppLaunchUtil
 import com.yapp.breake.core.util.OverlayLauncher
 import com.yapp.breake.domain.repository.AppGroupRepository
-import com.yapp.breake.domain.usecase.SetAlarmUsecase
+import com.yapp.breake.domain.usecaseImpl.SetAlarmUsecase
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers

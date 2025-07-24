@@ -1,6 +1,7 @@
-package com.yapp.breake.domain.usecase
+package com.yapp.breake.domain.usecaseImpl
 
 import com.yapp.breake.domain.repository.TokenRepository
+import com.yapp.breake.domain.usecase.CheckAuthCodeUseCase
 import javax.inject.Inject
 import javax.inject.Named
 

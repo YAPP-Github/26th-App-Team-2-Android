@@ -1,8 +1,9 @@
-package com.yapp.breake.domain.usecase
+package com.yapp.breake.domain.usecaseImpl
 
 import com.yapp.breake.core.model.user.UserStatus
 import com.yapp.breake.domain.repository.TokenRepository
 import com.yapp.breake.domain.repository.NicknameRepository
+import com.yapp.breake.domain.usecase.UpdateNicknameUseCase
 import javax.inject.Inject
 import javax.inject.Named
 
