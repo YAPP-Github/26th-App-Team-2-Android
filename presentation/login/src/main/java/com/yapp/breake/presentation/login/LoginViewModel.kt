@@ -1,7 +1,10 @@
 package com.yapp.breake.presentation.login
 
+import android.content.Context
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.breake.core.permission.PermissionManager
+import com.breake.core.permission.PermissionType
 import com.yapp.breake.core.model.user.UserStatus
 import com.yapp.breake.domain.usecase.LoginUseCase
 import com.yapp.breake.presentation.login.model.LoginEffect
@@ -20,6 +23,7 @@ import javax.inject.Inject
 @HiltViewModel
 internal class LoginViewModel @Inject constructor(
 	private val loginUseCase: LoginUseCase,
+	private val permissionManager: PermissionManager,
 ) : ViewModel() {
 
 	private val _uiState = MutableStateFlow<LoginUiState>(LoginUiState.LoginIdle)
@@ -46,7 +50,7 @@ internal class LoginViewModel @Inject constructor(
 		}
 	}
 
-	fun authSuccess(authCode: String) {
+	fun authSuccess(authCode: String, context: Context) {
 		loginJob?.cancel()
 		loginJob = viewModelScope.launch {
 			_uiState.value = LoginUiState.LoginLoading
@@ -62,7 +66,11 @@ internal class LoginViewModel @Inject constructor(
 				when (result) {
 					UserStatus.ACTIVE -> {
 						_uiState.value = LoginUiState.LoginIdle
-						_navigationFlow.emit(LoginEffect.NavigateToHome)
+						if (checkPermissions(context)) {
+							_navigationFlow.emit(LoginEffect.NavigateToHome)
+						} else {
+							_navigationFlow.emit(LoginEffect.NavigateToOnboarding)
+						}
 					}
 
 					UserStatus.HALF_SIGNUP -> {
@@ -77,6 +85,14 @@ internal class LoginViewModel @Inject constructor(
 				}
 			}
 		}
+	}
+
+	fun checkPermissions(context: Context): Boolean {
+		if (!permissionManager.isGranted(context, PermissionType.OVERLAY)) return false
+		if (!permissionManager.isGranted(context, PermissionType.STATS)) return false
+		if (!permissionManager.isGranted(context, PermissionType.EXACT_ALARM)) return false
+		if (!permissionManager.isGranted(context, PermissionType.ACCESSIBILITY)) return false
+		return true
 	}
 
 	fun loginFailure(throwable: Throwable) {
