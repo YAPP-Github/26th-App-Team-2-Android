@@ -14,6 +14,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.Dp
@@ -28,11 +29,13 @@ import com.yapp.breake.core.designsystem.theme.LocalPadding
 import com.yapp.breake.core.navigation.compositionlocal.LocalMainAction
 import com.yapp.breake.core.navigation.compositionlocal.LocalNavigatorAction
 import com.yapp.breake.presentation.login.model.LoginEffect.NavigateToHome
+import com.yapp.breake.presentation.login.model.LoginEffect.NavigateToOnboarding
 import com.yapp.breake.presentation.login.model.LoginEffect.NavigateToSignup
 import com.yapp.breake.presentation.login.model.LoginUiState
 
 @Composable
 internal fun LoginRoute(viewModel: LoginViewModel = hiltViewModel()) {
+	val context = LocalContext.current
 	val padding = LocalPadding.current.screenPaddingHorizontal
 	val navAction = LocalNavigatorAction.current
 	val mainAction = LocalMainAction.current
@@ -47,6 +50,7 @@ internal fun LoginRoute(viewModel: LoginViewModel = hiltViewModel()) {
 			when (navigation) {
 				NavigateToHome -> navAction.navigateToHome()
 				NavigateToSignup -> navAction.navigateToSignup()
+				NavigateToOnboarding -> navAction.navigateToOnboarding()
 			}
 		}
 	}
@@ -74,7 +78,7 @@ internal fun LoginRoute(viewModel: LoginViewModel = hiltViewModel()) {
 	if (uiState == LoginUiState.LoginOnWebView) {
 		KakaoScreen(
 			onBack = viewModel::loginCancel,
-			onAuthSuccess = viewModel::authSuccess,
+			onAuthSuccess = { viewModel.authSuccess(it, context) },
 			onAuthError = viewModel::loginFailure,
 		)
 	}
