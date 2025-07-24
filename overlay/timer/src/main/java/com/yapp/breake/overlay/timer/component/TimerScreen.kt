@@ -1,5 +1,6 @@
 package com.yapp.breake.overlay.timer.component
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -20,6 +21,7 @@ import com.yapp.breake.core.designsystem.component.BaseScaffold
 import com.yapp.breake.core.designsystem.component.LargeButton
 import com.yapp.breake.core.designsystem.component.VerticalSpacer
 import com.yapp.breake.core.designsystem.theme.BrakeTheme
+import com.yapp.breake.core.designsystem.theme.LinerGradient
 import com.yapp.breake.core.util.addJosaEulReul
 import com.yapp.breake.core.util.extensions.toLocalizedTime
 import java.time.LocalDateTime
@@ -56,7 +58,8 @@ internal fun TimerScreen(
 				horizontalAlignment = Alignment.CenterHorizontally,
 				verticalArrangement = Arrangement.Center,
 				modifier = Modifier
-					.fillMaxWidth(),
+					.fillMaxWidth()
+					.background(brush = LinerGradient),
 			) {
 				VerticalSpacer(80.dp)
 				Text(
