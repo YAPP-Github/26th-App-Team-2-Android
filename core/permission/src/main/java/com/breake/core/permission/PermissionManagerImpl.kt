@@ -12,6 +12,14 @@ import android.provider.Settings
 import jakarta.inject.Inject
 
 class PermissionManagerImpl @Inject constructor() : PermissionManager {
+	override fun isAllGranted(context: Context): Boolean {
+		if (!isOverlayPermissionGranted(context)) return false
+		if (!isStatsPermissionGranted(context)) return false
+		if (!isExactAlarmPermissionGranted(context)) return false
+		if (!isAccessibilityPermissionGranted(context)) return false
+		return true
+	}
+
 	override fun isGranted(context: Context, permissionType: PermissionType): Boolean {
 		return when (permissionType) {
 			PermissionType.OVERLAY -> isOverlayPermissionGranted(context)
