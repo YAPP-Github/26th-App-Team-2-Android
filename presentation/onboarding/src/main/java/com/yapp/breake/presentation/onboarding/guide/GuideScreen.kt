@@ -1,5 +1,6 @@
-package com.yapp.breake.presentation.onboarding.screen
+package com.yapp.breake.presentation.onboarding.guide
 
+import android.annotation.SuppressLint
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -23,35 +24,77 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.platform.LocalConfiguration
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.yapp.breake.core.designsystem.component.BrakeTopAppbar
 import com.yapp.breake.core.designsystem.component.LargeButton
 import com.yapp.breake.core.designsystem.component.VerticalSpacer
 import com.yapp.breake.core.designsystem.theme.BrakeTheme
 import com.yapp.breake.core.designsystem.theme.Gray700
+import com.yapp.breake.core.designsystem.theme.LocalPadding
 import com.yapp.breake.core.designsystem.theme.White
+import com.yapp.breake.core.navigation.compositionlocal.LocalMainAction
+import com.yapp.breake.core.navigation.compositionlocal.LocalNavigatorAction
 import com.yapp.breake.presentation.onboarding.R
+import com.yapp.breake.presentation.onboarding.guide.model.GuideEffect
 import kotlinx.collections.immutable.persistentListOf
 import kotlinx.coroutines.launch
 
+@SuppressLint("ConfigurationScreenWidthHeight")
+@Composable
+fun GuideRoute(
+	viewModel: GuideViewModel = hiltViewModel(),
+) {
+	val context = LocalContext.current
+	val screenWidth = LocalConfiguration.current.screenWidthDp.dp
+	val screenHorizontalPadding = LocalPadding.current.screenPaddingHorizontal
+	val navAction = LocalNavigatorAction.current
+	val mainAction = LocalMainAction.current
+
+	LaunchedEffect(true) {
+		viewModel.errorFlow.collect { mainAction.onShowSnackBar(it) }
+	}
+
+	LaunchedEffect(true) {
+		viewModel.navigationFlow.collect { effect ->
+			when (effect) {
+				GuideEffect.NavigateToBack -> navAction.popBackStack()
+
+				GuideEffect.NavigateToPermission -> navAction.navigateToPermission()
+
+				GuideEffect.NavigateToComplete -> navAction.navigateToComplete()
+			}
+		}
+	}
+
+	GuideScreen(
+		screenWidth = screenWidth,
+		screenHorizontalPadding = screenHorizontalPadding,
+		onBackClick = viewModel::popBackStack,
+		onNextClick = { viewModel.continueFromGuide(context) },
+	)
+}
+
 @Composable
 fun GuideScreen(
-	startIndex: Int,
 	screenWidth: Dp,
 	screenHorizontalPadding: Dp,
 	onBackClick: () -> Unit,
 	onNextClick: () -> Unit,
 ) {
-	val pagerState = rememberPagerState(initialPage = startIndex, pageCount = { 3 })
+	val pagerState = rememberPagerState(pageCount = { 3 })
 	val scope = rememberCoroutineScope()
 	val handleBackPress: () -> Unit = {
 
