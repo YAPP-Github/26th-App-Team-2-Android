@@ -17,9 +17,11 @@ dependencies {
 	implementation(projects.presentation.login)
 	implementation(projects.presentation.signup)
 	implementation(projects.presentation.onboarding)
+	implementation(projects.presentation.permission)
 	implementation(projects.presentation.home)
 	implementation(projects.presentation.report)
 	implementation(projects.presentation.setting)
+	implementation(projects.core.permission)
 
 	androidTestImplementation(projects.core.testing)
 

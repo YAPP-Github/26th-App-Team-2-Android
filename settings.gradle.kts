@@ -28,6 +28,7 @@ include(
 	":presentation:signup",
 	":presentation:login",
 	":presentation:onboarding",
+	":presentation:permission",
 	":presentation:home",
 	":presentation:report",
 	":presentation:setting",
