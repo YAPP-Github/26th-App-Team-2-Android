@@ -10,5 +10,14 @@ sealed interface InitialRoute : Route {
 	data object SignUp : InitialRoute
 
 	@Serializable
-	data object Onboarding : InitialRoute
+	sealed interface Onboarding : InitialRoute {
+		@Serializable
+		data object Guide : Onboarding
+
+		@Serializable
+		data object Complete : Onboarding
+	}
+
+	@Serializable
+	data object Permission : InitialRoute
 }

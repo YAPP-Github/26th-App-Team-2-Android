@@ -14,7 +14,9 @@ import com.yapp.breake.core.navigation.route.InitialRoute
 import com.yapp.breake.core.navigation.route.MainTabRoute
 import com.yapp.breake.core.navigation.route.Route
 import com.yapp.breake.presentation.home.navigation.navigateToHome
-import com.yapp.breake.presentation.onboarding.navigation.navigateToOnboarding
+import com.yapp.breake.presentation.onboarding.navigation.navigateToComplete
+import com.yapp.breake.presentation.onboarding.navigation.navigateToGuide
+import com.yapp.breake.presentation.permission.navigation.navigateToPermission
 import com.yapp.breake.presentation.report.navigation.navigateReport
 import com.yapp.breake.presentation.setting.navigation.navigateSetting
 import com.yapp.breake.presentation.signup.navigation.navigateToSignup
@@ -38,10 +40,17 @@ internal class MainNavigator(
 
 			override fun navigateToSignup() = navController.navigateToSignup()
 
-			override fun navigateToOnboarding() = navController.navigateToOnboarding()
+			override fun navigateToGuide(navOptions: NavOptions?) =
+				navController.navigateToGuide(navOptions)
 
-			override fun navigateToHome() =
-				navController.navigateToHome(shouldClearBackstack = true)
+			override fun navigateToComplete(navOptions: NavOptions?) =
+				navController.navigateToComplete(navOptions)
+
+			override fun navigateToPermission(navOptions: NavOptions?) =
+				navController.navigateToPermission(navOptions)
+
+			override fun navigateToHome(navOptions: NavOptions?) =
+				navController.navigateToHome(navOptions)
 		}
 	}
 
