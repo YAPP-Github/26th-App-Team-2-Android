@@ -7,6 +7,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import com.yapp.breake.core.designsystem.component.BaseScaffold
 import com.yapp.breake.presentation.HomeUiState
 import com.yapp.breake.presentation.HomeViewModel
+import com.yapp.breake.presentation.home.screen.ListScreen
 import com.yapp.breake.presentation.home.screen.NothingScreen
 
 @Composable
@@ -17,7 +18,6 @@ internal fun HomeRoute(
 	BaseScaffold {
 
 	}
-
 }
 
 @Composable
@@ -31,7 +31,12 @@ private fun HomeContent(
 				onAddClick = { /* TODO: Handle add click */ },
 			)
 		}
-		HomeUiState.List -> TODO()
+		is HomeUiState.GroupList -> {
+			ListScreen(
+				appGroups = homeUiState.appGroups,
+				onAppGroupClick = {  },
+			)
+		}
 		HomeUiState.Blocking -> {
 		}
 		HomeUiState.Using -> TODO()

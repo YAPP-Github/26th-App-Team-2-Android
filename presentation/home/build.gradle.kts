@@ -7,3 +7,7 @@ plugins {
 android {
 	setNamespace("presentation.home")
 }
+
+dependencies {
+	implementation(projects.core.util)
+}

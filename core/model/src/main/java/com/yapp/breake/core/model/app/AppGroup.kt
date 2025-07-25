@@ -10,4 +10,21 @@ data class AppGroup(
 
 	val snoozesCount: Int
 		get() = snoozes.size
+
+	companion object {
+		val sample = AppGroup(
+			id = 1L,
+			name = "SNS",
+			appGroupState = AppGroupState.NeedSetting,
+			apps = listOf(
+				App(
+					packageName = "com.example.app1",
+					category = "앱",
+					name = "앱1",
+					icon = null,
+				),
+			),
+			snoozes = emptyList(),
+		)
+	}
 }
