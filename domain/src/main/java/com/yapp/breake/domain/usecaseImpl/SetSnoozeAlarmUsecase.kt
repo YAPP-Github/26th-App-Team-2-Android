@@ -14,7 +14,7 @@ class SetSnoozeAlarmUsecase @Inject constructor(
 	private val appGroupRepository: AppGroupRepository,
 ) : SetSnoozeAlarmUseCase {
 
-	override suspend operator fun  invoke(
+	override suspend operator fun invoke(
 		groupId: Long,
 		appName: String,
 	): Result<LocalDateTime> {

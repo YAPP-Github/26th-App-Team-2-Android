@@ -8,4 +8,3 @@ interface SetSnoozeAlarmUseCase {
 		appName: String,
 	): Result<LocalDateTime>
 }
-

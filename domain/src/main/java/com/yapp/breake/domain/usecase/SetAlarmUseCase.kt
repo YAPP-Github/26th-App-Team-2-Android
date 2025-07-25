@@ -11,4 +11,3 @@ interface SetAlarmUseCase {
 		second: Int = 0,
 	): Result<LocalDateTime>
 }
-

@@ -12,7 +12,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 internal class SnoozeViewModel @Inject constructor(
-    private val setSnoozeAlarmUsecase: SetSnoozeAlarmUsecase,
+	private val setSnoozeAlarmUsecase: SetSnoozeAlarmUsecase,
 ) : ViewModel() {
 
 	private val _toastEffect: MutableSharedFlow<String> = MutableSharedFlow()
