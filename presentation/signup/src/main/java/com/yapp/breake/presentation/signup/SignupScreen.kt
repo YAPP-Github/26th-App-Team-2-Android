@@ -52,7 +52,7 @@ fun SignupRoute(viewModel: SignupViewModel = hiltViewModel()) {
 		viewModel.navigationFlow.collect {
 			when (it) {
 				NavigateToBack -> navAction.popBackStack()
-				NavigateToOnboarding -> navAction.navigateToOnboarding()
+				NavigateToOnboarding -> navAction.navigateToGuide()
 			}
 		}
 	}
