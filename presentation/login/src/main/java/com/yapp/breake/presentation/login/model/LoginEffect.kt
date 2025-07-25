@@ -13,5 +13,8 @@ sealed interface LoginEffect {
 	data object NavigateToSignup : LoginEffect
 
 	@Immutable
+	data object NavigateToPermission : LoginEffect
+
+	@Immutable
 	data object NavigateToOnboarding : LoginEffect
 }
