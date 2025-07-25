@@ -10,17 +10,11 @@ import com.yapp.breake.core.navigation.route.MainTabRoute
 import com.yapp.breake.presentation.home.HomeRoute
 
 fun NavController.navigateToHome(
-	shouldClearBackstack: Boolean = false,
 	navOptions: NavOptions? = null,
 ) {
 	navigate(
 		route = MainTabRoute.Home,
-		navOptions = navOptions {
-			if (shouldClearBackstack) {
-				popUpTo(graph.id) { inclusive = true }
-			}
-			navOptions
-		},
+		navOptions = navOptions,
 	)
 }
 
