@@ -5,6 +5,8 @@ import com.yapp.breake.data.remote.model.LoginRequest
 import com.yapp.breake.data.remote.model.LoginResponse
 import com.yapp.breake.data.remote.model.MemberRequest
 import com.yapp.breake.data.remote.model.MemberResponse
+import com.yapp.breake.data.remote.model.RefreshRequest
+import com.yapp.breake.data.remote.model.RefreshResponse
 import retrofit2.http.Body
 import retrofit2.http.GET
 import retrofit2.http.PATCH
@@ -23,4 +25,9 @@ internal interface RetrofitBrakeApi {
 
 	@GET("/v1/members/me")
 	suspend fun getMemberName(): ApiResponse<MemberResponse>
+
+	@POST("/v1/auth/refresh")
+	suspend fun refreshTokens(
+		@Body refreshRequest: RefreshRequest,
+	): ApiResponse<RefreshResponse>
 }
