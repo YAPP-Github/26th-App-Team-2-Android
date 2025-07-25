@@ -6,11 +6,11 @@ import androidx.navigation.NavDestination
 import androidx.navigation.NavDestination.Companion.hasRoute
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavHostController
+import androidx.navigation.NavOptions
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navOptions
 import com.yapp.breake.core.navigation.action.NavigatorAction
-import com.yapp.breake.core.navigation.route.InitialRoute
 import com.yapp.breake.core.navigation.route.MainTabRoute
 import com.yapp.breake.core.navigation.route.Route
 import com.yapp.breake.presentation.home.navigation.navigateToHome
@@ -22,12 +22,11 @@ import com.yapp.breake.presentation.setting.navigation.navigateSetting
 import com.yapp.breake.presentation.signup.navigation.navigateToSignup
 
 internal class MainNavigator(
+	val startDestination: Route,
 	val navController: NavHostController,
 ) {
 	private val currentDestination: NavDestination?
 		@Composable get() = navController.currentBackStackEntryAsState().value?.destination
-
-	val startDestination = InitialRoute.Login
 
 	val currentTab: MainTab?
 		@Composable get() = MainTab.Companion.find { tab ->
@@ -36,9 +35,18 @@ internal class MainNavigator(
 
 	fun navigatorAction(): NavigatorAction {
 		return object : NavigatorAction {
-			override fun popBackStack() = popBackStackIfNotHome()
+			override fun getNavOptionsClearingBackStack(): NavOptions {
+				return navOptions {
+					popUpTo(navController.graph.findStartDestination().id) {
+						inclusive = true
+					}
+				}
+			}
 
-			override fun navigateToSignup() = navController.navigateToSignup()
+			override fun popBackStack(navOptions: NavOptions?) = popBackStackIfNotHome()
+
+			override fun navigateToSignup(navOptions: NavOptions?) =
+				navController.navigateToSignup(navOptions)
 
 			override fun navigateToGuide(navOptions: NavOptions?) =
 				navController.navigateToGuide(navOptions)
@@ -87,7 +95,8 @@ internal class MainNavigator(
 
 @Composable
 internal fun rememberMainNavigator(
+	startDestination: Route,
 	navController: NavHostController = rememberNavController(),
 ): MainNavigator = remember(navController) {
-	MainNavigator(navController)
+	MainNavigator(startDestination, navController)
 }
