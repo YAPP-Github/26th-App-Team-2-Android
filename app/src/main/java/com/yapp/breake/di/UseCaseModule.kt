@@ -6,6 +6,8 @@ import com.yapp.breake.domain.usecase.LoginUseCase
 import com.yapp.breake.domain.usecase.LoginUseCaseImpl
 import com.yapp.breake.domain.usecase.LoginWithCachedAuthCodeUseCase
 import com.yapp.breake.domain.usecase.LoginWithCachedAuthCodeUseCaseImpl
+import com.yapp.breake.domain.usecase.StoreOnboardingCompletionUseCase
+import com.yapp.breake.domain.usecase.StoreOnboardingCompletionUseCaseImpl
 import com.yapp.breake.domain.usecase.UpdateNicknameUseCase
 import com.yapp.breake.domain.usecase.UpdateNicknameUseCaseImpl
 import dagger.Binds
@@ -36,4 +38,9 @@ internal abstract class UseCaseModule {
 	abstract fun bindUpdateNicknameUseCase(
 		updateNicknameUseCase: UpdateNicknameUseCaseImpl,
 	): UpdateNicknameUseCase
+
+	@Binds
+	abstract fun bindStoreOnboardingCompletionUseCase(
+		storeOnboardingCompletionUseCase: StoreOnboardingCompletionUseCaseImpl,
+	): StoreOnboardingCompletionUseCase
 }
