@@ -1,6 +1,7 @@
 package com.yapp.breake.data.remote.source
 
 import com.yapp.breake.data.remote.model.LoginResponse
+import com.yapp.breake.data.remote.model.RefreshResponse
 import kotlinx.coroutines.flow.Flow
 
 interface TokenRemoteDataSource {
@@ -9,4 +10,9 @@ interface TokenRemoteDataSource {
 		authorizationCode: String,
 		onError: suspend (Throwable) -> Unit,
 	): Flow<LoginResponse>
+
+	fun refreshTokens(
+		refreshToken: String,
+		onError: suspend (Throwable) -> Unit,
+	): Flow<RefreshResponse>
 }

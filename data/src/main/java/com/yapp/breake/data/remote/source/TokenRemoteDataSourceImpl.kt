@@ -4,6 +4,8 @@ import com.skydoves.sandwich.suspendOnFailure
 import com.skydoves.sandwich.suspendOnSuccess
 import com.yapp.breake.data.remote.model.LoginRequest
 import com.yapp.breake.data.remote.model.LoginResponse
+import com.yapp.breake.data.remote.model.RefreshRequest
+import com.yapp.breake.data.remote.model.RefreshResponse
 import com.yapp.breake.data.remote.retrofit.RetrofitBrakeApi
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
@@ -27,6 +29,20 @@ internal class TokenRemoteDataSourceImpl @Inject constructor(
 		).suspendOnSuccess {
 			emit(this.data)
 		}.suspendOnFailure {
+			onError(Throwable("서버 연결에 문제가 있습니다"))
+		}
+	}
+
+	override fun refreshTokens(
+		refreshToken: String,
+		onError: suspend (Throwable) -> Unit,
+	): Flow<RefreshResponse> = flow {
+		Timber.d("refreshTokens called with refreshToken: $refreshToken")
+		retrofitBrakeApi.refreshTokens(RefreshRequest(refreshToken)).suspendOnSuccess {
+			Timber.d("refreshTokens called with refreshToken: $refreshToken")
+			emit(this.data)
+		}.suspendOnFailure {
+			Timber.e("refreshTokens failed")
 			onError(Throwable("서버 연결에 문제가 있습니다"))
 		}
 	}
