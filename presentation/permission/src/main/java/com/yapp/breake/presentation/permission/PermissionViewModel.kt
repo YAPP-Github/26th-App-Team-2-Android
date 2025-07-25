@@ -76,7 +76,7 @@ class PermissionViewModel @Inject constructor(
 				},
 			)
 			when (status) {
-				is Destination.Home -> _navigationFlow.emit(PermissionEffect.NavigateToMain)
+				is Destination.PermissionOrHome -> _navigationFlow.emit(PermissionEffect.NavigateToMain)
 				is Destination.Onboarding -> _navigationFlow.emit(
 					PermissionEffect.NavigateToComplete,
 				)
