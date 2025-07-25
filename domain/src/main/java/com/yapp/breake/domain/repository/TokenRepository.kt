@@ -54,6 +54,10 @@ interface TokenRepository {
 		onError: suspend (Throwable) -> Unit,
 	)
 
+	suspend fun refreshTokens(
+		onError: suspend (Throwable) -> Unit,
+	)
+
 	/**
 	 * AuthCode 비우기 메서드
 	 *
