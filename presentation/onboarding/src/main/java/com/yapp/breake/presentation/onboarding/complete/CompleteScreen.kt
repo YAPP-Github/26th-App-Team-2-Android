@@ -1,4 +1,4 @@
-package com.yapp.breake.presentation.onboarding.screen
+package com.yapp.breake.presentation.onboarding.complete
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.fillMaxSize
@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.layout.widthIn
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
@@ -17,10 +18,46 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.navigation.navOptions
 import com.yapp.breake.core.designsystem.component.LargeButton
 import com.yapp.breake.core.designsystem.theme.BrakeTheme
+import com.yapp.breake.core.designsystem.theme.LocalPadding
 import com.yapp.breake.core.designsystem.theme.White
+import com.yapp.breake.core.navigation.compositionlocal.LocalMainAction
+import com.yapp.breake.core.navigation.compositionlocal.LocalNavigatorAction
 import com.yapp.breake.presentation.onboarding.R
+import com.yapp.breake.presentation.onboarding.complete.model.CompleteEffect
+
+@Composable
+fun CompleteRoute(
+	viewModel: CompleteViewModel = hiltViewModel(),
+) {
+	val screenHorizontalPadding = LocalPadding.current.screenPaddingHorizontal
+	val navAction = LocalNavigatorAction.current
+	val mainAction = LocalMainAction.current
+
+	LaunchedEffect(true) {
+		viewModel.errorFlow.collect { mainAction.onShowSnackBar(it) }
+	}
+
+	LaunchedEffect(true) {
+		viewModel.navigationFlow.collect { effect ->
+			when (effect) {
+				CompleteEffect.NavigateToMain -> navAction.navigateToHome(
+					navOptions = navAction.getNavOptionsClearingBackStack(),
+				)
+
+				CompleteEffect.NavigateToBack -> navAction.popBackStack()
+			}
+		}
+	}
+
+	CompleteScreen(
+		screenHorizontalPadding = screenHorizontalPadding,
+		onStartClick = viewModel::completeOnboarding,
+	)
+}
 
 @Composable
 fun CompleteScreen(
