@@ -1,15 +1,19 @@
-package com.yapp.breake.presentation.onboarding
+package com.yapp.breake.presentation.permission
 
 import android.content.Context
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.breake.core.permission.PermissionManager
 import com.breake.core.permission.PermissionType
-import com.yapp.breake.presentation.onboarding.model.OnboardingEffect
-import com.yapp.breake.presentation.onboarding.model.OnboardingEffect.RequestPermission
-import com.yapp.breake.presentation.onboarding.model.OnboardingUiState
-import com.yapp.breake.presentation.onboarding.model.PermissionItem
+import com.yapp.breake.core.model.user.Destination
+import com.yapp.breake.domain.usecase.DecideNextDestinationFromPermissionUseCase
+import com.yapp.breake.presentation.permission.model.PermissionEffect
+import com.yapp.breake.presentation.permission.model.PermissionEffect.RequestPermission
+import com.yapp.breake.presentation.permission.model.PermissionItem
+import com.yapp.breake.presentation.permission.model.PermissionUiState
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.collections.immutable.PersistentList
+import kotlinx.collections.immutable.persistentListOf
 import kotlinx.collections.immutable.toPersistentList
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -19,20 +23,22 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class OnboardingViewModel @Inject constructor(
+class PermissionViewModel @Inject constructor(
 	private val permissionManager: PermissionManager,
+	private val decideDestinationUseCase: DecideNextDestinationFromPermissionUseCase,
 ) : ViewModel() {
 
 	private val _errorFlow = MutableSharedFlow<Throwable>()
 	val errorFlow = _errorFlow.asSharedFlow()
 
-	private val _uiState = MutableStateFlow<OnboardingUiState>(OnboardingUiState.Guide(0))
+	private val _uiState =
+		MutableStateFlow<PermissionUiState>(PermissionUiState(permissions = persistentListOf()))
 	val uiState = _uiState.asStateFlow()
 
-	private val _navigationFlow = MutableSharedFlow<OnboardingEffect>()
+	private val _navigationFlow = MutableSharedFlow<PermissionEffect>()
 	val navigationFlow = _navigationFlow.asSharedFlow()
 
-	private fun checkCurrentPermissions(context: Context) {
+	private fun stackPermissions(context: Context): PersistentList<PermissionItem> {
 		try {
 			val permissionList = mutableListOf<PermissionItem>()
 			if (!permissionManager.isGranted(context, PermissionType.OVERLAY)) {
@@ -47,26 +53,45 @@ class OnboardingViewModel @Inject constructor(
 			if (!permissionManager.isGranted(context, PermissionType.ACCESSIBILITY)) {
 				permissionList.add(PermissionItem.ACCESSIBILITY)
 			}
-
-			if (permissionList.isEmpty()) {
-				_uiState.value = OnboardingUiState.Complete
-			} else {
-				_uiState.value =
-					OnboardingUiState.Permission(permissions = permissionList.toPersistentList())
-			}
+			return permissionList.toPersistentList()
 		} catch (e: Exception) {
 			viewModelScope.launch {
 				_errorFlow.emit(e)
 			}
+			// 모든 권한을 포함
+			return persistentListOf(
+				PermissionItem.OVERLAY,
+				PermissionItem.STATS,
+				PermissionItem.EXACT_ALARM,
+				PermissionItem.ACCESSIBILITY,
+			)
 		}
 	}
 
-	fun continueFromGuide(context: Context) = checkCurrentPermissions(context)
+	private fun decideNextDestination() {
+		viewModelScope.launch {
+			val status = decideDestinationUseCase.invoke(
+				onError = { error ->
+					_errorFlow.emit(error)
+				},
+			)
+			when (status) {
+				is Destination.Home -> _navigationFlow.emit(PermissionEffect.NavigateToMain)
+				is Destination.Onboarding -> _navigationFlow.emit(
+					PermissionEffect.NavigateToComplete,
+				)
+				else -> {}
+			}
+		}
+	}
 
-	fun refreshPermissions(context: Context) = checkCurrentPermissions(context)
-
-	fun moveBackToGuide() {
-		_uiState.value = OnboardingUiState.Guide(startPage = 2)
+	fun refreshPermissions(context: Context) {
+		val permissionList = stackPermissions(context)
+		if (permissionList.isEmpty()) {
+			decideNextDestination()
+		} else {
+			_uiState.value = PermissionUiState(permissions = permissionList)
+		}
 	}
 
 	fun requestPermission(context: Context, type: PermissionItem) {
@@ -81,13 +106,7 @@ class OnboardingViewModel @Inject constructor(
 
 	fun popBackStack() {
 		viewModelScope.launch {
-			_navigationFlow.emit(OnboardingEffect.NavigateToBack)
-		}
-	}
-
-	fun navigateToMain() {
-		viewModelScope.launch {
-			_navigationFlow.emit(OnboardingEffect.NavigateToMain)
+			_navigationFlow.emit(PermissionEffect.NavigateToBack)
 		}
 	}
 

@@ -1,5 +1,6 @@
-package com.yapp.breake.presentation.onboarding.screen
+package com.yapp.breake.presentation.permission
 
+import android.annotation.SuppressLint
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -23,33 +24,125 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalConfiguration
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.LifecycleEventObserver
+import androidx.lifecycle.compose.LocalLifecycleOwner
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.navigation.navOptions
 import com.yapp.breake.core.designsystem.component.BrakeTopAppbar
 import com.yapp.breake.core.designsystem.component.LargeButton
 import com.yapp.breake.core.designsystem.component.VerticalSpacer
 import com.yapp.breake.core.designsystem.theme.BrakeTheme
 import com.yapp.breake.core.designsystem.theme.Gray200
 import com.yapp.breake.core.designsystem.theme.Gray700
+import com.yapp.breake.core.designsystem.theme.LocalPadding
 import com.yapp.breake.core.designsystem.theme.White
-import com.yapp.breake.presentation.onboarding.R
-import com.yapp.breake.presentation.onboarding.model.OnboardingUiState
-import com.yapp.breake.presentation.onboarding.model.PermissionItem
+import com.yapp.breake.core.navigation.compositionlocal.LocalMainAction
+import com.yapp.breake.core.navigation.compositionlocal.LocalNavigatorAction
+import com.yapp.breake.core.navigation.route.InitialRoute
+import com.yapp.breake.presentation.permission.model.PermissionEffect
+import com.yapp.breake.presentation.permission.model.PermissionItem
+import com.yapp.breake.presentation.permission.model.PermissionUiState
 import kotlinx.collections.immutable.persistentMapOf
 import kotlinx.coroutines.launch
 
+@SuppressLint("ConfigurationScreenWidthHeight")
+@Composable
+fun PermissionRoute(
+	viewModel: PermissionViewModel = hiltViewModel(),
+) {
+	val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+	val context = LocalContext.current
+	val lifecycleOwner = LocalLifecycleOwner.current
+	val screenWidth = LocalConfiguration.current.screenWidthDp.dp
+	val screenHorizontalPadding = LocalPadding.current.screenPaddingHorizontal
+	val navAction = LocalNavigatorAction.current
+	val manAction = LocalMainAction.current
+
+	// ViewModel 초기화,
+	// UiState 초기화시 context 사용이 필요하며, 이는 ViewModel 내부에서만 이루어질 수 없음
+	LaunchedEffect(Unit) {
+		viewModel.refreshPermissions(context)
+	}
+
+	LaunchedEffect(true) {
+		viewModel.errorFlow.collect { manAction.onShowSnackBar(it) }
+	}
+
+	// 외부 화면으로 이동 side effect 처리
+	LaunchedEffect(true) {
+		viewModel.navigationFlow.collect { effect ->
+			when (effect) {
+				PermissionEffect.NavigateToBack -> {
+					navAction.popBackStack()
+				}
+
+				is PermissionEffect.RequestPermission -> {
+					// 권한 요청을 위한 Intent 실행
+					context.startActivity(effect.intent)
+				}
+
+				PermissionEffect.NavigateToMain -> {
+					navAction.navigateToHome(
+						navOptions = navAction.getNavOptionsClearingBackStack(),
+					)
+				}
+
+				PermissionEffect.NavigateToComplete -> {
+					navAction.navigateToComplete(
+						navOptions {
+							popUpTo(InitialRoute.Permission) { inclusive = true }
+						},
+					)
+				}
+			}
+		}
+	}
+
+	// 권한 설정 창에서 복귀 시 권한 상태를 새로고침
+	DisposableEffect(lifecycleOwner) {
+		val observer = LifecycleEventObserver { _, event ->
+			if (event == Lifecycle.Event.ON_RESUME) {
+				viewModel.refreshPermissions(context)
+			}
+		}
+		lifecycleOwner.lifecycle.addObserver(observer)
+		onDispose {
+			lifecycleOwner.lifecycle.removeObserver(observer)
+		}
+	}
+
+	PermissionScreen(
+		uiState = uiState,
+		screenWidth = screenWidth,
+		screenHorizontalPadding = screenHorizontalPadding,
+		onBackClick = viewModel::popBackStack,
+		onRequestPermissionClick = { permissionItem ->
+			viewModel.requestPermission(context, permissionItem)
+		},
+	)
+}
+
 @Composable
 fun PermissionScreen(
-	uiState: OnboardingUiState.Permission,
+	uiState: PermissionUiState,
 	screenWidth: Dp,
 	screenHorizontalPadding: Dp,
 	onBackClick: () -> Unit,

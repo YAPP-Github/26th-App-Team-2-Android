@@ -1,4 +1,4 @@
-package com.yapp.breake.presentation.onboarding.model
+package com.yapp.breake.presentation.permission.model
 
 import androidx.compose.runtime.Stable
 
