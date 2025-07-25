@@ -7,6 +7,7 @@ import androidx.navigation.compose.NavHost
 import com.yapp.breake.presentation.home.navigation.homeNavGraph
 import com.yapp.breake.presentation.login.navigation.loginNavGraph
 import com.yapp.breake.presentation.onboarding.navigation.onboardingNavGraph
+import com.yapp.breake.presentation.permission.navigation.permissionNavGraph
 import com.yapp.breake.presentation.report.navigation.reportNavGraph
 import com.yapp.breake.presentation.setting.navigation.settingNavGraph
 import com.yapp.breake.presentation.signup.navigation.signupNavGraph
@@ -28,6 +29,7 @@ internal fun MainNavHost(
 		loginNavGraph()
 		signupNavGraph()
 		onboardingNavGraph()
+		permissionNavGraph()
 		reportNavGraph(padding = padding)
 		homeNavGraph(padding = padding)
 		settingNavGraph(
