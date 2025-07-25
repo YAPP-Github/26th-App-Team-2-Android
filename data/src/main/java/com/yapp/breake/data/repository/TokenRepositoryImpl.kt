@@ -11,25 +11,28 @@ import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
+import timber.log.Timber
 import javax.inject.Inject
 
 internal class TokenRepositoryImpl @Inject constructor(
-	private val tokenRemoteDataSourceImpl: TokenRemoteDataSource,
-	private val tokenLocalDataSourceImpl: TokenLocalDataSource,
-	private val authLocalDataSourceImpl: AuthLocalDataSource,
+	private val tokenRemoteDataSource: TokenRemoteDataSource,
+	private val tokenLocalDataSource: TokenLocalDataSource,
+	private val authLocalDataSource: AuthLocalDataSource,
 ) : TokenRepository {
 
 	override fun getRemoteTokens(
 		provider: String,
 		authorizationCode: String,
 		onError: suspend (Throwable) -> Unit,
-	): Flow<UserToken> = tokenRemoteDataSourceImpl.getTokens(
+	): Flow<UserToken> = tokenRemoteDataSource.getTokens(
 		provider = provider,
 		authorizationCode = authorizationCode,
 		onError = onError,
@@ -37,7 +40,8 @@ internal class TokenRepositoryImpl @Inject constructor(
 		it.toData()
 	}.onEach {
 		// authCode 습득 성공 시 토큰과 유저 상태 (회원, 비회원) 저장
-		tokenLocalDataSourceImpl.updateUserToken(
+		Timber.d("accessToken: ${it.accessToken}, refreshToken: ${it.refreshToken}, status: ${it.status}")
+		tokenLocalDataSource.updateUserToken(
 			userAccessToken = it.accessToken,
 			userRefreshToken = it.refreshToken,
 			userStatus = it.status,
@@ -46,7 +50,7 @@ internal class TokenRepositoryImpl @Inject constructor(
 	}.onEach {
 		// 만약 유저 토큰 상태가 HALF_SIGNUP이라면 authCode를 로컬에 저장
 		if (it.status == UserStatus.HALF_SIGNUP) {
-			authLocalDataSourceImpl.updateAuthCode(
+			authLocalDataSource.updateAuthCode(
 				authCode = authorizationCode,
 				onError = onError,
 			)
@@ -54,7 +58,7 @@ internal class TokenRepositoryImpl @Inject constructor(
 			@OptIn(DelicateCoroutinesApi::class)
 			GlobalScope.launch(kotlinx.coroutines.Dispatchers.IO) {
 				delay(5 * 60 * 1000L)
-				authLocalDataSourceImpl.clearAuthCode(onError = onError)
+				authLocalDataSource.clearAuthCode(onError = onError)
 			}
 		}
 	}
@@ -63,7 +67,7 @@ internal class TokenRepositoryImpl @Inject constructor(
 		provider: String,
 		onError: suspend (Throwable) -> Unit,
 	): Flow<UserToken> = flow {
-		authLocalDataSourceImpl.getAuthCode(onError = onError).collect { authCode ->
+		authLocalDataSource.getAuthCode(onError = onError).collect { authCode ->
 			getRemoteTokens(
 				provider = provider,
 				authorizationCode = authCode,
@@ -75,14 +79,14 @@ internal class TokenRepositoryImpl @Inject constructor(
 	}
 
 	override suspend fun getLocalAccessToken(onError: suspend (Throwable) -> Unit): Flow<String> =
-		tokenLocalDataSourceImpl.getUserAccessToken(onError = onError)
+		tokenLocalDataSource.getUserAccessToken(onError = onError)
 
 	override suspend fun clearLocalTokens(onError: suspend (Throwable) -> Unit) {
-		authLocalDataSourceImpl.updateAuthCode(
+		authLocalDataSource.updateAuthCode(
 			authCode = null,
 			onError = onError,
 		)
-		tokenLocalDataSourceImpl.updateUserToken(
+		tokenLocalDataSource.updateUserToken(
 			userAccessToken = null,
 			userRefreshToken = null,
 			userStatus = UserStatus.INACTIVE,
@@ -90,14 +94,41 @@ internal class TokenRepositoryImpl @Inject constructor(
 		)
 	}
 
+	override suspend fun refreshTokens(onError: suspend (Throwable) -> Unit) {
+		val refreshToken = tokenLocalDataSource.getUserRefreshToken(onError).firstOrNull()
+		refreshToken?.let {
+			tokenRemoteDataSource.refreshTokens(
+				refreshToken = refreshToken,
+				onError = onError,
+			).map {
+				it.toData()
+			}.onEach {
+				// 토큰 갱신 성공 시 로컬에 저장
+				tokenLocalDataSource.updateUserToken(
+					userAccessToken = it.accessToken,
+					userRefreshToken = it.refreshToken,
+					userStatus = it.status,
+					onError = onError,
+				)
+				Timber.d("refreshToken: 토큰 갱신 성공 - ${it.accessToken}, ${it.refreshToken}, ${it.status}")
+			}.catch {
+				Timber.e("알 수 없는 오류")
+				onError(it)
+			}.collect()
+		} ?: run {
+			Timber.e("리프레시 토큰이 로컬에 없습니다")
+			onError(Throwable("리프레시 토큰이 없습니다. 다시 로그인 해주세요."))
+		}
+	}
+
 	override suspend fun clearLocalAuthCode(onError: suspend (Throwable) -> Unit) {
-		authLocalDataSourceImpl.clearAuthCode(onError = onError)
+		authLocalDataSource.clearAuthCode(onError = onError)
 	}
 
 	override val canGetLocalTokensRetry
 		get() = runBlocking {
 			var isAvailable = true
-			authLocalDataSourceImpl.getAuthCode(
+			authLocalDataSource.getAuthCode(
 				onError = { isAvailable = false },
 			).collect()
 			isAvailable
