@@ -1,15 +1,39 @@
 package com.yapp.breake.data.local.source
 
 import androidx.datastore.core.DataStore
+import com.yapp.breake.core.datastore.model.DatastoreOnboarding
 import com.yapp.breake.core.datastore.model.DatastoreUserInfo
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch
+import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.flow
+import timber.log.Timber
 import javax.inject.Inject
 
 internal class UserLocalDataSourceImpl @Inject constructor(
 	private val userInfoDataStore: DataStore<DatastoreUserInfo>,
+	private val onboardingDataStore: DataStore<DatastoreOnboarding>,
 ) : UserLocalDataSource {
+	override suspend fun updateOnboardingFlag(
+		isComplete: Boolean,
+		onError: suspend (Throwable) -> Unit,
+	) {
+		onboardingDataStore.updateData {
+			it.copy(flag = isComplete)
+		}
+		val result = onboardingDataStore.data.firstOrNull()?.flag == true
+		Timber.e("Onboarding flag updated: $result")
+	}
+
+	override fun getOnboardingFlag(onError: suspend (Throwable) -> Unit): Flow<Boolean> = flow {
+		onboardingDataStore.data
+			.catch {
+				onError(Throwable("온보딩 플래그를 가져오는데 실패했습니다"))
+			}.collect { onboardingFlag ->
+				emit(onboardingFlag.flag)
+			}
+	}
+
 	override suspend fun updateNickname(
 		nickname: String,
 		onError: suspend (Throwable) -> Unit,
