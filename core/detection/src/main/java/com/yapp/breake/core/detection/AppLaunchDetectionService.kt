@@ -43,7 +43,6 @@ class AppLaunchDetectionService : AccessibilityService() {
 	}
 
 	private fun findAppGroupAndAction(packageName: String) {
-		Timber.i("앱 실행 감지: 패키지명: $packageName")
 
 		serviceScope.launch {
 			val appGroup = findAppGroupUsecase(packageName)

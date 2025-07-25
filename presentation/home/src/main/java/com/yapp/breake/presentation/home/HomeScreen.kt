@@ -34,7 +34,7 @@ private fun HomeContent(
 		is HomeUiState.GroupList -> {
 			ListScreen(
 				appGroups = homeUiState.appGroups,
-				onAppGroupClick = {  },
+				onAppGroupClick = { },
 			)
 		}
 		HomeUiState.Blocking -> {

@@ -48,7 +48,11 @@ class MainActivity : ComponentActivity() {
 						snackBarHostState.showSnackbar(throwable?.message ?: "알 수 없는 오류가 발생했습니다.")
 					}
 				}
-				override fun onShowToast(message: String) = Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
+				override fun onShowToast(message: String) = Toast.makeText(
+					context,
+					message,
+					Toast.LENGTH_SHORT,
+				).show()
 			}
 
 			CompositionLocalProvider(
