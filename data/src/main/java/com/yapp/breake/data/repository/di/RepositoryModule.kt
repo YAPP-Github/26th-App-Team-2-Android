@@ -1,7 +1,9 @@
 package com.yapp.breake.data.repository.di
 
+import com.yapp.breake.data.repository.SessionRepositoryImpl
 import com.yapp.breake.data.repository.TokenRepositoryImpl
 import com.yapp.breake.data.repository.NicknameRepositoryImpl
+import com.yapp.breake.domain.repository.SessionRepository
 import com.yapp.breake.domain.repository.TokenRepository
 import com.yapp.breake.domain.repository.NicknameRepository
 import dagger.Binds
@@ -25,4 +27,9 @@ internal abstract class RepositoryModule {
 	abstract fun bindNicknameRepository(
 		nicknameRepository: NicknameRepositoryImpl,
 	): NicknameRepository
+
+	@Binds
+	abstract fun bindSessionRepository(
+		sessionRepository: SessionRepositoryImpl,
+	): SessionRepository
 }
