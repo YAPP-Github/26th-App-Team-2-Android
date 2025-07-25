@@ -37,8 +37,8 @@ internal object DatabaseModule {
 
 					db.execSQL(
 						"""
-						INSERT INTO `app_table` (packageName, category, parentGroupId) VALUES
-						('com.google.android.youtube', 'Entertainment', 1)
+						INSERT INTO `app_table` (packageName, name, icon, category, parentGroupId) VALUES
+						('com.google.android.youtube', Youtube'', 'null', 'Entertainment', 1)
 						""".trimIndent(),
 					)
 				}

@@ -13,6 +13,7 @@ android {
 dependencies {
 	implementation(projects.domain)
 	implementation(projects.core.model)
+	implementation(projects.core.util)
 	implementation(projects.core.datastore)
 	implementation(projects.core.database)
 	implementation(projects.domain)

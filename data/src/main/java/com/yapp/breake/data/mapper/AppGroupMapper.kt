@@ -6,6 +6,7 @@ import com.yapp.breake.core.database.entity.SnoozeEntity
 import com.yapp.breake.core.model.app.App
 import com.yapp.breake.core.model.app.AppGroup
 import com.yapp.breake.core.model.app.Snooze
+import com.yapp.breake.core.util.toByteArray
 
 internal fun AppGroupEntity.toAppGroup(): AppGroup {
 	return AppGroup(
@@ -20,6 +21,8 @@ internal fun AppGroupEntity.toAppGroup(): AppGroup {
 internal fun AppEntity.toApp(): App {
 	return App(
 		packageName = packageName,
+		name = name,
+		icon = icon?.toByteArray(),
 		category = category,
 	)
 }
