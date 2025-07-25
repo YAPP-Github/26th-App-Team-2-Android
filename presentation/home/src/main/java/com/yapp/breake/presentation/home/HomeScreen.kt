@@ -1,27 +1,39 @@
 package com.yapp.breake.presentation.home
 
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.hilt.navigation.compose.hiltViewModel
+import com.yapp.breake.core.designsystem.component.BaseScaffold
+import com.yapp.breake.presentation.HomeUiState
+import com.yapp.breake.presentation.HomeViewModel
+import com.yapp.breake.presentation.home.screen.NothingScreen
 
 @Composable
-fun HomeRoute(
+internal fun HomeRoute(
 	padding: PaddingValues,
-	// viewModel: HomeViewModel = hiltViewModel(),
+	viewModel: HomeViewModel = hiltViewModel(),
 ) {
-	HomeScreen()
+	BaseScaffold {
+
+	}
+
 }
 
 @Composable
-fun HomeScreen() {
-	Box(
-		modifier = Modifier.fillMaxSize(),
-		contentAlignment = Alignment.Center,
-	) {
-		Text(text = "관리")
+private fun HomeContent(
+	homeUiState: HomeUiState,
+	modifier: Modifier = Modifier,
+) {
+	when (homeUiState) {
+		HomeUiState.Nothing -> {
+			NothingScreen(
+				onAddClick = { /* TODO: Handle add click */ },
+			)
+		}
+		HomeUiState.List -> TODO()
+		HomeUiState.Blocking -> {
+		}
+		HomeUiState.Using -> TODO()
 	}
 }
