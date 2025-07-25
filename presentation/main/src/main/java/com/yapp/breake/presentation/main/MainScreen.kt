@@ -11,12 +11,11 @@ import com.yapp.breake.presentation.main.navigation.MainBottomNavBar
 import com.yapp.breake.presentation.main.navigation.MainNavHost
 import com.yapp.breake.presentation.main.navigation.MainNavigator
 import com.yapp.breake.presentation.main.navigation.MainTab
-import com.yapp.breake.presentation.main.navigation.rememberMainNavigator
 import kotlinx.collections.immutable.toPersistentList
 
 @Composable
 internal fun MainScreen(
-	navigator: MainNavigator = rememberMainNavigator(),
+	navigator: MainNavigator,
 	onChangeDarkTheme: (Boolean) -> Unit,
 	snackBarHostState: SnackbarHostState,
 ) {
