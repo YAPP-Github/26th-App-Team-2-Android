@@ -22,6 +22,7 @@ import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.navigation.navOptions
 import com.yapp.breake.core.auth.KakaoScreen
 import com.yapp.breake.core.designsystem.component.KakaoLoginButton
 import com.yapp.breake.core.designsystem.theme.BrakeTheme
@@ -30,6 +31,7 @@ import com.yapp.breake.core.navigation.compositionlocal.LocalMainAction
 import com.yapp.breake.core.navigation.compositionlocal.LocalNavigatorAction
 import com.yapp.breake.presentation.login.model.LoginEffect.NavigateToHome
 import com.yapp.breake.presentation.login.model.LoginEffect.NavigateToOnboarding
+import com.yapp.breake.presentation.login.model.LoginEffect.NavigateToPermission
 import com.yapp.breake.presentation.login.model.LoginEffect.NavigateToSignup
 import com.yapp.breake.presentation.login.model.LoginUiState
 
@@ -48,9 +50,12 @@ internal fun LoginRoute(viewModel: LoginViewModel = hiltViewModel()) {
 	LaunchedEffect(true) {
 		viewModel.navigationFlow.collect { navigation ->
 			when (navigation) {
-				NavigateToHome -> navAction.navigateToHome()
+				NavigateToHome -> navAction.navigateToHome(
+					navOptions = navAction.getNavOptionsClearingBackStack(),
+				)
 				NavigateToSignup -> navAction.navigateToSignup()
-				NavigateToOnboarding -> navAction.navigateToOnboarding()
+				NavigateToOnboarding -> navAction.navigateToGuide()
+				NavigateToPermission -> navAction.navigateToPermission()
 			}
 		}
 	}

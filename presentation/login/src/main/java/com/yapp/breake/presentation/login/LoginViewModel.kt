@@ -5,7 +5,9 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.breake.core.permission.PermissionManager
 import com.breake.core.permission.PermissionType
+import com.yapp.breake.core.model.user.Destination
 import com.yapp.breake.core.model.user.UserStatus
+import com.yapp.breake.domain.usecase.DecideNextDestinationFromPermissionUseCase
 import com.yapp.breake.domain.usecase.LoginUseCase
 import com.yapp.breake.presentation.login.model.LoginEffect
 import com.yapp.breake.presentation.login.model.LoginUiState
@@ -23,6 +25,7 @@ import javax.inject.Inject
 @HiltViewModel
 internal class LoginViewModel @Inject constructor(
 	private val loginUseCase: LoginUseCase,
+	private val decideDestinationUseCase: DecideNextDestinationFromPermissionUseCase,
 	private val permissionManager: PermissionManager,
 ) : ViewModel() {
 
@@ -66,11 +69,7 @@ internal class LoginViewModel @Inject constructor(
 				when (result) {
 					UserStatus.ACTIVE -> {
 						_uiState.value = LoginUiState.LoginIdle
-						if (checkPermissions(context)) {
-							_navigationFlow.emit(LoginEffect.NavigateToHome)
-						} else {
-							_navigationFlow.emit(LoginEffect.NavigateToOnboarding)
-						}
+						decideNextDestination(context)
 					}
 
 					UserStatus.HALF_SIGNUP -> {
@@ -99,6 +98,29 @@ internal class LoginViewModel @Inject constructor(
 		viewModelScope.launch {
 			_uiState.value = LoginUiState.LoginIdle
 			_errorFlow.emit(throwable)
+		}
+	}
+
+	private suspend fun decideNextDestination(context: Context) {
+		val status = decideDestinationUseCase.invoke(
+			onError = { error ->
+				_errorFlow.emit(error)
+			},
+		)
+		when (status) {
+			is Destination.PermissionOrHome -> if (checkPermissions(context)) {
+				_navigationFlow.emit(LoginEffect.NavigateToHome)
+			} else {
+				_navigationFlow.emit(LoginEffect.NavigateToPermission)
+			}
+
+			is Destination.Onboarding -> {
+				_navigationFlow.emit(
+					LoginEffect.NavigateToOnboarding,
+				)
+			}
+
+			else -> {}
 		}
 	}
 }
