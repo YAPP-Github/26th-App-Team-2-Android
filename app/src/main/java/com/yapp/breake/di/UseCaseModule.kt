@@ -4,6 +4,8 @@ import com.yapp.breake.domain.usecase.CheckAuthCodeUseCase
 import com.yapp.breake.domain.usecase.CheckAuthCodeUseCaseImpl
 import com.yapp.breake.domain.usecase.DecideNextDestinationFromPermissionUseCase
 import com.yapp.breake.domain.usecase.DecideNextDestinationFromPermissionUseCaseImpl
+import com.yapp.breake.domain.usecase.DecideStartDestinationUseCase
+import com.yapp.breake.domain.usecase.DecideStartDestinationUseCaseImpl
 import com.yapp.breake.domain.usecase.LoginUseCase
 import com.yapp.breake.domain.usecase.LoginUseCaseImpl
 import com.yapp.breake.domain.usecase.LoginWithCachedAuthCodeUseCase
@@ -45,6 +47,11 @@ internal abstract class UseCaseModule {
 	abstract fun bindStoreOnboardingCompletionUseCase(
 		storeOnboardingCompletionUseCase: StoreOnboardingCompletionUseCaseImpl,
 	): StoreOnboardingCompletionUseCase
+
+	@Binds
+	abstract fun bindDecideStartDestinationUseCase(
+		decideStartDestinationUseCase: DecideStartDestinationUseCaseImpl,
+	): DecideStartDestinationUseCase
 
 	@Binds
 	abstract fun bindDecideNextDestinationFromPermissionUseCase(
