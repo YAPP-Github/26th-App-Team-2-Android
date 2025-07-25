@@ -5,8 +5,10 @@ import androidx.datastore.core.DataStore
 import androidx.datastore.dataStore
 import com.yapp.breake.core.datastore.serializer.AuthSerializer
 import com.yapp.breake.core.datastore.model.DatastoreAuthCode
+import com.yapp.breake.core.datastore.model.DatastoreOnboarding
 import com.yapp.breake.core.datastore.model.DatastoreUserInfo
 import com.yapp.breake.core.datastore.model.DatastoreUserToken
+import com.yapp.breake.core.datastore.serializer.OnboardingSerializer
 import com.yapp.breake.core.datastore.serializer.UserInfoSerializer
 import com.yapp.breake.core.datastore.serializer.UserSerializer
 import dagger.Module
@@ -35,6 +37,11 @@ object DatastoreModule {
 		serializer = UserInfoSerializer,
 	)
 
+	private val Context.OnboardingDataStore: DataStore<DatastoreOnboarding> by dataStore(
+		fileName = "onboarding",
+		serializer = OnboardingSerializer,
+	)
+
 	@Provides
 	@Singleton
 	fun provideUserTokenDataStore(
@@ -52,4 +59,10 @@ object DatastoreModule {
 	fun provideUserInfoDataStore(
 		@ApplicationContext context: Context,
 	): DataStore<DatastoreUserInfo> = context.UserInfoDataStore
+
+	@Provides
+	@Singleton
+	fun provideOnboardingDataStore(
+		@ApplicationContext context: Context,
+	): DataStore<DatastoreOnboarding> = context.OnboardingDataStore
 }
