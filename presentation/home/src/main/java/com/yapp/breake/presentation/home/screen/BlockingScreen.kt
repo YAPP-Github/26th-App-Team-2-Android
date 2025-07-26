@@ -61,7 +61,7 @@ internal fun BlockingScreen(
 		VerticalSpacer(16.dp)
 		AppGroupList(
 			appGroups = appGroups,
-			onAppGroupClick = onAppGroupClick,
+			onEditClick = onAppGroupClick,
 			modifier = Modifier
 				.fillMaxWidth()
 				.padding(horizontal = 16.dp),

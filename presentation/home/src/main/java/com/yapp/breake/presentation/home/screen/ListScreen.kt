@@ -1,6 +1,5 @@
 package com.yapp.breake.presentation.home.screen
 
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
@@ -11,16 +10,16 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.yapp.breake.core.designsystem.component.HorizontalSpacer
 import com.yapp.breake.core.designsystem.component.VerticalSpacer
 import com.yapp.breake.core.designsystem.theme.BrakeTheme
-import com.yapp.breake.core.designsystem.theme.Gray100
 import com.yapp.breake.core.designsystem.theme.Gray200
 import com.yapp.breake.core.model.app.AppGroup
+import com.yapp.breake.presentation.home.R
 import com.yapp.breake.presentation.home.component.AppGroupList
+import com.yapp.breake.presentation.home.component.ImageTextBox
 
 @Composable
 internal fun ListScreen(
@@ -29,15 +28,12 @@ internal fun ListScreen(
 ) {
 	Column(
 		modifier = Modifier.fillMaxSize(),
-		verticalArrangement = Arrangement.Center,
 		horizontalAlignment = Alignment.CenterHorizontally,
 	) {
-		Text(
+		ImageTextBox(
+			imageRes = R.drawable.img_home_list,
 			text = "등록한 앱을 사용할 때\n사용 시간을 설정할 수 있어요",
-			style = BrakeTheme.typography.subtitle20SB,
-			textAlign = TextAlign.Center,
-			color = Gray100,
-			modifier = Modifier.fillMaxWidth(),
+			modifier = Modifier,
 		)
 		VerticalSpacer(30.dp)
 		Row(
@@ -61,7 +57,7 @@ internal fun ListScreen(
 		VerticalSpacer(16.dp)
 		AppGroupList(
 			appGroups = appGroups,
-			onAppGroupClick = onAppGroupClick,
+			onEditClick = onAppGroupClick,
 			modifier = Modifier
 				.fillMaxWidth()
 				.padding(horizontal = 16.dp),
