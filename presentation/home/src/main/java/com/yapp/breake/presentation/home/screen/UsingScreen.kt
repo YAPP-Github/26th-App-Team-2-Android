@@ -13,6 +13,11 @@ import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableLongStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
@@ -26,9 +31,13 @@ import com.yapp.breake.core.designsystem.theme.Gray200
 import com.yapp.breake.core.designsystem.theme.Gray300
 import com.yapp.breake.core.designsystem.theme.Gray400
 import com.yapp.breake.core.model.app.AppGroup
+import com.yapp.breake.core.util.extensions.getRemainingSeconds
+import com.yapp.breake.core.util.extensions.toMinutesAndSeconds
 import com.yapp.breake.presentation.home.component.AppGroupBox
 import com.yapp.breake.presentation.home.component.AppGroupItemContent
 import com.yapp.breake.presentation.home.component.StopButton
+import kotlinx.coroutines.delay
+import java.util.Locale
 
 @Composable
 internal fun UsingScreen(
@@ -41,22 +50,22 @@ internal fun UsingScreen(
 	) {
 		Box(
 			modifier = Modifier
-                .fillMaxWidth()
-                .height(360.dp)
-                .background(brush = BackgroundGradient),
+				.fillMaxWidth()
+				.height(360.dp)
+				.background(brush = BackgroundGradient),
 		)
 		Column(
 			modifier = Modifier
-                .fillMaxSize()
-                .padding(horizontal = 16.dp),
+				.fillMaxSize()
+				.padding(horizontal = 16.dp),
 			horizontalAlignment = Alignment.CenterHorizontally,
 		) {
 			VerticalSpacer(50.dp)
 			Row(
 				verticalAlignment = Alignment.Bottom,
 				modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = 8.dp),
+					.fillMaxWidth()
+					.padding(horizontal = 8.dp),
 			) {
 				Text(
 					text = "그룹",
@@ -89,6 +98,19 @@ private fun UsingAppGroup(
 	onStopClick: () -> Unit,
 	modifier: Modifier = Modifier,
 ) {
+	var remainingSeconds by remember { mutableLongStateOf(0L) }
+
+	LaunchedEffect(appGroup.endTime) {
+		while (true) {
+			appGroup.endTime?.let { endTime ->
+				remainingSeconds = endTime.getRemainingSeconds()
+			}
+			delay(1000)
+		}
+	}
+
+	val (minutes, seconds) = remainingSeconds.toMinutesAndSeconds()
+
 	AppGroupBox(
 		modifier = modifier,
 	) {
@@ -99,8 +121,8 @@ private fun UsingAppGroup(
 		VerticalSpacer(16.dp)
 		HorizontalDivider(
 			modifier = Modifier
-                .fillMaxWidth()
-                .padding(horizontal = 4.dp),
+				.fillMaxWidth()
+				.padding(horizontal = 4.dp),
 		)
 		VerticalSpacer(30.dp)
 		Column(
@@ -117,7 +139,7 @@ private fun UsingAppGroup(
 				verticalAlignment = Alignment.Bottom,
 			) {
 				Text(
-					text = "12",
+					text = String.format(Locale.getDefault(), "%02d", minutes),
 					style = BrakeTheme.typography.body16M,
 					fontSize = 54.sp,
 					color = MaterialTheme.colorScheme.onSurface,
@@ -131,7 +153,7 @@ private fun UsingAppGroup(
 				)
 				HorizontalSpacer(4.dp)
 				Text(
-					text = "07",
+					text = String.format(Locale.getDefault(), "%02d", seconds),
 					style = BrakeTheme.typography.body16M,
 					fontSize = 54.sp,
 					color = MaterialTheme.colorScheme.onSurface,
@@ -158,9 +180,9 @@ private fun UsingAppGroup(
 private fun UsingScreenPreview() {
 	BrakeTheme {
 		UsingScreen(
-            appGroup = AppGroup.sample,
-            onEditClick = { /* TODO: Handle edit click */ },
-            onStopClick = { /* TODO: Handle stop click */ },
-        )
+			appGroup = AppGroup.sample,
+			onEditClick = { /* TODO: Handle edit click */ },
+			onStopClick = { /* TODO: Handle stop click */ },
+		)
 	}
 }

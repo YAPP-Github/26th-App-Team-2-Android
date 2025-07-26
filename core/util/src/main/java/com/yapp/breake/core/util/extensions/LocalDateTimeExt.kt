@@ -4,6 +4,7 @@ import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 import java.time.format.FormatStyle
 import java.util.Locale
+import java.time.temporal.ChronoUnit
 
 fun LocalDateTime.toLocalizedTime(locale: Locale = Locale.getDefault()): String {
 	return when (locale.language) {
@@ -22,4 +23,16 @@ fun LocalDateTime.toLocalizedTime(locale: Locale = Locale.getDefault()): String 
 fun LocalDateTime.toSimpleTime(): String {
 	val formatter = DateTimeFormatter.ofPattern("HH:mm")
 	return this.format(formatter)
+}
+
+fun LocalDateTime.getRemainingSeconds(): Long {
+	val now = LocalDateTime.now()
+	val remaining = ChronoUnit.SECONDS.between(now, this)
+	return maxOf(0L, remaining)
+}
+
+fun Long.toMinutesAndSeconds(): Pair<Long, Long> {
+	val minutes = this / 60
+	val seconds = this % 60
+	return Pair(minutes, seconds)
 }

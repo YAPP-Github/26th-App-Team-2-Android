@@ -28,7 +28,7 @@ data class AppGroup(
 				),
 			),
 			snoozes = emptyList(),
-			endTime = null,
+			endTime = LocalDateTime.now().plusMinutes(12).plusSeconds(7),
 		)
 	}
 }

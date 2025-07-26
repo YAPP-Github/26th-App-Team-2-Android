@@ -11,5 +11,5 @@ data class GroupEntity(
 	@PrimaryKey(autoGenerate = true) val groupId: Long = 0,
 	val name: String,
 	val appGroupState: AppGroupState,
-	val endTime: LocalDateTime?
+	val endTime: LocalDateTime?,
 )
