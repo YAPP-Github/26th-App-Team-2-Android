@@ -31,14 +31,17 @@ private fun HomeContent(
 				onAddClick = { /* TODO: Handle add click */ },
 			)
 		}
+
 		is HomeUiState.GroupList -> {
 			ListScreen(
 				appGroups = homeUiState.appGroups,
 				onAppGroupClick = { },
 			)
 		}
+
 		HomeUiState.Blocking -> {
 		}
+
 		HomeUiState.Using -> TODO()
 	}
 }

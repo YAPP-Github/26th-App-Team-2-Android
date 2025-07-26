@@ -53,7 +53,7 @@ private fun AppGroupItem(
 }
 
 @Composable
-private fun AppGroupItemContent(
+internal fun AppGroupItemContent(
 	appGroup: AppGroup,
 	onEditClick: () -> Unit,
 	modifier: Modifier = Modifier,

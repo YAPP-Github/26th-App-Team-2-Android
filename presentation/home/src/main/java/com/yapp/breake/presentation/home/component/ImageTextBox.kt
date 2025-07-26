@@ -21,7 +21,7 @@ import com.yapp.breake.core.designsystem.theme.Gray100
 internal fun ImageTextBox(
 	@DrawableRes imageRes: Int,
 	text: String,
-	modifier: Modifier = Modifier
+	modifier: Modifier = Modifier,
 ) {
 	Box(
 		modifier = modifier,
@@ -32,7 +32,7 @@ internal fun ImageTextBox(
 			modifier = Modifier
 				.fillMaxWidth()
 				.wrapContentHeight(),
-			contentScale = ContentScale.FillWidth // 폭에 맞춰 스케일링
+			contentScale = ContentScale.FillWidth,
 		)
 		Text(
 			text = text,

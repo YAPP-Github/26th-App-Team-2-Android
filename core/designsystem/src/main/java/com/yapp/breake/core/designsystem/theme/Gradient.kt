@@ -3,7 +3,9 @@ package com.yapp.breake.core.designsystem.theme
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
-import kotlin.math.*
+import kotlin.math.PI
+import kotlin.math.cos
+import kotlin.math.sin
 
 val LinerGradient = Brush.linearGradient(
 	colors = listOf(
@@ -24,5 +26,13 @@ val AppItemGradient = Brush.linearGradient(
 	end = Offset(
 		cos(110.23 * PI / 180).toFloat() * 1000,
 		sin(110.23 * PI / 180).toFloat() * 1000,
+	),
+)
+
+val BackgroundGradient = Brush.verticalGradient(
+	colorStops = arrayOf(
+		0f to Color(0x26C0DBFF),
+		0.5817f to Color(0x0BC0DBFF),
+		1f to Color(0x00C0DBFF),
 	),
 )

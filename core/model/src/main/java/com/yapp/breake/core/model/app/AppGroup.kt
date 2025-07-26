@@ -1,11 +1,14 @@
 package com.yapp.breake.core.model.app
 
+import java.time.LocalDateTime
+
 data class AppGroup(
 	val id: Long,
 	val name: String,
 	val appGroupState: AppGroupState,
 	val apps: List<App>,
 	val snoozes: List<Snooze>,
+	val endTime: LocalDateTime?,
 ) {
 
 	val snoozesCount: Int
@@ -25,6 +28,7 @@ data class AppGroup(
 				),
 			),
 			snoozes = emptyList(),
+			endTime = null,
 		)
 	}
 }
