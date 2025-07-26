@@ -7,7 +7,7 @@ import androidx.navigation.compose.composable
 import com.yapp.breake.core.navigation.route.InitialRoute
 import com.yapp.breake.presentation.login.LoginRoute
 
-fun NavController.navigateLogin(navOptions: NavOptions? = null) {
+fun NavController.navigateToLogin(navOptions: NavOptions? = null) {
 	navigate(InitialRoute.Login, navOptions)
 }
 
