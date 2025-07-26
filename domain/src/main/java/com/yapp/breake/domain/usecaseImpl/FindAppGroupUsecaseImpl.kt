@@ -6,7 +6,7 @@ import com.yapp.breake.domain.repository.AppRepository
 import com.yapp.breake.domain.usecase.FindAppGroupUseCase
 import javax.inject.Inject
 
-class FindAppGroupUsecase @Inject constructor(
+class FindAppGroupUsecaseImpl @Inject constructor(
 	private val appGroupRepository: AppGroupRepository,
 	private val appRepository: AppRepository,
 ) : FindAppGroupUseCase {

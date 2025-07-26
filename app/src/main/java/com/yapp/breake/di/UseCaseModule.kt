@@ -14,11 +14,11 @@ import com.yapp.breake.domain.usecase.StoreOnboardingCompletionUseCase
 import com.yapp.breake.domain.usecase.StoreOnboardingCompletionUseCaseImpl
 import com.yapp.breake.domain.usecase.UpdateNicknameUseCase
 import com.yapp.breake.domain.usecaseImpl.CheckAuthCodeUseCaseImpl
-import com.yapp.breake.domain.usecaseImpl.FindAppGroupUsecase
+import com.yapp.breake.domain.usecaseImpl.FindAppGroupUsecaseImpl
 import com.yapp.breake.domain.usecaseImpl.LoginUseCaseImpl
 import com.yapp.breake.domain.usecaseImpl.LoginWithCachedAuthCodeUseCaseImpl
-import com.yapp.breake.domain.usecaseImpl.SetAlarmUsecase
-import com.yapp.breake.domain.usecaseImpl.SetSnoozeAlarmUsecase
+import com.yapp.breake.domain.usecaseImpl.SetAlarmUsecaseImpl
+import com.yapp.breake.domain.usecaseImpl.SetSnoozeAlarmUsecaseImpl
 import com.yapp.breake.domain.usecaseImpl.UpdateNicknameUseCaseImpl
 import dagger.Binds
 import dagger.Module
@@ -66,16 +66,16 @@ internal abstract class UseCaseModule {
 
 	@Binds
 	abstract fun bindFindAppGroupUseCase(
-		findAppGroupUsecase: FindAppGroupUsecase,
+		findAppGroupUsecase: FindAppGroupUsecaseImpl,
 	): FindAppGroupUseCase
 
 	@Binds
 	abstract fun bindSetAlarmUseCase(
-		setAlarmUsecase: SetAlarmUsecase,
+		setAlarmUsecase: SetAlarmUsecaseImpl,
 	): SetAlarmUseCase
 
 	@Binds
 	abstract fun bindSetSnoozeAlarmUseCase(
-		setSnoozeAlarmUsecase: SetSnoozeAlarmUsecase,
+		setSnoozeAlarmUsecase: SetSnoozeAlarmUsecaseImpl,
 	): SetSnoozeAlarmUseCase
 }

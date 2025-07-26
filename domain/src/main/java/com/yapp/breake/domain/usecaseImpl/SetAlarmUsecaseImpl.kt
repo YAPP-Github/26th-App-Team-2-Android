@@ -5,40 +5,48 @@ import com.yapp.breake.core.common.Constants
 import com.yapp.breake.core.model.app.AppGroupState
 import com.yapp.breake.domain.repository.AlarmScheduler
 import com.yapp.breake.domain.repository.AppGroupRepository
-import com.yapp.breake.domain.usecase.SetSnoozeAlarmUseCase
+import com.yapp.breake.domain.usecase.SetAlarmUseCase
 import java.time.LocalDateTime
 import javax.inject.Inject
 
-class SetSnoozeAlarmUsecase @Inject constructor(
+class SetAlarmUsecaseImpl @Inject constructor(
 	private val alarmScheduler: AlarmScheduler,
 	private val appGroupRepository: AppGroupRepository,
-) : SetSnoozeAlarmUseCase {
+) : SetAlarmUseCase {
 
 	override suspend operator fun invoke(
 		groupId: Long,
 		appName: String,
+		appGroupState: AppGroupState,
+		second: Int,
+		isUsingApp: Boolean,
 	): Result<LocalDateTime> {
-		alarmScheduler.cancelAlarm(
-			groupId = groupId,
-			action = AlarmAction.ACTION_BLOCKING,
-		)
+
+		val (action, time) = when (appGroupState) {
+			AppGroupState.Using -> AlarmAction.ACTION_USING to second
+			AppGroupState.Blocking -> AlarmAction.ACTION_BLOCKING to Constants.TEST_BLOCKING_TIME
+			else -> {
+				return Result.failure(IllegalStateException("알람을 예약하지 않는 상태입니다."))
+			}
+		}
 
 		val startTime = LocalDateTime.now()
-		val triggerTime = startTime.plusSeconds(Constants.TEST_SNOOZE_TIME.toLong())
+		val triggerTime = startTime.plusSeconds(time.toLong())
 
 		return alarmScheduler.scheduleAlarm(
 			groupId = groupId,
 			appName = appName,
 			triggerTime = triggerTime,
-			action = AlarmAction.ACTION_USING,
+			action = action,
 		).onSuccess {
 			appGroupRepository.updateAppGroupState(
 				groupId = groupId,
-				appGroupState = AppGroupState.Using,
+				appGroupState = if (isUsingApp) {
+					AppGroupState.SnoozeBlocking
+				} else {
+					appGroupState
+				},
 				endTime = triggerTime,
-			)
-			appGroupRepository.insertSnooze(
-				groupId = groupId,
 			)
 		}
 	}

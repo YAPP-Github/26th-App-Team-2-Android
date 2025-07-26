@@ -4,7 +4,7 @@ import androidx.compose.runtime.mutableIntStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.yapp.breake.core.model.app.AppGroupState
-import com.yapp.breake.domain.usecaseImpl.SetAlarmUsecase
+import com.yapp.breake.domain.usecaseImpl.SetAlarmUsecaseImpl
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -17,7 +17,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 internal class TimerViewModel @Inject constructor(
-	private val setAlarmUsecase: SetAlarmUsecase,
+	private val setAlarmUsecase: SetAlarmUsecaseImpl,
 ) : ViewModel() {
 
 	private val _timerUiState = MutableStateFlow<TimerUiState>(TimerUiState.Init)

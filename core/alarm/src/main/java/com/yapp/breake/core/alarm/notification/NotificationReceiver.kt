@@ -11,7 +11,7 @@ import com.yapp.breake.core.model.app.AppGroupState
 import com.yapp.breake.core.util.AppLaunchUtil
 import com.yapp.breake.core.util.OverlayLauncher
 import com.yapp.breake.domain.repository.AppGroupRepository
-import com.yapp.breake.domain.usecaseImpl.SetAlarmUsecase
+import com.yapp.breake.domain.usecase.SetAlarmUseCase
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -27,7 +27,7 @@ class NotificationReceiver : BroadcastReceiver() {
 	lateinit var appGroupRepository: AppGroupRepository
 
 	@Inject
-	lateinit var setAlarmUsecase: SetAlarmUsecase
+	lateinit var setAlarmUsecase: SetAlarmUseCase
 
 	private val serviceJob = SupervisorJob()
 	private val serviceScope = CoroutineScope(Dispatchers.Main + serviceJob)
