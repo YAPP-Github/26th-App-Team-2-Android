@@ -1,6 +1,7 @@
 package com.yapp.breake.data.remote.retrofit
 
 import com.skydoves.sandwich.ApiResponse
+import com.yapp.breake.data.remote.model.BaseResponse
 import com.yapp.breake.data.remote.model.LoginRequest
 import com.yapp.breake.data.remote.model.LoginResponse
 import com.yapp.breake.data.remote.model.MemberRequest
@@ -8,6 +9,7 @@ import com.yapp.breake.data.remote.model.MemberResponse
 import com.yapp.breake.data.remote.model.RefreshRequest
 import com.yapp.breake.data.remote.model.RefreshResponse
 import retrofit2.http.Body
+import retrofit2.http.DELETE
 import retrofit2.http.GET
 import retrofit2.http.PATCH
 import retrofit2.http.POST
@@ -30,4 +32,12 @@ internal interface RetrofitBrakeApi {
 	suspend fun refreshTokens(
 		@Body refreshRequest: RefreshRequest,
 	): ApiResponse<RefreshResponse>
+
+	@DELETE("/v1/members/me")
+	suspend fun deleteMemberName(): ApiResponse<BaseResponse>
+
+	@POST("/v1/auth/logout")
+	suspend fun logoutAuth(
+		@Body accessToken: String,
+	): ApiResponse<BaseResponse>
 }
