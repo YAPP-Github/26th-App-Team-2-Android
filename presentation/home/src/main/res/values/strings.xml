@@ -19,6 +19,11 @@
     <!-- Remaining Time -->
     <string name="remaining_usage_time">남은 사용 시간</string>
 
+    <!-- Stop Using Dialog -->
+    <string name="stop_using_dialog_title">앱 사용을 종료할까요?</string>
+    <string name="stop_using_dialog_message">예정보다 일찍 마무리하셨네요.\n멋진 선택이에요!</string>
+    <string name="stop_using_dialog_button">종료하기</string>
+
     <!-- Content Descriptions -->
     <string name="add_button_content_description">추가 버튼</string>
     <string name="stop_button_content_description">중지 버튼</string>
@@ -28,4 +33,8 @@
     <string name="edit_app_group_icon_content_description">앱 그룹 편집 아이콘</string>
     <string name="default_app_icon_content_description">기본 앱 아이콘</string>
     <string name="app_icon_content_description">앱 아이콘</string>
+    <string name="clap_image_content_description">박수 이미지</string>
+
+
+    <string name="home_stop_using_success">%s 사용 종료!\n이제 %s 앱을 사용할 수 없어요.</string>
 </resources>

@@ -53,7 +53,7 @@ fun BaseDialog(
 				modifier = Modifier
 					.padding(16.dp),
 			) {
-				VerticalSpacer(16.dp)
+				VerticalSpacer(30.dp)
 				content()
 				VerticalSpacer(30.dp)
 				DialogButton(
@@ -106,7 +106,7 @@ private fun DialogButton(
 
 @Preview
 @Composable
-fun BaseDialogPreview() {
+private fun BaseDialogPreview() {
 	BrakeTheme {
 		BaseDialog(
 			buttonText = "확인",

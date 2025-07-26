@@ -28,97 +28,97 @@ import com.yapp.breake.presentation.home.component.StopButton
 
 @Composable
 internal fun UsingScreen(
-    appGroup: AppGroup,
-    onEditClick: () -> Unit,
-    onStopClick: () -> Unit,
+	appGroup: AppGroup,
+	onEditClick: () -> Unit,
+	onStopClick: () -> Unit,
 ) {
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(horizontal = 16.dp),
-        horizontalAlignment = Alignment.CenterHorizontally,
-    ) {
-        VerticalSpacer(50.dp)
-        Row(
-            verticalAlignment = Alignment.Bottom,
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(horizontal = 8.dp),
-        ) {
-            Text(
-                text = stringResource(R.string.group),
-                style = BrakeTheme.typography.subtitle22SB,
-                color = MaterialTheme.colorScheme.onSurface,
-            )
-            HorizontalSpacer(1f)
-            Text(
-                text = stringResource(R.string.single_group_count),
-                style = BrakeTheme.typography.body12M,
-                color = Gray200,
-            )
-        }
-        VerticalSpacer(16.dp)
-        UsingAppGroup(
-            appGroup = appGroup,
-            onEditClick = onEditClick,
-            onStopClick = onStopClick,
-            modifier = Modifier
-                .fillMaxWidth(),
-        )
-    }
+	Column(
+		modifier = Modifier
+			.fillMaxSize()
+			.padding(horizontal = 16.dp),
+		horizontalAlignment = Alignment.CenterHorizontally,
+	) {
+		VerticalSpacer(50.dp)
+		Row(
+			verticalAlignment = Alignment.Bottom,
+			modifier = Modifier
+				.fillMaxWidth()
+				.padding(horizontal = 8.dp),
+		) {
+			Text(
+				text = stringResource(R.string.group),
+				style = BrakeTheme.typography.subtitle22SB,
+				color = MaterialTheme.colorScheme.onSurface,
+			)
+			HorizontalSpacer(1f)
+			Text(
+				text = stringResource(R.string.single_group_count),
+				style = BrakeTheme.typography.body12M,
+				color = Gray200,
+			)
+		}
+		VerticalSpacer(16.dp)
+		UsingAppGroup(
+			appGroup = appGroup,
+			onEditClick = onEditClick,
+			onStopClick = onStopClick,
+			modifier = Modifier
+				.fillMaxWidth(),
+		)
+	}
 }
 
 @Composable
 private fun UsingAppGroup(
-    appGroup: AppGroup,
-    onEditClick: () -> Unit,
-    onStopClick: () -> Unit,
-    modifier: Modifier = Modifier,
+	appGroup: AppGroup,
+	onEditClick: () -> Unit,
+	onStopClick: () -> Unit,
+	modifier: Modifier = Modifier,
 ) {
-    AppGroupBox(
-        modifier = modifier,
-    ) {
-        AppGroupItemContent(
-            appGroup = appGroup,
-            onEditClick = onEditClick,
-        )
-        VerticalSpacer(16.dp)
-        HorizontalDivider(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(horizontal = 4.dp),
-        )
-        VerticalSpacer(30.dp)
-        Column(
-            modifier = modifier.fillMaxWidth(),
-            horizontalAlignment = Alignment.CenterHorizontally,
-        ) {
-            Text(
-                text = stringResource(R.string.remaining_usage_time),
-                style = BrakeTheme.typography.body16M,
-                color = Gray400,
-            )
-            RemainingTimeDisplay(
-                endTime = appGroup.endTime,
-            )
-            VerticalSpacer(40.dp)
-            StopButton(
-                onStopClick = onStopClick,
-                modifier = Modifier,
-            )
-        }
-        VerticalSpacer(10.dp)
-    }
+	AppGroupBox(
+		modifier = modifier,
+	) {
+		AppGroupItemContent(
+			appGroup = appGroup,
+			onEditClick = onEditClick,
+		)
+		VerticalSpacer(16.dp)
+		HorizontalDivider(
+			modifier = Modifier
+				.fillMaxWidth()
+				.padding(horizontal = 4.dp),
+		)
+		VerticalSpacer(30.dp)
+		Column(
+			modifier = modifier.fillMaxWidth(),
+			horizontalAlignment = Alignment.CenterHorizontally,
+		) {
+			Text(
+				text = stringResource(R.string.remaining_usage_time),
+				style = BrakeTheme.typography.body16M,
+				color = Gray400,
+			)
+			RemainingTimeDisplay(
+				endTime = appGroup.endTime,
+			)
+			VerticalSpacer(40.dp)
+			StopButton(
+				onStopClick = onStopClick,
+				modifier = Modifier,
+			)
+		}
+		VerticalSpacer(10.dp)
+	}
 }
 
 @Preview
 @Composable
 private fun UsingScreenPreview() {
-    BrakeTheme {
-        UsingScreen(
-            appGroup = AppGroup.sample,
-            onEditClick = { /* TODO: Handle edit click */ },
-            onStopClick = { /* TODO: Handle stop click */ },
-        )
-    }
+	BrakeTheme {
+		UsingScreen(
+			appGroup = AppGroup.sample,
+			onEditClick = { /* TODO: Handle edit click */ },
+			onStopClick = { /* TODO: Handle stop click */ },
+		)
+	}
 }

@@ -26,87 +26,87 @@ import com.yapp.breake.presentation.home.component.RemainingTimeDisplay
 
 @Composable
 internal fun BlockingScreen(
-    appGroup: AppGroup,
-    onEditClick: () -> Unit,
+	appGroup: AppGroup,
+	onEditClick: () -> Unit,
 ) {
-    Column(
-        modifier = Modifier
+	Column(
+		modifier = Modifier
 			.fillMaxSize()
 			.padding(horizontal = 16.dp),
-        horizontalAlignment = Alignment.CenterHorizontally,
-    ) {
-        VerticalSpacer(50.dp)
-        Row(
-            verticalAlignment = Alignment.Bottom,
-            modifier = Modifier
+		horizontalAlignment = Alignment.CenterHorizontally,
+	) {
+		VerticalSpacer(50.dp)
+		Row(
+			verticalAlignment = Alignment.Bottom,
+			modifier = Modifier
 				.fillMaxWidth()
 				.padding(horizontal = 8.dp),
-        ) {
-            Text(
-                text = stringResource(R.string.group),
-                style = BrakeTheme.typography.subtitle22SB,
-                color = MaterialTheme.colorScheme.onSurface,
-            )
-            HorizontalSpacer(1f)
-            Text(
-                text = stringResource(R.string.single_group_count),
-                style = BrakeTheme.typography.body12M,
-                color = Gray200,
-            )
-        }
-        VerticalSpacer(16.dp)
-        BlockingAppGroup(
-            appGroup = appGroup,
-            onEditClick = onEditClick,
-            modifier = Modifier
-                .fillMaxWidth(),
-        )
-    }
+		) {
+			Text(
+				text = stringResource(R.string.group),
+				style = BrakeTheme.typography.subtitle22SB,
+				color = MaterialTheme.colorScheme.onSurface,
+			)
+			HorizontalSpacer(1f)
+			Text(
+				text = stringResource(R.string.single_group_count),
+				style = BrakeTheme.typography.body12M,
+				color = Gray200,
+			)
+		}
+		VerticalSpacer(16.dp)
+		BlockingAppGroup(
+			appGroup = appGroup,
+			onEditClick = onEditClick,
+			modifier = Modifier
+				.fillMaxWidth(),
+		)
+	}
 }
 
 @Composable
 private fun BlockingAppGroup(
-    appGroup: AppGroup,
-    onEditClick: () -> Unit,
-    modifier: Modifier = Modifier,
+	appGroup: AppGroup,
+	onEditClick: () -> Unit,
+	modifier: Modifier = Modifier,
 ) {
-    AppGroupBox(
-        modifier = modifier,
-    ) {
-        AppGroupItemContent(
-            appGroup = appGroup,
-            onEditClick = onEditClick,
-            isDimmed = true,
-        )
-        VerticalSpacer(16.dp)
-        HorizontalDivider(
-            modifier = Modifier
+	AppGroupBox(
+		modifier = modifier,
+	) {
+		AppGroupItemContent(
+			appGroup = appGroup,
+			onEditClick = onEditClick,
+			isDimmed = true,
+		)
+		VerticalSpacer(16.dp)
+		HorizontalDivider(
+			modifier = Modifier
 				.fillMaxWidth()
 				.padding(horizontal = 4.dp),
-        )
-        VerticalSpacer(30.dp)
-        Column(
-            modifier = modifier.fillMaxWidth(),
-            horizontalAlignment = Alignment.CenterHorizontally,
-        ) {
-            RemainingTimeDisplay(
-                endTime = appGroup.endTime,
-                minuteTextStyle = BrakeTheme.typography.subtitle14B,
-                textBottomPadding = 0,
-            )
-            VerticalSpacer(30.dp)
-        }
-        VerticalSpacer(10.dp)
-    }
+		)
+		VerticalSpacer(30.dp)
+		Column(
+			modifier = modifier.fillMaxWidth(),
+			horizontalAlignment = Alignment.CenterHorizontally,
+		) {
+			RemainingTimeDisplay(
+				endTime = appGroup.endTime,
+				minuteTextStyle = BrakeTheme.typography.subtitle14B,
+				textBottomPadding = 0,
+			)
+			VerticalSpacer(30.dp)
+		}
+		VerticalSpacer(10.dp)
+	}
 }
 
 @Preview
 @Composable
 private fun BlockingScreenPreview() {
-    BrakeTheme {
-        BlockingScreen(
-            appGroup = AppGroup.sample,
-            onEditClick = { /* TODO: Handle edit click */ },
-        )
-    }
+	BrakeTheme {
+		BlockingScreen(
+			appGroup = AppGroup.sample,
+			onEditClick = { /* TODO: Handle edit click */ },
+		)
+	}
 }

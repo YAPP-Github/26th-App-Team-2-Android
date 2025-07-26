@@ -25,7 +25,7 @@ import com.yapp.breake.presentation.home.component.ImageTextBox
 @Composable
 internal fun ListScreen(
 	appGroups: List<AppGroup>,
-	onAppGroupClick: (AppGroup) -> Unit,
+	onEditClick: (AppGroup) -> Unit,
 ) {
 	Column(
 		modifier = Modifier.fillMaxSize(),
@@ -58,7 +58,7 @@ internal fun ListScreen(
 		VerticalSpacer(16.dp)
 		AppGroupList(
 			appGroups = appGroups,
-			onEditClick = onAppGroupClick,
+			onEditClick = onEditClick,
 			modifier = Modifier
 				.fillMaxWidth()
 				.padding(horizontal = 16.dp),
@@ -72,7 +72,7 @@ private fun ListScreenPreview() {
 	BrakeTheme {
 		ListScreen(
 			appGroups = listOf(AppGroup.sample),
-			onAppGroupClick = { /* TODO: Handle app group click */ },
+			onEditClick = { /* TODO: Handle app group click */ },
 		)
 	}
 }
