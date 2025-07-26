@@ -22,7 +22,7 @@ class AlarmSchedulerImpl @Inject constructor(
 	override fun scheduleAlarm(
 		groupId: Long,
 		appName: String,
-		second: Int,
+		triggerTime: LocalDateTime,
 		action: AlarmAction,
 	): Result<LocalDateTime> {
 		if (!canScheduleExactAlarms()) {
@@ -32,10 +32,10 @@ class AlarmSchedulerImpl @Inject constructor(
 		}
 
 		val intent = getPendingIntent(groupId, appName, action.name)
-		Timber.d("$second 초 후에 알람을 예약합니다. ID: $groupId, 액션: ${action.name}")
+		Timber.d("$triggerTime 에 알람을 예약합니다. ID: $groupId, 액션: ${action.name}")
 
 		return try {
-			val triggerTime = scheduleAlarm(second, intent)
+			scheduleAlarm(triggerTime, intent)
 			Result.success(triggerTime)
 		} catch (se: SecurityException) {
 			Timber.e("SecurityException: ID: $groupId 에 대한 정확한 알람을 예약할 수 없습니다. $se")
@@ -82,20 +82,15 @@ class AlarmSchedulerImpl @Inject constructor(
 
 	@SuppressLint("MissingPermission")
 	private fun scheduleAlarm(
-		second: Int,
+		triggerTime: LocalDateTime,
 		pendingIntent: PendingIntent,
-	): LocalDateTime {
-		val startTime = LocalDateTime.now()
-		val triggerTime = startTime.plusSeconds(second.toLong())
-		val triggerAtMillis =
-			triggerTime.atZone(ZoneId.systemDefault()).toInstant().toEpochMilli()
+	) {
+		val triggerAtMillis = triggerTime.atZone(ZoneId.systemDefault()).toInstant().toEpochMilli()
 		alarmManager.setExactAndAllowWhileIdle(
 			AlarmManager.RTC_WAKEUP,
 			triggerAtMillis,
 			pendingIntent,
 		)
-
-		return triggerTime
 	}
 
 	companion object {

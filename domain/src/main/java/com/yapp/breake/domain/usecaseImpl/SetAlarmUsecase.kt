@@ -19,6 +19,7 @@ class SetAlarmUsecase @Inject constructor(
 		appName: String,
 		appGroupState: AppGroupState,
 		second: Int,
+		isUsingApp: Boolean,
 	): Result<LocalDateTime> {
 
 		val (action, time) = when (appGroupState) {
@@ -29,15 +30,23 @@ class SetAlarmUsecase @Inject constructor(
 			}
 		}
 
+		val startTime = LocalDateTime.now()
+		val triggerTime = startTime.plusSeconds(time.toLong())
+
 		return alarmScheduler.scheduleAlarm(
 			groupId = groupId,
 			appName = appName,
-			second = time,
+			triggerTime = triggerTime,
 			action = action,
 		).onSuccess {
 			appGroupRepository.updateAppGroupState(
 				groupId = groupId,
-				appGroupState = appGroupState,
+				appGroupState = if (isUsingApp) {
+					AppGroupState.SnoozeBlocking
+				} else {
+					appGroupState
+				},
+				endTime = triggerTime,
 			)
 		}
 	}

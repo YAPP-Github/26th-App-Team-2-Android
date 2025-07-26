@@ -9,5 +9,6 @@ interface SetAlarmUseCase {
 		appName: String,
 		appGroupState: AppGroupState,
 		second: Int = 0,
+		isUsingApp: Boolean = false,
 	): Result<LocalDateTime>
 }

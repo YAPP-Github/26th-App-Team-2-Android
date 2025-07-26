@@ -58,11 +58,6 @@ class NotificationReceiver : BroadcastReceiver() {
 		Timber.i("ID: ${appGroup.id} 차단이 시작되었습니다")
 
 		val isUserUsingApp = AppLaunchUtil.isAppLaunching(context, appGroup)
-		changeBlockingState(
-			appGroup = appGroup,
-			isUserUsingApp = isUserUsingApp,
-		)
-
 		if (isUserUsingApp) {
 			OverlayLauncher.startOverlay(
 				context = context,
@@ -80,27 +75,12 @@ class NotificationReceiver : BroadcastReceiver() {
 		)
 	}
 
-	private suspend fun changeBlockingState(
-		appGroup: AppGroup,
-		isUserUsingApp: Boolean,
-	) {
-		val newAppGroupState = if (isUserUsingApp) {
-			AppGroupState.SnoozeBlocking
-		} else {
-			AppGroupState.Blocking
-		}
-
-		appGroupRepository.updateAppGroupState(
-			groupId = appGroup.id,
-			appGroupState = newAppGroupState,
-		)
-	}
-
 	private suspend fun stopBlocking(context: Context, appGroup: AppGroup, appName: String?) {
 		Timber.i("ID: ${appGroup.id} 차단이 해제되었습니다")
 		appGroupRepository.updateAppGroupState(
 			groupId = appGroup.id,
 			appGroupState = AppGroupState.NeedSetting,
+			endTime = null,
 		)
 		val isUserUsingApp = AppLaunchUtil.isAppLaunching(context, appGroup)
 
