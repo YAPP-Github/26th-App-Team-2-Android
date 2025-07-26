@@ -1,5 +1,6 @@
 package com.breake.core.permission
 
+import android.accessibilityservice.AccessibilityServiceInfo
 import android.app.AlarmManager
 import android.app.AppOpsManager
 import android.app.AppOpsManager.MODE_ALLOWED
@@ -9,6 +10,7 @@ import android.net.Uri
 import android.os.Build
 import android.os.Process
 import android.provider.Settings
+import android.view.accessibility.AccessibilityManager
 import jakarta.inject.Inject
 
 class PermissionManagerImpl @Inject constructor() : PermissionManager {
@@ -58,7 +60,9 @@ class PermissionManagerImpl @Inject constructor() : PermissionManager {
 
 	private fun isExactAlarmPermissionGranted(context: Context): Boolean {
 		// API 31 이상 부터 SCHEDULE_EXACT_ALARM 권한 설정 요구
-		return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+		// API 33 미만은 Manifest에 선언된 경우 자동으로 허용됨
+		// API 33 이상에서는 Manifest에 선언되어 있어도 사용자가 명시적으로 허용해야 함
+		return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
 			val alarmManager = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
 			alarmManager.canScheduleExactAlarms()
 		} else {
@@ -67,9 +71,9 @@ class PermissionManagerImpl @Inject constructor() : PermissionManager {
 	}
 
 	private fun isAccessibilityPermissionGranted(context: Context): Boolean {
-		val am = context.getSystemService(Context.ACCESSIBILITY_SERVICE)
-			as android.view.accessibility.AccessibilityManager
-		return am.isTouchExplorationEnabled || am.isEnabled
+		val am = context.getSystemService(Context.ACCESSIBILITY_SERVICE) as AccessibilityManager
+		return am.getEnabledAccessibilityServiceList(AccessibilityServiceInfo.FEEDBACK_ALL_MASK)
+			.any { it.resolveInfo.serviceInfo.packageName == context.packageName }
 	}
 
 	override fun getIntent(context: Context, permissionType: PermissionType): Intent =
