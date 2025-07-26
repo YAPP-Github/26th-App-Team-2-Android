@@ -9,7 +9,7 @@ import java.time.temporal.ChronoUnit
 fun LocalDateTime.toLocalizedTime(locale: Locale = Locale.getDefault()): String {
 	return when (locale.language) {
 		Locale.KOREAN.language -> {
-			val formatter = DateTimeFormatter.ofPattern("a h시 mm분", locale)
+			val formatter = DateTimeFormatter.ofPattern("h시 mm분", locale)
 			this.format(formatter)
 		}
 		else -> {

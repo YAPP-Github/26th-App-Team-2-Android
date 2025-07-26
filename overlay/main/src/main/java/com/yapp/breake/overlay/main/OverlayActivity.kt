@@ -9,6 +9,7 @@ import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.runtime.Composable
 import com.yapp.breake.core.common.BlockingConstants
+import com.yapp.breake.core.designsystem.component.BaseScaffold
 import com.yapp.breake.core.designsystem.theme.BrakeTheme
 import com.yapp.breake.core.model.app.AppGroupState
 import com.yapp.breake.core.util.OverlayData
@@ -32,15 +33,8 @@ class OverlayActivity : ComponentActivity() {
 
 		setContent {
 			BrakeTheme {
-
-				TimerRoute(
-					appName = "Unknown App",
-					groupId = 1,
-					onExitManageApp = ::onExitManageApp,
-					onCloseOverlay = ::finish,
-				)
+				BaseScaffold { }
 			}
-
 			MainBackHandler(
 				overlayViewHolder = overlayViewHolder,
 			)
