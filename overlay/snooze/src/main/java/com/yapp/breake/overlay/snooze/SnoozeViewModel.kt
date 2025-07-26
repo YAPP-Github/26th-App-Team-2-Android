@@ -2,7 +2,6 @@ package com.yapp.breake.overlay.snooze
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.yapp.breake.core.common.Constants
 import com.yapp.breake.domain.usecase.SetSnoozeAlarmUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -24,7 +23,6 @@ internal class SnoozeViewModel @Inject constructor(
 				groupId = groupId,
 				appName = appName,
 			).onSuccess {
-				sendToastMessage("알람이 ${Constants.SNOOZE_TIME}초 후에 다시 울립니다.")
 			}.onFailure {
 				sendToastMessage("알람 설정에 실패했습니다. 정확한 알람 권한을 확인해주세요.")
 			}
