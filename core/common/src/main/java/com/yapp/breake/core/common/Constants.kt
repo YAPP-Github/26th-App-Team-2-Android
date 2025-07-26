@@ -4,8 +4,8 @@ object Constants {
 
 	const val MAX_SNOOZE_COUNT = 2
 	const val BLOCKING_TIME = 5 * 60
-	const val TEST_BLOCKING_TIME = 15
+	const val TEST_BLOCKING_TIME = 30
 	const val SNOOZE_TIME = 3 * 60
 	val SNOOZE_MINUTES get() = SNOOZE_TIME / 60
-	const val TEST_SNOOZE_TIME = 15
+	const val TEST_SNOOZE_TIME = 30
 }
