@@ -1,4 +1,4 @@
-package com.yapp.breake.overlay.timer.component
+package com.yapp.breake.overlay.timer
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -24,6 +24,8 @@ import com.yapp.breake.core.designsystem.theme.BrakeTheme
 import com.yapp.breake.core.designsystem.theme.LinerGradient
 import com.yapp.breake.core.util.addJosaEulReul
 import com.yapp.breake.core.util.extensions.toLocalizedTime
+import com.yapp.breake.overlay.timer.component.TimePicker
+import timber.log.Timber
 import java.time.LocalDateTime
 import com.yapp.breake.overlay.ui.R as UiRes
 
@@ -91,7 +93,10 @@ internal fun TimerScreen(
 					.weight(1f),
 			) {
 				TimePicker(
-					onSnappedTime = onTimeChange,
+					onSnappedTime = {
+						Timber.d("Snapped time: $it")
+						onTimeChange(it)
+					},
 				)
 			}
 		}

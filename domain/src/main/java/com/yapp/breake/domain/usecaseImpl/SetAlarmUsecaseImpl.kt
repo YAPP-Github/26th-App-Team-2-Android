@@ -21,7 +21,6 @@ class SetAlarmUsecaseImpl @Inject constructor(
 		second: Int,
 		isUsingApp: Boolean,
 	): Result<LocalDateTime> {
-
 		val (action, time) = when (appGroupState) {
 			AppGroupState.Using -> AlarmAction.ACTION_USING to second
 			AppGroupState.Blocking -> AlarmAction.ACTION_BLOCKING to Constants.TEST_BLOCKING_TIME

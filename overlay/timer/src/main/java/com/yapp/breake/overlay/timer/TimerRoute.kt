@@ -1,11 +1,6 @@
 package com.yapp.breake.overlay.timer
 
 import android.widget.Toast
-import androidx.compose.animation.AnimatedContent
-import androidx.compose.animation.fadeIn
-import androidx.compose.animation.fadeOut
-import androidx.compose.animation.togetherWith
-import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
@@ -19,7 +14,6 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.yapp.breake.overlay.timer.component.InitScreen
 import com.yapp.breake.overlay.timer.component.SetCompleteScreen
-import com.yapp.breake.overlay.timer.component.TimerScreen
 
 @Composable
 fun TimerRoute(
@@ -54,7 +48,7 @@ private fun TimerOverlay(
 		TimerContent(
 			appName = appName,
 			onSetTime = viewModel::setTime,
-			onConfirm = viewModel::setTime,
+			onConfirm = viewModel::initTimeSetting,
 			onCloseOverlay = onCloseOverlay,
 			onExitManageApp = onExitManageApp,
 			onTimerConfirm = {
@@ -81,36 +75,29 @@ private fun TimerContent(
 	onExitManageApp: () -> Unit,
 	timerUiState: TimerUiState,
 ) {
-	AnimatedContent(
-		targetState = timerUiState,
-		transitionSpec = {
-			fadeIn(animationSpec = tween(400)) togetherWith fadeOut(animationSpec = tween(400))
-		},
-	) { state ->
-		when (state) {
-			TimerUiState.Init -> {
-				InitScreen(
-					appName = appName,
-					onConfirm = onConfirm,
-					onExitManageApp = onExitManageApp,
-				)
-			}
+	when (timerUiState) {
+		TimerUiState.Init -> {
+			InitScreen(
+				appName = appName,
+				onConfirm = onConfirm,
+				onExitManageApp = onExitManageApp,
+			)
+		}
 
-			is TimerUiState.TimeSetting -> {
-				TimerScreen(
-					appName = appName,
-					onTimeChange = onSetTime,
-					onComplete = onTimerConfirm,
-				)
-			}
+		is TimerUiState.TimeSetting -> {
+			TimerScreen(
+				appName = appName,
+				onTimeChange = onSetTime,
+				onComplete = onTimerConfirm,
+			)
+		}
 
-			is TimerUiState.SetComplete -> {
-				SetCompleteScreen(
-					durationMinutes = state.durationMinutes,
-					endTime = state.endTime,
-					onCloseOverlay = onCloseOverlay,
-				)
-			}
+		is TimerUiState.SetComplete -> {
+			SetCompleteScreen(
+				durationMinutes = timerUiState.durationMinutes,
+				endTime = timerUiState.endTime,
+				onCloseOverlay = onCloseOverlay,
+			)
 		}
 	}
 }
