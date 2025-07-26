@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Circle
@@ -75,6 +76,7 @@ internal fun AppGroupTitle(
 			painter = painterResource(R.drawable.ic_edit),
 			contentDescription = stringResource(R.string.edit_app_group_icon_content_description),
 			modifier = Modifier
+				.clip(CircleShape)
 				.clickable(onClick = onEditClick),
 		)
 	}

@@ -15,7 +15,6 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.yapp.breake.core.designsystem.component.BaseScaffold
 import com.yapp.breake.core.designsystem.theme.BackgroundGradient
 import com.yapp.breake.core.navigation.compositionlocal.LocalMainAction
 import com.yapp.breake.presentation.HomeEvent
@@ -38,29 +37,25 @@ internal fun HomeRoute(
 	val mainAction = LocalMainAction.current
 	val context = LocalContext.current
 
-	BaseScaffold(
+	Box(
 		modifier = Modifier
 			.fillMaxSize()
 			.padding(padding),
 	) {
 		Box(
-			modifier = Modifier.fillMaxSize(),
-		) {
-			Box(
-				modifier = Modifier
-					.fillMaxWidth()
-					.height(360.dp)
-					.background(brush = BackgroundGradient),
-			)
-			HomeContent(
-				homeUiState = homeUiState,
-				viewModel = viewModel,
-				onShowAddScreen = {
-				},
-				onShowEditScreen = { groupId ->
-				},
-			)
-		}
+			modifier = Modifier
+				.fillMaxWidth()
+				.height(360.dp)
+				.background(brush = BackgroundGradient),
+		)
+		HomeContent(
+			homeUiState = homeUiState,
+			viewModel = viewModel,
+			onShowAddScreen = {
+			},
+			onShowEditScreen = { groupId ->
+			},
+		)
 	}
 
 	ModalContent(
