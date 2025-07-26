@@ -20,16 +20,18 @@ import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.selection.selectable
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Icon
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
+import com.yapp.breake.core.designsystem.theme.BrakeTheme
+import com.yapp.breake.core.designsystem.theme.Gray700
+import com.yapp.breake.core.designsystem.theme.Gray800
+import com.yapp.breake.core.designsystem.theme.White
 import kotlinx.collections.immutable.ImmutableList
 
 @Composable
@@ -47,15 +49,14 @@ internal fun MainBottomNavBar(
 	) {
 		Row(
 			modifier = modifier
-				.fillMaxWidth()
+				.fillMaxWidth(0.78f)
 				.wrapContentHeight()
 				.background(
-					// TODO : 디자인시스템 컬러 적용
-					color = Color(0xFF3A3D45),
+					color = Gray800,
 					shape = RoundedCornerShape(60.dp),
 				)
-				.padding(horizontal = 52.dp, vertical = 16.dp),
-			horizontalArrangement = Arrangement.spacedBy(48.dp),
+				.padding(horizontal = 46.dp, vertical = 16.dp),
+			horizontalArrangement = Arrangement.SpaceBetween,
 		) {
 			tabs.forEach { tab ->
 				MainBottomNavItem(
@@ -91,21 +92,21 @@ private fun RowScope.MainBottomNavItem(
 		Icon(
 			painter = painterResource(tab.iconResId),
 			contentDescription = tab.contentDescription,
-			modifier = Modifier.size(28.dp),
+			modifier = Modifier.size(20.dp),
 			tint = if (selected) {
-				Color(0xFFFFFFFF) // TODO : 디자인시스템 컬러 적용
+				White
 			} else {
-				Color.Unspecified
+				Gray700
 			},
 		)
 		Spacer(modifier = Modifier.height(4.dp))
 		Text(
 			text = tab.contentDescription,
-			style = MaterialTheme.typography.labelLarge,
+			style = BrakeTheme.typography.body12M,
 			color = if (selected) {
-				Color(0xFFFFFFFF) // TODO : 디자인시스템 컬러 적용
+				White
 			} else {
-				Color(0xFF5A5F6C) // TODO : 디자인시스템 컬러 적용
+				Gray700
 			},
 		)
 	}
