@@ -10,6 +10,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.yapp.breake.core.designsystem.component.HorizontalSpacer
@@ -32,7 +33,7 @@ internal fun ListScreen(
 	) {
 		ImageTextBox(
 			imageRes = R.drawable.img_home_list,
-			text = "등록한 앱을 사용할 때\n사용 시간을 설정할 수 있어요",
+			text = stringResource(R.string.list_screen_description),
 			modifier = Modifier,
 		)
 		VerticalSpacer(30.dp)
@@ -43,13 +44,13 @@ internal fun ListScreen(
 				.padding(horizontal = 24.dp),
 		) {
 			Text(
-				text = "그룹",
+				text = stringResource(R.string.group),
 				style = BrakeTheme.typography.subtitle22SB,
 				color = MaterialTheme.colorScheme.onSurface,
 			)
 			HorizontalSpacer(1f)
 			Text(
-				text = "총 ${appGroups.size}개",
+				text = stringResource(R.string.group_count_format, appGroups.size),
 				style = BrakeTheme.typography.body12M,
 				color = Gray200,
 			)

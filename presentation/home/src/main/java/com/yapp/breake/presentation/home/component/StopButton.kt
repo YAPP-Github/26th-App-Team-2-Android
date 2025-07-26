@@ -13,6 +13,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -45,12 +46,12 @@ internal fun StopButton(
 		) {
 			Icon(
 				painter = painterResource(id = R.drawable.ic_exit),
-				contentDescription = "stop_button_content_description",
+				contentDescription = stringResource(R.string.stop_button_content_description),
 				modifier = Modifier.size(20.dp),
 			)
 			HorizontalSpacer(8.dp)
 			Text(
-				text = "사용 종료",
+				text = stringResource(R.string.stop_usage),
 				style = BrakeTheme.typography.body14SB,
 				textAlign = TextAlign.Center,
 			)

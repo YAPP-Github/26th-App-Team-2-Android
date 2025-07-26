@@ -12,6 +12,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -32,12 +33,12 @@ internal fun NothingScreen(
 	) {
 		Image(
 			painter = painterResource(R.drawable.img_home_init),
-			contentDescription = "home_image_content_description",
+			contentDescription = stringResource(R.string.home_image_content_description),
 			modifier = Modifier.size(160.dp),
 		)
 		VerticalSpacer(10.dp)
 		Text(
-			text = "스크린타임, 이제 줄여볼까요?",
+			text = stringResource(R.string.nothing_screen_title),
 			style = BrakeTheme.typography.subtitle22SB,
 			textAlign = TextAlign.Center,
 			color = MaterialTheme.colorScheme.onSurface,
@@ -45,7 +46,7 @@ internal fun NothingScreen(
 		)
 		VerticalSpacer(10.dp)
 		Text(
-			text = "사용을 자제할 앱을 추가해주세요.",
+			text = stringResource(R.string.nothing_screen_subtitle),
 			style = BrakeTheme.typography.body16M,
 			textAlign = TextAlign.Center,
 			color = Gray200,

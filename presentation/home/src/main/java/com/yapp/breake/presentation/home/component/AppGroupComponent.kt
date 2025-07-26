@@ -20,7 +20,10 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.ColorFilter
+import androidx.compose.ui.graphics.ColorMatrix
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.yapp.breake.core.designsystem.component.HorizontalSpacer
 import com.yapp.breake.core.designsystem.theme.AppItemGradient
@@ -59,7 +62,7 @@ internal fun AppGroupTitle(
 	) {
 		Image(
 			painter = painterResource(R.drawable.ic_app_group),
-			contentDescription = "app_group_icon",
+			contentDescription = stringResource(R.string.app_group_icon_content_description),
 		)
 		HorizontalSpacer(8.dp)
 		Text(
@@ -70,7 +73,7 @@ internal fun AppGroupTitle(
 		HorizontalSpacer(1f)
 		Image(
 			painter = painterResource(R.drawable.ic_edit),
-			contentDescription = "edit_app_group_icon",
+			contentDescription = stringResource(R.string.edit_app_group_icon_content_description),
 			modifier = Modifier
 				.clickable(onClick = onEditClick),
 		)
@@ -80,7 +83,18 @@ internal fun AppGroupTitle(
 @Composable
 internal fun AppsList(
 	apps: List<App>,
+	isDimmed: Boolean = false,
 ) {
+	val colorFilter = if (isDimmed) {
+		ColorFilter.colorMatrix(
+			ColorMatrix().apply {
+				setToSaturation(0.3f)
+			},
+		)
+	} else {
+		null
+	}
+
 	Row(
 		horizontalArrangement = Arrangement.spacedBy(4.dp),
 		verticalAlignment = Alignment.CenterVertically,
@@ -93,14 +107,16 @@ internal fun AppsList(
 			if (icon == null) {
 				Image(
 					imageVector = Icons.Default.Circle,
-					contentDescription = "default_app_icon",
+					contentDescription = stringResource(R.string.default_app_icon_content_description),
+					colorFilter = colorFilter,
 					modifier = Modifier
 						.size(24.dp),
 				)
 			} else {
 				Image(
 					bitmap = icon,
-					contentDescription = "app_icon",
+					contentDescription = stringResource(R.string.app_icon_content_description),
+					colorFilter = colorFilter,
 					modifier = Modifier
 						.size(24.dp),
 				)

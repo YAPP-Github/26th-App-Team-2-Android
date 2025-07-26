@@ -1,3 +1,31 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <!-- Common -->
+    <string name="add">추가</string>
+    <string name="group">그룹</string>
+    <string name="minute">분</string>
+    <string name="second">초</string>
+    <string name="stop_usage">사용 종료</string>
+
+    <!-- Home Nothing Screen -->
+    <string name="nothing_screen_title">스크린타임, 이제 줄여볼까요?</string>
+    <string name="nothing_screen_subtitle">사용을 자제할 앱을 추가해주세요.</string>
+
+    <!-- Home List Screen -->
+    <string name="list_screen_description">등록한 앱을 사용할 때\n사용 시간을 설정할 수 있어요</string>
+    <string name="group_count_format">총 %d개</string>
+    <string name="single_group_count">1개</string>
+
+    <!-- Remaining Time -->
+    <string name="remaining_usage_time">남은 사용 시간</string>
+
+    <!-- Content Descriptions -->
+    <string name="add_button_content_description">추가 버튼</string>
+    <string name="stop_button_content_description">중지 버튼</string>
+    <string name="home_image_content_description">홈 이미지</string>
+    <string name="list_screen_image_content_description">리스트 화면 이미지</string>
+    <string name="app_group_icon_content_description">앱 그룹 아이콘</string>
+    <string name="edit_app_group_icon_content_description">앱 그룹 편집 아이콘</string>
+    <string name="default_app_icon_content_description">기본 앱 아이콘</string>
+    <string name="app_icon_content_description">앱 아이콘</string>
 </resources>

@@ -13,6 +13,6 @@ class HomeViewModel @Inject constructor() : ViewModel()
 sealed interface HomeUiState {
 	data object Nothing : HomeUiState
 	data class GroupList(val appGroups: List<AppGroup>) : HomeUiState
-	data object Blocking : HomeUiState
-	data object Using : HomeUiState
+	data class Blocking(val appGroup: AppGroup) : HomeUiState
+	data class Using(val appGroup: AppGroup) : HomeUiState
 }

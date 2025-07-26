@@ -57,6 +57,7 @@ internal fun AppGroupItemContent(
 	appGroup: AppGroup,
 	onEditClick: () -> Unit,
 	modifier: Modifier = Modifier,
+	isDimmed: Boolean = false,
 ) {
 	Column(
 		modifier = modifier,
@@ -68,6 +69,7 @@ internal fun AppGroupItemContent(
 		VerticalSpacer(12.dp)
 		AppsList(
 			apps = appGroup.apps,
+			isDimmed = isDimmed,
 		)
 	}
 }
