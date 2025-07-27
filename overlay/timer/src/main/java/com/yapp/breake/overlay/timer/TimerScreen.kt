@@ -1,6 +1,5 @@
 package com.yapp.breake.overlay.timer
 
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -12,21 +11,17 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.AnnotatedString
-import androidx.compose.ui.text.fromHtml
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.yapp.breake.core.designsystem.component.BaseScaffold
+import com.yapp.breake.core.designsystem.component.GradientScaffold
 import com.yapp.breake.core.designsystem.component.LargeButton
 import com.yapp.breake.core.designsystem.component.VerticalSpacer
 import com.yapp.breake.core.designsystem.theme.BrakeTheme
 import com.yapp.breake.core.designsystem.theme.LinerGradient
 import com.yapp.breake.core.util.addJosaEulReul
-import com.yapp.breake.core.util.extensions.toLocalizedTime
 import com.yapp.breake.overlay.timer.component.TimePicker
 import timber.log.Timber
-import java.time.LocalDateTime
 import com.yapp.breake.overlay.ui.R as UiRes
 
 @Composable
@@ -35,7 +30,8 @@ internal fun TimerScreen(
 	onTimeChange: (Int) -> Unit,
 	onComplete: () -> Unit,
 ) {
-	BaseScaffold(
+	GradientScaffold(
+		gradient = LinerGradient,
 		bottomBar = {
 			Column(
 				modifier = Modifier.fillMaxWidth(),
@@ -59,9 +55,7 @@ internal fun TimerScreen(
 			Column(
 				horizontalAlignment = Alignment.CenterHorizontally,
 				verticalArrangement = Arrangement.Center,
-				modifier = Modifier
-					.fillMaxWidth()
-					.background(brush = LinerGradient),
+				modifier = Modifier.fillMaxWidth(),
 			) {
 				VerticalSpacer(80.dp)
 				Text(

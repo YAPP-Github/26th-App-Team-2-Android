@@ -19,11 +19,12 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.yapp.breake.core.designsystem.component.BaseScaffold
+import com.yapp.breake.core.designsystem.component.GradientScaffold
 import com.yapp.breake.core.designsystem.component.LargeButton
 import com.yapp.breake.core.designsystem.component.VerticalSpacer
 import com.yapp.breake.core.designsystem.theme.BrakeTheme
 import com.yapp.breake.core.designsystem.theme.Gray400
+import com.yapp.breake.core.designsystem.theme.LinerGradient
 import com.yapp.breake.core.util.extensions.toLocalizedTime
 import com.yapp.breake.overlay.ui.R
 import java.time.LocalDateTime
@@ -35,7 +36,8 @@ internal fun SetCompleteScreen(
 	endTime: LocalDateTime,
 	onCloseOverlay: () -> Unit,
 ) {
-	BaseScaffold(
+	GradientScaffold(
+		gradient = LinerGradient,
 		bottomBar = {
 			Column(
 				modifier = Modifier.fillMaxWidth(),
@@ -52,7 +54,8 @@ internal fun SetCompleteScreen(
 		},
 	) {
 		Column(
-			modifier = Modifier.fillMaxSize(),
+			modifier = Modifier
+				.fillMaxSize(),
 			verticalArrangement = Arrangement.Center,
 			horizontalAlignment = Alignment.CenterHorizontally,
 		) {
