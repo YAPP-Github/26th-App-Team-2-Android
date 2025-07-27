@@ -17,4 +17,9 @@
     <string name="setting_logout_dialog_title">로그아웃 하시겠습니까?</string>
 	<string name="setting_logout_dialog_confirm_text">로그아웃</string>
 	<string name="setting_logout_dialog_dismiss_text">취소</string>
+
+	<string name="setting_delete_dialog_title">정말 탈퇴하시겠어요?</string>
+	<string name="setting_delete_dialog_description">탈퇴하면 모든 계정 정보와 이용 기록이 \n삭제되며, 복구할 수 없습니다.</string>
+	<string name="setting_delete_dialog_confirm_text">탈퇴</string>
+	<string name="setting_delete_dialog_dismiss_text">취소</string>
 </resources>
