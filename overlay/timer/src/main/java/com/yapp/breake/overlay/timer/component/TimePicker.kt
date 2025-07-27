@@ -8,7 +8,9 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.yapp.breake.core.designsystem.theme.BrakeTheme
 import kotlinx.collections.immutable.toImmutableList
 import java.time.LocalTime
 
@@ -61,3 +63,15 @@ private data class Minute(
 	val value: Int,
 	val index: Int,
 )
+
+@Preview
+@Composable
+private fun TimePickerPreview() {
+	BrakeTheme {
+		TimePicker(
+			startTime = LocalTime.of(0, 25),
+			onSnappedTime = { time ->
+			},
+		)
+	}
+}

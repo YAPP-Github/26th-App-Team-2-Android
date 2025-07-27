@@ -72,18 +72,18 @@ internal fun TimerScreen(
 					modifier = Modifier.fillMaxWidth(),
 				)
 				VerticalSpacer(16.dp)
-				Text(
-					text = AnnotatedString.fromHtml(
-						stringResource(
-							id = UiRes.string.timer_content,
-							LocalDateTime.now().toLocalizedTime(),
-						),
-					),
-					style = BrakeTheme.typography.body16M,
-					textAlign = TextAlign.Center,
-					color = MaterialTheme.colorScheme.onBackground,
-					modifier = Modifier.fillMaxWidth(),
-				)
+//				Text(
+//					text = AnnotatedString.fromHtml(
+//						stringResource(
+//							id = UiRes.string.timer_content,
+//							LocalDateTime.now().toLocalizedTime(),
+//						),
+//					),
+//					style = BrakeTheme.typography.body16M,
+//					textAlign = TextAlign.Center,
+//					color = MaterialTheme.colorScheme.onBackground,
+//					modifier = Modifier.fillMaxWidth(),
+//				)
 			}
 			Column(
 				horizontalAlignment = Alignment.CenterHorizontally,
