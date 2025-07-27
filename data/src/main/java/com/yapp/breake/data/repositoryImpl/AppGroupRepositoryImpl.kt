@@ -57,4 +57,13 @@ class AppGroupRepositoryImpl @Inject constructor(
 			Result.failure(e)
 		}
 	}
+
+	override suspend fun resetSnooze(groupId: Long): Result<Unit> {
+		return try {
+			appGroupDao.resetSnooze(groupId)
+			Result.success(Unit)
+		} catch (e: Exception) {
+			Result.failure(e)
+		}
+	}
 }

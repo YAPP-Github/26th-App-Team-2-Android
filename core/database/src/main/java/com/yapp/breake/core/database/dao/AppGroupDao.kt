@@ -35,4 +35,7 @@ interface AppGroupDao {
 		"INSERT INTO `snooze_table` (parentGroupId, snoozeTime) VALUES (:parentGroupId, :snoozeTime)",
 	)
 	suspend fun insertSnooze(parentGroupId: Long, snoozeTime: LocalDateTime)
+
+	@Query("DELETE FROM `snooze_table` WHERE parentGroupId = :groupId")
+	suspend fun resetSnooze(groupId: Long)
 }
