@@ -1,3 +1,7 @@
+import java.text.SimpleDateFormat
+import java.util.Date
+import java.util.TimeZone
+
 plugins {
 	alias(libs.plugins.breake.android.application)
 	id("com.google.android.gms.oss-licenses-plugin")
@@ -24,6 +28,19 @@ android {
 			signingConfig = signingConfigs.getByName("debug")
 		}
 	}
+
+	applicationVariants.all {
+		val variant = this
+		variant.outputs
+			.map { it as com.android.build.gradle.internal.api.BaseVariantOutputImpl }
+			.forEach { output ->
+				val currentTime = SimpleDateFormat("yyyy.MM.dd HH:mm")
+				currentTime.timeZone = TimeZone.getTimeZone("Asia/Seoul")
+				val buildType = variant.buildType.name
+				output.outputFileName = "[Brake_${buildType}_v${variant.versionName}]_${currentTime.format(Date())}.apk"
+			}
+	}
+
 	buildFeatures {
 		buildConfig = true
 	}
@@ -31,6 +48,8 @@ android {
 
 dependencies {
 	implementation(projects.core.auth)
+	implementation(projects.core.alarm)
+	implementation(projects.core.detection)
 	implementation(projects.core.navigation)
 	implementation(projects.core.designsystem)
 	implementation(projects.data)
@@ -38,8 +57,13 @@ dependencies {
 	implementation(projects.domain)
 	implementation(projects.presentation.main)
 	implementation(projects.presentation.home)
-
+	implementation(projects.overlay.main)
 	implementation(libs.androidx.profileinstaller)
-
 	testImplementation(projects.core.testing)
+}
+
+tasks.register("printVersionName") {
+	doLast {
+		println(android.defaultConfig.versionName)
+	}
 }

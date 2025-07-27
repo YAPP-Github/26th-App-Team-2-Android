@@ -1,19 +1,25 @@
 package com.yapp.breake.di
 
 import com.yapp.breake.domain.usecase.CheckAuthCodeUseCase
-import com.yapp.breake.domain.usecase.CheckAuthCodeUseCaseImpl
 import com.yapp.breake.domain.usecase.DecideNextDestinationFromPermissionUseCase
 import com.yapp.breake.domain.usecase.DecideNextDestinationFromPermissionUseCaseImpl
 import com.yapp.breake.domain.usecase.DecideStartDestinationUseCase
 import com.yapp.breake.domain.usecase.DecideStartDestinationUseCaseImpl
+import com.yapp.breake.domain.usecase.FindAppGroupUseCase
 import com.yapp.breake.domain.usecase.LoginUseCase
-import com.yapp.breake.domain.usecase.LoginUseCaseImpl
 import com.yapp.breake.domain.usecase.LoginWithCachedAuthCodeUseCase
-import com.yapp.breake.domain.usecase.LoginWithCachedAuthCodeUseCaseImpl
+import com.yapp.breake.domain.usecase.SetAlarmUseCase
+import com.yapp.breake.domain.usecase.SetSnoozeAlarmUseCase
 import com.yapp.breake.domain.usecase.StoreOnboardingCompletionUseCase
 import com.yapp.breake.domain.usecase.StoreOnboardingCompletionUseCaseImpl
 import com.yapp.breake.domain.usecase.UpdateNicknameUseCase
-import com.yapp.breake.domain.usecase.UpdateNicknameUseCaseImpl
+import com.yapp.breake.domain.usecaseImpl.CheckAuthCodeUseCaseImpl
+import com.yapp.breake.domain.usecaseImpl.FindAppGroupUsecase
+import com.yapp.breake.domain.usecaseImpl.LoginUseCaseImpl
+import com.yapp.breake.domain.usecaseImpl.LoginWithCachedAuthCodeUseCaseImpl
+import com.yapp.breake.domain.usecaseImpl.SetAlarmUsecase
+import com.yapp.breake.domain.usecaseImpl.SetSnoozeAlarmUsecase
+import com.yapp.breake.domain.usecaseImpl.UpdateNicknameUseCaseImpl
 import dagger.Binds
 import dagger.Module
 import dagger.hilt.InstallIn
@@ -57,4 +63,19 @@ internal abstract class UseCaseModule {
 	abstract fun bindDecideNextDestinationFromPermissionUseCase(
 		decideNextDestinationFromPermissionUseCase: DecideNextDestinationFromPermissionUseCaseImpl,
 	): DecideNextDestinationFromPermissionUseCase
+
+	@Binds
+	abstract fun bindFindAppGroupUseCase(
+		findAppGroupUsecase: FindAppGroupUsecase,
+	): FindAppGroupUseCase
+
+	@Binds
+	abstract fun bindSetAlarmUseCase(
+		setAlarmUsecase: SetAlarmUsecase,
+	): SetAlarmUseCase
+
+	@Binds
+	abstract fun bindSetSnoozeAlarmUseCase(
+		setSnoozeAlarmUsecase: SetSnoozeAlarmUsecase,
+	): SetSnoozeAlarmUseCase
 }
