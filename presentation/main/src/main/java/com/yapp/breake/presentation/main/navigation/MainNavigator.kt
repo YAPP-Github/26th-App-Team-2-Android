@@ -4,7 +4,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.navigation.NavDestination
 import androidx.navigation.NavDestination.Companion.hasRoute
-import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavHostController
 import androidx.navigation.NavOptions
 import androidx.navigation.compose.currentBackStackEntryAsState
@@ -38,9 +37,10 @@ internal class MainNavigator(
 		return object : NavigatorAction {
 			override fun getNavOptionsClearingBackStack(): NavOptions {
 				return navOptions {
-					popUpTo(navController.graph.findStartDestination().id) {
+					popUpTo(navController.graph.id) {
 						inclusive = true
 					}
+					launchSingleTop = true
 				}
 			}
 
@@ -67,11 +67,10 @@ internal class MainNavigator(
 
 	fun navigate(tab: MainTab) {
 		val topNavOptions = navOptions {
-			popUpTo(navController.graph.findStartDestination().id) {
-				saveState = true
+			popUpTo(navController.graph.id) {
+				inclusive = true
 			}
 			launchSingleTop = true
-			restoreState = true
 		}
 		when (tab) {
 			MainTab.REPORT -> navController.navigateReport(navOptions = topNavOptions)
