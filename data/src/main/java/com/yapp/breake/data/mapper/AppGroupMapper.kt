@@ -15,6 +15,7 @@ internal fun AppGroupEntity.toAppGroup(): AppGroup {
 		appGroupState = group.appGroupState,
 		apps = apps.map(AppEntity::toApp),
 		snoozes = snoozes.map(SnoozeEntity::toSnooze),
+		endTime = group.endTime,
 	)
 }
 

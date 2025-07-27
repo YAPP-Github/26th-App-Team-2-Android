@@ -14,7 +14,9 @@ object AppLaunchUtil {
 		context: Context,
 		appGroup: AppGroup,
 	): Boolean {
-		val appsPackageNames = appGroup.apps.map { it.packageName }
+		val appsPackageNames = appGroup.apps.map {
+			it.packageName
+		}
 		val currentForegroundPackage = getCurrentForegroundPackageName(context)
 		Timber.d("Current foreground package: $currentForegroundPackage")
 		return currentForegroundPackage in appsPackageNames
@@ -45,7 +47,7 @@ object AppLaunchUtil {
 		}
 
 		val topPackageName = packageNameMap.get(lastRunAppTimeStamp, "")
-		return if (topPackageName.isNotEmpty() && !isSystemApp(topPackageName)) {
+		return if (topPackageName.isNotEmpty() && !isSystemApp(context, topPackageName)) {
 			topPackageName
 		} else {
 			null
@@ -62,7 +64,7 @@ object AppLaunchUtil {
 		}
 	}
 
-	private fun isSystemApp(packageName: String): Boolean {
+	private fun isSystemApp(context: Context, packageName: String): Boolean {
 		return packageName.startsWith("com.android") ||
 			packageName.startsWith("android") ||
 			packageName == "com.sec.android.app.launcher" ||

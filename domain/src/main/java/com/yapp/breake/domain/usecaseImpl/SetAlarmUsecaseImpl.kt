@@ -9,7 +9,7 @@ import com.yapp.breake.domain.usecase.SetAlarmUseCase
 import java.time.LocalDateTime
 import javax.inject.Inject
 
-class SetAlarmUsecase @Inject constructor(
+class SetAlarmUsecaseImpl @Inject constructor(
 	private val alarmScheduler: AlarmScheduler,
 	private val appGroupRepository: AppGroupRepository,
 ) : SetAlarmUseCase {
@@ -19,8 +19,8 @@ class SetAlarmUsecase @Inject constructor(
 		appName: String,
 		appGroupState: AppGroupState,
 		second: Int,
+		isUsingApp: Boolean,
 	): Result<LocalDateTime> {
-
 		val (action, time) = when (appGroupState) {
 			AppGroupState.Using -> AlarmAction.ACTION_USING to second
 			AppGroupState.Blocking -> AlarmAction.ACTION_BLOCKING to Constants.TEST_BLOCKING_TIME
@@ -29,15 +29,23 @@ class SetAlarmUsecase @Inject constructor(
 			}
 		}
 
+		val startTime = LocalDateTime.now()
+		val triggerTime = startTime.plusSeconds(time.toLong())
+
 		return alarmScheduler.scheduleAlarm(
 			groupId = groupId,
 			appName = appName,
-			second = time,
+			triggerTime = triggerTime,
 			action = action,
 		).onSuccess {
 			appGroupRepository.updateAppGroupState(
 				groupId = groupId,
-				appGroupState = appGroupState,
+				appGroupState = if (isUsingApp) {
+					AppGroupState.SnoozeBlocking
+				} else {
+					appGroupState
+				},
+				endTime = triggerTime,
 			)
 		}
 	}

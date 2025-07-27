@@ -22,4 +22,5 @@ val KakaoYellow = Color(0xFFFFE502)
 val Error = Color(0xFFE75B5D)
 
 val Red = Color(0xFFFF4343)
+val Red2 = Color(0xFFFF5656)
 val Green = Color(0xFF32D74B)

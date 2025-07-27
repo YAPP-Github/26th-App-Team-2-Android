@@ -6,7 +6,7 @@ import android.view.accessibility.AccessibilityEvent
 import com.yapp.breake.core.model.app.AppGroupState
 import com.yapp.breake.core.util.OverlayLauncher
 import com.yapp.breake.core.util.getAppNameFromPackage
-import com.yapp.breake.domain.usecaseImpl.FindAppGroupUsecase
+import com.yapp.breake.domain.usecase.FindAppGroupUseCase
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -19,7 +19,7 @@ import javax.inject.Inject
 class AppLaunchDetectionService : AccessibilityService() {
 
 	@Inject
-	lateinit var findAppGroupUsecase: FindAppGroupUsecase
+	lateinit var findAppGroupUsecase: FindAppGroupUseCase
 
 	private val serviceJob = SupervisorJob()
 	private val serviceScope = CoroutineScope(Dispatchers.Main + serviceJob)
@@ -43,7 +43,6 @@ class AppLaunchDetectionService : AccessibilityService() {
 	}
 
 	private fun findAppGroupAndAction(packageName: String) {
-		Timber.i("앱 실행 감지: 패키지명: $packageName")
 
 		serviceScope.launch {
 			val appGroup = findAppGroupUsecase(packageName)

@@ -1,50 +1,59 @@
 package com.yapp.breake.overlay.timer.component
 
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableIntStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.yapp.breake.core.designsystem.theme.BrakeTheme
 import kotlinx.collections.immutable.toImmutableList
+import java.time.LocalTime
 
 @Composable
 fun TimePicker(
 	modifier: Modifier = Modifier,
-	startMinute: Int = 5,
-	minMinute: Int = 5,
-	maxMinute: Int = 60,
-	stepMinute: Int = 5,
-	onSnappedTime: (minutes: Int) -> Unit = {},
+	startTime: LocalTime = LocalTime.now(),
+	rowCount: Int = 5,
+	onSnappedTime: (snappedTime: Int) -> Unit = {},
 ) {
-	var snappedMinute by remember { mutableIntStateOf(startMinute) }
 
-	val minutes = (minMinute..maxMinute step stepMinute).map {
+	val minutes = (0..11).map { index ->
+		val value = index * 5
 		Minute(
-			text = it.toString().padStart(2, '0'),
-			value = it,
-			index = (it - minMinute) / stepMinute,
+			text = value.toString(),
+			value = value,
+			index = index,
 		)
 	}
 
-	Picker(
-		modifier = modifier.padding(vertical = 20.dp),
-		texts = minutes.map { it.text }.toImmutableList(),
-		count = minutes.size,
-		startIndex = minutes.find { it.value == startMinute }?.index?.plus(300) ?: 0,
-		onItemSelected = { snappedText ->
-			val newMinute = minutes.find { it.text == snappedText }?.value ?: 0
-
-			if (newMinute in minMinute..maxMinute) {
-				snappedMinute = newMinute
+	Column {
+		Box(
+			modifier = modifier
+				.fillMaxWidth()
+				.padding(top = 20.dp),
+			contentAlignment = Alignment.Center,
+		) {
+			Row(
+				modifier = Modifier.padding(vertical = 20.dp),
+			) {
+				TextPicker(
+					texts = minutes.map { it.text }.toImmutableList(),
+					count = minutes.size,
+					rowCount = rowCount,
+					startIndex = minutes.find { minute ->
+						minute.value <= startTime.minute && startTime.minute < minute.value + 5
+					}?.index ?: 0,
+					onItemSelected = {
+						onSnappedTime(it.toInt())
+						return@TextPicker
+					},
+				)
 			}
-			onSnappedTime(snappedMinute)
-		},
-	)
+		}
+	}
 }
 
 private data class Minute(
@@ -52,19 +61,3 @@ private data class Minute(
 	val value: Int,
 	val index: Int,
 )
-
-@Preview(showBackground = true, backgroundColor = 0xFF000000)
-@Composable
-private fun TimePickerPreview() {
-	BrakeTheme {
-		TimePicker(
-			startMinute = 10,
-			minMinute = 5,
-			maxMinute = 60,
-			stepMinute = 5,
-			onSnappedTime = { minutes ->
-				println("Selected minutes: $minutes")
-			},
-		)
-	}
-}

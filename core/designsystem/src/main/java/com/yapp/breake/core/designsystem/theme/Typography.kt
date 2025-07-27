@@ -97,6 +97,11 @@ val Typography = BrakeTypography(
 		lineHeight = 21.sp,
 		fontWeight = FontWeight.Bold,
 	),
+	subtitle14SB = pretendardStyle.copy(
+		fontSize = 14.sp,
+		lineHeight = 21.sp,
+		fontWeight = FontWeight.SemiBold,
+	),
 	body16M = pretendardStyle.copy(
 		fontSize = 16.sp,
 		lineHeight = 24.sp,
@@ -145,6 +150,7 @@ data class BrakeTypography(
 	val subtitle16B: TextStyle,
 	val subtitle16SB: TextStyle,
 	val subtitle14B: TextStyle,
+	val subtitle14SB: TextStyle,
 	val body16M: TextStyle,
 	val body14SB: TextStyle,
 	val body14M: TextStyle,
@@ -169,6 +175,7 @@ val LocalTypography = staticCompositionLocalOf {
 		subtitle16B = pretendardStyle,
 		subtitle16SB = pretendardStyle,
 		subtitle14B = pretendardStyle,
+		subtitle14SB = pretendardStyle,
 		body16M = pretendardStyle,
 		body14SB = pretendardStyle,
 		body14M = pretendardStyle,
