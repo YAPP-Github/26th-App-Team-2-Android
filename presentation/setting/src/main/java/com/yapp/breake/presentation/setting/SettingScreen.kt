@@ -28,7 +28,6 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import androidx.navigation.navOptions
 import com.yapp.breake.core.designsystem.component.HorizontalSpacer
 import com.yapp.breake.core.designsystem.component.CircleImage
 import com.yapp.breake.core.designsystem.component.SettingRow
@@ -42,6 +41,8 @@ import com.yapp.breake.core.designsystem.theme.LocalPadding
 import com.yapp.breake.core.designsystem.theme.White
 import com.yapp.breake.core.navigation.compositionlocal.LocalMainAction
 import com.yapp.breake.core.navigation.compositionlocal.LocalNavigatorAction
+import com.yapp.breake.presentation.setting.component.DeleteWarningDialog
+import com.yapp.breake.presentation.setting.component.LogoutWarningDialog
 import com.yapp.breake.presentation.setting.model.SettingEffect
 import com.yapp.breake.presentation.setting.model.SettingUiState
 
@@ -60,11 +61,7 @@ fun SettingRoute(
 		viewModel.navigationFlow.collect {
 			when (it) {
 				is SettingEffect.NavigateToLogin -> {
-					navAction.navigateToLogin(
-						navOptions {
-							navAction.getNavOptionsClearingBackStack()
-						},
-					)
+					navAction.navigateToLogin(navAction.getNavOptionsClearingBackStack())
 				}
 
 				else -> {}
@@ -76,13 +73,37 @@ fun SettingRoute(
 		viewModel.errorFlow.collect { mainAction.onShowSnackBar(it) }
 	}
 
+	when (uiState) {
+		is SettingUiState.SettingLogoutWarning -> {
+			LogoutWarningDialog(
+				onDismissRequest = viewModel::dismissDialog,
+				onConfirm = {
+					viewModel.dismissDialog()
+					viewModel.logout()
+				},
+			)
+		}
+
+		is SettingUiState.SettingDeleteWarning -> {
+			DeleteWarningDialog(
+				onDismissRequest = viewModel::dismissDialog,
+				onConfirm = {
+					viewModel.dismissDialog()
+					viewModel.deleteAccount()
+				},
+			)
+		}
+
+		else -> {}
+	}
+
 	SettingScreen(
 		screenHorizontalPadding = screenHorizontalPadding,
 		paddingValue = paddingValue,
 		uiState = uiState,
 		onChangeProfile = {},
-		onDeleteAccount = viewModel::deleteAccount,
-		onLogout = viewModel::logout,
+		onDeleteAccount = viewModel::tryDeleteAccount,
+		onLogout = viewModel::tryLogout,
 	)
 }
 

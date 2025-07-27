@@ -16,4 +16,14 @@ sealed interface SettingUiState {
 		override val user: SettingUser,
 		override val appInfo: SettingAppInfo,
 	) : SettingUiState
+
+	data class SettingLogoutWarning(
+		override val user: SettingUser,
+		override val appInfo: SettingAppInfo,
+	) : SettingUiState
+
+	data class SettingDeleteWarning(
+		override val user: SettingUser,
+		override val appInfo: SettingAppInfo,
+	) : SettingUiState
 }

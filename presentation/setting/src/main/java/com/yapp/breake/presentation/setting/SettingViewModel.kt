@@ -31,6 +31,25 @@ class SettingViewModel @Inject constructor(
 	private val _navigationFlow = MutableSharedFlow<SettingEffect>()
 	val navigationFlow = _navigationFlow.asSharedFlow()
 
+	fun dismissDialog() {
+		viewModelScope.launch {
+			_uiState.value = SettingUiState.SettingIdle(
+				user = _uiState.value.user,
+				appInfo = _uiState.value.appInfo,
+			)
+		}
+	}
+
+	fun tryLogout() {
+		Timber.e("Logout warning dialog shown")
+		viewModelScope.launch {
+			_uiState.value = SettingUiState.SettingLogoutWarning(
+				user = _uiState.value.user,
+				appInfo = _uiState.value.appInfo,
+			)
+		}
+	}
+
 	fun logout() {
 		Timber.e("Logout initiated")
 		viewModelScope.launch {
@@ -46,6 +65,15 @@ class SettingViewModel @Inject constructor(
 			} else {
 				Timber.e("Logout failed with destination: $dest")
 			}
+		}
+	}
+
+	fun tryDeleteAccount() {
+		viewModelScope.launch {
+			_uiState.value = SettingUiState.SettingDeleteWarning(
+				user = _uiState.value.user,
+				appInfo = _uiState.value.appInfo,
+			)
 		}
 	}
 
