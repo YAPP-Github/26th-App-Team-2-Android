@@ -80,7 +80,7 @@ complexity:
   active: true
   ComplexCondition:
     active: true
-    threshold: 5
+    threshold: 10
   ComplexInterface:
     active: false
     threshold: 10
@@ -212,7 +212,7 @@ exceptions:
   ObjectExtendsThrowable:
     active: false
   PrintStackTrace:
-    active: true
+    active: false
   RethrowCaughtException:
     active: true
   ReturnFromFinally:
@@ -319,7 +319,7 @@ formatting:
     active: true
 #    autoCorrect: true
   NoBlankLineBeforeRbrace:
-    active: true
+    active: false
 #    autoCorrect: true
   NoConsecutiveBlankLines:
     active: true
@@ -683,7 +683,7 @@ style:
 #    ignoreRanges: false
 #    ignoreExtensionFunctions: true
   BracesOnIfStatements:
-    active: true
+    active: false
   MandatoryBracesLoops:
     active: true
   MaxLineLength:
