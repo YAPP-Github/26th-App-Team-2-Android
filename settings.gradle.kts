@@ -34,6 +34,15 @@ include(
 	":presentation:setting",
 )
 
+// overlay
+include(
+	"overlay:main",
+	"overlay:ui",
+	"overlay:timer",
+	"overlay:snooze",
+	"overlay:blocking",
+)
+
 // Domain
 include(":domain")
 
@@ -46,12 +55,16 @@ include(":data-test")
 // Core
 include(
 	":core:auth",
+	":core:alarm",
+	":core:common",
 	":core:datastore",
 	":core:database",
+	":core:designsystem",
 	":core:model",
 	":core:navigation",
 	":core:permission",
-	":core:designsystem",
-	":core:util",
+	":core:detection",
+	":core:service",
 	":core:testing",
+	":core:util",
 )

@@ -1,12 +1,12 @@
 package com.yapp.breake.core.designsystem.util
 
-internal interface MultipleEventsCutter {
+interface MultipleEventsCutter {
 	fun processEvent(event: () -> Unit)
 
 	companion object
 }
 
-internal fun MultipleEventsCutter.Companion.get(): MultipleEventsCutter =
+fun MultipleEventsCutter.Companion.get(): MultipleEventsCutter =
 	MultipleEventsCutterImpl()
 
 private class MultipleEventsCutterImpl : MultipleEventsCutter {

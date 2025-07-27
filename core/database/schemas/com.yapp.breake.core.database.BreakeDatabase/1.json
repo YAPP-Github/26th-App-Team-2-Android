@@ -2,11 +2,76 @@
   "formatVersion": 1,
   "database": {
     "version": 1,
-    "identityHash": "8ff91788d4913b056a8a20de2317e292",
+    "identityHash": "4192c9b3f195b4c46628b4874772a1de",
     "entities": [
       {
-        "tableName": "sample",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER NOT NULL, `parentId` INTEGER NOT NULL, PRIMARY KEY(`id`))",
+        "tableName": "app_table",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`packageName` TEXT NOT NULL, `name` TEXT NOT NULL, `icon` BLOB, `category` TEXT NOT NULL, `parentGroupId` INTEGER NOT NULL, PRIMARY KEY(`packageName`), FOREIGN KEY(`parentGroupId`) REFERENCES `group_table`(`groupId`) ON UPDATE NO ACTION ON DELETE CASCADE )",
+        "fields": [
+          {
+            "fieldPath": "packageName",
+            "columnName": "packageName",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "name",
+            "columnName": "name",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "icon",
+            "columnName": "icon",
+            "affinity": "BLOB"
+          },
+          {
+            "fieldPath": "category",
+            "columnName": "category",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "parentGroupId",
+            "columnName": "parentGroupId",
+            "affinity": "INTEGER",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": false,
+          "columnNames": [
+            "packageName"
+          ]
+        },
+        "indices": [
+          {
+            "name": "index_app_table_parentGroupId",
+            "unique": false,
+            "columnNames": [
+              "parentGroupId"
+            ],
+            "orders": [],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_app_table_parentGroupId` ON `${TABLE_NAME}` (`parentGroupId`)"
+          }
+        ],
+        "foreignKeys": [
+          {
+            "table": "group_table",
+            "onDelete": "CASCADE",
+            "onUpdate": "NO ACTION",
+            "columns": [
+              "parentGroupId"
+            ],
+            "referencedColumns": [
+              "groupId"
+            ]
+          }
+        ]
+      },
+      {
+        "tableName": "snooze_table",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `snoozeTime` TEXT NOT NULL, `parentGroupId` INTEGER NOT NULL, FOREIGN KEY(`parentGroupId`) REFERENCES `group_table`(`groupId`) ON UPDATE NO ACTION ON DELETE CASCADE )",
         "fields": [
           {
             "fieldPath": "id",
@@ -15,23 +80,88 @@
             "notNull": true
           },
           {
-            "fieldPath": "parentId",
-            "columnName": "parentId",
+            "fieldPath": "snoozeTime",
+            "columnName": "snoozeTime",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "parentGroupId",
+            "columnName": "parentGroupId",
             "affinity": "INTEGER",
             "notNull": true
           }
         ],
         "primaryKey": {
-          "autoGenerate": false,
+          "autoGenerate": true,
           "columnNames": [
             "id"
+          ]
+        },
+        "indices": [
+          {
+            "name": "index_snooze_table_parentGroupId",
+            "unique": false,
+            "columnNames": [
+              "parentGroupId"
+            ],
+            "orders": [],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_snooze_table_parentGroupId` ON `${TABLE_NAME}` (`parentGroupId`)"
+          }
+        ],
+        "foreignKeys": [
+          {
+            "table": "group_table",
+            "onDelete": "CASCADE",
+            "onUpdate": "NO ACTION",
+            "columns": [
+              "parentGroupId"
+            ],
+            "referencedColumns": [
+              "groupId"
+            ]
+          }
+        ]
+      },
+      {
+        "tableName": "group_table",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`groupId` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `name` TEXT NOT NULL, `appGroupState` TEXT NOT NULL, `endTime` TEXT)",
+        "fields": [
+          {
+            "fieldPath": "groupId",
+            "columnName": "groupId",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "name",
+            "columnName": "name",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "appGroupState",
+            "columnName": "appGroupState",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "endTime",
+            "columnName": "endTime",
+            "affinity": "TEXT"
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": true,
+          "columnNames": [
+            "groupId"
           ]
         }
       }
     ],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '8ff91788d4913b056a8a20de2317e292')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '4192c9b3f195b4c46628b4874772a1de')"
     ]
   }
 }

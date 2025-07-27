@@ -13,7 +13,15 @@ class BreakeApplication : Application() {
 
 	private fun initTimber() {
 		if (BuildConfig.DEBUG) {
-			Timber.plant(Timber.DebugTree())
+			Timber.plant(
+				object : Timber.DebugTree() {
+					override fun createStackElementTag(element: StackTraceElement): String {
+						val fullClassName = element.className
+						val className = fullClassName.substringAfterLast('.')
+						return "BRAKE/$className"
+					}
+				},
+			)
 		}
 	}
 }

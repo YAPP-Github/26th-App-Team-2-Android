@@ -1,23 +1,32 @@
 package com.yapp.breake.di
 
 import com.yapp.breake.domain.usecase.CheckAuthCodeUseCase
-import com.yapp.breake.domain.usecase.CheckAuthCodeUseCaseImpl
 import com.yapp.breake.domain.usecase.DecideNextDestinationFromPermissionUseCase
 import com.yapp.breake.domain.usecase.DecideNextDestinationFromPermissionUseCaseImpl
 import com.yapp.breake.domain.usecase.DecideStartDestinationUseCase
 import com.yapp.breake.domain.usecase.DecideStartDestinationUseCaseImpl
 import com.yapp.breake.domain.usecase.DeleteAccountUseCase
 import com.yapp.breake.domain.usecase.DeleteAccountUseCaseImpl
+import com.yapp.breake.domain.usecase.FindAppGroupUseCase
 import com.yapp.breake.domain.usecase.LoginUseCase
-import com.yapp.breake.domain.usecase.LoginUseCaseImpl
 import com.yapp.breake.domain.usecase.LoginWithCachedAuthCodeUseCase
 import com.yapp.breake.domain.usecase.LoginWithCachedAuthCodeUseCaseImpl
 import com.yapp.breake.domain.usecase.LogoutUseCase
 import com.yapp.breake.domain.usecase.LogoutUseCaseImpl
+import com.yapp.breake.domain.usecase.SetAlarmUseCase
+import com.yapp.breake.domain.usecase.SetBlockingAlarmUseCase
+import com.yapp.breake.domain.usecase.SetSnoozeAlarmUseCase
 import com.yapp.breake.domain.usecase.StoreOnboardingCompletionUseCase
 import com.yapp.breake.domain.usecase.StoreOnboardingCompletionUseCaseImpl
 import com.yapp.breake.domain.usecase.UpdateNicknameUseCase
-import com.yapp.breake.domain.usecase.UpdateNicknameUseCaseImpl
+import com.yapp.breake.domain.usecaseImpl.CheckAuthCodeUseCaseImpl
+import com.yapp.breake.domain.usecaseImpl.FindAppGroupUsecaseImpl
+import com.yapp.breake.domain.usecaseImpl.LoginUseCaseImpl
+import com.yapp.breake.domain.usecaseImpl.LoginWithCachedAuthCodeUseCaseImpl
+import com.yapp.breake.domain.usecaseImpl.SetAlarmUsecaseImpl
+import com.yapp.breake.domain.usecaseImpl.SetBlockingAlarmUseCaseImpl
+import com.yapp.breake.domain.usecaseImpl.SetSnoozeAlarmUsecaseImpl
+import com.yapp.breake.domain.usecaseImpl.UpdateNicknameUseCaseImpl
 import dagger.Binds
 import dagger.Module
 import dagger.hilt.InstallIn
@@ -71,4 +80,24 @@ internal abstract class UseCaseModule {
 	abstract fun bindDeleteAccountUseCase(
 		deleteAccountUseCase: DeleteAccountUseCaseImpl,
 	): DeleteAccountUseCase
+
+	@Binds
+	abstract fun bindFindAppGroupUseCase(
+		findAppGroupUsecase: FindAppGroupUsecaseImpl,
+	): FindAppGroupUseCase
+
+	@Binds
+	abstract fun bindSetAlarmUseCase(
+		setAlarmUsecase: SetAlarmUsecaseImpl,
+	): SetAlarmUseCase
+
+	@Binds
+	abstract fun bindSetSnoozeAlarmUseCase(
+		setSnoozeAlarmUsecase: SetSnoozeAlarmUsecaseImpl,
+	): SetSnoozeAlarmUseCase
+
+	@Binds
+	abstract fun bindSetBlockingAlarmUseCase(
+		setBlockingAlarmUsecase: SetBlockingAlarmUseCaseImpl,
+	): SetBlockingAlarmUseCase
 }

@@ -2,26 +2,44 @@ package com.yapp.breake.core.database
 
 import androidx.room.Database
 import androidx.room.RoomDatabase
-import com.yapp.breake.core.database.dao.SampleDao
-import com.yapp.breake.core.database.entity.SampleEntity
+import androidx.room.TypeConverters
+import com.yapp.breake.core.database.converter.AppGroupStateConverter
+import com.yapp.breake.core.database.converter.DrawableConverter
+import com.yapp.breake.core.database.converter.LocalDateTimeConverter
+import com.yapp.breake.core.database.dao.AppDao
+import com.yapp.breake.core.database.dao.AppGroupDao
+import com.yapp.breake.core.database.dao.SnoozeDao
+import com.yapp.breake.core.database.entity.AppEntity
+import com.yapp.breake.core.database.entity.GroupEntity
+import com.yapp.breake.core.database.entity.SnoozeEntity
 
 @Database(
 	entities = [
-		SampleEntity::class,
+		AppEntity::class,
+		SnoozeEntity::class,
+		GroupEntity::class,
 	],
 	version = 1,
 	exportSchema = true,
 )
-//@TypeConverters(
-//    value = [],
-//)
+@TypeConverters(
+	value = [
+		AppGroupStateConverter::class,
+		LocalDateTimeConverter::class,
+		DrawableConverter::class,
+	],
+)
 internal abstract class BreakeDatabase : RoomDatabase() {
 
-	abstract fun sampleDao(): SampleDao
+	abstract fun appGroupDao(): AppGroupDao
+	abstract fun appDao(): AppDao
+	abstract fun snoozeDao(): SnoozeDao
 
 	companion object {
 		const val DATABASE_NAME = "breake_database"
 
-		const val SAMPLE_TABLE_NAME = "sample"
+		const val GROUP_TABLE_NAME = "group_table"
+		const val APP_TABLE_NAME = "app_table"
+		const val SNOOZE_TABLE_NAME = "snooze_table"
 	}
 }

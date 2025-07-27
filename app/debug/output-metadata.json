@@ -1,0 +1,21 @@
+{
+  "version": 3,
+  "artifactType": {
+    "type": "APK",
+    "kind": "Directory"
+  },
+  "applicationId": "com.yapp.breake",
+  "variantName": "debug",
+  "elements": [
+    {
+      "type": "SINGLE",
+      "filters": [],
+      "attributes": [],
+      "versionCode": 1,
+      "versionName": "0.0.1",
+      "outputFile": "[Brake_debug_v0.0.1]_2025.07.21 10:33.apk"
+    }
+  ],
+  "elementType": "File",
+  "minSdkVersionForDexing": 28
+}

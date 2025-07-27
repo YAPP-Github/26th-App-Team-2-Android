@@ -1,10 +1,14 @@
 package com.yapp.breake.presentation.main
 
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.yapp.breake.presentation.main.navigation.MainBottomNavBar
@@ -45,7 +49,10 @@ private fun MainScreenContent(
 		bottomBar = {
 			MainBottomNavBar(
 				modifier = Modifier
-					.padding(start = 48.dp, end = 48.dp, bottom = 50.dp),
+					.navigationBarsPadding()
+					.fillMaxWidth()
+					.padding(bottom = 50.dp)
+					.wrapContentWidth(Alignment.CenterHorizontally),
 				visible = navigator.shouldShowBottomBar(),
 				tabs = MainTab.entries.toPersistentList(),
 				currentTab = navigator.currentTab,

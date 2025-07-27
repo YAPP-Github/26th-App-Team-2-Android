@@ -1,0 +1,99 @@
+name: Release Build
+
+on:
+    push:
+        branches: [ "release/**" ]
+    create:
+        branches: [ "release/**" ]
+
+jobs:
+    build-apks:
+        runs-on: ubuntu-latest
+        permissions:
+            contents: write
+
+        steps:
+            -   name: Checkout code
+                uses: actions/checkout@v4
+
+            -   name: Cache Gradle packages
+                uses: actions/cache@v4
+                with:
+                    path: |
+                        ~/.gradle/caches
+                        ~/.gradle/wrapper
+                    key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties', '**/buildSrc/**/*.kt') }}
+                    restore-keys: |
+                        ${{ runner.os }}-gradle-
+
+            -   name: set up JDK 17
+                uses: actions/setup-java@v4
+                with:
+                    java-version: '17'
+                    distribution: 'temurin'
+                    cache: gradle
+
+            -   name: Add Local Properties
+                env:
+                    KAKAO_REST_API_KEY: ${{ secrets.KAKAO_REST_API_KEY }}
+                    KAKAO_JS_KEY: ${{ secrets.KAKAO_JS_KEY }}
+                run: |
+                    echo KAKAO_REST_API_KEY=$KAKAO_REST_API_KEY > ./local.properties
+                    echo KAKAO_JS_KEY=$KAKAO_JS_KEY >> ./local.properties
+
+            -   name: Grant execute permission for gradlew
+                run: chmod +x gradlew
+
+            -   name: Get version name
+                id: version
+                run: |
+                    VERSION_NAME=$(./gradlew -q printVersionName)
+                    echo "version_name=$VERSION_NAME" >> $GITHUB_OUTPUT
+                    echo "tag_name=v$VERSION_NAME-$(date +'%Y%m%d-%H%M%S')" >> $GITHUB_OUTPUT
+
+            -   name: Build Debug APK
+                run: ./gradlew assembleDebug
+
+            -   name: Build Release APK
+                run: ./gradlew assembleRelease
+
+            -   name: Create GitHub Release
+                uses: softprops/action-gh-release@v1
+                with:
+                    tag_name: ${{ steps.version.outputs.tag_name }}
+                    name: Release ${{ steps.version.outputs.version_name }}
+                    body: |
+                        ## 🚀 Release Build ${{ steps.version.outputs.version_name }}
+
+                        ### 📱 APK 다운로드
+                        - **Release APK**: 프로덕션용 빌드 (권장)
+                        - **Debug APK**: 개발용 빌드
+
+                        ### 📋 설치 방법
+                        1. 아래 Assets에서 APK 파일 다운로드
+                        2. Android 기기에서 "알 수 없는 출처" 허용
+                        3. APK 파일 실행하여 설치
+
+                        ### ⚠️ 주의사항
+                        - 이 앱은 베타 버전입니다
+                        - 사용 중 문제가 발생하면 Issues에 신고해주세요
+                    draft: false
+                    prerelease: true
+                    files: |
+                        ./app/build/outputs/apk/release/[Brake_release_v${{ steps.version.outputs.version_name }}]_*.apk
+                        ./app/build/outputs/apk/debug/[Brake_debug_v${{ steps.version.outputs.version_name }}]_*.apk
+
+            -   name: Create Release Summary
+                run: |
+                    echo "## 🚀 Release Build Summary" >> $GITHUB_STEP_SUMMARY
+                    echo "### 📋 Release Information" >> $GITHUB_STEP_SUMMARY
+                    echo "- **Tag**: \`${{ steps.version.outputs.tag_name }}\`" >> $GITHUB_STEP_SUMMARY
+                    echo "- **Version**: \`${{ steps.version.outputs.version_name }}\`" >> $GITHUB_STEP_SUMMARY
+                    echo "" >> $GITHUB_STEP_SUMMARY
+                    echo "### Debug APK" >> $GITHUB_STEP_SUMMARY
+                    echo "- 파일: \`$(basename app/build/outputs/apk/debug/[Brake_debug_v${{ steps.version.outputs.version_name }}]_*.apk)\`" >> $GITHUB_STEP_SUMMARY
+                    echo "- 크기: \`$(du -h app/build/outputs/apk/debug/[Brake_debug_v${{ steps.version.outputs.version_name }}]_*.apk | cut -f1)\`" >> $GITHUB_STEP_SUMMARY
+                    echo "" >> $GITHUB_STEP_SUMMARY
+                    echo "### Release APK" >> $GITHUB_STEP_SUMMARY
+                    echo "- 파일: \`$(basename app/build/outputs/apk/release/[Brake_release_v${{ steps.version.outputs.version_name }}]_*.apk)\`" >> $GITHUB_STEP_SUMMARY
+                    echo "- 크기: \`$(du -h app/build/outputs/apk/release/[Brake_release_v${{ steps.version.outputs.version_name }}]_*.apk | cut -f1)\`" >> $GITHUB_STEP_SUMMARY
