@@ -10,7 +10,6 @@ import com.yapp.breake.domain.usecase.DeleteAccountUseCaseImpl
 import com.yapp.breake.domain.usecase.FindAppGroupUseCase
 import com.yapp.breake.domain.usecase.LoginUseCase
 import com.yapp.breake.domain.usecase.LoginWithCachedAuthCodeUseCase
-import com.yapp.breake.domain.usecase.LoginWithCachedAuthCodeUseCaseImpl
 import com.yapp.breake.domain.usecase.LogoutUseCase
 import com.yapp.breake.domain.usecase.LogoutUseCaseImpl
 import com.yapp.breake.domain.usecase.SetAlarmUseCase

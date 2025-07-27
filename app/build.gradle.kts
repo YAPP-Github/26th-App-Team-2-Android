@@ -34,7 +34,7 @@ android {
 		variant.outputs
 			.map { it as com.android.build.gradle.internal.api.BaseVariantOutputImpl }
 			.forEach { output ->
-				val currentTime = SimpleDateFormat("yyyy.MM.dd HH:mm")
+				val currentTime = SimpleDateFormat("yyyy.MM.dd HH-mm")
 				currentTime.timeZone = TimeZone.getTimeZone("Asia/Seoul")
 				val buildType = variant.buildType.name
 				output.outputFileName = "[Brake_${buildType}_v${variant.versionName}]_${currentTime.format(Date())}.apk"
