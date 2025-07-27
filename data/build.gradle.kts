@@ -8,6 +8,10 @@ plugins {
 
 android {
 	setNamespace("data")
+
+	buildFeatures {
+		buildConfig = true
+	}
 }
 
 dependencies {

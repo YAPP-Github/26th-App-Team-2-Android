@@ -1,6 +1,7 @@
 package com.yapp.breake.data.remote.retrofit
 
 import android.os.Build
+import com.yapp.breake.data.BuildConfig
 
 sealed interface ApiConfig {
 
@@ -18,6 +19,11 @@ sealed interface ApiConfig {
 	}
 
 	data object ServerDomain : ApiConfig {
-		const val BASE_URL = "https://brake.r-e.kr/"
+		val BASE_URL
+			get() = if (BuildConfig.DEBUG) {
+				"https://dev-brake.r-e.kr/"
+			} else {
+				"https://brake.r-e.kr/"
+			}
 	}
 }
