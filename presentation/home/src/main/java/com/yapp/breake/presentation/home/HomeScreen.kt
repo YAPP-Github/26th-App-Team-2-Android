@@ -1,5 +1,9 @@
 package com.yapp.breake.presentation.home
 
+import androidx.compose.animation.AnimatedContent
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
@@ -86,41 +90,49 @@ private fun HomeContent(
 	onShowAddScreen: () -> Unit,
 	onShowEditScreen: (Long) -> Unit,
 ) {
-	when (homeUiState) {
-		HomeUiState.Nothing -> {
-			NothingScreen(
-				onAddClick = onShowAddScreen,
-			)
-		}
+	AnimatedContent(
+		targetState = homeUiState,
+		transitionSpec = {
+			fadeIn() togetherWith fadeOut()
+		},
+		label = "HomeContent",
+	) { state ->
+		when (state) {
+			HomeUiState.Nothing -> {
+				NothingScreen(
+					onAddClick = onShowAddScreen,
+				)
+			}
 
-		is HomeUiState.GroupList -> {
-			ListScreen(
-				appGroups = homeUiState.appGroups,
-				onEditClick = {
-					onShowEditScreen(it.id)
-				},
-			)
-		}
+			is HomeUiState.GroupList -> {
+				ListScreen(
+					appGroups = state.appGroups,
+					onEditClick = {
+						onShowEditScreen(it.id)
+					},
+				)
+			}
 
-		is HomeUiState.Blocking -> {
-			BlockingScreen(
-				appGroup = homeUiState.appGroup,
-				onEditClick = {
-					onShowEditScreen(homeUiState.appGroup.id)
-				},
-			)
-		}
+			is HomeUiState.Blocking -> {
+				BlockingScreen(
+					appGroup = state.appGroup,
+					onEditClick = {
+						onShowEditScreen(state.appGroup.id)
+					},
+				)
+			}
 
-		is HomeUiState.Using -> {
-			UsingScreen(
-				appGroup = homeUiState.appGroup,
-				onEditClick = {
-					onShowEditScreen(homeUiState.appGroup.id)
-				},
-				onStopClick = {
-					viewModel.showStopUsingDialog(homeUiState.appGroup)
-				},
-			)
+			is HomeUiState.Using -> {
+				UsingScreen(
+					appGroup = state.appGroup,
+					onEditClick = {
+						onShowEditScreen(state.appGroup.id)
+					},
+					onStopClick = {
+						viewModel.showStopUsingDialog(state.appGroup)
+					},
+				)
+			}
 		}
 	}
 }
