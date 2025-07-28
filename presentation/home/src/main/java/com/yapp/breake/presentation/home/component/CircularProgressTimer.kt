@@ -12,6 +12,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.StrokeCap
@@ -32,7 +33,7 @@ internal fun CircularProgressTimer(
 ) {
 	val animatedProgress by animateFloatAsState(
 		targetValue = progress,
-		animationSpec = tween(durationMillis = 300),
+		animationSpec = tween(durationMillis = 1000),
 		label = "progress_animation",
 	)
 
@@ -49,8 +50,10 @@ internal fun CircularProgressTimer(
 				.aspectRatio(1f),
 		) {
 			val strokeWidthPx = strokeWidth.toPx()
-			val radius = (this.size.minDimension - strokeWidthPx) / 2
+			val size = Size(this.size.width - strokeWidthPx, this.size.height - strokeWidthPx)
+			val topLeft = Offset(strokeWidthPx / 2, strokeWidthPx / 2)
 			val center = Offset(this.size.width / 2, this.size.height / 2)
+			val radius = (this.size.minDimension - strokeWidthPx) / 2
 
 			drawCircle(
 				color = backgroundColor,
@@ -63,20 +66,27 @@ internal fun CircularProgressTimer(
 			)
 
 			if (animatedProgress > 0f) {
-				val conicGradientBrush = Brush.sweepGradient(
+				val progressBrush = Brush.linearGradient(
 					colors = listOf(
 						Color(0xFFB6C1E0),
 						Color(0xFFF2FF5E),
-						Color(0xFFB6C1E0),
 					),
-					center = center,
+					start = Offset(center.x, 0f),
+					end = Offset(
+						center.x + radius * kotlin.math.cos(2 * kotlin.math.PI * animatedProgress - kotlin.math.PI / 2)
+							.toFloat(),
+						center.y + radius * kotlin.math.sin(2 * kotlin.math.PI * animatedProgress - kotlin.math.PI / 2)
+							.toFloat(),
+					),
 				)
 
 				drawArc(
-					brush = conicGradientBrush,
+					brush = progressBrush,
 					startAngle = -90f,
 					sweepAngle = 360f * animatedProgress,
 					useCenter = false,
+					topLeft = topLeft,
+					size = size,
 					style = Stroke(
 						width = strokeWidthPx,
 						cap = StrokeCap.Round,

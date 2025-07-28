@@ -114,7 +114,7 @@ private fun RemainingTimeTextDisplay(
 		endTime?.let { time ->
 			onTimeChange(time.getRemainingSeconds())
 			while (remainingSeconds > 0) {
-				delay(1000)
+				delay(100)
 				onTimeChange(time.getRemainingSeconds())
 			}
 		}
