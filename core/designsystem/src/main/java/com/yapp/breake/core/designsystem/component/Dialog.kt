@@ -13,7 +13,6 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Icon
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
@@ -30,7 +29,7 @@ import androidx.compose.ui.window.DialogProperties
 import com.yapp.breake.core.designsystem.R
 import com.yapp.breake.core.designsystem.modifier.clickableSingle
 import com.yapp.breake.core.designsystem.theme.BrakeTheme
-import com.yapp.breake.core.designsystem.theme.BrakeYellow
+import com.yapp.breake.core.designsystem.theme.ButtonYellow
 import com.yapp.breake.core.designsystem.theme.Gray300
 import com.yapp.breake.core.designsystem.theme.Gray400
 import com.yapp.breake.core.designsystem.theme.Gray800
@@ -152,7 +151,7 @@ fun DialogButton(
 	onClick: () -> Unit,
 	modifier: Modifier = Modifier,
 	enabled: Boolean = true,
-	containerColor: Color = BrakeYellow,
+	containerColor: Color = ButtonYellow,
 	contentColor: Color = Gray850,
 ) {
 	val multipleEventsCutter = remember { MultipleEventsCutter.get() }
