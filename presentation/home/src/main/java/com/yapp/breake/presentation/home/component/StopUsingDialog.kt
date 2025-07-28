@@ -16,8 +16,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.yapp.breake.core.designsystem.component.BaseDialog
-import com.yapp.breake.core.designsystem.component.DialogButton
+import com.yapp.breake.core.designsystem.component.OneButtonDialog
 import com.yapp.breake.core.designsystem.component.VerticalSpacer
 import com.yapp.breake.core.designsystem.theme.BrakeTheme
 import com.yapp.breake.core.designsystem.theme.Gray300
@@ -28,13 +27,9 @@ internal fun StopUsingDialog(
 	onStopUsing: () -> Unit,
 	onDismissRequest: () -> Unit,
 ) {
-	BaseDialog(
-		confirmButton = {
-			DialogButton(
-				text = stringResource(R.string.stop_using_dialog_button),
-				onClick = onStopUsing,
-			)
-		},
+	OneButtonDialog(
+		buttonText = stringResource(R.string.stop_using_dialog_button),
+		onButtonClick = onStopUsing,
 		onDismissRequest = onDismissRequest,
 	) {
 		Column(

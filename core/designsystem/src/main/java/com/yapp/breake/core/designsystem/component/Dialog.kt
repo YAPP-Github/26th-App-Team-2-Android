@@ -39,7 +39,7 @@ import com.yapp.breake.core.designsystem.util.MultipleEventsCutter
 import com.yapp.breake.core.designsystem.util.get
 
 @Composable
-fun BaseDialog(
+internal fun BaseDialog(
 	onDismissRequest: () -> Unit,
 	confirmButton: (@Composable () -> Unit)? = null,
 	dismissButton: (@Composable () -> Unit)? = null,
@@ -64,7 +64,10 @@ fun BaseDialog(
 				VerticalSpacer(42.dp)
 				Row(
 					modifier = Modifier.fillMaxWidth(),
-					horizontalArrangement = Arrangement.spacedBy(6.dp, Alignment.CenterHorizontally),
+					horizontalArrangement = Arrangement.spacedBy(
+						6.dp,
+						Alignment.CenterHorizontally,
+					),
 					verticalAlignment = Alignment.CenterVertically,
 				) {
 					dismissButton?.let {
@@ -90,6 +93,54 @@ fun BaseDialog(
 			)
 		}
 	}
+}
+
+@Composable
+fun OneButtonDialog(
+	buttonText: String,
+	onButtonClick: () -> Unit,
+	onDismissRequest: () -> Unit,
+	content: @Composable () -> Unit,
+) {
+	BaseDialog(
+		onDismissRequest = onDismissRequest,
+		confirmButton = {
+			DialogButton(
+				text = buttonText,
+				onClick = onButtonClick,
+			)
+		},
+		content = content,
+	)
+}
+
+@Composable
+fun TwoButtonDialog(
+	dismissButtonText: String,
+	confirmButtonText: String,
+	onDismissRequest: () -> Unit,
+	onConfirmButtonClick: () -> Unit,
+	onDismissButtonClick: () -> Unit = onDismissRequest,
+	content: @Composable () -> Unit,
+) {
+	BaseDialog(
+		onDismissRequest = onDismissRequest,
+		dismissButton = {
+			DialogButton(
+				text = dismissButtonText,
+				onClick = onDismissButtonClick,
+				containerColor = Gray800,
+				contentColor = White,
+			)
+		},
+		confirmButton = {
+			DialogButton(
+				text = confirmButtonText,
+				onClick = onConfirmButtonClick,
+			)
+		},
+		content = content,
+	)
 }
 
 @Composable
@@ -125,7 +176,7 @@ fun DialogButton(
 
 @Preview
 @Composable
-fun TwoButtonsDialog() {
+private fun TwoButtonsDialog() {
 	BrakeTheme {
 		BaseDialog(
 			onDismissRequest = { },
@@ -172,27 +223,14 @@ fun TwoButtonsDialog() {
 
 @Preview
 @Composable
-fun OneButtonDialog() {
+private fun OneButtonDialogPreview() {
 	BrakeTheme {
-		BaseDialog(
+		OneButtonDialog(
+			buttonText = "확인",
+			onButtonClick = { },
 			onDismissRequest = { },
-			confirmButton = {
-				DialogButton(
-					text = "확인",
-					onClick = {},
-				)
-			},
 		) {
-			Column(
-				modifier = Modifier.fillMaxWidth(),
-				horizontalAlignment = Alignment.CenterHorizontally,
-			) {
-				Text(
-					text = "로그아웃 하시겠습니까?",
-					style = BrakeTheme.typography.subtitle22SB,
-					color = White,
-				)
-			}
+
 		}
 	}
 }

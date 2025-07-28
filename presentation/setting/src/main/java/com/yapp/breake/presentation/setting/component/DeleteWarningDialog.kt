@@ -12,37 +12,24 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.yapp.breake.core.designsystem.component.BaseDialog
-import com.yapp.breake.core.designsystem.component.DialogButton
+import com.yapp.breake.core.designsystem.component.TwoButtonDialog
 import com.yapp.breake.core.designsystem.component.VerticalSpacer
 import com.yapp.breake.core.designsystem.theme.BrakeTheme
 import com.yapp.breake.core.designsystem.theme.Gray300
-import com.yapp.breake.core.designsystem.theme.Gray800
 import com.yapp.breake.core.designsystem.theme.White
-import com.yapp.breake.core.designsystem.R as Res
 import com.yapp.breake.presentation.setting.R
+import com.yapp.breake.core.designsystem.R as Res
 
 @Composable
 internal fun DeleteWarningDialog(
 	onDismissRequest: () -> Unit,
 	onConfirm: () -> Unit,
 ) {
-	BaseDialog(
+	TwoButtonDialog(
 		onDismissRequest = onDismissRequest,
-		dismissButton = {
-			DialogButton(
-				text = stringResource(R.string.setting_delete_dialog_dismiss_text),
-				onClick = onDismissRequest,
-				containerColor = Gray800,
-				contentColor = White,
-			)
-		},
-		confirmButton = {
-			DialogButton(
-				text = stringResource(R.string.setting_delete_dialog_confirm_text),
-				onClick = onConfirm,
-			)
-		},
+		dismissButtonText = stringResource(R.string.setting_delete_dialog_dismiss_text),
+		confirmButtonText = stringResource(R.string.setting_delete_dialog_confirm_text),
+		onConfirmButtonClick = onConfirm,
 	) {
 		Column(
 			modifier = Modifier.fillMaxWidth(),
