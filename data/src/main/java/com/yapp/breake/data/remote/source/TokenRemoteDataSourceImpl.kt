@@ -29,6 +29,7 @@ internal class TokenRemoteDataSourceImpl @Inject constructor(
 		).suspendOnSuccess {
 			emit(this.data)
 		}.suspendOnFailure {
+			Timber.e("$this")
 			onError(Throwable("서버 연결에 문제가 있습니다"))
 		}
 	}

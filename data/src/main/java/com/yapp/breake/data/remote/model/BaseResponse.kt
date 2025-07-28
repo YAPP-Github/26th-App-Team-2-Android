@@ -5,5 +5,5 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 open class BaseResponse(
-	@SerialName("code") val code: Int,
+	@SerialName("code") val code: Int = 0,
 )
