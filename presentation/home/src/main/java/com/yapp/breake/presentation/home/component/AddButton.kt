@@ -19,6 +19,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.yapp.breake.core.designsystem.component.HorizontalSpacer
 import com.yapp.breake.core.designsystem.theme.BrakeTheme
+import com.yapp.breake.core.designsystem.theme.ButtonYellow
 import com.yapp.breake.core.designsystem.theme.Gray800
 import com.yapp.breake.core.designsystem.theme.White
 import com.yapp.breake.core.designsystem.util.MultipleEventsCutter
@@ -35,10 +36,10 @@ internal fun AddButton(
 	Button(
 		shape = RoundedCornerShape(16.dp),
 		colors = ButtonDefaults.buttonColors(
-			containerColor = Gray800,
-			contentColor = White,
+			containerColor = ButtonYellow,
+			contentColor = Gray800,
 		),
-		contentPadding = PaddingValues(vertical = 12.dp, horizontal = 20.dp),
+		contentPadding = PaddingValues(vertical = 10.5.dp, horizontal = 18.5.dp),
 		onClick = { multipleEventsCutter.processEvent(onAddClick) },
 		modifier = modifier,
 	) {
@@ -53,7 +54,7 @@ internal fun AddButton(
 			HorizontalSpacer(8.dp)
 			Text(
 				text = stringResource(R.string.add),
-				style = BrakeTheme.typography.body14SB,
+				style = BrakeTheme.typography.subtitle16B,
 				textAlign = TextAlign.Center,
 			)
 		}
