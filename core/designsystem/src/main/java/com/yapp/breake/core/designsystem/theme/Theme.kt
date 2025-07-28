@@ -11,7 +11,7 @@ import androidx.compose.ui.platform.LocalView
 import androidx.core.view.WindowCompat
 
 private val DarkColorScheme = darkColorScheme(
-	primary = White,
+	primary = ButtonYellow,
 	onPrimary = Gray900,
 	secondary = Gray100,
 	onSecondary = Gray800,
