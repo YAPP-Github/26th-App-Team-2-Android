@@ -18,13 +18,11 @@ import com.yapp.breake.core.designsystem.component.HorizontalSpacer
 import com.yapp.breake.core.designsystem.component.VerticalSpacer
 import com.yapp.breake.core.designsystem.theme.BrakeTheme
 import com.yapp.breake.core.designsystem.theme.Gray200
-import com.yapp.breake.core.designsystem.theme.Gray400
 import com.yapp.breake.core.model.app.AppGroup
 import com.yapp.breake.presentation.home.R
 import com.yapp.breake.presentation.home.component.AppGroupBox
 import com.yapp.breake.presentation.home.component.AppGroupItemContent
-import com.yapp.breake.presentation.home.component.RemainingTimeDisplay
-import com.yapp.breake.presentation.home.component.StopButton
+import com.yapp.breake.presentation.home.component.UsingTime
 
 @Composable
 internal fun UsingScreen(
@@ -88,25 +86,12 @@ private fun UsingAppGroup(
 				.fillMaxWidth()
 				.padding(horizontal = 4.dp),
 		)
-		VerticalSpacer(30.dp)
-		Column(
-			modifier = modifier.fillMaxWidth(),
-			horizontalAlignment = Alignment.CenterHorizontally,
-		) {
-			Text(
-				text = stringResource(R.string.remaining_usage_time),
-				style = BrakeTheme.typography.body16M,
-				color = Gray400,
-			)
-			RemainingTimeDisplay(
-				endTime = appGroup.endTime,
-			)
-			VerticalSpacer(40.dp)
-			StopButton(
-				onStopClick = onStopClick,
-				modifier = Modifier,
-			)
-		}
+		VerticalSpacer(20.dp)
+		UsingTime(
+			endTime = appGroup.endTime,
+			onStopClick = onStopClick,
+			modifier = Modifier.fillMaxWidth(),
+		)
 		VerticalSpacer(10.dp)
 	}
 }

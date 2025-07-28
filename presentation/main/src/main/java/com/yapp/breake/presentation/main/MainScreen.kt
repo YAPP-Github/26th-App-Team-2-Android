@@ -1,5 +1,7 @@
 package com.yapp.breake.presentation.main
 
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
@@ -60,6 +62,7 @@ private fun MainScreenContent(
 				onTabSelected = navigator::navigate,
 			)
 		},
+		contentWindowInsets = WindowInsets(0.dp),
 		snackbarHost = {
 			SnackbarHost(
 				hostState = snackBarHostState,
