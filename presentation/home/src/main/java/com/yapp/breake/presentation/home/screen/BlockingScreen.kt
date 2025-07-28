@@ -14,6 +14,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -27,7 +28,7 @@ import com.yapp.breake.core.model.app.AppGroup
 import com.yapp.breake.presentation.home.R
 import com.yapp.breake.presentation.home.component.AppGroupBox
 import com.yapp.breake.presentation.home.component.AppGroupItemContent
-import com.yapp.breake.presentation.home.component.RemainingTimeDisplay
+import com.yapp.breake.presentation.home.component.ProgressTime
 
 @Composable
 internal fun BlockingScreen(
@@ -89,10 +90,14 @@ private fun BlockingAppGroup(
 				.fillMaxWidth()
 				.padding(horizontal = 4.dp),
 		)
-		VerticalSpacer(30.dp)
-		Column(
-			modifier = modifier.fillMaxWidth(),
-			horizontalAlignment = Alignment.CenterHorizontally,
+		VerticalSpacer(20.dp)
+		ProgressTime(
+			endTime = appGroup.endTime,
+			minuteTextStyle = BrakeTheme.typography.subtitle14B,
+			startColor = Color(0xFF8E97B0),
+			endColor = Color(0xFFF0F4FF),
+			textBottomPadding = 0,
+			modifier = Modifier.fillMaxWidth(),
 		) {
 			Image(
 				painter = painterResource(id = R.drawable.img_lock),
@@ -102,13 +107,7 @@ private fun BlockingAppGroup(
 					.width(110.dp)
 					.wrapContentHeight(),
 			)
-			VerticalSpacer(30.dp)
-			RemainingTimeDisplay(
-				endTime = appGroup.endTime,
-				minuteTextStyle = BrakeTheme.typography.subtitle14B,
-				textBottomPadding = 0,
-			)
-			VerticalSpacer(30.dp)
+			VerticalSpacer(12.dp)
 		}
 		VerticalSpacer(10.dp)
 	}

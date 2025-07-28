@@ -27,13 +27,15 @@ import com.yapp.breake.core.designsystem.theme.Gray600
 internal fun CircularProgressTimer(
 	progress: Float,
 	modifier: Modifier = Modifier,
+	startColor: Color = Color(0xFFB6C1E0),
+	endColor: Color = Color(0xFFF2FF5E),
 	strokeWidth: Dp = 8.dp,
 	backgroundColor: Color = Gray600,
 	content: @Composable () -> Unit = {},
 ) {
 	val animatedProgress by animateFloatAsState(
 		targetValue = progress,
-		animationSpec = tween(durationMillis = 1000),
+		animationSpec = tween(durationMillis = 300),
 		label = "progress_animation",
 	)
 
@@ -68,8 +70,8 @@ internal fun CircularProgressTimer(
 			if (animatedProgress > 0f) {
 				val progressBrush = Brush.linearGradient(
 					colors = listOf(
-						Color(0xFFB6C1E0),
-						Color(0xFFF2FF5E),
+						startColor,
+						endColor,
 					),
 					start = Offset(center.x, 0f),
 					end = Offset(

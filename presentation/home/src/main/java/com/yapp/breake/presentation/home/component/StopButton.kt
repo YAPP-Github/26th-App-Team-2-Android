@@ -19,7 +19,9 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.yapp.breake.core.designsystem.component.HorizontalSpacer
 import com.yapp.breake.core.designsystem.theme.BrakeTheme
+import com.yapp.breake.core.designsystem.theme.Gray900
 import com.yapp.breake.core.designsystem.theme.Red2
+import com.yapp.breake.core.designsystem.theme.White
 import com.yapp.breake.core.designsystem.util.MultipleEventsCutter
 import com.yapp.breake.core.designsystem.util.get
 import com.yapp.breake.presentation.home.R
@@ -34,8 +36,8 @@ internal fun StopButton(
 	Button(
 		shape = RoundedCornerShape(16.dp),
 		colors = ButtonDefaults.buttonColors(
-			containerColor = Red2.copy(0.1f),
-			contentColor = Red2,
+			containerColor = Gray900,
+			contentColor = White,
 		),
 		contentPadding = PaddingValues(vertical = 12.dp, horizontal = 20.dp),
 		onClick = { multipleEventsCutter.processEvent(onStopClick) },
