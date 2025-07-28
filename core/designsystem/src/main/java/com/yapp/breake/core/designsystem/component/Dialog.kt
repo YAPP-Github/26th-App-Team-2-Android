@@ -30,6 +30,7 @@ import androidx.compose.ui.window.DialogProperties
 import com.yapp.breake.core.designsystem.R
 import com.yapp.breake.core.designsystem.modifier.clickableSingle
 import com.yapp.breake.core.designsystem.theme.BrakeTheme
+import com.yapp.breake.core.designsystem.theme.BrakeYellow
 import com.yapp.breake.core.designsystem.theme.Gray300
 import com.yapp.breake.core.designsystem.theme.Gray400
 import com.yapp.breake.core.designsystem.theme.Gray800
@@ -82,15 +83,17 @@ internal fun BaseDialog(
 					}
 				}
 			}
-			Icon(
-				painter = painterResource(R.drawable.ic_close),
-				contentDescription = "Close",
-				tint = Gray400,
-				modifier = Modifier
-					.padding(16.dp)
-					.align(Alignment.TopEnd)
-					.clickableSingle(onDismissRequest),
-			)
+			if (dismissButton == null) {
+				Icon(
+					painter = painterResource(R.drawable.ic_close),
+					contentDescription = "Close",
+					tint = Gray400,
+					modifier = Modifier
+						.padding(16.dp)
+						.align(Alignment.TopEnd)
+						.clickableSingle(onDismissRequest),
+				)
+			}
 		}
 	}
 }
@@ -149,13 +152,13 @@ fun DialogButton(
 	onClick: () -> Unit,
 	modifier: Modifier = Modifier,
 	enabled: Boolean = true,
-	containerColor: Color = White,
+	containerColor: Color = BrakeYellow,
 	contentColor: Color = Gray850,
 ) {
 	val multipleEventsCutter = remember { MultipleEventsCutter.get() }
 
 	Button(
-		shape = MaterialTheme.shapes.medium,
+		shape = RoundedCornerShape(12.dp),
 		colors = ButtonDefaults.buttonColors(
 			containerColor = containerColor,
 			contentColor = contentColor,
