@@ -7,5 +7,5 @@ import kotlinx.serialization.Serializable
 data class LoginRequest(
 	val provider: String,
 	val authorizationCode: String,
-	val deviceId: String = ApiConfig.AndroidID.deviceInfo,
+	val deviceName: String = ApiConfig.AndroidID.deviceInfo,
 )
