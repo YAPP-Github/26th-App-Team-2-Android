@@ -20,7 +20,6 @@ import androidx.compose.ui.unit.dp
 import com.yapp.breake.core.designsystem.component.HorizontalSpacer
 import com.yapp.breake.core.designsystem.theme.BrakeTheme
 import com.yapp.breake.core.designsystem.theme.Gray900
-import com.yapp.breake.core.designsystem.theme.Red2
 import com.yapp.breake.core.designsystem.theme.White
 import com.yapp.breake.core.designsystem.util.MultipleEventsCutter
 import com.yapp.breake.core.designsystem.util.get

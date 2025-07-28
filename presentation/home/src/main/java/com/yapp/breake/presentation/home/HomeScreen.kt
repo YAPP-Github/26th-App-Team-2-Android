@@ -135,6 +135,7 @@ private fun ModalContent(
 		is HomeModalState.StopUsingDialog -> {
 			StopUsingDialog(
 				onStopUsing = {
+					viewModel.dismiss()
 					viewModel.stopAppUsing(homeModalState.appGroup)
 				},
 				onDismissRequest = viewModel::dismiss,
