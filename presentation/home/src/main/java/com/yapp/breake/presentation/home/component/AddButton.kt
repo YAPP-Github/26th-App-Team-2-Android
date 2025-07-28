@@ -21,7 +21,6 @@ import com.yapp.breake.core.designsystem.component.HorizontalSpacer
 import com.yapp.breake.core.designsystem.theme.BrakeTheme
 import com.yapp.breake.core.designsystem.theme.ButtonYellow
 import com.yapp.breake.core.designsystem.theme.Gray800
-import com.yapp.breake.core.designsystem.theme.White
 import com.yapp.breake.core.designsystem.util.MultipleEventsCutter
 import com.yapp.breake.core.designsystem.util.get
 import com.yapp.breake.presentation.home.R

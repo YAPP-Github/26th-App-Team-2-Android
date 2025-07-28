@@ -20,6 +20,7 @@ dependencies {
 	implementation(projects.core.util)
 	implementation(projects.core.datastore)
 	implementation(projects.core.database)
+	implementation(projects.core.common)
 	implementation(projects.domain)
 
 	implementation(libs.datastore)
