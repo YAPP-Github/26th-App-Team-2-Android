@@ -12,17 +12,16 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.yapp.breake.core.designsystem.theme.BrakeTheme
 import kotlinx.collections.immutable.toImmutableList
-import java.time.LocalTime
 
 @Composable
 fun TimePicker(
 	modifier: Modifier = Modifier,
-	startTime: LocalTime = LocalTime.now(),
 	rowCount: Int = 5,
 	onSnappedTime: (snappedTime: Int) -> Unit = {},
+	onScrollStateChanged: (isScrolling: Boolean) -> Unit = {},
 ) {
 
-	val minutes = (0..11).map { index ->
+	val minutes = (1..12).map { index ->
 		val value = index * 5
 		Minute(
 			text = value.toString(),
@@ -45,13 +44,14 @@ fun TimePicker(
 					texts = minutes.map { it.text }.toImmutableList(),
 					count = minutes.size,
 					rowCount = rowCount,
-					startIndex = minutes.find { minute ->
-						minute.value <= startTime.minute && startTime.minute < minute.value + 5
-					}?.index ?: 0,
-					onItemSelected = {
-						onSnappedTime(it.toInt())
-						return@TextPicker
+					startIndex = (Int.MAX_VALUE / 2) - 2,
+					onItemSelected = { selectedText ->
+						val selectedMinute = minutes.find { it.text == selectedText }
+						selectedMinute?.let { minute ->
+							onSnappedTime(minute.value)
+						}
 					},
+					onScrollStateChanged = onScrollStateChanged,
 				)
 			}
 		}
@@ -69,7 +69,6 @@ private data class Minute(
 private fun TimePickerPreview() {
 	BrakeTheme {
 		TimePicker(
-			startTime = LocalTime.of(0, 25),
 			onSnappedTime = { time ->
 			},
 		)

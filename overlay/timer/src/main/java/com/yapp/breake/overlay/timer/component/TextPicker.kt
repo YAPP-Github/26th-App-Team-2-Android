@@ -47,12 +47,13 @@ import kotlin.math.absoluteValue
 internal fun TextPicker(
 	modifier: Modifier = Modifier,
 	texts: ImmutableList<String>,
-	startIndex: Int = 0,
+	startIndex: Int = Int.MAX_VALUE / 2,
 	count: Int,
 	rowCount: Int,
 	onItemSelected: (String) -> Unit,
+	onScrollStateChanged: (Boolean) -> Unit = {},
 ) {
-	val lazyListState = rememberLazyListState(startIndex)
+	val lazyListState = rememberLazyListState(initialFirstVisibleItemIndex = startIndex)
 	val snapperLayoutInfo = rememberLazyListSnapperLayoutInfo(lazyListState = lazyListState)
 	var currentValue by remember { mutableStateOf("") }
 	val isScrollInProgress = lazyListState.isScrollInProgress
@@ -61,10 +62,18 @@ internal fun TextPicker(
 	val totalHeight = itemHeight * rowCount
 	val totalWidth = 200.dp
 
+	LaunchedEffect(isScrollInProgress) {
+		onScrollStateChanged(isScrollInProgress)
+	}
+
 	LaunchedEffect(isScrollInProgress, count) {
 		if (!isScrollInProgress) {
-			onItemSelected(currentValue)
-			lazyListState.scrollToItem(lazyListState.firstVisibleItemIndex)
+			val centerItemIndex = snapperLayoutInfo.currentItem?.index
+			if (centerItemIndex != null) {
+				val temp = centerItemIndex % count
+				currentValue = texts[temp]
+				onItemSelected(currentValue)
+			}
 		}
 	}
 
@@ -110,9 +119,6 @@ internal fun TextPicker(
 				count = Int.MAX_VALUE,
 			) { index ->
 				val temp = index % count
-				if (index == lazyListState.firstVisibleItemIndex) {
-					currentValue = texts[temp]
-				}
 
 				Box(
 					modifier = Modifier
