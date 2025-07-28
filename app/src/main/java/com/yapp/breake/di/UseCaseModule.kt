@@ -5,9 +5,13 @@ import com.yapp.breake.domain.usecase.DecideNextDestinationFromPermissionUseCase
 import com.yapp.breake.domain.usecase.DecideNextDestinationFromPermissionUseCaseImpl
 import com.yapp.breake.domain.usecase.DecideStartDestinationUseCase
 import com.yapp.breake.domain.usecase.DecideStartDestinationUseCaseImpl
+import com.yapp.breake.domain.usecase.DeleteAccountUseCase
+import com.yapp.breake.domain.usecase.DeleteAccountUseCaseImpl
 import com.yapp.breake.domain.usecase.FindAppGroupUseCase
 import com.yapp.breake.domain.usecase.LoginUseCase
 import com.yapp.breake.domain.usecase.LoginWithCachedAuthCodeUseCase
+import com.yapp.breake.domain.usecase.LogoutUseCase
+import com.yapp.breake.domain.usecase.LogoutUseCaseImpl
 import com.yapp.breake.domain.usecase.SetAlarmUseCase
 import com.yapp.breake.domain.usecase.SetBlockingAlarmUseCase
 import com.yapp.breake.domain.usecase.SetSnoozeAlarmUseCase
@@ -65,6 +69,16 @@ internal abstract class UseCaseModule {
 	abstract fun bindDecideNextDestinationFromPermissionUseCase(
 		decideNextDestinationFromPermissionUseCase: DecideNextDestinationFromPermissionUseCaseImpl,
 	): DecideNextDestinationFromPermissionUseCase
+
+	@Binds
+	abstract fun bindLogoutUseCase(
+		logoutUseCase: LogoutUseCaseImpl,
+	): LogoutUseCase
+
+	@Binds
+	abstract fun bindDeleteAccountUseCase(
+		deleteAccountUseCase: DeleteAccountUseCaseImpl,
+	): DeleteAccountUseCase
 
 	@Binds
 	abstract fun bindFindAppGroupUseCase(

@@ -31,6 +31,8 @@ class MainViewModel @Inject constructor(
 					InitialRoute.Permission
 				}
 			}
+
+			else -> InitialRoute.Login
 		}
 	}
 }

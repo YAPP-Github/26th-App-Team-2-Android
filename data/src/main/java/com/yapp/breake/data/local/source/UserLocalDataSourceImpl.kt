@@ -34,6 +34,16 @@ internal class UserLocalDataSourceImpl @Inject constructor(
 			}
 	}
 
+	override suspend fun clearUserInfo(onError: suspend (Throwable) -> Unit) {
+		userInfoDataStore.updateData {
+			DatastoreUserInfo.Empty
+		}.runCatching {
+			// 성공적인 업데이트 후 아무 작업도 하지 않음
+		}.onFailure {
+			onError(Throwable("유저 정보 비우기에 실패했습니다"))
+		}
+	}
+
 	override suspend fun updateNickname(
 		nickname: String,
 		onError: suspend (Throwable) -> Unit,

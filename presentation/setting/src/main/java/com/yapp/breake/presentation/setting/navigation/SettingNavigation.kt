@@ -26,13 +26,11 @@ fun NavController.navigateSetting(
 
 fun NavGraphBuilder.settingNavGraph(
 	padding: PaddingValues,
-	onShowErrorSnackBar: (Throwable?) -> Unit = {},
 	onChangeDarkTheme: (Boolean) -> Unit,
 ) {
 	composable<MainTabRoute.Setting> {
 		SettingRoute(
-			padding = padding,
-			onShowErrorSnackBar = onShowErrorSnackBar,
+			paddingValue = padding,
 			onChangeDarkTheme = onChangeDarkTheme,
 		)
 	}

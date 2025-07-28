@@ -1,9 +1,12 @@
 package com.yapp.breake.core.designsystem.component
 
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -17,6 +20,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
@@ -26,7 +30,9 @@ import androidx.compose.ui.window.DialogProperties
 import com.yapp.breake.core.designsystem.R
 import com.yapp.breake.core.designsystem.modifier.clickableSingle
 import com.yapp.breake.core.designsystem.theme.BrakeTheme
+import com.yapp.breake.core.designsystem.theme.Gray300
 import com.yapp.breake.core.designsystem.theme.Gray400
+import com.yapp.breake.core.designsystem.theme.Gray800
 import com.yapp.breake.core.designsystem.theme.Gray850
 import com.yapp.breake.core.designsystem.theme.White
 import com.yapp.breake.core.designsystem.util.MultipleEventsCutter
@@ -34,9 +40,9 @@ import com.yapp.breake.core.designsystem.util.get
 
 @Composable
 fun BaseDialog(
-	buttonText: String,
-	onButtonClick: () -> Unit,
 	onDismissRequest: () -> Unit,
+	confirmButton: (@Composable () -> Unit)? = null,
+	dismissButton: (@Composable () -> Unit)? = null,
 	content: @Composable () -> Unit = { },
 ) {
 	Dialog(
@@ -55,12 +61,23 @@ fun BaseDialog(
 			) {
 				VerticalSpacer(30.dp)
 				content()
-				VerticalSpacer(30.dp)
-				DialogButton(
-					text = buttonText,
-					onClick = onButtonClick,
+				VerticalSpacer(42.dp)
+				Row(
 					modifier = Modifier.fillMaxWidth(),
-				)
+					horizontalArrangement = Arrangement.spacedBy(6.dp, Alignment.CenterHorizontally),
+					verticalAlignment = Alignment.CenterVertically,
+				) {
+					dismissButton?.let {
+						Box(modifier = Modifier.weight(1f)) {
+							it()
+						}
+					}
+					confirmButton?.let {
+						Box(modifier = Modifier.weight(1f)) {
+							it()
+						}
+					}
+				}
 			}
 			Icon(
 				painter = painterResource(R.drawable.ic_close),
@@ -76,19 +93,21 @@ fun BaseDialog(
 }
 
 @Composable
-private fun DialogButton(
+fun DialogButton(
 	text: String,
 	onClick: () -> Unit,
 	modifier: Modifier = Modifier,
 	enabled: Boolean = true,
+	containerColor: Color = White,
+	contentColor: Color = Gray850,
 ) {
 	val multipleEventsCutter = remember { MultipleEventsCutter.get() }
 
 	Button(
 		shape = MaterialTheme.shapes.medium,
 		colors = ButtonDefaults.buttonColors(
-			containerColor = White,
-			contentColor = Gray850,
+			containerColor = containerColor,
+			contentColor = contentColor,
 		),
 		contentPadding = PaddingValues(vertical = 12.dp, horizontal = 16.dp),
 		enabled = enabled,
@@ -106,12 +125,74 @@ private fun DialogButton(
 
 @Preview
 @Composable
-private fun BaseDialogPreview() {
+fun TwoButtonsDialog() {
 	BrakeTheme {
 		BaseDialog(
-			buttonText = "확인",
-			onButtonClick = {},
-			onDismissRequest = {},
-		)
+			onDismissRequest = { },
+			dismissButton = {
+				DialogButton(
+					text = "취소",
+					onClick = {},
+					containerColor = Gray800,
+					contentColor = White,
+				)
+			},
+			confirmButton = {
+				DialogButton(
+					text = "탈퇴",
+					onClick = {},
+				)
+			},
+		) {
+			Column(
+				modifier = Modifier.fillMaxWidth(),
+				horizontalAlignment = Alignment.CenterHorizontally,
+			) {
+				Image(
+					painter = painterResource(id = R.drawable.img_warning),
+					contentDescription = null,
+				)
+				VerticalSpacer(16.dp)
+				Text(
+					text = "정말 탈퇴하시겠어요?",
+					style = BrakeTheme.typography.subtitle22SB,
+					color = White,
+				)
+				VerticalSpacer(12.dp)
+				Text(
+					text = "탈퇴하면 모든 계정 정보와 이용 기록이 \n삭제되며, 복구할 수 없습니다.",
+					style = BrakeTheme.typography.body16M,
+					color = Gray300,
+					textAlign = TextAlign.Center,
+				)
+			}
+		}
+	}
+}
+
+@Preview
+@Composable
+fun OneButtonDialog() {
+	BrakeTheme {
+		BaseDialog(
+			onDismissRequest = { },
+			confirmButton = {
+				DialogButton(
+					text = "확인",
+					onClick = {},
+				)
+			},
+		) {
+			Column(
+				modifier = Modifier.fillMaxWidth(),
+				horizontalAlignment = Alignment.CenterHorizontally,
+			) {
+				Text(
+					text = "로그아웃 하시겠습니까?",
+					style = BrakeTheme.typography.subtitle22SB,
+					color = White,
+				)
+			}
+		}
 	}
 }

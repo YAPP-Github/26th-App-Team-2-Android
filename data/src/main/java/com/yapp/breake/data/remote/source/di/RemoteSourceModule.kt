@@ -1,5 +1,7 @@
 package com.yapp.breake.data.remote.source.di
 
+import com.yapp.breake.data.remote.source.AccountRemoteDataSource
+import com.yapp.breake.data.remote.source.AccountRemoteDataSourceImpl
 import com.yapp.breake.data.remote.source.NameRemoteDataSource
 import com.yapp.breake.data.remote.source.NameRemoteDataSourceImpl
 import com.yapp.breake.data.remote.source.TokenRemoteDataSource
@@ -25,4 +27,10 @@ internal abstract class RemoteSourceModule {
 	abstract fun bindNicknameRemoteDataSource(
 		nameRemoteDataSourceImpl: NameRemoteDataSourceImpl,
 	): NameRemoteDataSource
+
+	@Binds
+	@Singleton
+	abstract fun bindAccountRemoteDataSource(
+		accountRemoteDataSource: AccountRemoteDataSourceImpl,
+	): AccountRemoteDataSource
 }
