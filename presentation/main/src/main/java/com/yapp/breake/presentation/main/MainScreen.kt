@@ -11,6 +11,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import com.yapp.breake.core.designsystem.component.BrakeSnackbar
 import com.yapp.breake.presentation.main.navigation.MainBottomNavBar
 import com.yapp.breake.presentation.main.navigation.MainNavHost
 import com.yapp.breake.presentation.main.navigation.MainNavigator
@@ -59,6 +60,17 @@ private fun MainScreenContent(
 				onTabSelected = navigator::navigate,
 			)
 		},
-		snackbarHost = { SnackbarHost(snackBarHostState) },
+		snackbarHost = {
+			SnackbarHost(
+				hostState = snackBarHostState,
+				snackbar = { snackbarData ->
+					BrakeSnackbar(
+						snackbarData = snackbarData,
+					)
+				},
+				modifier = Modifier
+					.navigationBarsPadding(),
+			)
+		},
 	)
 }

@@ -1,15 +1,16 @@
 package com.yapp.breake.presentation.main
 
 import android.os.Bundle
-import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
+import androidx.compose.material3.SnackbarDuration
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import com.yapp.breake.core.designsystem.component.BrakeSnackbarType
 import com.yapp.breake.core.designsystem.theme.BrakeTheme
 import com.yapp.breake.core.navigation.action.MainAction
 import com.yapp.breake.core.navigation.compositionlocal.LocalMainAction
@@ -39,20 +40,29 @@ class MainActivity : ComponentActivity() {
 			val navigator: MainNavigator = rememberMainNavigator(startDestination)
 			val coroutineScope: CoroutineScope = rememberCoroutineScope()
 			val snackBarHostState = remember { SnackbarHostState() }
-			val context = this
 
 			val mainAction = object : MainAction {
 				override fun onFinish() = finish()
 				override fun onShowSnackBar(throwable: Throwable?) {
 					coroutineScope.launch {
-						snackBarHostState.showSnackbar(throwable?.message ?: "알 수 없는 오류가 발생했습니다.")
+						snackBarHostState.showSnackbar(
+							message = throwable?.message ?: "오류가 발생했습니다.",
+							actionLabel = BrakeSnackbarType.ERROR.name,
+							duration = SnackbarDuration.Short,
+							withDismissAction = false,
+						)
 					}
 				}
-				override fun onShowToast(message: String) = Toast.makeText(
-					context,
-					message,
-					Toast.LENGTH_SHORT,
-				).show()
+				override fun onShowMessage(message: String) {
+					coroutineScope.launch {
+						snackBarHostState.showSnackbar(
+							message = message,
+							actionLabel = BrakeSnackbarType.SUCCESS.name,
+							duration = SnackbarDuration.Short,
+							withDismissAction = false,
+						)
+					}
+				}
 			}
 
 			CompositionLocalProvider(
