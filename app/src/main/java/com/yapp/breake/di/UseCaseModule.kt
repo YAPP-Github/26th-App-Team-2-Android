@@ -21,6 +21,7 @@ import com.yapp.breake.domain.usecase.StoreOnboardingCompletionUseCase
 import com.yapp.breake.domain.usecase.StoreOnboardingCompletionUseCaseImpl
 import com.yapp.breake.domain.usecase.UpdateNicknameUseCase
 import com.yapp.breake.domain.usecaseImpl.CheckAuthCodeUseCaseImpl
+import com.yapp.breake.domain.usecaseImpl.CreateNewGroupUseCaseImpl
 import com.yapp.breake.domain.usecaseImpl.FindAppGroupUsecaseImpl
 import com.yapp.breake.domain.usecaseImpl.LoginUseCaseImpl
 import com.yapp.breake.domain.usecaseImpl.LoginWithCachedAuthCodeUseCaseImpl
