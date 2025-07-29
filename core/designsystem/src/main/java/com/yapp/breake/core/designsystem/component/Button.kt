@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonColors
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -23,6 +24,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.tooling.preview.PreviewParameter
@@ -41,27 +43,41 @@ import com.yapp.breake.core.designsystem.util.get
 @Composable
 fun LargeButton(
 	text: String,
-	onClick: () -> Unit,
 	modifier: Modifier = Modifier,
+	textStyle: TextStyle = BrakeTheme.typography.subtitle16B,
+	paddingValues: PaddingValues = PaddingValues(vertical = 18.dp, horizontal = 16.dp),
+	leadingIcon: @Composable (() -> Unit)? = null,
+	colors: ButtonColors = ButtonDefaults.buttonColors(
+		disabledContainerColor = Gray700,
+		disabledContentColor = MaterialTheme.colorScheme.onPrimary,
+	),
+	onClick: () -> Unit,
 	enabled: Boolean = true,
 ) {
 	val multipleEventsCutter = remember { MultipleEventsCutter.get() }
 
 	Button(
 		shape = MaterialTheme.shapes.large,
-		colors = ButtonDefaults.buttonColors(
-			disabledContainerColor = Gray700,
-			disabledContentColor = MaterialTheme.colorScheme.onPrimary,
-		),
-		contentPadding = PaddingValues(vertical = 18.dp, horizontal = 16.dp),
+		colors = colors,
+		contentPadding = paddingValues,
 		enabled = enabled,
 		onClick = { multipleEventsCutter.processEvent(onClick) },
 		modifier = modifier.fillMaxWidth(),
 	) {
-		Text(
-			text = text,
-			style = BrakeTheme.typography.subtitle16B,
-		)
+		Row(
+			modifier = Modifier.fillMaxWidth(),
+			verticalAlignment = Alignment.CenterVertically,
+			horizontalArrangement = Arrangement.Center,
+		) {
+			leadingIcon?.let {
+				leadingIcon()
+				HorizontalSpacer(6.dp)
+			}
+			Text(
+				text = text,
+				style = textStyle,
+			)
+		}
 	}
 }
 
