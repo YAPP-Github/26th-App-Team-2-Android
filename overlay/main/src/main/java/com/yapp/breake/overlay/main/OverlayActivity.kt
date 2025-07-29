@@ -94,7 +94,7 @@ class OverlayActivity : ComponentActivity() {
 						groupName = overlayData.groupName,
 						snoozesCount = overlayData.snoozesCount,
 						onCloseOverlay = ::finish,
-						onStartHome = {},
+						onStartHome = ::onStartHome,
 						onExitManageApp = ::onExitManageApp,
 					)
 				}
@@ -103,8 +103,7 @@ class OverlayActivity : ComponentActivity() {
 					BlockingOverlay(
 						appName = overlayData.appName,
 						groupName = overlayData.groupName,
-						onStartHome = {
-						},
+						onStartHome = ::onStartHome,
 						onExitManageApp = ::onExitManageApp,
 					)
 				}
@@ -125,6 +124,14 @@ class OverlayActivity : ComponentActivity() {
 		Timber.d("onNewIntent called with action: ${intent.action}")
 		setIntent(intent)
 		showOverlay(intent.action)
+	}
+
+	private fun onStartHome() {
+		val homeIntent = packageManager.getLaunchIntentForPackage(packageName)?.apply {
+			flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+		}
+		homeIntent?.let { startActivity(it) }
+		finish()
 	}
 
 	private fun onExitManageApp() {

@@ -37,11 +37,11 @@ internal fun StopUsingDialog(
 			modifier = Modifier.fillMaxWidth(),
 		) {
 			Image(
-				painter = painterResource(id = R.drawable.img_clap),
-				contentDescription = stringResource(R.string.clap_image_content_description),
+				painter = painterResource(id = R.drawable.img_cat),
+				contentDescription = stringResource(R.string.cat_image_content_description),
 				contentScale = ContentScale.FillWidth,
 				modifier = Modifier
-					.width(100.dp)
+					.width(120.dp)
 					.wrapContentHeight(),
 			)
 			VerticalSpacer(28.dp)

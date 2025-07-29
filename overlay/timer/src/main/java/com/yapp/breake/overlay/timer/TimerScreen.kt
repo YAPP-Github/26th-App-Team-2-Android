@@ -1,6 +1,5 @@
 package com.yapp.breake.overlay.timer
 
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -9,24 +8,24 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.AnnotatedString
-import androidx.compose.ui.text.fromHtml
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.yapp.breake.core.designsystem.component.BaseScaffold
+import com.yapp.breake.core.designsystem.component.GradientScaffold
 import com.yapp.breake.core.designsystem.component.LargeButton
 import com.yapp.breake.core.designsystem.component.VerticalSpacer
 import com.yapp.breake.core.designsystem.theme.BrakeTheme
 import com.yapp.breake.core.designsystem.theme.LinerGradient
 import com.yapp.breake.core.util.addJosaEulReul
-import com.yapp.breake.core.util.extensions.toLocalizedTime
 import com.yapp.breake.overlay.timer.component.TimePicker
 import timber.log.Timber
-import java.time.LocalDateTime
 import com.yapp.breake.overlay.ui.R as UiRes
 
 @Composable
@@ -35,7 +34,10 @@ internal fun TimerScreen(
 	onTimeChange: (Int) -> Unit,
 	onComplete: () -> Unit,
 ) {
-	BaseScaffold(
+	var isScrolling by remember { mutableStateOf(false) }
+
+	GradientScaffold(
+		gradient = LinerGradient,
 		bottomBar = {
 			Column(
 				modifier = Modifier.fillMaxWidth(),
@@ -44,6 +46,7 @@ internal fun TimerScreen(
 				LargeButton(
 					text = stringResource(id = UiRes.string.btn_complete),
 					onClick = onComplete,
+					enabled = !isScrolling,
 					modifier = Modifier
 						.padding(horizontal = 16.dp),
 				)
@@ -59,9 +62,7 @@ internal fun TimerScreen(
 			Column(
 				horizontalAlignment = Alignment.CenterHorizontally,
 				verticalArrangement = Arrangement.Center,
-				modifier = Modifier
-					.fillMaxWidth()
-					.background(brush = LinerGradient),
+				modifier = Modifier.fillMaxWidth(),
 			) {
 				VerticalSpacer(80.dp)
 				Text(
@@ -72,18 +73,18 @@ internal fun TimerScreen(
 					modifier = Modifier.fillMaxWidth(),
 				)
 				VerticalSpacer(16.dp)
-				Text(
-					text = AnnotatedString.fromHtml(
-						stringResource(
-							id = UiRes.string.timer_content,
-							LocalDateTime.now().toLocalizedTime(),
-						),
-					),
-					style = BrakeTheme.typography.body16M,
-					textAlign = TextAlign.Center,
-					color = MaterialTheme.colorScheme.onBackground,
-					modifier = Modifier.fillMaxWidth(),
-				)
+//				Text(
+//					text = AnnotatedString.fromHtml(
+//						stringResource(
+//							id = UiRes.string.timer_content,
+//							LocalDateTime.now().toLocalizedTime(),
+//						),
+//					),
+//					style = BrakeTheme.typography.body16M,
+//					textAlign = TextAlign.Center,
+//					color = MaterialTheme.colorScheme.onBackground,
+//					modifier = Modifier.fillMaxWidth(),
+//				)
 			}
 			Column(
 				horizontalAlignment = Alignment.CenterHorizontally,
@@ -97,6 +98,7 @@ internal fun TimerScreen(
 						Timber.d("Snapped time: $it")
 						onTimeChange(it)
 					},
+					onScrollStateChanged = { isScrolling = it },
 				)
 			}
 		}

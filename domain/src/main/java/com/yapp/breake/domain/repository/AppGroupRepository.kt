@@ -22,4 +22,8 @@ interface AppGroupRepository {
 	suspend fun insertSnooze(
 		groupId: Long,
 	): Result<Unit>
+
+	suspend fun resetSnooze(
+		groupId: Long,
+	): Result<Unit>
 }

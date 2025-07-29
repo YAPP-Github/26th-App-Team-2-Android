@@ -33,7 +33,7 @@
     <string name="edit_app_group_icon_content_description">앱 그룹 편집 아이콘</string>
     <string name="default_app_icon_content_description">기본 앱 아이콘</string>
     <string name="app_icon_content_description">앱 아이콘</string>
-    <string name="clap_image_content_description">박수 이미지</string>
+    <string name="cat_image_content_description">고양이 이미지</string>
 
 
     <string name="home_stop_using_success">%s 사용 종료!\n이제 %s 앱을 사용할 수 없어요.</string>

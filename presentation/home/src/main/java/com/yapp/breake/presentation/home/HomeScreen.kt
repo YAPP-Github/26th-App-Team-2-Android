@@ -1,22 +1,26 @@
 package com.yapp.breake.presentation.home
 
+import androidx.compose.animation.AnimatedContent
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.yapp.breake.core.designsystem.theme.BackgroundGradient
+import com.yapp.breake.core.designsystem.theme.LinerGradient
 import com.yapp.breake.core.navigation.compositionlocal.LocalMainAction
+import com.yapp.breake.core.navigation.compositionlocal.LocalNavigatorAction
 import com.yapp.breake.presentation.HomeEvent
 import com.yapp.breake.presentation.HomeModalState
 import com.yapp.breake.presentation.HomeUiState
@@ -34,6 +38,7 @@ internal fun HomeRoute(
 ) {
 	val homeUiState by viewModel.homeUiState.collectAsStateWithLifecycle()
 	val homeModalState by viewModel.homeModalState.collectAsStateWithLifecycle()
+	val mainNavigationAction = LocalNavigatorAction.current
 	val mainAction = LocalMainAction.current
 	val context = LocalContext.current
 
@@ -45,16 +50,14 @@ internal fun HomeRoute(
 		Box(
 			modifier = Modifier
 				.fillMaxWidth()
-				.height(360.dp)
-				.background(brush = BackgroundGradient),
+				.fillMaxHeight(0.4f)
+				.background(brush = LinerGradient),
 		)
 		HomeContent(
 			homeUiState = homeUiState,
 			viewModel = viewModel,
-			onShowAddScreen = {
-			},
-			onShowEditScreen = { groupId ->
-			},
+			onShowAddScreen = mainNavigationAction::navigateToAddAppGroup,
+			onShowEditScreen = mainNavigationAction::navigateToEditAppGroup,
 		)
 	}
 
@@ -87,41 +90,49 @@ private fun HomeContent(
 	onShowAddScreen: () -> Unit,
 	onShowEditScreen: (Long) -> Unit,
 ) {
-	when (homeUiState) {
-		HomeUiState.Nothing -> {
-			NothingScreen(
-				onAddClick = onShowAddScreen,
-			)
-		}
+	AnimatedContent(
+		targetState = homeUiState,
+		transitionSpec = {
+			fadeIn() togetherWith fadeOut()
+		},
+		label = "HomeContent",
+	) { state ->
+		when (state) {
+			HomeUiState.Nothing -> {
+				NothingScreen(
+					onAddClick = onShowAddScreen,
+				)
+			}
 
-		is HomeUiState.GroupList -> {
-			ListScreen(
-				appGroups = homeUiState.appGroups,
-				onEditClick = {
-					onShowEditScreen(it.id)
-				},
-			)
-		}
+			is HomeUiState.GroupList -> {
+				ListScreen(
+					appGroups = state.appGroups,
+					onEditClick = {
+						onShowEditScreen(it.id)
+					},
+				)
+			}
 
-		is HomeUiState.Blocking -> {
-			BlockingScreen(
-				appGroup = homeUiState.appGroup,
-				onEditClick = {
-					onShowEditScreen(homeUiState.appGroup.id)
-				},
-			)
-		}
+			is HomeUiState.Blocking -> {
+				BlockingScreen(
+					appGroup = state.appGroup,
+					onEditClick = {
+						onShowEditScreen(state.appGroup.id)
+					},
+				)
+			}
 
-		is HomeUiState.Using -> {
-			UsingScreen(
-				appGroup = homeUiState.appGroup,
-				onEditClick = {
-					onShowEditScreen(homeUiState.appGroup.id)
-				},
-				onStopClick = {
-					viewModel.showStopUsingDialog(homeUiState.appGroup)
-				},
-			)
+			is HomeUiState.Using -> {
+				UsingScreen(
+					appGroup = state.appGroup,
+					onEditClick = {
+						onShowEditScreen(state.appGroup.id)
+					},
+					onStopClick = {
+						viewModel.showStopUsingDialog(state.appGroup)
+					},
+				)
+			}
 		}
 	}
 }
@@ -136,6 +147,7 @@ private fun ModalContent(
 		is HomeModalState.StopUsingDialog -> {
 			StopUsingDialog(
 				onStopUsing = {
+					viewModel.dismiss()
 					viewModel.stopAppUsing(homeModalState.appGroup)
 				},
 				onDismissRequest = viewModel::dismiss,

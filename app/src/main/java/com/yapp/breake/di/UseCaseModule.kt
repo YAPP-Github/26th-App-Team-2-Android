@@ -12,6 +12,8 @@ import com.yapp.breake.domain.usecase.LoginUseCase
 import com.yapp.breake.domain.usecase.LoginWithCachedAuthCodeUseCase
 import com.yapp.breake.domain.usecase.LogoutUseCase
 import com.yapp.breake.domain.usecase.LogoutUseCaseImpl
+import com.yapp.breake.domain.usecase.ResetAppGroupUsecase
+import com.yapp.breake.domain.usecase.ResetAppGroupUsecaseImpl
 import com.yapp.breake.domain.usecase.SetAlarmUseCase
 import com.yapp.breake.domain.usecase.SetBlockingAlarmUseCase
 import com.yapp.breake.domain.usecase.SetSnoozeAlarmUseCase
@@ -99,4 +101,9 @@ internal abstract class UseCaseModule {
 	abstract fun bindSetBlockingAlarmUseCase(
 		setBlockingAlarmUsecase: SetBlockingAlarmUseCaseImpl,
 	): SetBlockingAlarmUseCase
+
+	@Binds
+	abstract fun bindResetAppGroupUsecase(
+		resetAppGroupUsecase: ResetAppGroupUsecaseImpl,
+	): ResetAppGroupUsecase
 }

@@ -11,6 +11,7 @@ import com.yapp.breake.core.model.app.AppGroupState
 import com.yapp.breake.core.util.AppLaunchUtil
 import com.yapp.breake.core.util.OverlayLauncher
 import com.yapp.breake.domain.repository.AppGroupRepository
+import com.yapp.breake.domain.usecase.ResetAppGroupUsecase
 import com.yapp.breake.domain.usecase.SetAlarmUseCase
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.CoroutineScope
@@ -28,6 +29,9 @@ class NotificationReceiver : BroadcastReceiver() {
 
 	@Inject
 	lateinit var setAlarmUsecase: SetAlarmUseCase
+
+	@Inject
+	lateinit var resetAppGroupUsecase: ResetAppGroupUsecase
 
 	private val serviceJob = SupervisorJob()
 	private val serviceScope = CoroutineScope(Dispatchers.Main + serviceJob)
@@ -77,13 +81,9 @@ class NotificationReceiver : BroadcastReceiver() {
 
 	private suspend fun stopBlocking(context: Context, appGroup: AppGroup, appName: String?) {
 		Timber.i("ID: ${appGroup.id} 차단이 해제되었습니다")
-		appGroupRepository.updateAppGroupState(
-			groupId = appGroup.id,
-			appGroupState = AppGroupState.NeedSetting,
-			endTime = null,
-		)
-		val isUserUsingApp = AppLaunchUtil.isAppLaunching(context, appGroup)
+		resetAppGroupUsecase(groupId = appGroup.id)
 
+		val isUserUsingApp = AppLaunchUtil.isAppLaunching(context, appGroup)
 		if (isUserUsingApp) {
 			OverlayLauncher.startOverlay(
 				context = context,
