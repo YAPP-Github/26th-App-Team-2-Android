@@ -1,15 +1,21 @@
 package com.yapp.breake.core.database.dao
 
 import androidx.room.Dao
+import androidx.room.Insert
+import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import androidx.room.Transaction
 import com.yapp.breake.core.database.entity.AppGroupEntity
+import com.yapp.breake.core.database.entity.GroupEntity
 import com.yapp.breake.core.model.app.AppGroupState
 import kotlinx.coroutines.flow.Flow
 import java.time.LocalDateTime
 
 @Dao
 interface AppGroupDao {
+
+	@Insert(onConflict = OnConflictStrategy.REPLACE)
+	fun insertAppGroup(groupEntity: GroupEntity)
 
 	@Transaction
 	@Query("SELECT * FROM `group_table`")

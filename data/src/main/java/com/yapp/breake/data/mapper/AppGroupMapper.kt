@@ -2,6 +2,7 @@ package com.yapp.breake.data.mapper
 
 import com.yapp.breake.core.database.entity.AppEntity
 import com.yapp.breake.core.database.entity.AppGroupEntity
+import com.yapp.breake.core.database.entity.GroupEntity
 import com.yapp.breake.core.database.entity.SnoozeEntity
 import com.yapp.breake.core.model.app.App
 import com.yapp.breake.core.model.app.AppGroup
@@ -18,6 +19,13 @@ internal fun AppGroupEntity.toAppGroup(): AppGroup {
 		endTime = group.endTime,
 	)
 }
+
+internal fun AppGroup.toGroupEntity(): GroupEntity = GroupEntity(
+	groupId = id,
+	name = name,
+	appGroupState = appGroupState,
+	endTime = endTime,
+)
 
 internal fun AppEntity.toApp(): App {
 	return App(
