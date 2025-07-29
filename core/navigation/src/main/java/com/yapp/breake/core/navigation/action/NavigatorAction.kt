@@ -11,6 +11,5 @@ interface NavigatorAction {
 	fun navigateToComplete(navOptions: NavOptions? = null)
 	fun navigateToPermission(navOptions: NavOptions? = null)
 	fun navigateToHome(navOptions: NavOptions? = null)
-	fun navigateToAddAppGroup(navOptions: NavOptions? = null, )
-	fun navigateToEditAppGroup(groupId: Long, navOptions: NavOptions? = null)
+	fun navigateToRegistry(groupId: Long?, navOptions: NavOptions? = null)
 }
