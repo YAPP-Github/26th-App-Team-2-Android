@@ -1,10 +1,8 @@
 package com.yapp.breake.core.designsystem.component
 
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Text
@@ -16,27 +14,23 @@ import androidx.compose.ui.unit.dp
 import com.yapp.breake.core.designsystem.theme.BrakeTheme
 import com.yapp.breake.core.designsystem.theme.Gray600
 import com.yapp.breake.core.designsystem.theme.Gray850
-import com.yapp.breake.core.designsystem.theme.Green
-import com.yapp.breake.core.designsystem.theme.Red
-import com.yapp.breake.core.designsystem.theme.White
-import com.yapp.breake.core.util.isValidInput
 
 @Composable
-fun BrakeTextField(
+fun BaseTextField(
 	modifier: Modifier = Modifier,
 	value: String,
 	onValueChange: (String) -> Unit,
-	placeholder: String = "",
-	trailingIcon: Painter,
-	warningGuideText: String,
-	validGuideText: String,
+	placeholder: String,
+	singleLine: Boolean = true,
+	leadingIcon: Painter? = null,
+	trailingIcon: Painter? = null,
+	supportingText: @Composable (() -> Unit)? = null,
+	keyboardActions: KeyboardActions,
 ) {
 	OutlinedTextField(
 		modifier = modifier,
 		value = value,
-		onValueChange = {
-			onValueChange(it)
-		},
+		onValueChange = onValueChange,
 		placeholder = {
 			Text(
 				text = placeholder,
@@ -44,46 +38,24 @@ fun BrakeTextField(
 				style = BrakeTheme.typography.body16M,
 			)
 		},
-		singleLine = true,
-		trailingIcon = {
-			if (value.isValidInput()) {
+		singleLine = singleLine,
+		leadingIcon = leadingIcon?.let {
+			{
 				Image(
-					painter = trailingIcon,
+					painter = it,
 					contentDescription = null,
 				)
 			}
 		},
-		supportingText = {
-			Row(
-				modifier = Modifier.fillMaxWidth(),
-				horizontalArrangement = Arrangement.Absolute.SpaceBetween,
-			) {
-				if (!value.isValidInput()) {
-					Text(
-						text = if (value.isEmpty()) {
-							" "
-						} else {
-							warningGuideText
-						},
-						color = Red,
-						style = BrakeTheme.typography.body12M,
-					)
-				} else {
-					Text(
-						text = validGuideText,
-						color = Green,
-						style = BrakeTheme.typography.body12M,
-					)
-				}
-				Text(
-					text = "${value.length} / 10",
-					color = value.isValidInput().let {
-						if (it) Green else if (value.isEmpty()) White else Red
-					},
-					style = BrakeTheme.typography.body12M,
+		trailingIcon = trailingIcon?.let {
+			{
+				Image(
+					painter = it,
+					contentDescription = null,
 				)
 			}
 		},
+		supportingText = supportingText,
 		shape = RoundedCornerShape(12.dp),
 		colors = OutlinedTextFieldDefaults.colors(
 			unfocusedBorderColor = Color.Transparent,
@@ -95,5 +67,6 @@ fun BrakeTextField(
 			disabledContainerColor = Gray850,
 			errorContainerColor = Gray850,
 		),
+		keyboardActions = keyboardActions,
 	)
 }
