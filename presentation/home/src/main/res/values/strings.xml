@@ -37,4 +37,10 @@
 
 
     <string name="home_stop_using_success">%s 사용 종료!\n이제 %s 앱을 사용할 수 없어요.</string>
+
+	<!-- Registry Dialog -->
+	<string name="registry_warning_dialog_title">그룹을 삭제할까요?</string>
+	<string name="registry_warning_dialog_description">삭제한 그룹은 복구할 수 없습니다.</string>
+	<string name="registry_warning_dialog_button_cancel">취소</string>
+	<string name="registry_warning_dialog_button_approve">삭제</string>
 </resources>
