@@ -1,6 +1,7 @@
 package com.yapp.breake.di
 
 import com.yapp.breake.domain.usecase.CheckAuthCodeUseCase
+import com.yapp.breake.domain.usecase.CreateNewGroupUseCase
 import com.yapp.breake.domain.usecase.DecideNextDestinationFromPermissionUseCase
 import com.yapp.breake.domain.usecase.DecideNextDestinationFromPermissionUseCaseImpl
 import com.yapp.breake.domain.usecase.DecideStartDestinationUseCase
@@ -109,6 +110,11 @@ internal abstract class UseCaseModule {
 	abstract fun bindResetAppGroupUsecase(
 		resetAppGroupUsecase: ResetAppGroupUsecaseImpl,
 	): ResetAppGroupUsecase
+
+	@Binds
+	abstract fun bindCreateNewGroupUseCase(
+		createNewGroupUseCase: CreateNewGroupUseCaseImpl,
+	): CreateNewGroupUseCase
 
 	@Binds
 	abstract fun bindDeleteGroupUseCase(
