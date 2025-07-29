@@ -1,10 +1,12 @@
-package com.yapp.breake.presentation
+package com.yapp.breake.presentation.home
 
 import androidx.compose.runtime.Stable
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.yapp.breake.core.appscanner.InstalledAppScanner
 import com.yapp.breake.core.model.app.AppGroup
 import com.yapp.breake.core.model.app.AppGroupState
+import com.yapp.breake.core.util.toByteArray
 import com.yapp.breake.domain.repository.AppGroupRepository
 import com.yapp.breake.domain.usecase.SetBlockingAlarmUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -20,6 +22,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 internal class HomeViewModel @Inject constructor(
+	private val appScanner: InstalledAppScanner,
 	appGroupRepository: AppGroupRepository,
 	private val setBlockingAlarmUseCase: SetBlockingAlarmUseCase,
 ) : ViewModel() {
@@ -56,7 +59,17 @@ internal class HomeViewModel @Inject constructor(
 			}
 		}
 
-		return HomeUiState.GroupList(appGroups)
+		return HomeUiState.GroupList(
+			appGroups.map { appGroup ->
+				appGroup.copy(
+					apps = appGroup.apps.map { app ->
+						app.copy(
+							icon = appScanner.getIconDrawable(app.packageName).toByteArray(),
+						)
+					},
+				)
+			},
+		)
 	}
 
 	fun showStopUsingDialog(appGroup: AppGroup) {
@@ -82,6 +95,12 @@ internal class HomeViewModel @Inject constructor(
 		}
 	}
 
+	fun navigateToRegistry(groupId: Long? = null) {
+		viewModelScope.launch {
+			_homeEvent.emit(HomeEvent.NavigateToRegistry(groupId))
+		}
+	}
+
 	fun dismiss() {
 		_homeModalState.update { HomeModalState.Nothing }
 	}
@@ -104,4 +123,5 @@ internal sealed interface HomeModalState {
 @Stable
 internal sealed interface HomeEvent {
 	data class ShowStopUsingSuccess(val groupName: String) : HomeEvent
+	data class NavigateToRegistry(val groupId: Long?) : HomeEvent
 }
