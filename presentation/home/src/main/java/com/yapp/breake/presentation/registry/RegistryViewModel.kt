@@ -1,0 +1,296 @@
+package com.yapp.breake.presentation.registry
+
+import android.content.Context
+import androidx.lifecycle.SavedStateHandle
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import com.yapp.breake.core.appscanner.InstalledAppScanner
+import com.yapp.breake.core.model.app.App
+import com.yapp.breake.core.model.app.AppGroup
+import com.yapp.breake.core.model.app.AppGroupState
+import com.yapp.breake.domain.repository.AppGroupRepository
+import com.yapp.breake.domain.usecase.CreateNewGroupUseCase
+import com.yapp.breake.domain.usecase.DeleteGroupUseCase
+import com.yapp.breake.presentation.home.R
+import com.yapp.breake.presentation.registry.model.AppModel.Companion.initialAppsMapper
+import com.yapp.breake.presentation.registry.model.RegistryEffect
+import com.yapp.breake.presentation.registry.model.RegistryModalState
+import com.yapp.breake.presentation.registry.model.RegistryUiState
+import com.yapp.breake.presentation.registry.model.SelectedAppModel
+import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.collections.immutable.PersistentList
+import kotlinx.collections.immutable.persistentListOf
+import kotlinx.collections.immutable.toPersistentList
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.async
+import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.asSharedFlow
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.withContext
+import javax.inject.Inject
+
+@HiltViewModel
+class RegistryViewModel @Inject constructor(
+	savedStateHandle: SavedStateHandle,
+	appScanner: InstalledAppScanner,
+	private val appGroupRepository: AppGroupRepository,
+	private val createNewGroupUseCase: CreateNewGroupUseCase,
+	private val deleteGroupUseCase: DeleteGroupUseCase,
+) : ViewModel() {
+	// TODO: 그룹 아이디가 없을 시(새 그룹) 추후 데이터베이스 연동 후 가장 작고 사용 가능한 그룹 넘버 부여
+	private val appGroupId = savedStateHandle.get<Long>("groupId") ?: 1L
+	private val targetAppGroup: AppGroup? = runBlocking {
+		appGroupRepository.getAppGroupById(appGroupId)
+	}
+	private val selectedApps: PersistentList<SelectedAppModel> =
+		persistentListOf<SelectedAppModel>().builder().apply {
+			targetAppGroup?.let {
+				it.apps.forEachIndexed { index, appModel ->
+					add(
+						SelectedAppModel(
+							index = index,
+							name = appModel.name,
+							packageName = appModel.packageName,
+							icon = appScanner.getIconDrawable(appModel.packageName),
+						),
+					)
+				}
+			}
+		}.build()
+	private val cachedAppsDeferred = viewModelScope.async(Dispatchers.IO) {
+		appScanner.getInstalledAppsMetaData().map(initialAppsMapper).toPersistentList()
+	}
+
+	private val _registryUiState: MutableStateFlow<RegistryUiState> =
+		MutableStateFlow<RegistryUiState>(
+			RegistryUiState.Group.Initial(
+				groupId = appGroupId,
+				groupName = targetAppGroup?.name ?: "",
+				selectedApps = selectedApps,
+			),
+		)
+	val registryUiState = _registryUiState.asStateFlow()
+
+	private val _errorFlow = MutableSharedFlow<Throwable>()
+	val errorFlow = _errorFlow.asSharedFlow()
+
+	private val _navigationFlow = MutableSharedFlow<RegistryEffect>()
+	val navigationFlow = _navigationFlow.asSharedFlow()
+
+	private val _modalFlow = MutableStateFlow<RegistryModalState>(RegistryModalState.Idle)
+	val registryModalFlow = _modalFlow.asStateFlow()
+
+	// ------------- Group Registry -------------
+	fun updateGroupName(groupName: String) {
+		val currentUiState = _registryUiState.value
+		_registryUiState.value = currentUiState.let {
+			RegistryUiState.Group.Updated(
+				groupId = it.groupId,
+				groupName = groupName,
+				apps = it.apps,
+				selectedApps = it.selectedApps,
+			)
+		}
+	}
+
+	fun startSelectingApps() {
+		viewModelScope.launch {
+			val currentUiState = _registryUiState.value
+			val cachedApps = cachedAppsDeferred.await()
+			_registryUiState.value = RegistryUiState.App(
+				groupId = currentUiState.groupId,
+				groupName = currentUiState.groupName,
+				apps = cachedApps.builder().apply {
+					currentUiState.selectedApps.forEach { selectedApp ->
+						cachedApps.indexOfFirst { it.packageName == selectedApp.packageName }
+							.takeIf { it >= 0 }?.let { index ->
+								set(
+									index = index,
+									element = cachedApps[index].copy(isSelected = true),
+								)
+							}
+					}
+				}.build(),
+				selectedApps = persistentListOf<SelectedAppModel>().builder().apply {
+					currentUiState.selectedApps.forEach { selectedApp ->
+						cachedApps.indexOfFirst { it.packageName == selectedApp.packageName }
+							.takeIf { it >= 0 }?.let { index ->
+								add(
+									SelectedAppModel(
+										index = index,
+										name = selectedApp.name,
+										packageName = selectedApp.packageName,
+										icon = selectedApp.icon,
+									),
+								)
+							}
+					}
+				}.build(),
+			)
+		}
+	}
+
+	fun removeSelectedApp(selectedIndex: Int) {
+		val currentUiState = _registryUiState.value
+		_registryUiState.value = currentUiState.let {
+			RegistryUiState.Group.Updated(
+				groupId = it.groupId,
+				groupName = it.groupName,
+				apps = it.apps,
+				selectedApps = it.selectedApps.removeAt(selectedIndex),
+			)
+		}
+	}
+
+	fun cancelCreatingNewGroup() {
+		viewModelScope.launch {
+			_navigationFlow.emit(RegistryEffect.NavigateToHome)
+		}
+	}
+
+	fun tryRemoveGroup() {
+		_modalFlow.value = RegistryModalState.ShowGroupDeletionWarning
+	}
+
+	fun createNewGroup() {
+		viewModelScope.launch {
+			val currentUiState = _registryUiState.value
+			withContext(Dispatchers.IO) {
+				createNewGroupUseCase(
+					onError = {
+						_errorFlow.emit(it)
+					},
+					group = currentUiState.let {
+						AppGroup(
+							id = 1,
+							name = it.groupName,
+							appGroupState = AppGroupState.NeedSetting,
+							apps = it.selectedApps.map { selectedApp ->
+								App(
+									packageName = selectedApp.packageName,
+									name = selectedApp.name,
+									icon = null,
+									// TODO: 카테고리 추후 추가 필요
+									category = "기타",
+								)
+							},
+							snoozes = emptyList(),
+							endTime = null,
+						)
+					},
+				)
+			}
+			_navigationFlow.emit(RegistryEffect.NavigateToHome)
+		}
+	}
+
+	// ------------- App Registry -------------
+	fun updateSearchingText(searchingText: String) {
+		val currentUiState = _registryUiState.value as RegistryUiState.App
+		_registryUiState.value = currentUiState.copy(
+			searchingText = searchingText,
+		)
+	}
+
+	fun searchApp(context: Context) {
+		val currentUiState = _registryUiState.value as RegistryUiState.App
+		val query = currentUiState.searchingText
+
+		val matchedIndex = currentUiState.apps
+			.withIndex()
+			.minByOrNull { (_, app) ->
+				val pos = app.name.indexOf(query, ignoreCase = true)
+				if (pos >= 0) pos else Int.MAX_VALUE
+			}?.takeIf { it.value.name.contains(query, ignoreCase = true) }?.index ?: -1
+
+		// 결과가 없으면 상태 갱신하지 않음
+		if (matchedIndex == -1) {
+			viewModelScope.launch {
+				_errorFlow.emit(
+					Throwable(context.getString(R.string.registry_app_error_message, query)),
+				)
+			}
+			return
+		}
+		_registryUiState.value = currentUiState.copy(scrollIndex = matchedIndex)
+	}
+
+	fun selectApp(selectedIndex: Int) {
+		val currentUiState = _registryUiState.value as RegistryUiState.App
+		_registryUiState.value = currentUiState.let {
+			it.copy(
+				apps = it.apps.set(
+					index = selectedIndex,
+					element = it.apps[selectedIndex].copy(
+						isSelected = !it.apps[selectedIndex].isSelected,
+					),
+				),
+			)
+		}
+	}
+
+	fun completeSelectingApps() {
+		val currentUiState = _registryUiState.value
+		_registryUiState.value = currentUiState.let {
+			RegistryUiState.Group.Updated(
+				groupId = it.groupId,
+				groupName = it.groupName,
+				apps = it.apps,
+				selectedApps = it.apps.mapIndexedNotNull { index, appModel ->
+					if (appModel.isSelected) {
+						SelectedAppModel(
+							index = index,
+							name = appModel.name,
+							packageName = appModel.packageName,
+							icon = appModel.icon,
+						)
+					} else {
+						null
+					}
+				}.toPersistentList(),
+			)
+		}
+	}
+
+	// 선택한 앱을 그룹에 포함시키지 않고 그룹 화면으로 돌아가기
+	fun cancelSelectingApps() {
+		viewModelScope.launch {
+			val currentUiState = _registryUiState.value
+			val cachedApps = cachedAppsDeferred.await()
+			_registryUiState.value = RegistryUiState.Group.Updated(
+				groupId = currentUiState.groupId,
+				groupName = currentUiState.groupName,
+				apps = cachedApps.builder().apply {
+					currentUiState.selectedApps.forEach { selectedApp ->
+						set(
+							index = selectedApp.index,
+							element = cachedApps[selectedApp.index].copy(isSelected = true),
+						)
+					}
+				}.build(),
+				selectedApps = currentUiState.selectedApps,
+			)
+		}
+	}
+
+	// ------------- Modal State -------------
+	fun dismissModal() {
+		_modalFlow.value = RegistryModalState.Idle
+	}
+
+	fun removeGroup() {
+		viewModelScope.launch {
+			deleteGroupUseCase(
+				onError = {
+					_errorFlow.emit(it)
+				},
+				groupId = registryUiState.value.groupId,
+			)
+			_modalFlow.value = RegistryModalState.Idle
+			_navigationFlow.emit(RegistryEffect.NavigateToHome)
+		}
+	}
+}
