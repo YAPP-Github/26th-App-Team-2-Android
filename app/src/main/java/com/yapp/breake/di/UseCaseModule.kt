@@ -7,6 +7,7 @@ import com.yapp.breake.domain.usecase.DecideStartDestinationUseCase
 import com.yapp.breake.domain.usecase.DecideStartDestinationUseCaseImpl
 import com.yapp.breake.domain.usecase.DeleteAccountUseCase
 import com.yapp.breake.domain.usecase.DeleteAccountUseCaseImpl
+import com.yapp.breake.domain.usecase.DeleteGroupUseCase
 import com.yapp.breake.domain.usecase.FindAppGroupUseCase
 import com.yapp.breake.domain.usecase.LoginUseCase
 import com.yapp.breake.domain.usecase.LoginWithCachedAuthCodeUseCase
@@ -22,6 +23,7 @@ import com.yapp.breake.domain.usecase.StoreOnboardingCompletionUseCaseImpl
 import com.yapp.breake.domain.usecase.UpdateNicknameUseCase
 import com.yapp.breake.domain.usecaseImpl.CheckAuthCodeUseCaseImpl
 import com.yapp.breake.domain.usecaseImpl.CreateNewGroupUseCaseImpl
+import com.yapp.breake.domain.usecaseImpl.DeleteGroupUseCaseImpl
 import com.yapp.breake.domain.usecaseImpl.FindAppGroupUsecaseImpl
 import com.yapp.breake.domain.usecaseImpl.LoginUseCaseImpl
 import com.yapp.breake.domain.usecaseImpl.LoginWithCachedAuthCodeUseCaseImpl
@@ -107,4 +109,9 @@ internal abstract class UseCaseModule {
 	abstract fun bindResetAppGroupUsecase(
 		resetAppGroupUsecase: ResetAppGroupUsecaseImpl,
 	): ResetAppGroupUsecase
+
+	@Binds
+	abstract fun bindDeleteGroupUseCase(
+		deleteGroupUseCase: DeleteGroupUseCaseImpl,
+	): DeleteGroupUseCase
 }
