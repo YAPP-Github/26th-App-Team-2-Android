@@ -20,6 +20,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.yapp.breake.core.designsystem.theme.LinerGradient
 import com.yapp.breake.core.navigation.compositionlocal.LocalMainAction
+import com.yapp.breake.core.navigation.compositionlocal.LocalNavigatorAction
 import com.yapp.breake.presentation.HomeEvent
 import com.yapp.breake.presentation.HomeModalState
 import com.yapp.breake.presentation.HomeUiState
@@ -37,6 +38,7 @@ internal fun HomeRoute(
 ) {
 	val homeUiState by viewModel.homeUiState.collectAsStateWithLifecycle()
 	val homeModalState by viewModel.homeModalState.collectAsStateWithLifecycle()
+	val mainNavigationAction = LocalNavigatorAction.current
 	val mainAction = LocalMainAction.current
 	val context = LocalContext.current
 
@@ -54,10 +56,8 @@ internal fun HomeRoute(
 		HomeContent(
 			homeUiState = homeUiState,
 			viewModel = viewModel,
-			onShowAddScreen = {
-			},
-			onShowEditScreen = { groupId ->
-			},
+			onShowAddScreen = mainNavigationAction::navigateToAddAppGroup,
+			onShowEditScreen = mainNavigationAction::navigateToEditAppGroup,
 		)
 	}
 

@@ -62,6 +62,14 @@ internal class MainNavigator(
 
 			override fun navigateToHome(navOptions: NavOptions?) =
 				navController.navigateToHome(navOptions)
+
+			override fun navigateToAddAppGroup(navOptions: NavOptions?) {
+				TODO("Not yet implemented")
+			}
+
+			override fun navigateToEditAppGroup(groupId: Long, navOptions: NavOptions?) {
+				TODO("Not yet implemented")
+			}
 		}
 	}
 
