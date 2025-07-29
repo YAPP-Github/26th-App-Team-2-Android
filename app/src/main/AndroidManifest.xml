@@ -46,4 +46,12 @@
 		</service>
 	</application>
 
+	<!-- 런처 아이콘을 갖는 모든 앱 쿼리 허용 -->
+	<queries>
+		<intent>
+			<action android:name="android.intent.action.MAIN"/>
+			<category android:name="android.intent.category.LAUNCHER"/>
+		</intent>
+	</queries>
+
 </manifest>
