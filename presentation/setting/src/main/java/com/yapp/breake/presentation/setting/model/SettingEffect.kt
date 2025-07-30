@@ -7,4 +7,7 @@ import androidx.compose.runtime.Stable
 interface SettingEffect {
 	@Immutable
 	data object NavigateToLogin : SettingEffect
+
+	@Immutable
+	data object NavigateToNickname : SettingEffect
 }

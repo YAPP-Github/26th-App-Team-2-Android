@@ -7,6 +7,7 @@ import com.yapp.breake.domain.usecase.DeleteAccountUseCase
 import com.yapp.breake.domain.usecase.LogoutUseCase
 import com.yapp.breake.presentation.setting.model.SettingEffect
 import com.yapp.breake.presentation.setting.model.SettingUiState
+import com.yapp.breake.presentation.setting.model.SettingUser
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -30,6 +31,12 @@ class SettingViewModel @Inject constructor(
 
 	private val _navigationFlow = MutableSharedFlow<SettingEffect>()
 	val navigationFlow = _navigationFlow.asSharedFlow()
+
+	fun modifyNickname() {
+		viewModelScope.launch {
+			_navigationFlow.emit(SettingEffect.NavigateToNickname)
+		}
+	}
 
 	fun dismissDialog() {
 		viewModelScope.launch {
