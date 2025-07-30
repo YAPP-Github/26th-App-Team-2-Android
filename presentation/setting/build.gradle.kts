@@ -6,4 +6,13 @@ plugins {
 
 android {
 	setNamespace("presentation.setting")
+
+	defaultConfig {
+		val versionName = libs.versions.versionName.get()
+		buildConfigField("String", "VERSION_NAME", "\"$versionName\"")
+	}
+
+	buildFeatures {
+		buildConfig = true
+	}
 }
