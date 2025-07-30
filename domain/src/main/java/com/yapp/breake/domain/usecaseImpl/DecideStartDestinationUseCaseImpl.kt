@@ -1,9 +1,10 @@
-package com.yapp.breake.domain.usecase
+package com.yapp.breake.domain.usecaseImpl
 
 import com.yapp.breake.core.model.user.Destination
 import com.yapp.breake.domain.repository.NicknameRepository
 import com.yapp.breake.domain.repository.SessionRepository
 import com.yapp.breake.domain.repository.TokenRepository
+import com.yapp.breake.domain.usecase.DecideStartDestinationUseCase
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.runBlocking

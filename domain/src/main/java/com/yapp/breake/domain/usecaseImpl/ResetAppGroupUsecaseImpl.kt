@@ -1,7 +1,8 @@
-package com.yapp.breake.domain.usecase
+package com.yapp.breake.domain.usecaseImpl
 
 import com.yapp.breake.core.model.app.AppGroupState
 import com.yapp.breake.domain.repository.AppGroupRepository
+import com.yapp.breake.domain.usecase.ResetAppGroupUsecase
 import javax.inject.Inject
 
 class ResetAppGroupUsecaseImpl @Inject constructor(

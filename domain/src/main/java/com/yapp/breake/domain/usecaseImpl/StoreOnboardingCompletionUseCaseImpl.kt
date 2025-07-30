@@ -1,6 +1,7 @@
-package com.yapp.breake.domain.usecase
+package com.yapp.breake.domain.usecaseImpl
 
 import com.yapp.breake.domain.repository.SessionRepository
+import com.yapp.breake.domain.usecase.StoreOnboardingCompletionUseCase
 import javax.inject.Inject
 
 class StoreOnboardingCompletionUseCaseImpl @Inject constructor(
