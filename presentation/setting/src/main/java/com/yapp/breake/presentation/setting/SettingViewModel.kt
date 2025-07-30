@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.yapp.breake.core.model.user.Destination
 import com.yapp.breake.domain.usecase.DeleteAccountUseCase
+import com.yapp.breake.domain.usecase.GetNicknameUseCase
 import com.yapp.breake.domain.usecase.LogoutUseCase
 import com.yapp.breake.presentation.setting.model.SettingEffect
 import com.yapp.breake.presentation.setting.model.SettingUiState
@@ -13,16 +14,17 @@ import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import timber.log.Timber
 import javax.inject.Inject
 
 @HiltViewModel
 class SettingViewModel @Inject constructor(
+	getNicknameUseCase: GetNicknameUseCase,
 	private val deleteAccountUseCase: DeleteAccountUseCase,
 	private val logoutUseCase: LogoutUseCase,
 ) : ViewModel() {
-
 	private val _errorFlow = MutableSharedFlow<Throwable>()
 	val errorFlow = _errorFlow.asSharedFlow()
 
@@ -31,6 +33,22 @@ class SettingViewModel @Inject constructor(
 
 	private val _navigationFlow = MutableSharedFlow<SettingEffect>()
 	val navigationFlow = _navigationFlow.asSharedFlow()
+
+	init {
+		viewModelScope.launch {
+			getNicknameUseCase({}).collect { nickname ->
+				_uiState.update {
+					SettingUiState.SettingLoaded(
+						user = SettingUser(
+							imageUrl = null,
+							name = nickname,
+						),
+						appInfo = _uiState.value.appInfo,
+					)
+				}
+			}
+		}
+	}
 
 	fun modifyNickname() {
 		viewModelScope.launch {
