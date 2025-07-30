@@ -23,6 +23,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusManager
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.painterResource
@@ -52,6 +53,7 @@ fun SignupRoute(viewModel: SignupViewModel = hiltViewModel()) {
 	val padding = LocalPadding.current.screenPaddingHorizontal
 	val navAction = LocalNavigatorAction.current
 	val mainAction = LocalMainAction.current
+	val context = LocalContext.current
 	val focusManager = LocalFocusManager.current
 	val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 	val density = LocalDensity.current
@@ -76,7 +78,11 @@ fun SignupRoute(viewModel: SignupViewModel = hiltViewModel()) {
 	}
 
 	LaunchedEffect(true) {
-		viewModel.errorFlow.collect { mainAction.onShowSnackBar(it) }
+		viewModel.snackBarFlow.collect {
+			mainAction.onShowErrorSnackBar(
+				message = it.asString(context = context),
+			)
+		}
 	}
 
 	SignupScreen(

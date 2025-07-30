@@ -2,6 +2,7 @@ package com.yapp.breake.presentation.signup
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.yapp.breake.core.util.UiString
 import com.yapp.breake.domain.usecase.UpdateNicknameUseCase
 import com.yapp.breake.presentation.signup.model.SignupEffect
 import com.yapp.breake.presentation.signup.model.SignupUiState
@@ -19,8 +20,8 @@ class SignupViewModel @Inject constructor(
 	private val updateNicknameUseCase: UpdateNicknameUseCase,
 ) : ViewModel() {
 
-	private val _errorFlow = MutableSharedFlow<Throwable>()
-	val errorFlow = _errorFlow.asSharedFlow()
+	private val _snackBarFlow = MutableSharedFlow<UiString>()
+	val snackBarFlow = _snackBarFlow.asSharedFlow()
 
 	private val _uiState = MutableStateFlow<SignupUiState>(SignupUiState.SignupIdle(""))
 	val uiState = _uiState.asStateFlow()
@@ -47,7 +48,7 @@ class SignupViewModel @Inject constructor(
 						nickname = name,
 						onError = {
 							success = false
-							_errorFlow.emit(it)
+							_snackBarFlow.emit(UiString.ResourceString(R.string.signup_snackbar_register_error))
 						},
 						onSuccess = {},
 					)
