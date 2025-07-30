@@ -11,6 +11,7 @@ sealed class RegistryUiState(
 	open val apps: PersistentList<AppModel>,
 	open val selectedApps: PersistentList<SelectedAppModel>,
 ) {
+	@Stable
 	data class App(
 		val scrollIndex: Int = 0,
 		val searchingText: String = "",
@@ -21,6 +22,7 @@ sealed class RegistryUiState(
 	) : RegistryUiState(groupId, groupName, apps, selectedApps)
 
 	sealed interface Group {
+		@Stable
 		data class Initial(
 			override val groupId: Long,
 			override val groupName: String = "",
@@ -28,6 +30,7 @@ sealed class RegistryUiState(
 			override val selectedApps: PersistentList<SelectedAppModel>,
 		) : RegistryUiState(groupId, groupName, apps, selectedApps)
 
+		@Stable
 		data class Updated(
 			override val groupId: Long,
 			override val groupName: String,

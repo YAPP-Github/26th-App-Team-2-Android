@@ -1,8 +1,10 @@
 package com.yapp.breake.presentation.registry.model
 
 import android.graphics.drawable.Drawable
+import androidx.compose.runtime.Stable
 import com.yapp.breake.core.appscanner.AppMetaData
 
+@Stable
 data class AppModel(
 	val isSelected: Boolean,
 	val name: String,
