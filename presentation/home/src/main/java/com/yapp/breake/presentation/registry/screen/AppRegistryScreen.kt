@@ -22,8 +22,6 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.material3.RadioButton
 import androidx.compose.material3.RadioButtonColors
-import androidx.compose.material3.SnackbarHost
-import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -46,7 +44,6 @@ import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
 import androidx.core.graphics.drawable.toBitmap
 import com.yapp.breake.core.designsystem.component.BaseScaffold
-import com.yapp.breake.core.designsystem.component.BrakeSnackbar
 import com.yapp.breake.core.designsystem.component.HorizontalSpacer
 import com.yapp.breake.core.designsystem.component.LargeButton
 import com.yapp.breake.core.designsystem.component.VerticalSpacer
@@ -67,7 +64,6 @@ fun AppRegistryScreen(
 	padding: Dp,
 	registryUiState: RegistryUiState.App,
 	focusManager: FocusManager,
-	snackBarHostState: SnackbarHostState,
 	onSearchTextChange: (String) -> Unit,
 	onSearchApp: () -> Unit,
 	onSelectApp: (Int) -> Unit,
@@ -98,18 +94,6 @@ fun AppRegistryScreen(
 					.padding(horizontal = padding),
 				// 최소 한 개의 앱이 선택되어야 버튼이 활성화됨
 				enabled = registryUiState.apps.any { it.isSelected },
-			)
-		},
-		snackBarHost = {
-			SnackbarHost(
-				hostState = snackBarHostState,
-				snackbar = { snackbarData ->
-					BrakeSnackbar(
-						snackbarData = snackbarData,
-					)
-				},
-				modifier = Modifier
-					.navigationBarsPadding(),
 			)
 		},
 		modifier = Modifier
@@ -291,7 +275,6 @@ private fun AppScreenPreview() {
 			apps = apps,
 			selectedApps = persistentListOf(),
 		),
-		snackBarHostState = remember { SnackbarHostState() },
 		onSearchTextChange = {},
 		onSearchApp = {},
 		onSelectApp = {},

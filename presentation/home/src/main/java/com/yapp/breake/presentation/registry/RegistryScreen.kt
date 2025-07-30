@@ -2,8 +2,6 @@ package com.yapp.breake.presentation.registry
 
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.ime
-import androidx.compose.material3.SnackbarDuration
-import androidx.compose.material3.SnackbarHostState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.SideEffect
@@ -15,16 +13,16 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.yapp.breake.core.designsystem.component.BrakeSnackbarType
 import com.yapp.breake.core.designsystem.theme.LocalPadding
+import com.yapp.breake.core.navigation.compositionlocal.LocalMainAction
 import com.yapp.breake.core.navigation.compositionlocal.LocalNavigatorAction
 import com.yapp.breake.presentation.registry.component.GroupDeletionWarningDialog
-import com.yapp.breake.presentation.registry.model.RegistryEffect
+import com.yapp.breake.presentation.registry.model.RegistryNavState
 import com.yapp.breake.presentation.registry.model.RegistryModalState
+import com.yapp.breake.presentation.registry.model.RegistrySnackBarState
 import com.yapp.breake.presentation.registry.model.RegistryUiState
 import com.yapp.breake.presentation.registry.screen.AppRegistryScreen
 import com.yapp.breake.presentation.registry.screen.GroupRegistryScreen
-import timber.log.Timber
 
 @Composable
 fun RegistryRoute(
@@ -36,7 +34,7 @@ fun RegistryRoute(
 	val focusManager = LocalFocusManager.current
 	val context = LocalContext.current
 	val navAction = LocalNavigatorAction.current
-	val snackBarHostState = remember { SnackbarHostState() }
+	val mainAction = LocalMainAction.current
 	val density = LocalDensity.current
 	val imeVisible = WindowInsets.ime.getBottom(density) > 0
 	var prevVisible by remember { mutableStateOf(imeVisible) }
@@ -52,19 +50,25 @@ fun RegistryRoute(
 	LaunchedEffect(true) {
 		viewModel.navigationFlow.collect { effect ->
 			when (effect) {
-				is RegistryEffect.NavigateToHome -> navAction.popBackStack()
+				is RegistryNavState.NavigateToHome -> navAction.popBackStack()
 			}
 		}
 	}
 
 	LaunchedEffect(true) {
-		viewModel.errorFlow.collect {
-			snackBarHostState.showSnackbar(
-				message = it.message ?: "오류가 발생했습니다.",
-				actionLabel = BrakeSnackbarType.ERROR.name,
-				duration = SnackbarDuration.Short,
-				withDismissAction = false,
-			)
+		viewModel.snackBarFlow.collect {
+			when (it) {
+				is RegistrySnackBarState.Success -> {
+					mainAction.onShowMessage(
+						message = it.uiString.asString(context = context),
+					)
+				}
+				is RegistrySnackBarState.Error -> {
+					mainAction.onShowErrorSnackBar(
+						message = it.uiString.asString(context = context),
+					)
+				}
+			}
 		}
 	}
 
@@ -84,7 +88,6 @@ fun RegistryRoute(
 				padding = padding,
 				registryUiState = registryUiState,
 				focusManager = focusManager,
-				snackBarHostState = snackBarHostState,
 				onGroupNameChange = viewModel::updateGroupName,
 				onStartSelectingApps = viewModel::startSelectingApps,
 				onRemoveApp = viewModel::removeSelectedApp,
@@ -95,18 +98,12 @@ fun RegistryRoute(
 		}
 
 		is RegistryUiState.App -> {
-			registryUiState.selectedApps.forEach { app ->
-				Timber.d(
-					"Selected app: ${app.name} (${app.packageName})",
-				)
-			}
 			AppRegistryScreen(
 				padding = padding,
 				registryUiState = registryUiState as RegistryUiState.App,
 				focusManager = focusManager,
-				snackBarHostState = snackBarHostState,
 				onSearchTextChange = viewModel::updateSearchingText,
-				onSearchApp = { viewModel.searchApp(context) },
+				onSearchApp = viewModel::searchApp,
 				onSelectApp = viewModel::selectApp,
 				onBackClick = viewModel::cancelSelectingApps,
 				onRegisterApps = viewModel::completeSelectingApps,

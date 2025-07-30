@@ -24,8 +24,6 @@ import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.material3.ButtonColors
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
-import androidx.compose.material3.SnackbarHost
-import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
@@ -49,7 +47,6 @@ import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
 import androidx.core.graphics.drawable.toBitmap
 import com.yapp.breake.core.designsystem.component.BaseScaffold
-import com.yapp.breake.core.designsystem.component.BrakeSnackbar
 import com.yapp.breake.core.designsystem.component.BrakeTopAppbar
 import com.yapp.breake.core.designsystem.component.HorizontalSpacer
 import com.yapp.breake.core.designsystem.component.LargeButton
@@ -80,7 +77,6 @@ fun GroupRegistryScreen(
 	padding: Dp,
 	registryUiState: RegistryUiState,
 	focusManager: FocusManager,
-	snackBarHostState: SnackbarHostState,
 	onGroupNameChange: (String) -> Unit,
 	onStartSelectingApps: () -> Unit,
 	onRemoveApp: (Int) -> Unit,
@@ -114,18 +110,6 @@ fun GroupRegistryScreen(
 				// 최소 한 개의 앱이 선택되어야 버튼이 활성화됨
 				enabled = registryUiState.selectedApps.isNotEmpty() &&
 					registryUiState.groupName.isValidInput(),
-			)
-		},
-		snackBarHost = {
-			SnackbarHost(
-				hostState = snackBarHostState,
-				snackbar = { snackbarData ->
-					BrakeSnackbar(
-						snackbarData = snackbarData,
-					)
-				},
-				modifier = Modifier
-					.navigationBarsPadding(),
 			)
 		},
 		modifier = Modifier
@@ -427,7 +411,6 @@ private fun GroupRegistryScreenPreview() {
 					),
 				),
 			),
-			snackBarHostState = remember { SnackbarHostState() },
 			onGroupNameChange = {},
 			onStartSelectingApps = {},
 			onRemoveApp = {},
