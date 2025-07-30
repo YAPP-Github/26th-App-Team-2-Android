@@ -16,3 +16,7 @@ android {
 		buildConfig = true
 	}
 }
+
+dependencies {
+	implementation(projects.core.util)
+}
