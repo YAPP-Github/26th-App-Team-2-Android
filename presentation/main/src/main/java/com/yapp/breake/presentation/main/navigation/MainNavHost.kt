@@ -8,6 +8,7 @@ import com.yapp.breake.presentation.home.navigation.homeNavGraph
 import com.yapp.breake.presentation.login.navigation.loginNavGraph
 import com.yapp.breake.presentation.onboarding.navigation.onboardingNavGraph
 import com.yapp.breake.presentation.permission.navigation.permissionNavGraph
+import com.yapp.breake.presentation.registry.navigation.registryNavGraph
 import com.yapp.breake.presentation.report.navigation.reportNavGraph
 import com.yapp.breake.presentation.setting.navigation.settingNavGraph
 import com.yapp.breake.presentation.signup.navigation.signupNavGraph
@@ -32,6 +33,7 @@ internal fun MainNavHost(
 		permissionNavGraph()
 		reportNavGraph(padding = padding)
 		homeNavGraph(padding = padding)
+		registryNavGraph()
 		settingNavGraph(
 			padding = padding,
 			onChangeDarkTheme = onChangeDarkTheme,

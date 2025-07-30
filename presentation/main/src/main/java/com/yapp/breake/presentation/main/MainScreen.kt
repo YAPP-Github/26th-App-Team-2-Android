@@ -53,7 +53,7 @@ private fun MainScreenContent(
 				modifier = Modifier
 					.navigationBarsPadding()
 					.fillMaxWidth()
-					.padding(bottom = 50.dp)
+					.padding(bottom = 34.dp)
 					.wrapContentWidth(Alignment.CenterHorizontally),
 				visible = navigator.shouldShowBottomBar(),
 				tabs = MainTab.entries.toPersistentList(),
@@ -70,8 +70,12 @@ private fun MainScreenContent(
 						snackbarData = snackbarData,
 					)
 				},
-				modifier = Modifier
-					.navigationBarsPadding(),
+				modifier = if (!navigator.shouldShowBottomBar()) {
+					// 시스템 하단 패딩 + 버튼 패딩
+					Modifier.navigationBarsPadding().padding(bottom = 80.dp)
+				} else {
+					Modifier
+				},
 			)
 		},
 	)

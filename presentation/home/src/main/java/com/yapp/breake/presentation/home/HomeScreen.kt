@@ -21,10 +21,6 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.yapp.breake.core.designsystem.theme.LinerGradient
 import com.yapp.breake.core.navigation.compositionlocal.LocalMainAction
 import com.yapp.breake.core.navigation.compositionlocal.LocalNavigatorAction
-import com.yapp.breake.presentation.HomeEvent
-import com.yapp.breake.presentation.HomeModalState
-import com.yapp.breake.presentation.HomeUiState
-import com.yapp.breake.presentation.HomeViewModel
 import com.yapp.breake.presentation.home.component.StopUsingDialog
 import com.yapp.breake.presentation.home.screen.BlockingScreen
 import com.yapp.breake.presentation.home.screen.ListScreen
@@ -38,7 +34,7 @@ internal fun HomeRoute(
 ) {
 	val homeUiState by viewModel.homeUiState.collectAsStateWithLifecycle()
 	val homeModalState by viewModel.homeModalState.collectAsStateWithLifecycle()
-	val mainNavigationAction = LocalNavigatorAction.current
+	val navAction = LocalNavigatorAction.current
 	val mainAction = LocalMainAction.current
 	val context = LocalContext.current
 
@@ -56,8 +52,8 @@ internal fun HomeRoute(
 		HomeContent(
 			homeUiState = homeUiState,
 			viewModel = viewModel,
-			onShowAddScreen = mainNavigationAction::navigateToAddAppGroup,
-			onShowEditScreen = mainNavigationAction::navigateToEditAppGroup,
+			onShowAddScreen = viewModel::navigateToRegistry,
+			onShowEditScreen = viewModel::navigateToRegistry,
 		)
 	}
 
@@ -77,6 +73,9 @@ internal fun HomeRoute(
 							event.groupName,
 						),
 					)
+				}
+				is HomeEvent.NavigateToRegistry -> {
+					navAction.navigateToRegistry(groupId = event.groupId)
 				}
 			}
 		}

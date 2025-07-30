@@ -53,6 +53,16 @@ class MainActivity : ComponentActivity() {
 						)
 					}
 				}
+				override fun onShowErrorSnackBar(message: String) {
+					coroutineScope.launch {
+						snackBarHostState.showSnackbar(
+							message = message,
+							actionLabel = BrakeSnackbarType.ERROR.name,
+							duration = SnackbarDuration.Short,
+							withDismissAction = false,
+						)
+					}
+				}
 				override fun onShowMessage(message: String) {
 					coroutineScope.launch {
 						snackBarHostState.showSnackbar(

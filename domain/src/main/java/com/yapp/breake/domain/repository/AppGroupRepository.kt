@@ -7,6 +7,10 @@ import java.time.LocalDateTime
 
 interface AppGroupRepository {
 
+	suspend fun insertAppGroup(appGroup: AppGroup)
+
+	suspend fun deleteAppGroupByGroupId(groupId: Long)
+
 	fun observeAppGroup(): Flow<List<AppGroup>>
 
 	suspend fun getAppGroup(): List<AppGroup>

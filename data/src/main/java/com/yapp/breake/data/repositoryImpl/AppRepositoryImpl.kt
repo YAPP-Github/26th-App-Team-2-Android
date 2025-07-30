@@ -13,6 +13,18 @@ class AppRepositoryImpl @Inject constructor(
 	private val appDao: AppDao,
 ) : AppRepository {
 
+	override suspend fun insertApp(parentGroupId: Long, app: App) {
+		appDao.insert(
+			AppEntity(
+				packageName = app.packageName,
+				name = app.name,
+				icon = null,
+				category = app.category,
+				parentGroupId = parentGroupId,
+			),
+		)
+	}
+
 	override fun observeApp(): Flow<List<App>> {
 		return appDao.observeApps().map { appEntities ->
 			appEntities.map(AppEntity::toApp)
@@ -21,5 +33,9 @@ class AppRepositoryImpl @Inject constructor(
 
 	override suspend fun getAppGroupIdByPackage(packageName: String): Long? {
 		return appDao.getAppByPackageName(packageName)?.parentGroupId
+	}
+
+	override suspend fun deleteAppByParentGroupId(parentGroupId: Long) {
+		appDao.deleteAppsByParentGroupId(parentGroupId)
 	}
 }

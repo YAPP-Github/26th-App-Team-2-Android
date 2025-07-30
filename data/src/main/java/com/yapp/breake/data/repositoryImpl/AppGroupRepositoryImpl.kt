@@ -5,6 +5,7 @@ import com.yapp.breake.core.database.entity.AppGroupEntity
 import com.yapp.breake.core.model.app.AppGroup
 import com.yapp.breake.core.model.app.AppGroupState
 import com.yapp.breake.data.mapper.toAppGroup
+import com.yapp.breake.data.mapper.toGroupEntity
 import com.yapp.breake.domain.repository.AppGroupRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
@@ -14,6 +15,15 @@ import javax.inject.Inject
 class AppGroupRepositoryImpl @Inject constructor(
 	private val appGroupDao: AppGroupDao,
 ) : AppGroupRepository {
+	override suspend fun insertAppGroup(appGroup: AppGroup) {
+		appGroupDao.insertAppGroup(
+			appGroup.toGroupEntity(),
+		)
+	}
+
+	override suspend fun deleteAppGroupByGroupId(groupId: Long) {
+		appGroupDao.deleteAppGroupById(groupId)
+	}
 
 	override fun observeAppGroup(): Flow<List<AppGroup>> {
 		return appGroupDao.observeAppGroup().map {

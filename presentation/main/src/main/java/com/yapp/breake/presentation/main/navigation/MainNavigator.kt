@@ -17,6 +17,7 @@ import com.yapp.breake.presentation.login.navigation.navigateToLogin
 import com.yapp.breake.presentation.onboarding.navigation.navigateToComplete
 import com.yapp.breake.presentation.onboarding.navigation.navigateToGuide
 import com.yapp.breake.presentation.permission.navigation.navigateToPermission
+import com.yapp.breake.presentation.registry.navigation.navigateToRegistry
 import com.yapp.breake.presentation.report.navigation.navigateReport
 import com.yapp.breake.presentation.setting.navigation.navigateSetting
 import com.yapp.breake.presentation.signup.navigation.navigateToSignup
@@ -63,12 +64,8 @@ internal class MainNavigator(
 			override fun navigateToHome(navOptions: NavOptions?) =
 				navController.navigateToHome(navOptions)
 
-			override fun navigateToAddAppGroup(navOptions: NavOptions?) {
-				TODO("Not yet implemented")
-			}
-
-			override fun navigateToEditAppGroup(groupId: Long, navOptions: NavOptions?) {
-				TODO("Not yet implemented")
+			override fun navigateToRegistry(groupId: Long?, navOptions: NavOptions?) {
+				navController.navigateToRegistry(groupId, navOptions)
 			}
 		}
 	}
