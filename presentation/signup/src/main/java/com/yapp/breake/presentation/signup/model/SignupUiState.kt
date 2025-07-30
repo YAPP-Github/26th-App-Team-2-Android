@@ -7,11 +7,10 @@ import androidx.compose.runtime.Stable
 sealed interface SignupUiState {
 
 	val name: String
-		get() = ""
 
 	@Immutable
 	data class SignupIdle(override val name: String) : SignupUiState
 
 	@Immutable
-	data class SignupTypedName(override val name: String) : SignupUiState
+	data class SignupNameRegistering(override val name: String) : SignupUiState
 }
