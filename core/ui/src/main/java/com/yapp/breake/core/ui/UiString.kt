@@ -1,4 +1,4 @@
-package com.yapp.breake.core.util
+package com.yapp.breake.core.ui
 
 import android.content.Context
 import androidx.annotation.StringRes

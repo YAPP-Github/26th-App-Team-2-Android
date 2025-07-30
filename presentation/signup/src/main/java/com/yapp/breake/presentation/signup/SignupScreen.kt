@@ -49,7 +49,7 @@ import com.yapp.breake.core.designsystem.modifier.clearFocusOnKeyboardDismiss
 import com.yapp.breake.core.designsystem.theme.Gray900
 import com.yapp.breake.core.navigation.compositionlocal.LocalMainAction
 import com.yapp.breake.core.navigation.compositionlocal.LocalNavigatorAction
-import com.yapp.breake.core.util.isValidInput
+import com.yapp.breake.core.ui.isValidInput
 import com.yapp.breake.presentation.signup.component.NicknameTextField
 import com.yapp.breake.presentation.signup.model.SignupEffect.NavigateToBack
 import com.yapp.breake.presentation.signup.model.SignupEffect.NavigateToOnboarding

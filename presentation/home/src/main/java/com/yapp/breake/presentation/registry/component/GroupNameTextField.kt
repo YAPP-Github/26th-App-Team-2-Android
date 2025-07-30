@@ -21,7 +21,7 @@ import com.yapp.breake.core.designsystem.theme.Gray200
 import com.yapp.breake.core.designsystem.theme.Green
 import com.yapp.breake.core.designsystem.theme.Red
 import com.yapp.breake.core.designsystem.theme.White
-import com.yapp.breake.core.util.isValidInput
+import com.yapp.breake.core.ui.isValidInput
 
 @Composable
 fun GroupNameTextField(

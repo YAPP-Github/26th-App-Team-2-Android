@@ -2,7 +2,7 @@ package com.yapp.breake.presentation.signup
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.yapp.breake.core.util.UiString
+import com.yapp.breake.core.ui.UiString
 import com.yapp.breake.domain.usecase.UpdateNicknameUseCase
 import com.yapp.breake.presentation.signup.model.SignupEffect
 import com.yapp.breake.presentation.signup.model.SignupUiState

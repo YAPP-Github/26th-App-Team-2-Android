@@ -1,4 +1,4 @@
-package com.yapp.breake.core.util
+package com.yapp.breake.core.ui
 
 /**
  * Validates if the input string on Text Field is a valid value.

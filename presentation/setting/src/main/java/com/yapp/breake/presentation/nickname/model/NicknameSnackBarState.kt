@@ -1,7 +1,7 @@
 package com.yapp.breake.presentation.nickname.model
 
 import androidx.compose.runtime.Immutable
-import com.yapp.breake.core.util.UiString
+import com.yapp.breake.core.ui.UiString
 
 sealed interface NicknameSnackBarState {
 	@Immutable

@@ -43,7 +43,7 @@ import com.yapp.breake.core.designsystem.theme.Gray900
 import com.yapp.breake.core.designsystem.theme.LocalPadding
 import com.yapp.breake.core.navigation.compositionlocal.LocalMainAction
 import com.yapp.breake.core.navigation.compositionlocal.LocalNavigatorAction
-import com.yapp.breake.core.util.isValidInput
+import com.yapp.breake.core.ui.isValidInput
 import com.yapp.breake.presentation.nickname.component.SettingNicknameTextField
 import com.yapp.breake.presentation.nickname.model.NicknameNavState
 import com.yapp.breake.presentation.nickname.model.NicknameSnackBarState

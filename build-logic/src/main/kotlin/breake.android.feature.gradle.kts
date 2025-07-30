@@ -21,6 +21,7 @@ dependencies {
     implementation(project(":core:model"))
     implementation(project(":core:designsystem"))
     implementation(project(":core:navigation"))
+	implementation(project(":core:ui"))
 
     testImplementation(project(":core:testing"))
 

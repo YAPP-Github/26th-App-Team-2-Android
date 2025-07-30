@@ -62,7 +62,7 @@ import com.yapp.breake.core.designsystem.theme.Gray800
 import com.yapp.breake.core.designsystem.theme.Gray850
 import com.yapp.breake.core.designsystem.theme.Gray900
 import com.yapp.breake.core.designsystem.theme.White
-import com.yapp.breake.core.util.isValidInput
+import com.yapp.breake.core.ui.isValidInput
 import com.yapp.breake.presentation.home.R
 import com.yapp.breake.presentation.registry.component.GroupNameTextField
 import com.yapp.breake.presentation.registry.component.LazyColumnScrollBar

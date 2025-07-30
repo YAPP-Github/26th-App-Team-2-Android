@@ -9,7 +9,7 @@ import com.yapp.breake.core.model.app.App
 import com.yapp.breake.core.model.app.AppGroup
 import com.yapp.breake.core.model.app.AppGroupState
 import com.yapp.breake.core.navigation.route.SubRoute
-import com.yapp.breake.core.util.UiString
+import com.yapp.breake.core.ui.UiString
 import com.yapp.breake.domain.repository.AppGroupRepository
 import com.yapp.breake.domain.usecase.CreateNewGroupUseCase
 import com.yapp.breake.domain.usecase.DeleteGroupUseCase
