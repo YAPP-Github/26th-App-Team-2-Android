@@ -12,6 +12,13 @@ interface NicknameRepository {
 	 */
 	fun getRemoteUserName(onError: suspend (Throwable) -> Unit): Flow<UserName>
 
+	fun getLocalUserName(onError: suspend (Throwable) -> Unit): Flow<String>
+
+	suspend fun saveLocalUserName(
+		nickname: String,
+		onError: suspend (Throwable) -> Unit,
+	)
+
 	/**
 	 * 사용자 이름을 업데이트하고 로컬에 저장하는 메서드
 	 *

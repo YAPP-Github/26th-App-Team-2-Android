@@ -18,6 +18,17 @@ internal class FakeNicknameRepositoryImpl @Inject constructor() : NicknameReposi
 		)
 	}
 
+	override fun getLocalUserName(onError: suspend (Throwable) -> Unit): Flow<String> = flow {
+		// Fake 구현체에서는 아무 동작도 하지 않음
+	}
+
+	override suspend fun saveLocalUserName(
+		nickname: String,
+		onError: suspend (Throwable) -> Unit,
+	) {
+		// Fake 구현체에서는 아무 동작도 하지 않음
+	}
+
 	override fun updateUserName(
 		nickname: String,
 		onError: suspend (Throwable) -> Unit,

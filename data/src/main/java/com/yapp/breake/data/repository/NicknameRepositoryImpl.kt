@@ -12,11 +12,24 @@ import javax.inject.Inject
 
 internal class NicknameRepositoryImpl @Inject constructor(
 	private val nameRemoteDataSource: NameRemoteDataSource,
-	private val userLocalDataSourceImpl: UserLocalDataSource,
+	private val userLocalDataSource: UserLocalDataSource,
 ) : NicknameRepository {
 
 	override fun getRemoteUserName(onError: suspend (Throwable) -> Unit): Flow<UserName> =
 		nameRemoteDataSource.getUserName(onError = onError).map { it.toData() }
+
+	override fun getLocalUserName(onError: suspend (Throwable) -> Unit): Flow<String> =
+		userLocalDataSource.getNickname(onError = onError)
+
+	override suspend fun saveLocalUserName(
+		nickname: String,
+		onError: suspend (Throwable) -> Unit,
+	) {
+		userLocalDataSource.updateNickname(
+			nickname = nickname,
+			onError = onError,
+		)
+	}
 
 	override fun updateUserName(
 		nickname: String,
@@ -26,10 +39,10 @@ internal class NicknameRepositoryImpl @Inject constructor(
 		onError = onError,
 	).onEach {
 		// 새로운 닉네임을 로컬에 저장
-		userLocalDataSourceImpl.updateNickname(nickname, onError = onError)
+		userLocalDataSource.updateNickname(nickname, onError = onError)
 	}.map { it.toData() }
 
 	override suspend fun clearLocalName(onError: suspend (Throwable) -> Unit) {
-		userLocalDataSourceImpl.clearNickname(onError = onError)
+		userLocalDataSource.clearNickname(onError = onError)
 	}
 }
