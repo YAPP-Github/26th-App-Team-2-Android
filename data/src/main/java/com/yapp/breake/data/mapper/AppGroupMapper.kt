@@ -1,5 +1,6 @@
 package com.yapp.breake.data.mapper
 
+import com.yapp.breake.core.appscanner.InstalledAppScanner
 import com.yapp.breake.core.database.entity.AppEntity
 import com.yapp.breake.core.database.entity.AppGroupEntity
 import com.yapp.breake.core.database.entity.GroupEntity
@@ -8,14 +9,15 @@ import com.yapp.breake.core.model.app.App
 import com.yapp.breake.core.model.app.AppGroup
 import com.yapp.breake.core.model.app.Snooze
 import com.yapp.breake.core.util.toByteArray
-import com.yapp.breake.core.util.toDrawable
 
-internal fun AppGroupEntity.toAppGroup(): AppGroup {
+internal fun AppGroupEntity.toAppGroup(appScanner: InstalledAppScanner): AppGroup {
 	return AppGroup(
 		id = group.groupId,
 		name = group.name,
 		appGroupState = group.appGroupState,
-		apps = apps.map(AppEntity::toApp),
+		apps = apps.map {
+			it.toApp(appScanner)
+		},
 		snoozes = snoozes.map(SnoozeEntity::toSnooze),
 		endTime = group.endTime,
 	)
@@ -28,11 +30,11 @@ internal fun AppGroup.toGroupEntity(): GroupEntity = GroupEntity(
 	endTime = endTime,
 )
 
-internal fun AppEntity.toApp(): App {
+internal fun AppEntity.toApp(appScanner: InstalledAppScanner): App {
 	return App(
 		packageName = packageName,
 		name = name,
-		icon = icon?.toByteArray(),
+		icon = appScanner.getIconDrawable(packageName).toByteArray(),
 		category = category,
 	)
 }
@@ -41,7 +43,6 @@ internal fun App.toAppEntity(parentGroupId: Long): AppEntity {
 	return AppEntity(
 		packageName = packageName,
 		name = name,
-		icon = icon?.toDrawable(),
 		category = category,
 		parentGroupId = parentGroupId,
 	)

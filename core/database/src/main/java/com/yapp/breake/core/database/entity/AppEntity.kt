@@ -1,6 +1,5 @@
 package com.yapp.breake.core.database.entity
 
-import android.graphics.drawable.Drawable
 import androidx.room.Entity
 import androidx.room.ForeignKey
 import androidx.room.Index
@@ -24,7 +23,6 @@ import com.yapp.breake.core.database.entity.AppGroupEntity.Companion.PARENT_GROU
 data class AppEntity(
 	@PrimaryKey val packageName: String,
 	val name: String,
-	val icon: Drawable?,
 	val category: String,
 	val parentGroupId: Long,
 )

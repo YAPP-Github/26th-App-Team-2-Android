@@ -1,7 +1,7 @@
 package com.yapp.breake.data.repositoryImpl
 
+import com.yapp.breake.core.appscanner.InstalledAppScanner
 import com.yapp.breake.core.database.dao.AppDao
-import com.yapp.breake.core.database.entity.AppEntity
 import com.yapp.breake.core.model.app.App
 import com.yapp.breake.data.mapper.toApp
 import com.yapp.breake.data.mapper.toAppEntity
@@ -12,6 +12,7 @@ import javax.inject.Inject
 
 class AppRepositoryImpl @Inject constructor(
 	private val appDao: AppDao,
+	private val appScanner: InstalledAppScanner,
 ) : AppRepository {
 
 	override suspend fun insertApp(parentGroupId: Long, app: App) {
@@ -20,7 +21,9 @@ class AppRepositoryImpl @Inject constructor(
 
 	override fun observeApp(): Flow<List<App>> {
 		return appDao.observeApps().map { appEntities ->
-			appEntities.map(AppEntity::toApp)
+			appEntities.map {
+				it.toApp(appScanner)
+			}
 		}
 	}
 
