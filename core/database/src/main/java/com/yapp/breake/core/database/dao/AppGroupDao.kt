@@ -15,7 +15,7 @@ import java.time.LocalDateTime
 interface AppGroupDao {
 
 	@Insert(onConflict = OnConflictStrategy.REPLACE)
-	fun insertAppGroup(groupEntity: GroupEntity)
+	suspend fun insertAppGroup(groupEntity: GroupEntity)
 
 	@Transaction
 	@Query("SELECT * FROM `group_table`")

@@ -29,7 +29,6 @@ import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
-import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 @HiltViewModel
@@ -158,31 +157,29 @@ class RegistryViewModel @Inject constructor(
 	fun createNewGroup() {
 		viewModelScope.launch {
 			val currentUiState = _registryUiState.value
-			withContext(Dispatchers.IO) {
-				createNewGroupUseCase(
-					onError = {
-						_errorFlow.emit(it)
-					},
-					group = currentUiState.let {
-						AppGroup(
-							id = 1,
-							name = it.groupName,
-							appGroupState = AppGroupState.NeedSetting,
-							apps = it.selectedApps.map { selectedApp ->
-								App(
-									packageName = selectedApp.packageName,
-									name = selectedApp.name,
-									icon = null,
-									// TODO: 카테고리 추후 추가 필요
-									category = "기타",
-								)
-							},
-							snoozes = emptyList(),
-							endTime = null,
-						)
-					},
-				)
-			}
+			createNewGroupUseCase(
+				onError = {
+					_errorFlow.emit(it)
+				},
+				group = currentUiState.let {
+					AppGroup(
+						id = 1,
+						name = it.groupName,
+						appGroupState = AppGroupState.NeedSetting,
+						apps = it.selectedApps.map { selectedApp ->
+							App(
+								packageName = selectedApp.packageName,
+								name = selectedApp.name,
+								icon = null,
+								// TODO: 카테고리 추후 추가 필요
+								category = "기타",
+							)
+						},
+						snoozes = emptyList(),
+						endTime = null,
+					)
+				},
+			)
 			_navigationFlow.emit(RegistryEffect.NavigateToHome)
 		}
 	}
