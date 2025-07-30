@@ -57,4 +57,10 @@
 	<string name="registry_warning_dialog_description">삭제한 그룹은 복구할 수 없습니다.</string>
 	<string name="registry_warning_dialog_button_cancel">취소</string>
 	<string name="registry_warning_dialog_button_approve">삭제</string>
+
+	<!-- Registry Snackbar -->
+	<string name="registry_snackbar_group_creation_successful">그룹이 추가되었습니다.</string>
+	<string name="registry_snackbar_group_creation_error">그룹 생성 중 오류가 발생했습니다.</string>
+	<string name="registry_snackbar_group_deletion_successful">그룹이 삭제되었습니다.</string>
+	<string name="registry_snackbar_group_deletion_error">그룹 삭제 중 오류가 발생했습니다.</string>
 </resources>
