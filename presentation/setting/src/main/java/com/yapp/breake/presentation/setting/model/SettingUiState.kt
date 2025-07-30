@@ -26,4 +26,9 @@ sealed interface SettingUiState {
 		override val user: SettingUser,
 		override val appInfo: SettingAppInfo,
 	) : SettingUiState
+
+	data class SettingDeletingAccount(
+		override val user: SettingUser,
+		override val appInfo: SettingAppInfo,
+	) : SettingUiState
 }
