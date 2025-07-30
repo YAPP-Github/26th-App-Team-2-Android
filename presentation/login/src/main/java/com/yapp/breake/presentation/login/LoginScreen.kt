@@ -1,19 +1,20 @@
 package com.yapp.breake.presentation.login
 
 import androidx.activity.compose.BackHandler
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.layout.widthIn
-import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
@@ -22,10 +23,11 @@ import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import androidx.navigation.navOptions
 import com.yapp.breake.core.auth.KakaoScreen
+import com.yapp.breake.core.designsystem.component.DotProgressIndicator
 import com.yapp.breake.core.designsystem.component.KakaoLoginButton
 import com.yapp.breake.core.designsystem.theme.BrakeTheme
+import com.yapp.breake.core.designsystem.theme.Gray900
 import com.yapp.breake.core.designsystem.theme.LocalPadding
 import com.yapp.breake.core.navigation.compositionlocal.LocalMainAction
 import com.yapp.breake.core.navigation.compositionlocal.LocalNavigatorAction
@@ -60,23 +62,23 @@ internal fun LoginRoute(viewModel: LoginViewModel = hiltViewModel()) {
 		}
 	}
 
-	if (uiState == LoginUiState.LoginIdle) {
-		LoginScreen(
-			padding = padding,
-			onLoginClick = viewModel::loginWithKakao,
-		)
-	}
+	LoginScreen(
+		padding = padding,
+		onLoginClick = viewModel::loginWithKakao,
+	)
 
 	// 서버 응답 대기 시간이 1초가 넘어 로딩창 추가
 	if (uiState == LoginUiState.LoginLoading) {
 		Box(
 			modifier = Modifier
 				.fillMaxSize()
+				.background(Gray900.copy(alpha = 0.9f))
+				.pointerInput(Unit) {}
 				.statusBarsPadding(),
 			contentAlignment = Alignment.Center,
 		) {
 			BackHandler { viewModel.loginCancel() }
-			CircularProgressIndicator(modifier = Modifier.fillMaxSize(0.2f))
+			DotProgressIndicator()
 		}
 	}
 
