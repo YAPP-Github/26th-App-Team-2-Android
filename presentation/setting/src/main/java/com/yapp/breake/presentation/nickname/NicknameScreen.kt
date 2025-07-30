@@ -85,13 +85,13 @@ fun NicknameRoute(
 		viewModel.snackBarFlow.collect {
 			when (it) {
 				is NicknameSnackBarState.Success -> {
-					mainAction.onShowMessage(
+					mainAction.onShowSuccessMessage(
 						message = it.uiString.asString(context = context),
 					)
 				}
 
 				is NicknameSnackBarState.Error -> {
-					mainAction.onShowErrorSnackBar(
+					mainAction.onShowErrorMessage(
 						message = it.uiString.asString(context = context),
 					)
 				}

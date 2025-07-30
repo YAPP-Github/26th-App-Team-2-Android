@@ -49,10 +49,10 @@ internal fun LoginRoute(viewModel: LoginViewModel = hiltViewModel()) {
 	LaunchedEffect(true) {
 		viewModel.snackBarFlow.collect {
 			when (it) {
-				is LoginSnackBarState.Error -> mainAction.onShowErrorSnackBar(
+				is LoginSnackBarState.Error -> mainAction.onShowErrorMessage(
 					message = it.uiString.asString(context),
 				)
-				is LoginSnackBarState.Success -> mainAction.onShowMessage(
+				is LoginSnackBarState.Success -> mainAction.onShowSuccessMessage(
 					message = it.uiString.asString(context),
 				)
 			}

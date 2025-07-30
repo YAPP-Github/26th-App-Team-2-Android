@@ -87,7 +87,7 @@ fun SignupRoute(viewModel: SignupViewModel = hiltViewModel()) {
 
 	LaunchedEffect(true) {
 		viewModel.snackBarFlow.collect {
-			mainAction.onShowErrorSnackBar(
+			mainAction.onShowErrorMessage(
 				message = it.asString(context = context),
 			)
 		}

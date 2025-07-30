@@ -53,7 +53,7 @@ class MainActivity : ComponentActivity() {
 						)
 					}
 				}
-				override fun onShowErrorSnackBar(message: String) {
+				override fun onShowErrorMessage(message: String) {
 					coroutineScope.launch {
 						snackBarHostState.showSnackbar(
 							message = message,
@@ -63,7 +63,7 @@ class MainActivity : ComponentActivity() {
 						)
 					}
 				}
-				override fun onShowMessage(message: String) {
+				override fun onShowSuccessMessage(message: String) {
 					coroutineScope.launch {
 						snackBarHostState.showSnackbar(
 							message = message,
