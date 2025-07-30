@@ -14,6 +14,7 @@ import com.yapp.breake.core.navigation.route.MainTabRoute
 import com.yapp.breake.core.navigation.route.Route
 import com.yapp.breake.presentation.home.navigation.navigateToHome
 import com.yapp.breake.presentation.login.navigation.navigateToLogin
+import com.yapp.breake.presentation.nickname.navigation.navigateToNickname
 import com.yapp.breake.presentation.onboarding.navigation.navigateToComplete
 import com.yapp.breake.presentation.onboarding.navigation.navigateToGuide
 import com.yapp.breake.presentation.permission.navigation.navigateToPermission
@@ -66,6 +67,10 @@ internal class MainNavigator(
 
 			override fun navigateToRegistry(groupId: Long?, navOptions: NavOptions?) {
 				navController.navigateToRegistry(groupId, navOptions)
+			}
+
+			override fun navigateToNickname(navOptions: NavOptions?) {
+				navController.navigateToNickname(navOptions)
 			}
 		}
 	}
