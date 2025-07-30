@@ -6,4 +6,5 @@
 	<string name="complete_title">반가워요</string>
 	<string name="complete_description">목표를 세우고 지키는\n새로운 일상을 경험해보세요"</string>
 	<string name="complete_button">시작하기</string>
+    <string name="onboarding_snackbar_flag_save_error">온보딩 완료 상태 저장 중 오류가 발생했습니다.</string>
 </resources>
