@@ -64,7 +64,11 @@ fun GuideRoute(
 	val mainAction = LocalMainAction.current
 
 	LaunchedEffect(true) {
-		viewModel.errorFlow.collect { mainAction.onShowSnackBar(it) }
+		viewModel.snackBarFlow.collect {
+			mainAction.onShowErrorMessage(
+				message = it.asString(context = context),
+			)
+		}
 	}
 
 	LaunchedEffect(true) {

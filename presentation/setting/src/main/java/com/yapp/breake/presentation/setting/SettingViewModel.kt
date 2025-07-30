@@ -3,6 +3,7 @@ package com.yapp.breake.presentation.setting
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.yapp.breake.core.model.user.Destination
+import com.yapp.breake.core.ui.UiString
 import com.yapp.breake.domain.usecase.DeleteAccountUseCase
 import com.yapp.breake.domain.usecase.GetNicknameUseCase
 import com.yapp.breake.domain.usecase.LogoutUseCase
@@ -25,8 +26,8 @@ class SettingViewModel @Inject constructor(
 	private val deleteAccountUseCase: DeleteAccountUseCase,
 	private val logoutUseCase: LogoutUseCase,
 ) : ViewModel() {
-	private val _errorFlow = MutableSharedFlow<Throwable>()
-	val errorFlow = _errorFlow.asSharedFlow()
+	private val _snackBarFlow = MutableSharedFlow<UiString>()
+	val snackBarFlow = _snackBarFlow.asSharedFlow()
 
 	private val _uiState = MutableStateFlow<SettingUiState>(SettingUiState.SettingIdle())
 	val uiState = _uiState.asStateFlow()
@@ -80,7 +81,9 @@ class SettingViewModel @Inject constructor(
 		viewModelScope.launch {
 			val dest = logoutUseCase(
 				onError = {
-					_errorFlow.emit(it)
+					_snackBarFlow.emit(
+						UiString.ResourceString(R.string.setting_snackbar_logout_error),
+					)
 				},
 			)
 			if (dest is Destination.Login) {
@@ -106,7 +109,9 @@ class SettingViewModel @Inject constructor(
 		viewModelScope.launch {
 			val dest = deleteAccountUseCase(
 				onError = {
-					_errorFlow.emit(it)
+					_snackBarFlow.emit(
+						UiString.ResourceString(R.string.setting_snackbar_delete_error),
+					)
 				},
 			)
 			if (dest is Destination.Login) {
