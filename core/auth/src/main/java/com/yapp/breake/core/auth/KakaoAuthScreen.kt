@@ -43,7 +43,7 @@ private val allowedPrefixes = listOf(
 fun KakaoScreen(
 	onBack: () -> Unit,
 	onAuthSuccess: (String) -> Unit,
-	onAuthError: (Throwable) -> Unit,
+	onAuthError: (String) -> Unit,
 ) {
 	val context = LocalContext.current
 	val packageManager = context.packageManager
@@ -108,7 +108,7 @@ fun KakaoScreen(
 
 				// 허용된 URL만 통과
 				if (allowedPrefixes.none { url.startsWith(it) }) {
-					onAuthError(Exception("허용되지 않은 URL로의 이동이 차단되었습니다."))
+					onAuthError(context.getString(R.string.auth_not_allowed_url_error))
 					return true
 				}
 
@@ -119,11 +119,11 @@ fun KakaoScreen(
 					val errorP = uri.getQueryParameter("error")
 
 					when {
-						errorP != null -> onAuthError(Exception("카카오 로그인 실패: $errorP"))
+						errorP != null -> onAuthError(context.getString(R.string.auth_error_failure_kakao_login))
 						code != null -> {
 							onAuthSuccess(code)
 						}
-						else -> onAuthError(Exception("인가코드를 받지 못했습니다."))
+						else -> onAuthError(context.getString(R.string.auth_error_not_earned_auth_code))
 					}
 					return true
 				}
@@ -188,7 +188,7 @@ fun KakaoScreen(
 				error: WebResourceError?,
 			) {
 				super.onReceivedError(view, request, error)
-				onAuthError(Exception("웹뷰 로딩 오류: ${error?.description}"))
+				onAuthError(context.getString(R.string.auth_error_loading_webview))
 			}
 		}
 
