@@ -4,6 +4,7 @@ import com.yapp.breake.core.database.dao.AppDao
 import com.yapp.breake.core.database.entity.AppEntity
 import com.yapp.breake.core.model.app.App
 import com.yapp.breake.data.mapper.toApp
+import com.yapp.breake.data.mapper.toAppEntity
 import com.yapp.breake.domain.repository.AppRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
@@ -14,15 +15,7 @@ class AppRepositoryImpl @Inject constructor(
 ) : AppRepository {
 
 	override suspend fun insertApp(parentGroupId: Long, app: App) {
-		appDao.insert(
-			AppEntity(
-				packageName = app.packageName,
-				name = app.name,
-				icon = null,
-				category = app.category,
-				parentGroupId = parentGroupId,
-			),
-		)
+		appDao.insert(app.toAppEntity(parentGroupId))
 	}
 
 	override fun observeApp(): Flow<List<App>> {

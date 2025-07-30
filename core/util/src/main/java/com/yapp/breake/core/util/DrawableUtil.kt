@@ -41,3 +41,12 @@ fun ByteArray.toImageBitmap(): ImageBitmap? {
 		null
 	}
 }
+
+fun ByteArray.toDrawable(): Drawable? {
+	return try {
+		val bitmap = BitmapFactory.decodeByteArray(this, 0, size)
+		bitmap?.let { BitmapDrawable(null, it) }
+	} catch (e: Exception) {
+		null
+	}
+}

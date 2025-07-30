@@ -8,6 +8,7 @@ import com.yapp.breake.core.model.app.App
 import com.yapp.breake.core.model.app.AppGroup
 import com.yapp.breake.core.model.app.Snooze
 import com.yapp.breake.core.util.toByteArray
+import com.yapp.breake.core.util.toDrawable
 
 internal fun AppGroupEntity.toAppGroup(): AppGroup {
 	return AppGroup(
@@ -33,6 +34,16 @@ internal fun AppEntity.toApp(): App {
 		name = name,
 		icon = icon?.toByteArray(),
 		category = category,
+	)
+}
+
+internal fun App.toAppEntity(parentGroupId: Long): AppEntity {
+	return AppEntity(
+		packageName = packageName,
+		name = name,
+		icon = icon?.toDrawable(),
+		category = category,
+		parentGroupId = parentGroupId,
 	)
 }
 
