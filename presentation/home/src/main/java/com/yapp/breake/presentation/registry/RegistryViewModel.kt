@@ -4,10 +4,12 @@ import android.content.Context
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import androidx.navigation.toRoute
 import com.yapp.breake.core.appscanner.InstalledAppScanner
 import com.yapp.breake.core.model.app.App
 import com.yapp.breake.core.model.app.AppGroup
 import com.yapp.breake.core.model.app.AppGroupState
+import com.yapp.breake.core.navigation.route.SubRoute
 import com.yapp.breake.domain.repository.AppGroupRepository
 import com.yapp.breake.domain.usecase.CreateNewGroupUseCase
 import com.yapp.breake.domain.usecase.DeleteGroupUseCase
@@ -40,7 +42,7 @@ class RegistryViewModel @Inject constructor(
 	private val deleteGroupUseCase: DeleteGroupUseCase,
 ) : ViewModel() {
 	// TODO: 그룹 아이디가 없을 시(새 그룹) 추후 데이터베이스 연동 후 가장 작고 사용 가능한 그룹 넘버 부여
-	private val appGroupId = savedStateHandle.get<Long>("groupId") ?: 1L
+	private val appGroupId = savedStateHandle.toRoute<SubRoute.Registry>().groupId ?: 10L
 	private val targetAppGroup: AppGroup? = runBlocking {
 		appGroupRepository.getAppGroupById(appGroupId)
 	}
