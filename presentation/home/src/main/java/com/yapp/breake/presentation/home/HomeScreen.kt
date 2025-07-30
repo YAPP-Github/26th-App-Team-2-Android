@@ -7,19 +7,18 @@ import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.yapp.breake.core.designsystem.theme.BackgroundGradient
+import com.yapp.breake.core.designsystem.theme.LinerGradient
 import com.yapp.breake.core.navigation.compositionlocal.LocalMainAction
 import com.yapp.breake.core.navigation.compositionlocal.LocalNavigatorAction
 import com.yapp.breake.presentation.home.component.StopUsingDialog
@@ -47,8 +46,8 @@ internal fun HomeRoute(
 		Box(
 			modifier = Modifier
 				.fillMaxWidth()
-				.height(360.dp)
-				.background(brush = BackgroundGradient),
+				.fillMaxHeight(0.4f)
+				.background(brush = LinerGradient),
 		)
 		HomeContent(
 			homeUiState = homeUiState,
