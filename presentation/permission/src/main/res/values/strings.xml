@@ -13,4 +13,7 @@
 	<string name="permission_accessibility_description">앱이 실행되는 것을 감지해요.</string>
 
 	<string name="permission_allow_button">허용하기</string>
+
+	<string name="permission_snackbar_permission_stack_error">권한 허용 상태 확인 중에 문제가 생겼어요.</string>
+	<string name="permission_snackbar_decide_destination_error">온보딩 상태 저장에 문제가 생겼어요.</string>
 </resources>
