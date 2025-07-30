@@ -1,6 +1,5 @@
 package com.yapp.breake.presentation.registry
 
-import android.content.Context
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -10,13 +9,15 @@ import com.yapp.breake.core.model.app.App
 import com.yapp.breake.core.model.app.AppGroup
 import com.yapp.breake.core.model.app.AppGroupState
 import com.yapp.breake.core.navigation.route.SubRoute
+import com.yapp.breake.core.util.UiString
 import com.yapp.breake.domain.repository.AppGroupRepository
 import com.yapp.breake.domain.usecase.CreateNewGroupUseCase
 import com.yapp.breake.domain.usecase.DeleteGroupUseCase
 import com.yapp.breake.presentation.home.R
 import com.yapp.breake.presentation.registry.model.AppModel.Companion.initialAppsMapper
-import com.yapp.breake.presentation.registry.model.RegistryEffect
+import com.yapp.breake.presentation.registry.model.RegistryNavState
 import com.yapp.breake.presentation.registry.model.RegistryModalState
+import com.yapp.breake.presentation.registry.model.RegistrySnackBarState
 import com.yapp.breake.presentation.registry.model.RegistryUiState
 import com.yapp.breake.presentation.registry.model.SelectedAppModel
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -75,10 +76,10 @@ class RegistryViewModel @Inject constructor(
 		)
 	val registryUiState = _registryUiState.asStateFlow()
 
-	private val _errorFlow = MutableSharedFlow<Throwable>()
-	val errorFlow = _errorFlow.asSharedFlow()
+	private val _snackBarFlow = MutableSharedFlow<RegistrySnackBarState>()
+	val snackBarFlow = _snackBarFlow.asSharedFlow()
 
-	private val _navigationFlow = MutableSharedFlow<RegistryEffect>()
+	private val _navigationFlow = MutableSharedFlow<RegistryNavState>()
 	val navigationFlow = _navigationFlow.asSharedFlow()
 
 	private val _modalFlow = MutableStateFlow<RegistryModalState>(RegistryModalState.Idle)
@@ -148,7 +149,7 @@ class RegistryViewModel @Inject constructor(
 
 	fun cancelCreatingNewGroup() {
 		viewModelScope.launch {
-			_navigationFlow.emit(RegistryEffect.NavigateToHome)
+			_navigationFlow.emit(RegistryNavState.NavigateToHome)
 		}
 	}
 
@@ -160,8 +161,12 @@ class RegistryViewModel @Inject constructor(
 		viewModelScope.launch {
 			val currentUiState = _registryUiState.value
 			createNewGroupUseCase(
-				onError = {
-					_errorFlow.emit(it)
+				onError = { throwable ->
+					_snackBarFlow.emit(
+						RegistrySnackBarState.Error(
+							UiString.ResourceString(R.string.registry_snackbar_group_creation_error),
+						),
+					)
 				},
 				group = currentUiState.let {
 					AppGroup(
@@ -182,7 +187,12 @@ class RegistryViewModel @Inject constructor(
 					)
 				},
 			)
-			_navigationFlow.emit(RegistryEffect.NavigateToHome)
+			_snackBarFlow.emit(
+				RegistrySnackBarState.Success(
+					UiString.ResourceString(R.string.registry_snackbar_group_creation_successful),
+				),
+			)
+			_navigationFlow.emit(RegistryNavState.NavigateToHome)
 		}
 	}
 
@@ -194,7 +204,7 @@ class RegistryViewModel @Inject constructor(
 		)
 	}
 
-	fun searchApp(context: Context) {
+	fun searchApp() {
 		val currentUiState = _registryUiState.value as RegistryUiState.App
 		val query = currentUiState.searchingText
 
@@ -208,8 +218,10 @@ class RegistryViewModel @Inject constructor(
 		// 결과가 없으면 상태 갱신하지 않음
 		if (matchedIndex == -1) {
 			viewModelScope.launch {
-				_errorFlow.emit(
-					Throwable(context.getString(R.string.registry_app_error_message, query)),
+				_snackBarFlow.emit(
+					RegistrySnackBarState.Error(
+						UiString.ResourceString(R.string.registry_app_error_message, query),
+					),
 				)
 			}
 			return
@@ -284,12 +296,21 @@ class RegistryViewModel @Inject constructor(
 		viewModelScope.launch {
 			deleteGroupUseCase(
 				onError = {
-					_errorFlow.emit(it)
+					_snackBarFlow.emit(
+						RegistrySnackBarState.Error(
+							UiString.ResourceString(R.string.registry_snackbar_group_deletion_error),
+						),
+					)
 				},
 				groupId = registryUiState.value.groupId,
 			)
 			_modalFlow.value = RegistryModalState.Idle
-			_navigationFlow.emit(RegistryEffect.NavigateToHome)
+			_snackBarFlow.emit(
+				RegistrySnackBarState.Success(
+					UiString.ResourceString(R.string.registry_snackbar_group_deletion_successful),
+				),
+			)
+			_navigationFlow.emit(RegistryNavState.NavigateToHome)
 		}
 	}
 }
