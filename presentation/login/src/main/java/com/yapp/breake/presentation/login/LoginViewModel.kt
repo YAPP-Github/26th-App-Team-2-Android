@@ -49,8 +49,8 @@ internal class LoginViewModel @Inject constructor(
 	}
 
 	fun loginCancel() {
-		viewModelScope.launch {
-			loginJob?.cancel()
+		loginJob?.run {
+			cancel()
 			_uiState.value = LoginUiState.LoginIdle
 		}
 	}

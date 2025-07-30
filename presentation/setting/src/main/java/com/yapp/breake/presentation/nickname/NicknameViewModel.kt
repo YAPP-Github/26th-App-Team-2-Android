@@ -78,9 +78,11 @@ class NicknameViewModel @Inject constructor(
 	}
 
 	fun cancelUpdateNickname() {
-		updateJob?.cancel()
-		_nicknameUiState.value = NicknameUiState.NicknameIdle(
-			nickname = _nicknameUiState.value.nickname,
-		)
+		updateJob?.run {
+			cancel()
+			_nicknameUiState.value = NicknameUiState.NicknameIdle(
+				nickname = _nicknameUiState.value.nickname,
+			)
+		}
 	}
 }

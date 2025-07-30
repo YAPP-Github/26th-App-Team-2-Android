@@ -63,7 +63,9 @@ class SignupViewModel @Inject constructor(
 	}
 
 	fun cancelNameSubmit() {
-		updateJob?.cancel()
-		_uiState.value = SignupUiState.SignupIdle(_uiState.value.name)
+		updateJob?.run {
+			cancel()
+			_uiState.value = SignupUiState.SignupIdle(_uiState.value.name)
+		}
 	}
 }
