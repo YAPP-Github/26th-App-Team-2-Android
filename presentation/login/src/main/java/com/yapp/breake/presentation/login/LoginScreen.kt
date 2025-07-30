@@ -35,6 +35,7 @@ import com.yapp.breake.presentation.login.model.LoginNavState.NavigateToHome
 import com.yapp.breake.presentation.login.model.LoginNavState.NavigateToOnboarding
 import com.yapp.breake.presentation.login.model.LoginNavState.NavigateToPermission
 import com.yapp.breake.presentation.login.model.LoginNavState.NavigateToSignup
+import com.yapp.breake.presentation.login.model.LoginSnackBarState
 import com.yapp.breake.presentation.login.model.LoginUiState
 
 @Composable
@@ -46,7 +47,16 @@ internal fun LoginRoute(viewModel: LoginViewModel = hiltViewModel()) {
 	val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
 	LaunchedEffect(true) {
-		viewModel.errorFlow.collect { mainAction.onShowSnackBar(it) }
+		viewModel.snackBarFlow.collect {
+			when (it) {
+				is LoginSnackBarState.Error -> mainAction.onShowErrorSnackBar(
+					message = it.uiString.asString(context),
+				)
+				is LoginSnackBarState.Success -> mainAction.onShowMessage(
+					message = it.uiString.asString(context),
+				)
+			}
+		}
 	}
 
 	LaunchedEffect(true) {

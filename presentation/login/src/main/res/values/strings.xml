@@ -1,5 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 	<string name="login_main_message">계획한 만큼만 사용하도록\n도와드릴게요</string>
-	<string name="login_invalid_user_message">로그인에 실패했습니다.카카오 계정을 확인해주세요.</string>
+
+    <string name="login_snackbar_login_error">서버 문제로 인해 로그인에 실패했습니다.</string>
+	<string name="login_snackbar_login_error_inactive">계정이 비활성화되어 있습니다. 고객센터로 문의해주세요.</string>
+	<string name="login_snackbar_next_destination_error">다음 화면으로 이동에 실패했습니다.</string>
 </resources>
