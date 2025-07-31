@@ -6,26 +6,32 @@ import android.webkit.WebResourceError
 import android.webkit.WebResourceRequest
 import android.webkit.WebView
 import android.webkit.WebViewClient
+import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.core.net.toUri
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.setValue
-import androidx.activity.compose.BackHandler
-import androidx.compose.foundation.layout.statusBarsPadding
 import timber.log.Timber
 import java.net.URISyntaxException
 
 private const val KAKAO_AUTH_URL = "https://kauth.kakao.com" // 카카오 진입 URL
 private const val KAKAO_ACCOUNT_URL = "https://accounts.kakao.com" // 카카오 로그인 URL
 private const val KAKAO_MIDDLE_URL = "https://logins.daum.net" // 로그인 인증 중간 URL
-private const val KAKAO_REDIRECT_URL = "https://www.yapp-dev/oauth" // 리다이렉트 URL
-private const val KAKAO_BASE_URL = "$KAKAO_AUTH_URL/oauth/authorize" +
+private val KAKAO_REDIRECT_URL
+	get() = if (BuildConfig.DEBUG) {
+		"https://www.yapp-dev/oauth"
+	} else {
+		"https://www.brake/oauth"
+	}
+
+private val KAKAO_BASE_URL = "$KAKAO_AUTH_URL/oauth/authorize" +
 	"?response_type=code" +
 	"&client_id=${BuildConfig.KAKAO_REST_API_KEY}" +
 	"&redirect_uri=$KAKAO_REDIRECT_URL" +
