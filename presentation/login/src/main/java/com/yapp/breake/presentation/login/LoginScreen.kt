@@ -94,7 +94,7 @@ internal fun LoginRoute(viewModel: LoginViewModel = hiltViewModel()) {
 
 	if (uiState == LoginUiState.LoginOnWebView) {
 		KakaoScreen(
-			onBack = viewModel::loginCancel,
+			onBack = viewModel::authCancel,
 			onAuthSuccess = { viewModel.authSuccess(it, context) },
 			onAuthError = viewModel::loginFailure,
 		)

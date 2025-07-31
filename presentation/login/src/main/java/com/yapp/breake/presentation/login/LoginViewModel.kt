@@ -48,6 +48,10 @@ internal class LoginViewModel @Inject constructor(
 		}
 	}
 
+	fun authCancel() {
+		_uiState.value = LoginUiState.LoginIdle
+	}
+
 	fun loginCancel() {
 		loginJob?.run {
 			cancel()
