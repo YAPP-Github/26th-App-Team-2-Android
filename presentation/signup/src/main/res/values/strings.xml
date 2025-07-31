@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-
 	<string name="signup_title_text">어떻게 불러드릴까요?</string>
 	<string name="signup_subtitle_text">나중에 변경할 수 있어요</string>
 	<string name="signup_text_field_placeholder_text">닉네임을 입력해 주세요</string>
 	<string name="signup_continue_button_text">다음</string>
 	<string name="signup_text_field_helper_warning_text">공백, 특수문자 없이 2~10자를 입력해 주세요.</string>
 	<string name="signup_text_field_helper_valid_text">사용 가능한 이름입니다.</string>
+	<string name="signup_snackbar_register_error">이름 등록 중 오류가 발생했습니다.</string>
 </resources>

@@ -6,4 +6,8 @@
 	<string name="complete_title">반가워요</string>
 	<string name="complete_description">목표를 세우고 지키는\n새로운 일상을 경험해보세요"</string>
 	<string name="complete_button">시작하기</string>
+    <string name="onboarding_snackbar_flag_save_error">온보딩 완료 상태 저장 중 오류가 발생했습니다.</string>
+    <string name="onboarding_guide_first_description">앱을 켤 때, 사용 시간을\n설정해보세요.</string>
+	<string name="onboarding_guide_second_description">사용 시간이 지나면, 딱 2번,\n5분 더 사용할 수 있어요.</string>
+	<string name="onboarding_guide_third_description">사용이 끝나면, 3분 동안\n앱을 절대 사용할 수 없어요.</string>
 </resources>

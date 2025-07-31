@@ -66,7 +66,7 @@ internal fun HomeRoute(
 		viewModel.homeEvent.collect { event ->
 			when (event) {
 				is HomeEvent.ShowStopUsingSuccess -> {
-					mainAction.onShowMessage(
+					mainAction.onShowSuccessMessage(
 						context.getString(
 							R.string.home_stop_using_success,
 							event.groupName,

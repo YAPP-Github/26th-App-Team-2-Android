@@ -43,17 +43,7 @@ class MainActivity : ComponentActivity() {
 
 			val mainAction = object : MainAction {
 				override fun onFinish() = finish()
-				override fun onShowSnackBar(throwable: Throwable?) {
-					coroutineScope.launch {
-						snackBarHostState.showSnackbar(
-							message = throwable?.message ?: "오류가 발생했습니다.",
-							actionLabel = BrakeSnackbarType.ERROR.name,
-							duration = SnackbarDuration.Short,
-							withDismissAction = false,
-						)
-					}
-				}
-				override fun onShowErrorSnackBar(message: String) {
+				override fun onShowErrorMessage(message: String) {
 					coroutineScope.launch {
 						snackBarHostState.showSnackbar(
 							message = message,
@@ -63,7 +53,7 @@ class MainActivity : ComponentActivity() {
 						)
 					}
 				}
-				override fun onShowMessage(message: String) {
+				override fun onShowSuccessMessage(message: String) {
 					coroutineScope.launch {
 						snackBarHostState.showSnackbar(
 							message = message,

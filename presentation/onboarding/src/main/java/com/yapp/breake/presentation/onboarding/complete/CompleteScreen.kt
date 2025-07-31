@@ -12,6 +12,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
@@ -34,11 +35,16 @@ fun CompleteRoute(
 	viewModel: CompleteViewModel = hiltViewModel(),
 ) {
 	val screenHorizontalPadding = LocalPadding.current.screenPaddingHorizontal
+	val context = LocalContext.current
 	val navAction = LocalNavigatorAction.current
 	val mainAction = LocalMainAction.current
 
 	LaunchedEffect(true) {
-		viewModel.errorFlow.collect { mainAction.onShowSnackBar(it) }
+		viewModel.snackBarFlow.collect {
+			mainAction.onShowErrorMessage(
+				message = it.asString(context = context),
+			)
+		}
 	}
 
 	LaunchedEffect(true) {

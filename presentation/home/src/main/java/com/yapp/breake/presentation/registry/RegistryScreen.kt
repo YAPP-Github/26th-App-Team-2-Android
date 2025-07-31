@@ -59,12 +59,12 @@ fun RegistryRoute(
 		viewModel.snackBarFlow.collect {
 			when (it) {
 				is RegistrySnackBarState.Success -> {
-					mainAction.onShowMessage(
+					mainAction.onShowSuccessMessage(
 						message = it.uiString.asString(context = context),
 					)
 				}
 				is RegistrySnackBarState.Error -> {
-					mainAction.onShowErrorSnackBar(
+					mainAction.onShowErrorMessage(
 						message = it.uiString.asString(context = context),
 					)
 				}

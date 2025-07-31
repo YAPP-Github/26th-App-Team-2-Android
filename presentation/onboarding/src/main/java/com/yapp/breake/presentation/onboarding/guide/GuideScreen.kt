@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.aspectRatio
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -20,7 +21,6 @@ import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -64,7 +64,11 @@ fun GuideRoute(
 	val mainAction = LocalMainAction.current
 
 	LaunchedEffect(true) {
-		viewModel.errorFlow.collect { mainAction.onShowSnackBar(it) }
+		viewModel.snackBarFlow.collect {
+			mainAction.onShowErrorMessage(
+				message = it.asString(context = context),
+			)
+		}
 	}
 
 	LaunchedEffect(true) {
@@ -133,6 +137,7 @@ fun GuideScreen(
 				state = pagerState,
 				modifier = Modifier
 					.fillMaxWidth()
+					.fillMaxHeight(0.8f)
 					.constrainAs(content) {
 						top.linkTo(parent.top)
 						bottom.linkTo(pointer.top)
@@ -147,31 +152,15 @@ fun GuideScreen(
 					R.drawable.img_guide3,
 				)
 				val descriptionList = persistentListOf(
-					"앱을 켤 때, 사용 시간을\n설정해보세요.",
-					"사용 시간이 지나면, 딱 2번,\n5분 더 사용할 수 있어요.",
-					"사용이 끝나면, 3분 동안\n앱을 절대 사용할 수 없어요.",
+					stringResource(R.string.onboarding_guide_first_description),
+					stringResource(R.string.onboarding_guide_second_description),
+					stringResource(R.string.onboarding_guide_third_description),
 				)
 
 				Column(
 					modifier = Modifier.width(screenWidth),
 					horizontalAlignment = Alignment.CenterHorizontally,
 				) {
-					Box(
-						modifier = Modifier
-							.width(28.dp)
-							.height(28.dp)
-							.clip(shape = RoundedCornerShape(8.dp))
-							.background(Gray700),
-						contentAlignment = Alignment.Center,
-					) {
-						Text(
-							text = "${index + 1}",
-							style = BrakeTheme.typography.subtitle16SB,
-						)
-					}
-
-					VerticalSpacer(28.dp)
-
 					Image(
 						modifier = Modifier
 							.fillMaxWidth(0.7f)
@@ -183,7 +172,7 @@ fun GuideScreen(
 						contentDescription = "Item $index",
 					)
 
-					VerticalSpacer(36.dp)
+					VerticalSpacer(26.dp)
 
 					Text(
 						text = descriptionList[index],

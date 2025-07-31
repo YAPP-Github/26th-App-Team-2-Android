@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.material3.HorizontalDivider
@@ -38,10 +39,11 @@ internal fun BlockingScreen(
 	Column(
 		modifier = Modifier
 			.fillMaxSize()
+			.statusBarsPadding()
 			.padding(horizontal = 16.dp),
 		horizontalAlignment = Alignment.CenterHorizontally,
 	) {
-		VerticalSpacer(50.dp)
+		VerticalSpacer(60.dp)
 		Row(
 			verticalAlignment = Alignment.Bottom,
 			modifier = Modifier

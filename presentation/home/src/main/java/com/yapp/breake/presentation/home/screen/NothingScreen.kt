@@ -1,11 +1,10 @@
 package com.yapp.breake.presentation.home.screen
 
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.size
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -28,13 +27,13 @@ internal fun NothingScreen(
 ) {
 	Column(
 		modifier = Modifier.fillMaxSize(),
-		verticalArrangement = Arrangement.Center,
 		horizontalAlignment = Alignment.CenterHorizontally,
 	) {
+		VerticalSpacer(55.dp)
 		Image(
 			painter = painterResource(R.drawable.img_home_init),
 			contentDescription = stringResource(R.string.home_image_content_description),
-			modifier = Modifier.size(160.dp),
+			modifier = Modifier.fillMaxWidth(0.8f).aspectRatio(1f),
 		)
 		VerticalSpacer(10.dp)
 		Text(
@@ -57,6 +56,7 @@ internal fun NothingScreen(
 		AddButton(
 			onAddClick = onAddClick,
 		)
+		VerticalSpacer(40.dp)
 	}
 }
 

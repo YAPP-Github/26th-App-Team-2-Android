@@ -1,7 +1,10 @@
 package com.yapp.breake.presentation.signup
 
+import androidx.activity.compose.BackHandler
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
@@ -21,8 +24,11 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusManager
+import androidx.compose.ui.input.pointer.pointerInput
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.painterResource
@@ -34,17 +40,20 @@ import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.yapp.breake.core.designsystem.component.BrakeTopAppbar
+import com.yapp.breake.core.designsystem.component.DotProgressIndicator
 import com.yapp.breake.core.designsystem.component.LargeButton
 import com.yapp.breake.core.designsystem.component.VerticalSpacer
 import com.yapp.breake.core.designsystem.theme.BrakeTheme
 import com.yapp.breake.core.designsystem.theme.LocalPadding
 import com.yapp.breake.core.designsystem.modifier.clearFocusOnKeyboardDismiss
+import com.yapp.breake.core.designsystem.theme.Gray900
 import com.yapp.breake.core.navigation.compositionlocal.LocalMainAction
 import com.yapp.breake.core.navigation.compositionlocal.LocalNavigatorAction
-import com.yapp.breake.core.util.isValidInput
+import com.yapp.breake.core.ui.isValidInput
 import com.yapp.breake.presentation.signup.component.NicknameTextField
 import com.yapp.breake.presentation.signup.model.SignupEffect.NavigateToBack
 import com.yapp.breake.presentation.signup.model.SignupEffect.NavigateToOnboarding
+import com.yapp.breake.presentation.signup.model.SignupUiState
 import com.yapp.breake.core.designsystem.R as D
 
 @Composable
@@ -52,6 +61,7 @@ fun SignupRoute(viewModel: SignupViewModel = hiltViewModel()) {
 	val padding = LocalPadding.current.screenPaddingHorizontal
 	val navAction = LocalNavigatorAction.current
 	val mainAction = LocalMainAction.current
+	val context = LocalContext.current
 	val focusManager = LocalFocusManager.current
 	val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 	val density = LocalDensity.current
@@ -76,7 +86,11 @@ fun SignupRoute(viewModel: SignupViewModel = hiltViewModel()) {
 	}
 
 	LaunchedEffect(true) {
-		viewModel.errorFlow.collect { mainAction.onShowSnackBar(it) }
+		viewModel.snackBarFlow.collect {
+			mainAction.onShowErrorMessage(
+				message = it.asString(context = context),
+			)
+		}
 	}
 
 	SignupScreen(
@@ -87,6 +101,20 @@ fun SignupRoute(viewModel: SignupViewModel = hiltViewModel()) {
 		onNameType = viewModel::onNameType,
 		onContinueClick = viewModel::onNameSubmit,
 	)
+
+	if (uiState is SignupUiState.SignupNameRegistering) {
+		Box(
+			modifier = Modifier
+				.fillMaxSize()
+				.background(Gray900.copy(alpha = 0.9f))
+				.pointerInput(Unit) {}
+				.navigationBarsPadding(),
+			contentAlignment = Alignment.Center,
+		) {
+			BackHandler { viewModel.cancelNameSubmit() }
+			DotProgressIndicator()
+		}
+	}
 }
 
 @Composable

@@ -6,6 +6,7 @@ import androidx.lifecycle.viewModelScope
 import com.breake.core.permission.PermissionManager
 import com.breake.core.permission.PermissionType
 import com.yapp.breake.core.model.user.Destination
+import com.yapp.breake.core.ui.UiString
 import com.yapp.breake.domain.usecase.DecideNextDestinationFromPermissionUseCase
 import com.yapp.breake.presentation.permission.model.PermissionEffect
 import com.yapp.breake.presentation.permission.model.PermissionEffect.RequestPermission
@@ -28,8 +29,8 @@ class PermissionViewModel @Inject constructor(
 	private val decideDestinationUseCase: DecideNextDestinationFromPermissionUseCase,
 ) : ViewModel() {
 
-	private val _errorFlow = MutableSharedFlow<Throwable>()
-	val errorFlow = _errorFlow.asSharedFlow()
+	private val _snackBarFlow = MutableSharedFlow<UiString>()
+	val snackBarFlow = _snackBarFlow.asSharedFlow()
 
 	private val _uiState =
 		MutableStateFlow<PermissionUiState>(PermissionUiState(permissions = persistentListOf()))
@@ -54,9 +55,11 @@ class PermissionViewModel @Inject constructor(
 				permissionList.add(PermissionItem.ACCESSIBILITY)
 			}
 			return permissionList.toPersistentList()
-		} catch (e: Exception) {
+		} catch (_: Exception) {
 			viewModelScope.launch {
-				_errorFlow.emit(e)
+				_snackBarFlow.emit(
+					UiString.ResourceString(R.string.permission_snackbar_permission_stack_error),
+				)
 			}
 			// 모든 권한을 포함
 			return persistentListOf(
@@ -71,8 +74,10 @@ class PermissionViewModel @Inject constructor(
 	private fun decideNextDestination() {
 		viewModelScope.launch {
 			val status = decideDestinationUseCase.invoke(
-				onError = { error ->
-					_errorFlow.emit(error)
+				onError = {
+					_snackBarFlow.emit(
+						UiString.ResourceString(R.string.permission_snackbar_decide_destination_error),
+					)
 				},
 			)
 			when (status) {

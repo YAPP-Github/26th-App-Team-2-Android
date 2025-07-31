@@ -3,13 +3,16 @@ package com.yapp.breake.presentation.setting
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.yapp.breake.core.model.user.Destination
+import com.yapp.breake.core.ui.UiString
 import com.yapp.breake.domain.usecase.DeleteAccountUseCase
 import com.yapp.breake.domain.usecase.GetNicknameUseCase
 import com.yapp.breake.domain.usecase.LogoutUseCase
 import com.yapp.breake.presentation.setting.model.SettingEffect
+import com.yapp.breake.presentation.setting.model.SettingSnackBarState
 import com.yapp.breake.presentation.setting.model.SettingUiState
 import com.yapp.breake.presentation.setting.model.SettingUser
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asSharedFlow
@@ -25,8 +28,11 @@ class SettingViewModel @Inject constructor(
 	private val deleteAccountUseCase: DeleteAccountUseCase,
 	private val logoutUseCase: LogoutUseCase,
 ) : ViewModel() {
-	private val _errorFlow = MutableSharedFlow<Throwable>()
-	val errorFlow = _errorFlow.asSharedFlow()
+
+	private var deleteJob: Job? = null
+
+	private val _snackBarFlow = MutableSharedFlow<SettingSnackBarState>()
+	val snackBarFlow = _snackBarFlow.asSharedFlow()
 
 	private val _uiState = MutableStateFlow<SettingUiState>(SettingUiState.SettingIdle())
 	val uiState = _uiState.asStateFlow()
@@ -80,7 +86,11 @@ class SettingViewModel @Inject constructor(
 		viewModelScope.launch {
 			val dest = logoutUseCase(
 				onError = {
-					_errorFlow.emit(it)
+					_snackBarFlow.emit(
+						SettingSnackBarState.Error(
+							uiString = UiString.ResourceString(R.string.setting_snackbar_logout_error),
+						),
+					)
 				},
 			)
 			if (dest is Destination.Login) {
@@ -103,14 +113,48 @@ class SettingViewModel @Inject constructor(
 	}
 
 	fun deleteAccount() {
-		viewModelScope.launch {
+		_uiState.value = _uiState.value.let {
+			SettingUiState.SettingDeletingAccount(
+				user = it.user,
+				appInfo = it.appInfo,
+			)
+		}
+		deleteJob = viewModelScope.launch {
 			val dest = deleteAccountUseCase(
 				onError = {
-					_errorFlow.emit(it)
+					_snackBarFlow.emit(
+						SettingSnackBarState.Error(
+							uiString = UiString.ResourceString(R.string.setting_snackbar_delete_error),
+						),
+					)
 				},
 			)
 			if (dest is Destination.Login) {
+				_snackBarFlow.emit(
+					SettingSnackBarState.Success(
+						uiString = UiString.ResourceString(R.string.setting_snackbar_delete_success),
+					),
+				)
 				_navigationFlow.emit(SettingEffect.NavigateToLogin)
+			}
+		}
+	}
+
+	fun cancelDeletingAccount() {
+		deleteJob?.run {
+			cancel()
+			_uiState.value = _uiState.value.let {
+				SettingUiState.SettingIdle(
+					user = it.user,
+					appInfo = it.appInfo,
+				)
+			}
+			viewModelScope.launch {
+				_snackBarFlow.emit(
+					SettingSnackBarState.Error(
+						uiString = UiString.ResourceString(R.string.setting_snackbar_delete_cancel),
+					),
+				)
 			}
 		}
 	}

@@ -7,9 +7,11 @@ import com.breake.core.permission.PermissionManager
 import com.breake.core.permission.PermissionType
 import com.yapp.breake.core.model.user.Destination
 import com.yapp.breake.core.model.user.UserStatus
+import com.yapp.breake.core.ui.UiString
 import com.yapp.breake.domain.usecase.DecideNextDestinationFromPermissionUseCase
 import com.yapp.breake.domain.usecase.LoginUseCase
-import com.yapp.breake.presentation.login.model.LoginEffect
+import com.yapp.breake.presentation.login.model.LoginNavState
+import com.yapp.breake.presentation.login.model.LoginSnackBarState
 import com.yapp.breake.presentation.login.model.LoginUiState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Job
@@ -32,10 +34,10 @@ internal class LoginViewModel @Inject constructor(
 	private val _uiState = MutableStateFlow<LoginUiState>(LoginUiState.LoginIdle)
 	val uiState = _uiState.asStateFlow()
 
-	private val _errorFlow = MutableSharedFlow<Throwable>()
-	val errorFlow = _errorFlow.asSharedFlow()
+	private val _snackBarFlow = MutableSharedFlow<LoginSnackBarState>()
+	val snackBarFlow = _snackBarFlow.asSharedFlow()
 
-	private val _navigationFlow = MutableSharedFlow<LoginEffect>()
+	private val _navigationFlow = MutableSharedFlow<LoginNavState>()
 	val navigationFlow = _navigationFlow.asSharedFlow()
 
 	private var loginJob: Job? = null
@@ -47,8 +49,8 @@ internal class LoginViewModel @Inject constructor(
 	}
 
 	fun loginCancel() {
-		viewModelScope.launch {
-			loginJob?.cancel()
+		loginJob?.run {
+			cancel()
 			_uiState.value = LoginUiState.LoginIdle
 		}
 	}
@@ -61,7 +63,13 @@ internal class LoginViewModel @Inject constructor(
 				authCode = authCode,
 				onError = { throwable ->
 					_uiState.value = LoginUiState.LoginIdle
-					_errorFlow.emit(throwable)
+					_snackBarFlow.emit(
+						LoginSnackBarState.Error(
+							uiString = UiString.ResourceString(
+								resId = R.string.login_snackbar_login_error,
+							),
+						),
+					)
 				},
 			).catch {
 				Timber.e(it, "로그인 중 에러 발생")
@@ -74,12 +82,18 @@ internal class LoginViewModel @Inject constructor(
 
 					UserStatus.HALF_SIGNUP -> {
 						_uiState.value = LoginUiState.LoginIdle
-						_navigationFlow.emit(LoginEffect.NavigateToSignup)
+						_navigationFlow.emit(LoginNavState.NavigateToSignup)
 					}
 
 					UserStatus.INACTIVE -> {
 						_uiState.value = LoginUiState.LoginIdle
-						_errorFlow.emit(Throwable("서버에서 사용자 정보를 찾을 수 없습니다"))
+						_snackBarFlow.emit(
+							LoginSnackBarState.Error(
+								uiString = UiString.ResourceString(
+									resId = R.string.login_snackbar_login_error_inactive,
+								),
+							),
+						)
 					}
 				}
 			}
@@ -94,29 +108,39 @@ internal class LoginViewModel @Inject constructor(
 		return true
 	}
 
-	fun loginFailure(throwable: Throwable) {
+	fun loginFailure(message: String) {
 		viewModelScope.launch {
 			_uiState.value = LoginUiState.LoginIdle
-			_errorFlow.emit(throwable)
+			_snackBarFlow.emit(
+				LoginSnackBarState.Error(
+					uiString = UiString.DynamicString(message),
+				),
+			)
 		}
 	}
 
 	private suspend fun decideNextDestination(context: Context) {
-		val status = decideDestinationUseCase.invoke(
+		val status = decideDestinationUseCase(
 			onError = { error ->
-				_errorFlow.emit(error)
+				_snackBarFlow.emit(
+					LoginSnackBarState.Error(
+						uiString = UiString.ResourceString(
+							resId = R.string.login_snackbar_next_destination_error,
+						),
+					),
+				)
 			},
 		)
 		when (status) {
 			is Destination.PermissionOrHome -> if (checkPermissions(context)) {
-				_navigationFlow.emit(LoginEffect.NavigateToHome)
+				_navigationFlow.emit(LoginNavState.NavigateToHome)
 			} else {
-				_navigationFlow.emit(LoginEffect.NavigateToPermission)
+				_navigationFlow.emit(LoginNavState.NavigateToPermission)
 			}
 
 			is Destination.Onboarding -> {
 				_navigationFlow.emit(
-					LoginEffect.NavigateToOnboarding,
+					LoginNavState.NavigateToOnboarding,
 				)
 			}
 

@@ -4,6 +4,7 @@ import android.content.Context
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.breake.core.permission.PermissionManager
+import com.yapp.breake.core.ui.UiString
 import com.yapp.breake.presentation.onboarding.guide.model.GuideEffect
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -15,8 +16,8 @@ import javax.inject.Inject
 class GuideViewModel @Inject constructor(
 	private val permissionManager: PermissionManager,
 ) : ViewModel() {
-	private val _errorFlow = MutableSharedFlow<Throwable>()
-	val errorFlow = _errorFlow.asSharedFlow()
+	private val _snackBarFlow = MutableSharedFlow<UiString>()
+	val snackBarFlow = _snackBarFlow.asSharedFlow()
 
 	private val _navigationFlow = MutableSharedFlow<GuideEffect>()
 	val navigationFlow = _navigationFlow.asSharedFlow()

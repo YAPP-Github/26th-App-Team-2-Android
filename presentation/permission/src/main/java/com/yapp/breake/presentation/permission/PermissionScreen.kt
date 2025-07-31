@@ -74,7 +74,7 @@ fun PermissionRoute(
 	val screenWidth = LocalConfiguration.current.screenWidthDp.dp
 	val screenHorizontalPadding = LocalPadding.current.screenPaddingHorizontal
 	val navAction = LocalNavigatorAction.current
-	val manAction = LocalMainAction.current
+	val mainAction = LocalMainAction.current
 
 	// ViewModel 초기화,
 	// UiState 초기화시 context 사용이 필요하며, 이는 ViewModel 내부에서만 이루어질 수 없음
@@ -83,7 +83,11 @@ fun PermissionRoute(
 	}
 
 	LaunchedEffect(true) {
-		viewModel.errorFlow.collect { manAction.onShowSnackBar(it) }
+		viewModel.snackBarFlow.collect {
+			mainAction.onShowErrorMessage(
+				message = it.asString(context = context),
+			)
+		}
 	}
 
 	// 외부 화면으로 이동 side effect 처리

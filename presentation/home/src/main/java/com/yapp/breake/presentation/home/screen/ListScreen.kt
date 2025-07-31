@@ -5,6 +5,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -34,7 +35,7 @@ internal fun ListScreen(
 		ImageTextBox(
 			imageRes = R.drawable.img_home_list,
 			text = stringResource(R.string.list_screen_description),
-			modifier = Modifier,
+			modifier = Modifier.statusBarsPadding(),
 		)
 		VerticalSpacer(30.dp)
 		Row(

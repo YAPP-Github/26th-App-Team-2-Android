@@ -2,7 +2,7 @@ package com.yapp.breake.presentation.nickname
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.yapp.breake.core.util.UiString
+import com.yapp.breake.core.ui.UiString
 import com.yapp.breake.domain.usecase.GetNicknameUseCase
 import com.yapp.breake.domain.usecase.UpdateNicknameUseCase
 import com.yapp.breake.presentation.nickname.model.NicknameNavState
@@ -78,9 +78,11 @@ class NicknameViewModel @Inject constructor(
 	}
 
 	fun cancelUpdateNickname() {
-		updateJob?.cancel()
-		_nicknameUiState.value = NicknameUiState.NicknameIdle(
-			nickname = _nicknameUiState.value.nickname,
-		)
+		updateJob?.run {
+			cancel()
+			_nicknameUiState.value = NicknameUiState.NicknameIdle(
+				nickname = _nicknameUiState.value.nickname,
+			)
+		}
 	}
 }

@@ -61,6 +61,7 @@ include(
 	":core:datastore",
 	":core:database",
 	":core:designsystem",
+	":core:ui",
 	":core:model",
 	":core:navigation",
 	":core:permission",

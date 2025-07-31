@@ -43,7 +43,7 @@ private val allowedPrefixes = listOf(
 fun KakaoScreen(
 	onBack: () -> Unit,
 	onAuthSuccess: (String) -> Unit,
-	onAuthError: (Throwable) -> Unit,
+	onAuthError: (String) -> Unit,
 ) {
 	val context = LocalContext.current
 	val packageManager = context.packageManager
@@ -108,7 +108,7 @@ fun KakaoScreen(
 
 				// 허용된 URL만 통과
 				if (allowedPrefixes.none { url.startsWith(it) }) {
-					onAuthError(Exception("허용되지 않은 URL로의 이동이 차단되었습니다."))
+					onAuthError(context.getString(R.string.auth_not_allowed_url_error))
 					return true
 				}
 
@@ -119,11 +119,12 @@ fun KakaoScreen(
 					val errorP = uri.getQueryParameter("error")
 
 					when {
-						errorP != null -> onAuthError(Exception("카카오 로그인 실패: $errorP"))
+						errorP != null -> onAuthError(context.getString(R.string.auth_error_failure_kakao_login))
 						code != null -> {
 							onAuthSuccess(code)
 						}
-						else -> onAuthError(Exception("인가코드를 받지 못했습니다."))
+
+						else -> onAuthError(context.getString(R.string.auth_error_not_earned_auth_code))
 					}
 					return true
 				}
@@ -156,25 +157,109 @@ fun KakaoScreen(
 				}
 
 				// input 커서 디폴트: 가장 왼쪽에 고정
-				// 커서 위치 설정
 				view.evaluateJavascript(
 					"""
 					(function(){
 					  document.querySelectorAll('input').forEach(input => {
-						let prevPos = 0;
+						let beforeState = {
+						  value: '',
+						  selectionStart: 0,
+						  selectionEnd: 0
+						};
 
-						// 입력 직전의 커서 위치 기록
+						// 입력 직전 상태 저장
 						input.addEventListener('beforeinput', e => {
-						  prevPos = input.selectionStart;
+						  beforeState = {
+							value: input.value,
+							selectionStart: input.selectionStart,
+							selectionEnd: input.selectionEnd
+						  };
 						});
 
-						// 실제 값이 바뀐 뒤, 커서를 prevPos+입력문자수 위치로 이동
+						// 입력 후 커서 위치 조정
 						input.addEventListener('input', e => {
-						  // e.data 에는 insertText일 때 입력된 문자열이 담겨 있다
-						  const inserted = e.data || '';
-						  const newPos = prevPos + inserted.length;
-						  input.setSelectionRange(newPos, newPos);
+						  const inputType = e.inputType;
+
+						  if (inputType === 'insertText' || inputType === 'insertCompositionText') {
+							const inserted = e.data || '';
+							const newPos = beforeState.selectionStart + inserted.length;
+							input.setSelectionRange(newPos, newPos);
+						  }
+						  else if (inputType === 'deleteContentBackward' || inputType === 'deleteContentForward') {
+							const deletedLength = beforeState.value.length - input.value.length;
+							let newPos;
+
+							if (inputType === 'deleteContentBackward') {
+							  newPos = beforeState.selectionStart - deletedLength;
+							} else {
+							  newPos = beforeState.selectionStart;
+							}
+
+							newPos = Math.max(0, Math.min(newPos, input.value.length));
+							input.setSelectionRange(newPos, newPos);
+						  }
+						  else if (inputType === 'deleteByDrag' || inputType === 'deleteByCut') {
+							const newPos = beforeState.selectionStart;
+							input.setSelectionRange(newPos, newPos);
+						  }
+						  else if (inputType === 'insertFromPaste') {
+							const pastedLength = input.value.length - beforeState.value.length + (beforeState.selectionEnd - beforeState.selectionStart);
+							const newPos = beforeState.selectionStart + pastedLength;
+							input.setSelectionRange(newPos, newPos);
+						  }
 						});
+
+						// 롱 프레스로 단어 선택
+						let longPressTimer = null;
+
+						input.addEventListener('touchstart', e => {
+						  longPressTimer = setTimeout(() => {
+							const touch = e.touches[0];
+							const rect = input.getBoundingClientRect();
+							const x = touch.clientX - rect.left;
+
+							// 터치 위치의 문자 인덱스 계산
+							const canvas = document.createElement('canvas');
+							const ctx = canvas.getContext('2d');
+							const style = window.getComputedStyle(input);
+							ctx.font = style.fontSize + ' ' + style.fontFamily;
+
+							let charIndex = 0;
+							let width = 0;
+							for (let i = 0; i < input.value.length; i++) {
+							  const charWidth = ctx.measureText(input.value[i]).width;
+							  if (width + charWidth / 2 > x) break;
+							  width += charWidth;
+							  charIndex = i + 1;
+							}
+
+							selectWordAt(input, charIndex);
+						  }, 500);
+						});
+
+						input.addEventListener('touchend', () => {
+						  if (longPressTimer) {
+							clearTimeout(longPressTimer);
+							longPressTimer = null;
+						  }
+						});
+
+						input.addEventListener('touchmove', () => {
+						  if (longPressTimer) {
+							clearTimeout(longPressTimer);
+							longPressTimer = null;
+						  }
+						});
+
+						// 단어 선택 함수
+						function selectWordAt(input, pos) {
+						  const text = input.value;
+
+						  // 전체 텍스트 선택
+						  if (text.length > 0) {
+							input.setSelectionRange(0, text.length);
+						  }
+						}
 					  });
 					})();
 					""".trimIndent(),
@@ -188,7 +273,7 @@ fun KakaoScreen(
 				error: WebResourceError?,
 			) {
 				super.onReceivedError(view, request, error)
-				onAuthError(Exception("웹뷰 로딩 오류: ${error?.description}"))
+				onAuthError(context.getString(R.string.auth_error_loading_webview))
 			}
 		}
 
