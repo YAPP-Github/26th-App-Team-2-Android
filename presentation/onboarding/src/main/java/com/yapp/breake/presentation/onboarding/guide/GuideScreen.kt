@@ -152,9 +152,9 @@ fun GuideScreen(
 					R.drawable.img_guide3,
 				)
 				val descriptionList = persistentListOf(
-					"앱을 켤 때, 사용 시간을\n설정해보세요.",
-					"사용 시간이 지나면, 딱 2번,\n5분 더 사용할 수 있어요.",
-					"사용이 끝나면, 3분 동안\n앱을 절대 사용할 수 없어요.",
+					stringResource(R.string.onboarding_guide_first_description),
+					stringResource(R.string.onboarding_guide_second_description),
+					stringResource(R.string.onboarding_guide_third_description),
 				)
 
 				Column(
