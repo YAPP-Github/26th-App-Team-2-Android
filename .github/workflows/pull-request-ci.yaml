@@ -38,11 +38,15 @@ jobs:
 
             -   name: Add Local Properties
                 env:
-                    KAKAO_REST_API_KEY: ${{ secrets.KAKAO_REST_API_KEY }}
-                    KAKAO_JS_KEY: ${{ secrets.KAKAO_JS_KEY }}
+                    KAKAO_REST_API_KEY_RELEASE: ${{ secrets.KAKAO_REST_API_KEY_RELEASE }}
+                    KAKAO_REST_API_KEY_DEBUG: ${{ secrets.KAKAO_REST_API_KEY_DEBUG }}
+                    KAKAO_JS_KEY_RELEASE: ${{ secrets.KAKAO_JS_KEY_RELEASE }}
+                    KAKAO_JS_KEY_DEBUG: ${{ secrets.KAKAO_JS_KEY_DEBUG }}
                 run: |
-                    echo KAKAO_REST_API_KEY=KAKAO_REST_API_KEY > ./local.properties
-                    echo KAKAO_JS_KEY=KAKAO_JS_KEY >> ./local.properties
+                    echo KAKAO_REST_API_KEY_RELEASE=KAKAO_REST_API_KEY_RELEASE > ./local.properties
+                    echo KAKAO_REST_API_KEY_DEBUG=KAKAO_REST_API_KEY_DEBUG >> ./local.properties
+                    echo KAKAO_JS_KEY_RELEASE=KAKAO_JS_KEY_RELEASE >> ./local.properties
+                    echo KAKAO_JS_KEY_DEBUG=KAKAO_JS_KEY_DEBUG >> ./local.properties
 
             -   name: Grant execute permission for gradlew
                 run: chmod +x gradlew
