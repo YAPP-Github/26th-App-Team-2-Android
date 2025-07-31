@@ -1,10 +1,8 @@
 package com.yapp.breake.presentation.signup
 
 import androidx.activity.compose.BackHandler
-import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
@@ -24,10 +22,8 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusManager
-import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalFocusManager
@@ -40,13 +36,11 @@ import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.yapp.breake.core.designsystem.component.BrakeTopAppbar
-import com.yapp.breake.core.designsystem.component.DotProgressIndicator
 import com.yapp.breake.core.designsystem.component.LargeButton
 import com.yapp.breake.core.designsystem.component.VerticalSpacer
 import com.yapp.breake.core.designsystem.theme.BrakeTheme
 import com.yapp.breake.core.designsystem.theme.LocalPadding
 import com.yapp.breake.core.designsystem.modifier.clearFocusOnKeyboardDismiss
-import com.yapp.breake.core.designsystem.theme.Gray900
 import com.yapp.breake.core.navigation.compositionlocal.LocalMainAction
 import com.yapp.breake.core.navigation.compositionlocal.LocalNavigatorAction
 import com.yapp.breake.core.ui.isValidInput
@@ -76,6 +70,16 @@ fun SignupRoute(viewModel: SignupViewModel = hiltViewModel()) {
 		prevVisible = imeVisible
 	}
 
+	BackHandler {
+		if (uiState is SignupUiState.SignupNameRegistering) {
+			viewModel.cancelNameSubmit()
+		}
+	}
+
+	if (uiState is SignupUiState.SignupNameRegistering) {
+		mainAction.OnShowLoading()
+	}
+
 	LaunchedEffect(true) {
 		viewModel.navigationFlow.collect {
 			when (it) {
@@ -101,20 +105,6 @@ fun SignupRoute(viewModel: SignupViewModel = hiltViewModel()) {
 		onNameType = viewModel::onNameType,
 		onContinueClick = viewModel::onNameSubmit,
 	)
-
-	if (uiState is SignupUiState.SignupNameRegistering) {
-		Box(
-			modifier = Modifier
-				.fillMaxSize()
-				.background(Gray900.copy(alpha = 0.9f))
-				.pointerInput(Unit) {}
-				.navigationBarsPadding(),
-			contentAlignment = Alignment.Center,
-		) {
-			BackHandler { viewModel.cancelNameSubmit() }
-			DotProgressIndicator()
-		}
-	}
 }
 
 @Composable

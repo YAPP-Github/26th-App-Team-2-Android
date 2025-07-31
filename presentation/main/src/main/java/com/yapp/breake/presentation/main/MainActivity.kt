@@ -5,13 +5,23 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.material3.SnackbarDuration
 import androidx.compose.material3.SnackbarHostState
+import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.window.Popup
 import com.yapp.breake.core.designsystem.component.BrakeSnackbarType
+import com.yapp.breake.core.designsystem.component.DotProgressIndicator
 import com.yapp.breake.core.designsystem.theme.BrakeTheme
+import com.yapp.breake.core.designsystem.theme.Gray900
 import com.yapp.breake.core.navigation.action.MainAction
 import com.yapp.breake.core.navigation.compositionlocal.LocalMainAction
 import com.yapp.breake.core.navigation.compositionlocal.LocalNavigatorAction
@@ -43,6 +53,21 @@ class MainActivity : ComponentActivity() {
 
 			val mainAction = object : MainAction {
 				override fun onFinish() = finish()
+
+				@Composable override fun OnShowLoading() {
+					Popup {
+						Box(
+							modifier = Modifier
+								.fillMaxSize()
+								.background(Gray900.copy(alpha = 0.8f))
+								.statusBarsPadding(),
+							contentAlignment = Alignment.Center,
+						) {
+							DotProgressIndicator()
+						}
+					}
+				}
+
 				override fun onShowErrorMessage(message: String) {
 					coroutineScope.launch {
 						snackBarHostState.showSnackbar(

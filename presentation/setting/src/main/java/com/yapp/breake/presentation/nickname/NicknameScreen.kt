@@ -1,8 +1,6 @@
 package com.yapp.breake.presentation.nickname
 
 import androidx.activity.compose.BackHandler
-import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
@@ -10,7 +8,6 @@ import androidx.compose.foundation.layout.ime
 import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -25,8 +22,6 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
-import androidx.compose.ui.Alignment
-import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.painterResource
@@ -36,10 +31,8 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.yapp.breake.core.designsystem.component.BaseScaffold
 import com.yapp.breake.core.designsystem.component.BrakeTopAppbar
 import com.yapp.breake.core.designsystem.component.CircleImage
-import com.yapp.breake.core.designsystem.component.DotProgressIndicator
 import com.yapp.breake.core.designsystem.component.LargeButton
 import com.yapp.breake.core.designsystem.component.TopAppbarType
-import com.yapp.breake.core.designsystem.theme.Gray900
 import com.yapp.breake.core.designsystem.theme.LocalPadding
 import com.yapp.breake.core.navigation.compositionlocal.LocalMainAction
 import com.yapp.breake.core.navigation.compositionlocal.LocalNavigatorAction
@@ -71,6 +64,16 @@ fun NicknameRoute(
 			focusManager.clearFocus()
 		}
 		prevVisible = imeVisible
+	}
+
+	BackHandler {
+		if (uiState is NicknameUiState.NicknameUpdating) {
+			viewModel.cancelUpdateNickname()
+		}
+	}
+
+	if (uiState is NicknameUiState.NicknameUpdating) {
+		mainAction.OnShowLoading()
 	}
 
 	LaunchedEffect(true) {
@@ -107,20 +110,6 @@ fun NicknameRoute(
 		onCompleteClick = viewModel::updateNickname,
 		onBackClick = navAction::popBackStack,
 	)
-
-	if (uiState is NicknameUiState.NicknameUpdating) {
-		Box(
-			modifier = Modifier
-				.fillMaxSize()
-				.background(Gray900.copy(alpha = 0.9f))
-				.pointerInput(Unit) {}
-				.statusBarsPadding(),
-			contentAlignment = Alignment.Center,
-		) {
-			BackHandler { viewModel.cancelUpdateNickname() }
-			DotProgressIndicator()
-		}
-	}
 }
 
 @Composable
