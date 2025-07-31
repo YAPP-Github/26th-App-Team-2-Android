@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.aspectRatio
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -20,7 +21,6 @@ import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -137,6 +137,7 @@ fun GuideScreen(
 				state = pagerState,
 				modifier = Modifier
 					.fillMaxWidth()
+					.fillMaxHeight(0.8f)
 					.constrainAs(content) {
 						top.linkTo(parent.top)
 						bottom.linkTo(pointer.top)
@@ -160,22 +161,6 @@ fun GuideScreen(
 					modifier = Modifier.width(screenWidth),
 					horizontalAlignment = Alignment.CenterHorizontally,
 				) {
-					Box(
-						modifier = Modifier
-							.width(28.dp)
-							.height(28.dp)
-							.clip(shape = RoundedCornerShape(8.dp))
-							.background(Gray700),
-						contentAlignment = Alignment.Center,
-					) {
-						Text(
-							text = "${index + 1}",
-							style = BrakeTheme.typography.subtitle16SB,
-						)
-					}
-
-					VerticalSpacer(28.dp)
-
 					Image(
 						modifier = Modifier
 							.fillMaxWidth(0.7f)
@@ -187,7 +172,7 @@ fun GuideScreen(
 						contentDescription = "Item $index",
 					)
 
-					VerticalSpacer(36.dp)
+					VerticalSpacer(26.dp)
 
 					Text(
 						text = descriptionList[index],
