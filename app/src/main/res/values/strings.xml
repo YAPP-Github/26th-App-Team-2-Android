@@ -1,4 +1,4 @@
 <resources>
-    <string name="app_name">Breake</string>
+    <string name="app_name">Brake!</string>
 	<string name="accessibility_service_description">다른 앱 실행을 감지하여 오버레이를 표시합니다. 앱 사용 시간 관리 기능을 위해 필요합니다.</string>
 </resources>
