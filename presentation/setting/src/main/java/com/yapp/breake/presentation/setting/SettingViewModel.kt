@@ -130,6 +130,11 @@ class SettingViewModel @Inject constructor(
 				},
 			)
 			if (dest is Destination.Login) {
+				// 로딩창 먼저 제거 후 스낵바 띄우고 화면 이동: 유저 사용성 증가
+				_uiState.value = SettingUiState.SettingLoaded(
+					user = _uiState.value.user,
+					appInfo = _uiState.value.appInfo,
+				)
 				_snackBarFlow.emit(
 					SettingSnackBarState.Success(
 						uiString = UiString.ResourceString(R.string.setting_snackbar_delete_success),

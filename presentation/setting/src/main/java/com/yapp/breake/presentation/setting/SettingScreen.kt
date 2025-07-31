@@ -11,10 +11,8 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -26,7 +24,6 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.Dp
@@ -35,7 +32,6 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.yapp.breake.core.designsystem.component.HorizontalSpacer
 import com.yapp.breake.core.designsystem.component.CircleImage
-import com.yapp.breake.core.designsystem.component.DotProgressIndicator
 import com.yapp.breake.core.designsystem.component.SettingRow
 import com.yapp.breake.core.designsystem.component.VerticalSpacer
 import com.yapp.breake.core.designsystem.theme.BrakeTheme
@@ -43,7 +39,6 @@ import com.yapp.breake.core.designsystem.theme.Gray500
 import com.yapp.breake.core.designsystem.theme.Gray600
 import com.yapp.breake.core.designsystem.theme.Gray800
 import com.yapp.breake.core.designsystem.theme.Gray850
-import com.yapp.breake.core.designsystem.theme.Gray900
 import com.yapp.breake.core.designsystem.theme.LocalPadding
 import com.yapp.breake.core.designsystem.theme.White
 import com.yapp.breake.core.navigation.compositionlocal.LocalMainAction
@@ -65,6 +60,16 @@ fun SettingRoute(
 	val context = LocalContext.current
 	val navAction = LocalNavigatorAction.current
 	val mainAction = LocalMainAction.current
+
+	BackHandler {
+		if (uiState is SettingUiState.SettingDeletingAccount) {
+			viewModel.cancelDeletingAccount()
+		}
+	}
+
+	if (uiState is SettingUiState.SettingDeletingAccount) {
+		mainAction.OnShowLoading()
+	}
 
 	LaunchedEffect(true) {
 		viewModel.navigationFlow.collect {
@@ -130,20 +135,6 @@ fun SettingRoute(
 		onDeleteAccount = viewModel::tryDeleteAccount,
 		onLogout = viewModel::tryLogout,
 	)
-
-	if (uiState is SettingUiState.SettingDeletingAccount) {
-		Box(
-			modifier = Modifier
-				.fillMaxSize()
-				.background(Gray900.copy(alpha = 0.9f))
-				.pointerInput(Unit) {}
-				.statusBarsPadding(),
-			contentAlignment = Alignment.Center,
-		) {
-			BackHandler { viewModel.cancelDeletingAccount() }
-			DotProgressIndicator()
-		}
-	}
 }
 
 @Composable
