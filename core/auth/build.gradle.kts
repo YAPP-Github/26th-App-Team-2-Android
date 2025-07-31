@@ -10,22 +10,38 @@ plugins {
 android {
 	setNamespace("core.auth")
 
-	defaultConfig {
-		// 인가 코드 받기: https://developers.kakao.com/docs/latest/ko/kakaologin/rest-api#request-code
-		val kakaoRestApiKey =
-			gradleLocalProperties(rootDir, providers).getProperty("KAKAO_REST_API_KEY")
-		if (kakaoRestApiKey.isNullOrEmpty()) {
-			throw IllegalArgumentException("KAKAO_REST_API_KEY must be set in local.properties")
-		}
-		buildConfigField("String", "KAKAO_REST_API_KEY", "\"$kakaoRestApiKey\"")
+	buildTypes {
+		debug {
+			val debugKakaoRestApiKey = gradleLocalProperties(rootDir, providers)
+				.getProperty("KAKAO_REST_API_KEY_DEBUG")
+			if (debugKakaoRestApiKey.isNullOrEmpty()) {
+				throw IllegalArgumentException("KAKAO_REST_API_KEY_DEBUG must be set in local.properties")
+			}
+			buildConfigField("String", "KAKAO_REST_API_KEY", "\"$debugKakaoRestApiKey\"")
 
-		// 간편로그인: https://developers.kakao.com/docs/latest/ko/kakaologin/js#login
-		val kakaoJsKey =
-			gradleLocalProperties(rootDir, providers).getProperty("KAKAO_JS_KEY")
-		if (kakaoJsKey.isNullOrEmpty()) {
-			throw IllegalArgumentException("KAKAO_JS_KEY must be set in local.properties")
+			val debugKakaoJsKey = gradleLocalProperties(rootDir, providers)
+				.getProperty("KAKAO_JS_KEY_DEBUG")
+			if (debugKakaoJsKey.isNullOrEmpty()) {
+				throw IllegalArgumentException("KAKAO_JS_KEY_DEBUG must be set in local.properties")
+			}
+			buildConfigField("String", "KAKAO_JS_KEY", "\"$debugKakaoJsKey\"")
 		}
-		buildConfigField("String", "KAKAO_JS_KEY", "\"$kakaoJsKey\"")
+
+		release {
+			val releaseKakaoRestApiKey = gradleLocalProperties(rootDir, providers)
+				.getProperty("KAKAO_REST_API_KEY_RELEASE")
+			if (releaseKakaoRestApiKey.isNullOrEmpty()) {
+				throw IllegalArgumentException("KAKAO_REST_API_KEY_RELEASE must be set in local.properties")
+			}
+			buildConfigField("String", "KAKAO_REST_API_KEY", "\"$releaseKakaoRestApiKey\"")
+
+			val releaseKakaoJsKey = gradleLocalProperties(rootDir, providers)
+				.getProperty("KAKAO_JS_KEY_RELEASE")
+			if (releaseKakaoJsKey.isNullOrEmpty()) {
+				throw IllegalArgumentException("KAKAO_JS_KEY_RELEASE must be set in local.properties")
+			}
+			buildConfigField("String", "KAKAO_JS_KEY", "\"$releaseKakaoJsKey\"")
+		}
 	}
 
 	buildFeatures {
