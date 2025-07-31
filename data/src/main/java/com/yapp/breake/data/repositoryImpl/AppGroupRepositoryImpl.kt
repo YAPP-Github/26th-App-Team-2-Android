@@ -1,7 +1,7 @@
 package com.yapp.breake.data.repositoryImpl
 
+import com.yapp.breake.core.appscanner.InstalledAppScanner
 import com.yapp.breake.core.database.dao.AppGroupDao
-import com.yapp.breake.core.database.entity.AppGroupEntity
 import com.yapp.breake.core.model.app.AppGroup
 import com.yapp.breake.core.model.app.AppGroupState
 import com.yapp.breake.data.mapper.toAppGroup
@@ -14,6 +14,7 @@ import javax.inject.Inject
 
 class AppGroupRepositoryImpl @Inject constructor(
 	private val appGroupDao: AppGroupDao,
+	private val appScanner: InstalledAppScanner,
 ) : AppGroupRepository {
 	override suspend fun insertAppGroup(appGroup: AppGroup) {
 		appGroupDao.insertAppGroup(
@@ -26,17 +27,21 @@ class AppGroupRepositoryImpl @Inject constructor(
 	}
 
 	override fun observeAppGroup(): Flow<List<AppGroup>> {
-		return appGroupDao.observeAppGroup().map {
-			it.map(AppGroupEntity::toAppGroup)
+		return appGroupDao.observeAppGroup().map { appGroupEntities ->
+			appGroupEntities.map {
+				it.toAppGroup(appScanner)
+			}
 		}
 	}
 
 	override suspend fun getAppGroup(): List<AppGroup> {
-		return appGroupDao.getAppGroup().map(AppGroupEntity::toAppGroup)
+		return appGroupDao.getAppGroup().map {
+			it.toAppGroup(appScanner)
+		}
 	}
 
 	override suspend fun getAppGroupById(groupId: Long): AppGroup? {
-		return appGroupDao.getAppGroupById(groupId)?.toAppGroup()
+		return appGroupDao.getAppGroupById(groupId)?.toAppGroup(appScanner)
 	}
 
 	override suspend fun updateAppGroupState(

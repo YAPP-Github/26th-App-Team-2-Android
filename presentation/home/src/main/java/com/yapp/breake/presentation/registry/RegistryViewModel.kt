@@ -10,13 +10,14 @@ import com.yapp.breake.core.model.app.AppGroup
 import com.yapp.breake.core.model.app.AppGroupState
 import com.yapp.breake.core.navigation.route.SubRoute
 import com.yapp.breake.core.ui.UiString
+import com.yapp.breake.core.util.toByteArray
 import com.yapp.breake.domain.repository.AppGroupRepository
 import com.yapp.breake.domain.usecase.CreateNewGroupUseCase
 import com.yapp.breake.domain.usecase.DeleteGroupUseCase
 import com.yapp.breake.presentation.home.R
 import com.yapp.breake.presentation.registry.model.AppModel.Companion.initialAppsMapper
-import com.yapp.breake.presentation.registry.model.RegistryNavState
 import com.yapp.breake.presentation.registry.model.RegistryModalState
+import com.yapp.breake.presentation.registry.model.RegistryNavState
 import com.yapp.breake.presentation.registry.model.RegistrySnackBarState
 import com.yapp.breake.presentation.registry.model.RegistryUiState
 import com.yapp.breake.presentation.registry.model.SelectedAppModel
@@ -177,7 +178,7 @@ class RegistryViewModel @Inject constructor(
 							App(
 								packageName = selectedApp.packageName,
 								name = selectedApp.name,
-								icon = null,
+								icon = selectedApp.icon.toByteArray(),
 								// TODO: 카테고리 추후 추가 필요
 								category = "기타",
 							)
