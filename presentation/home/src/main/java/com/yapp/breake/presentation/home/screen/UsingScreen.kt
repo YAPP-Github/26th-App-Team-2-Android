@@ -5,6 +5,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -35,10 +36,11 @@ internal fun UsingScreen(
 	Column(
 		modifier = Modifier
 			.fillMaxSize()
+			.statusBarsPadding()
 			.padding(horizontal = 16.dp),
 		horizontalAlignment = Alignment.CenterHorizontally,
 	) {
-		VerticalSpacer(50.dp)
+		VerticalSpacer(60.dp)
 		Row(
 			verticalAlignment = Alignment.Bottom,
 			modifier = Modifier

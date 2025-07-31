@@ -2,7 +2,7 @@ package com.yapp.breake.presentation.home.component
 
 import androidx.annotation.DrawableRes
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.wrapContentHeight
@@ -15,6 +15,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import com.yapp.breake.core.designsystem.component.VerticalSpacer
 import com.yapp.breake.core.designsystem.theme.BrakeTheme
 import com.yapp.breake.core.designsystem.theme.Gray100
 import com.yapp.breake.presentation.home.R
@@ -25,8 +26,9 @@ internal fun ImageTextBox(
 	text: String,
 	modifier: Modifier = Modifier,
 ) {
-	Box(
+	Column(
 		modifier = modifier,
+		horizontalAlignment = Alignment.CenterHorizontally,
 	) {
 		Image(
 			painter = painterResource(id = imageRes),
@@ -36,6 +38,9 @@ internal fun ImageTextBox(
 				.wrapContentHeight(),
 			contentScale = ContentScale.FillWidth,
 		)
+
+		VerticalSpacer(12.dp)
+
 		Text(
 			text = text,
 			style = BrakeTheme.typography.subtitle20SB,
@@ -43,8 +48,7 @@ internal fun ImageTextBox(
 			color = Gray100,
 			modifier = Modifier
 				.fillMaxWidth()
-				.padding(bottom = 24.dp)
-				.align(Alignment.BottomCenter),
+				.padding(bottom = 24.dp),
 		)
 	}
 }
