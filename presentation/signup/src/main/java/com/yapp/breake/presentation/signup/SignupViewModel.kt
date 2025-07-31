@@ -49,6 +49,7 @@ class SignupViewModel @Inject constructor(
 							success = false
 							_errorFlow.emit(it)
 						},
+						onSuccess = {},
 					)
 
 					if (success) {

@@ -64,7 +64,9 @@ fun SettingRoute(
 					navAction.navigateToLogin(navAction.getNavOptionsClearingBackStack())
 				}
 
-				else -> {}
+				is SettingEffect.NavigateToNickname -> {
+					navAction.navigateToNickname()
+				}
 			}
 		}
 	}
@@ -101,7 +103,7 @@ fun SettingRoute(
 		screenHorizontalPadding = screenHorizontalPadding,
 		paddingValue = paddingValue,
 		uiState = uiState,
-		onChangeProfile = {},
+		onChangeProfile = viewModel::modifyNickname,
 		onDeleteAccount = viewModel::tryDeleteAccount,
 		onLogout = viewModel::tryLogout,
 	)

@@ -12,7 +12,11 @@ class UpdateNicknameUseCaseImpl @Inject constructor(
 	@Named("TokenRepo") private val tokenRepository: TokenRepository,
 ) : UpdateNicknameUseCase {
 
-	override suspend fun invoke(nickname: String, onError: suspend (Throwable) -> Unit) {
+	override suspend fun invoke(
+		nickname: String,
+		onError: suspend (Throwable) -> Unit,
+		onSuccess: suspend () -> Unit,
+	) {
 		// AccessToken을 사용하여 닉네임 업데이트, 로컬에 닉네임 저장
 		nicknameRepository.updateUserName(
 			nickname = nickname,
@@ -23,6 +27,8 @@ class UpdateNicknameUseCaseImpl @Inject constructor(
 				UserStatus.ACTIVE -> {
 					// DataStore에 저장된 authCode 삭제
 					tokenRepository.clearLocalAuthCode(onError = onError)
+					// 닉네임 업데이트 성공 후 콜백 호출
+					onSuccess()
 				}
 
 				// 닉네임 업데이트 실패 시

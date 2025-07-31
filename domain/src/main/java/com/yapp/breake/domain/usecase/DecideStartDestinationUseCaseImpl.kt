@@ -1,8 +1,10 @@
 package com.yapp.breake.domain.usecase
 
 import com.yapp.breake.core.model.user.Destination
+import com.yapp.breake.domain.repository.NicknameRepository
 import com.yapp.breake.domain.repository.SessionRepository
 import com.yapp.breake.domain.repository.TokenRepository
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.runBlocking
 import javax.inject.Inject
@@ -11,12 +13,20 @@ import javax.inject.Named
 class DecideStartDestinationUseCaseImpl @Inject constructor(
 	private val sessionRepository: SessionRepository,
 	@Named("TokenRepo") private val tokenRepository: TokenRepository,
+	@Named("NicknameRepo") private val nicknameRepository: NicknameRepository,
 ) : DecideStartDestinationUseCase {
 
 	override fun invoke(): Destination = try {
 		runBlocking {
 			tokenRepository.refreshTokens(
 				onError = { throw ServerException() },
+			)
+			val userName = nicknameRepository.getRemoteUserName(
+				onError = {},
+			).first()
+			nicknameRepository.saveLocalUserName(
+				nickname = userName.nickname,
+				onError = {},
 			)
 		}
 		val isOnboardingCompleted = runBlocking {

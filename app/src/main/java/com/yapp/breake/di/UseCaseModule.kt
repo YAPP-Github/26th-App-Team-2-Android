@@ -10,6 +10,7 @@ import com.yapp.breake.domain.usecase.DeleteAccountUseCase
 import com.yapp.breake.domain.usecase.DeleteAccountUseCaseImpl
 import com.yapp.breake.domain.usecase.DeleteGroupUseCase
 import com.yapp.breake.domain.usecase.FindAppGroupUseCase
+import com.yapp.breake.domain.usecase.GetNicknameUseCase
 import com.yapp.breake.domain.usecase.LoginUseCase
 import com.yapp.breake.domain.usecase.LoginWithCachedAuthCodeUseCase
 import com.yapp.breake.domain.usecase.LogoutUseCase
@@ -26,6 +27,7 @@ import com.yapp.breake.domain.usecaseImpl.CheckAuthCodeUseCaseImpl
 import com.yapp.breake.domain.usecaseImpl.CreateNewGroupUseCaseImpl
 import com.yapp.breake.domain.usecaseImpl.DeleteGroupUseCaseImpl
 import com.yapp.breake.domain.usecaseImpl.FindAppGroupUsecaseImpl
+import com.yapp.breake.domain.usecaseImpl.GetNicknameUseCaseImpl
 import com.yapp.breake.domain.usecaseImpl.LoginUseCaseImpl
 import com.yapp.breake.domain.usecaseImpl.LoginWithCachedAuthCodeUseCaseImpl
 import com.yapp.breake.domain.usecaseImpl.SetAlarmUsecaseImpl
@@ -60,6 +62,11 @@ internal abstract class UseCaseModule {
 	abstract fun bindUpdateNicknameUseCase(
 		updateNicknameUseCase: UpdateNicknameUseCaseImpl,
 	): UpdateNicknameUseCase
+
+	@Binds
+	abstract fun bindGetNicknameUseCase(
+		getNicknameUseCase: GetNicknameUseCaseImpl,
+	): GetNicknameUseCase
 
 	@Binds
 	abstract fun bindStoreOnboardingCompletionUseCase(
