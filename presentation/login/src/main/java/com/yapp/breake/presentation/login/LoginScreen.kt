@@ -26,11 +26,11 @@ import com.yapp.breake.core.designsystem.theme.BrakeTheme
 import com.yapp.breake.core.designsystem.theme.LocalPadding
 import com.yapp.breake.core.navigation.compositionlocal.LocalMainAction
 import com.yapp.breake.core.navigation.compositionlocal.LocalNavigatorAction
+import com.yapp.breake.core.ui.SnackBarState
 import com.yapp.breake.presentation.login.model.LoginNavState.NavigateToHome
 import com.yapp.breake.presentation.login.model.LoginNavState.NavigateToOnboarding
 import com.yapp.breake.presentation.login.model.LoginNavState.NavigateToPermission
 import com.yapp.breake.presentation.login.model.LoginNavState.NavigateToSignup
-import com.yapp.breake.presentation.login.model.LoginSnackBarState
 import com.yapp.breake.presentation.login.model.LoginUiState
 
 @Composable
@@ -54,11 +54,11 @@ internal fun LoginRoute(viewModel: LoginViewModel = hiltViewModel()) {
 	LaunchedEffect(true) {
 		viewModel.snackBarFlow.collect {
 			when (it) {
-				is LoginSnackBarState.Error -> mainAction.onShowErrorMessage(
+				is SnackBarState.Error -> mainAction.onShowErrorMessage(
 					message = it.uiString.asString(context),
 				)
 
-				is LoginSnackBarState.Success -> mainAction.onShowSuccessMessage(
+				is SnackBarState.Success -> mainAction.onShowSuccessMessage(
 					message = it.uiString.asString(context),
 				)
 			}
