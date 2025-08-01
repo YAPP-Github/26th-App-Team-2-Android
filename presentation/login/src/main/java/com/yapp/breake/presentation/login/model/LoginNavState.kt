@@ -5,6 +5,11 @@ import androidx.compose.runtime.Stable
 
 @Stable
 sealed interface LoginNavState {
+	@Immutable
+	data object NavigateToPrivacyPolicy : LoginNavState
+
+	@Immutable
+	data object NavigateToTermsOfService : LoginNavState
 
 	@Immutable
 	data object NavigateToHome : LoginNavState

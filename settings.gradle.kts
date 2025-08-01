@@ -27,6 +27,7 @@ include(
 	":presentation:main",
 	":presentation:signup",
 	":presentation:login",
+	":presentation:legal",
 	":presentation:onboarding",
 	":presentation:permission",
 	":presentation:home",

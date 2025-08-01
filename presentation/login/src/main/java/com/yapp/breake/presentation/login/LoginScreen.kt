@@ -1,6 +1,7 @@
 package com.yapp.breake.presentation.login
 
 import androidx.activity.compose.BackHandler
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.navigationBarsPadding
@@ -13,6 +14,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.Dp
@@ -27,10 +29,13 @@ import com.yapp.breake.core.designsystem.theme.LocalPadding
 import com.yapp.breake.core.navigation.compositionlocal.LocalMainAction
 import com.yapp.breake.core.navigation.compositionlocal.LocalNavigatorAction
 import com.yapp.breake.core.ui.SnackBarState
+import com.yapp.breake.presentation.login.component.LoginNoticeText
 import com.yapp.breake.presentation.login.model.LoginNavState.NavigateToHome
 import com.yapp.breake.presentation.login.model.LoginNavState.NavigateToOnboarding
 import com.yapp.breake.presentation.login.model.LoginNavState.NavigateToPermission
+import com.yapp.breake.presentation.login.model.LoginNavState.NavigateToPrivacyPolicy
 import com.yapp.breake.presentation.login.model.LoginNavState.NavigateToSignup
+import com.yapp.breake.presentation.login.model.LoginNavState.NavigateToTermsOfService
 import com.yapp.breake.presentation.login.model.LoginUiState
 
 @Composable
@@ -68,6 +73,8 @@ internal fun LoginRoute(viewModel: LoginViewModel = hiltViewModel()) {
 	LaunchedEffect(true) {
 		viewModel.navigationFlow.collect { navigation ->
 			when (navigation) {
+				NavigateToPrivacyPolicy -> navAction.navigateToPrivacy()
+				NavigateToTermsOfService -> navAction.navigateToTerms()
 				NavigateToHome -> navAction.navigateToHome(
 					navOptions = navAction.getNavOptionsClearingBackStack(),
 				)
@@ -80,6 +87,8 @@ internal fun LoginRoute(viewModel: LoginViewModel = hiltViewModel()) {
 
 	LoginScreen(
 		padding = padding,
+		onPrivacyClick = viewModel::showPrivacyPolicy,
+		onTermsClick = viewModel::showTermsOfService,
 		onLoginClick = viewModel::loginWithKakao,
 	)
 
@@ -95,36 +104,56 @@ internal fun LoginRoute(viewModel: LoginViewModel = hiltViewModel()) {
 @Composable
 fun LoginScreen(
 	padding: Dp,
-	onLoginClick: () -> Unit = {},
+	onPrivacyClick: () -> Unit,
+	onTermsClick: () -> Unit,
+	onLoginClick: () -> Unit,
 ) {
 	ConstraintLayout(
-		modifier = Modifier
-			.fillMaxSize()
-			.padding(horizontal = padding),
+		modifier = Modifier.fillMaxSize(),
 	) {
-		val (title, loginButton) = createRefs()
+		val (title, notice, loginButton) = createRefs()
 
 		Box(
 			modifier = Modifier
-				.padding(top = 141.dp)
 				.constrainAs(title) {
 					top.linkTo(parent.top)
 					start.linkTo(parent.start)
 					end.linkTo(parent.end)
 				},
-			contentAlignment = Alignment.Center,
+			contentAlignment = Alignment.TopCenter,
 		) {
+			Image(
+				modifier = Modifier
+					.align(Alignment.TopCenter)
+					.padding(bottom = 8.dp),
+				painter = painterResource(R.drawable.img_login),
+				contentDescription = null,
+			)
 
 			Text(
 				text = stringResource(R.string.login_main_message),
+				modifier = Modifier.align(Alignment.BottomCenter),
 				textAlign = TextAlign.Center,
 				style = BrakeTheme.typography.subtitle22SB,
 			)
 		}
 
+		LoginNoticeText(
+			modifier = Modifier
+				.constrainAs(notice) {
+					bottom.linkTo(loginButton.top, margin = 20.dp)
+					start.linkTo(parent.start)
+					end.linkTo(parent.end)
+				}
+				.padding(horizontal = padding),
+			onPrivacyClick = onPrivacyClick,
+			onTermsClick = onTermsClick,
+		)
+
 		KakaoLoginButton(
 			modifier = Modifier
 				.navigationBarsPadding()
+				.padding(horizontal = padding)
 				.padding(bottom = 24.dp)
 				.widthIn(max = 400.dp)
 				.constrainAs(loginButton) {

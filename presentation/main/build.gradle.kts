@@ -17,6 +17,7 @@ dependencies {
 	implementation(projects.presentation.login)
 	implementation(projects.presentation.signup)
 	implementation(projects.presentation.onboarding)
+	implementation(projects.presentation.legal)
 	implementation(projects.presentation.permission)
 	implementation(projects.presentation.home)
 	implementation(projects.presentation.report)
