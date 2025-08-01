@@ -8,4 +8,10 @@ interface SubRoute : Route {
 
 	@Serializable
 	data object Nickname : SubRoute
+
+	@Serializable
+	data object Privacy : SubRoute
+
+	@Serializable
+	data object Terms : SubRoute
 }

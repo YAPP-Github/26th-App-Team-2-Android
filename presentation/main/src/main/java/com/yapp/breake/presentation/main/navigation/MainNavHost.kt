@@ -5,6 +5,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.navigation.compose.NavHost
 import com.yapp.breake.presentation.home.navigation.homeNavGraph
+import com.yapp.breake.presentation.legal.navigation.legalNavGraph
 import com.yapp.breake.presentation.login.navigation.loginNavGraph
 import com.yapp.breake.presentation.nickname.navigation.nicknameNavGraph
 import com.yapp.breake.presentation.onboarding.navigation.onboardingNavGraph
@@ -31,6 +32,7 @@ internal fun MainNavHost(
 		loginNavGraph()
 		signupNavGraph()
 		onboardingNavGraph()
+		legalNavGraph()
 		permissionNavGraph()
 		reportNavGraph(padding = padding)
 		homeNavGraph(padding = padding)

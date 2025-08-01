@@ -13,6 +13,8 @@ import com.yapp.breake.core.navigation.action.NavigatorAction
 import com.yapp.breake.core.navigation.route.MainTabRoute
 import com.yapp.breake.core.navigation.route.Route
 import com.yapp.breake.presentation.home.navigation.navigateToHome
+import com.yapp.breake.presentation.legal.navigation.navigateToPrivacy
+import com.yapp.breake.presentation.legal.navigation.navigateToTerms
 import com.yapp.breake.presentation.login.navigation.navigateToLogin
 import com.yapp.breake.presentation.nickname.navigation.navigateToNickname
 import com.yapp.breake.presentation.onboarding.navigation.navigateToComplete
@@ -55,6 +57,14 @@ internal class MainNavigator(
 
 			override fun navigateToGuide(navOptions: NavOptions?) =
 				navController.navigateToGuide(navOptions)
+
+			override fun navigateToPrivacy(navOptions: NavOptions?) {
+				navController.navigateToPrivacy(navOptions)
+			}
+
+			override fun navigateToTerms(navOptions: NavOptions?) {
+				navController.navigateToTerms(navOptions)
+			}
 
 			override fun navigateToComplete(navOptions: NavOptions?) =
 				navController.navigateToComplete(navOptions)
