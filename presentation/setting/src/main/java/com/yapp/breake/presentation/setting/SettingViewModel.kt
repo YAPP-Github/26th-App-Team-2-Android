@@ -62,6 +62,18 @@ class SettingViewModel @Inject constructor(
 		}
 	}
 
+	fun showPrivacyPolicy() {
+		viewModelScope.launch {
+			_navigationFlow.emit(SettingEffect.NavigateToPrivacyPolicy)
+		}
+	}
+
+	fun showTermsOfService() {
+		viewModelScope.launch {
+			_navigationFlow.emit(SettingEffect.NavigateToTermsOfService)
+		}
+	}
+
 	fun dismissDialog() {
 		viewModelScope.launch {
 			_uiState.value = SettingUiState.SettingIdle(

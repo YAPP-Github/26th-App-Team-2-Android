@@ -10,4 +10,10 @@ interface SettingEffect {
 
 	@Immutable
 	data object NavigateToNickname : SettingEffect
+
+	@Immutable
+	data object NavigateToTermsOfService : SettingEffect
+
+	@Immutable
+	data object NavigateToPrivacyPolicy : SettingEffect
 }

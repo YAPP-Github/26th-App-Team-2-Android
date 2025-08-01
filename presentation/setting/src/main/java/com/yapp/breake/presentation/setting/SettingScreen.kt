@@ -74,13 +74,12 @@ fun SettingRoute(
 	LaunchedEffect(true) {
 		viewModel.navigationFlow.collect {
 			when (it) {
-				is SettingEffect.NavigateToLogin -> {
-					navAction.navigateToLogin(navAction.getNavOptionsClearingBackStack())
-				}
-
-				is SettingEffect.NavigateToNickname -> {
-					navAction.navigateToNickname()
-				}
+				is SettingEffect.NavigateToLogin -> navAction.navigateToLogin(
+					navAction.getNavOptionsClearingBackStack(),
+				)
+				is SettingEffect.NavigateToNickname -> navAction.navigateToNickname()
+				is SettingEffect.NavigateToPrivacyPolicy -> navAction.navigateToPrivacy()
+				is SettingEffect.NavigateToTermsOfService -> navAction.navigateToTerms()
 			}
 		}
 	}
@@ -132,6 +131,8 @@ fun SettingRoute(
 		paddingValue = paddingValue,
 		uiState = uiState,
 		onChangeProfile = viewModel::modifyNickname,
+		onPrivacyClick = viewModel::showPrivacyPolicy,
+		onTermsClick = viewModel::showTermsOfService,
 		onDeleteAccount = viewModel::tryDeleteAccount,
 		onLogout = viewModel::tryLogout,
 	)
@@ -143,6 +144,8 @@ fun SettingScreen(
 	paddingValue: PaddingValues,
 	uiState: SettingUiState,
 	onChangeProfile: () -> Unit,
+	onPrivacyClick: () -> Unit,
+	onTermsClick: () -> Unit,
 	onDeleteAccount: () -> Unit,
 	onLogout: () -> Unit,
 ) {
@@ -229,12 +232,12 @@ fun SettingScreen(
 		) {
 			SettingRow(
 				id = R.string.setting_privacy_policy,
-				onClick = {},
+				onClick = onPrivacyClick,
 			)
 			HorizontalDivider(thickness = 1.dp, color = Gray800)
 			SettingRow(
 				id = R.string.setting_terms_of_service,
-				onClick = {},
+				onClick = onTermsClick,
 			)
 			HorizontalDivider(thickness = 1.dp, color = Gray800)
 			SettingRow(
