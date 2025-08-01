@@ -43,10 +43,10 @@ import com.yapp.breake.core.designsystem.theme.LocalPadding
 import com.yapp.breake.core.designsystem.theme.White
 import com.yapp.breake.core.navigation.compositionlocal.LocalMainAction
 import com.yapp.breake.core.navigation.compositionlocal.LocalNavigatorAction
+import com.yapp.breake.core.ui.SnackBarState
 import com.yapp.breake.presentation.setting.component.DeleteWarningDialog
 import com.yapp.breake.presentation.setting.component.LogoutWarningDialog
 import com.yapp.breake.presentation.setting.model.SettingEffect
-import com.yapp.breake.presentation.setting.model.SettingSnackBarState
 import com.yapp.breake.presentation.setting.model.SettingUiState
 
 @Composable
@@ -88,13 +88,13 @@ fun SettingRoute(
 	LaunchedEffect(true) {
 		viewModel.snackBarFlow.collect {
 			when (it) {
-				is SettingSnackBarState.Success -> {
+				is SnackBarState.Success -> {
 					mainAction.onShowSuccessMessage(
 						message = it.uiString.asString(context = context),
 					)
 				}
 
-				is SettingSnackBarState.Error -> {
+				is SnackBarState.Error -> {
 					mainAction.onShowErrorMessage(
 						message = it.uiString.asString(context = context),
 					)

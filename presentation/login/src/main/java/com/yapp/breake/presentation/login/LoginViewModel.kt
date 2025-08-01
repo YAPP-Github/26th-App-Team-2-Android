@@ -7,11 +7,11 @@ import com.breake.core.permission.PermissionManager
 import com.breake.core.permission.PermissionType
 import com.yapp.breake.core.model.user.Destination
 import com.yapp.breake.core.model.user.UserStatus
+import com.yapp.breake.core.ui.SnackBarState
 import com.yapp.breake.core.ui.UiString
 import com.yapp.breake.domain.usecase.DecideNextDestinationFromPermissionUseCase
 import com.yapp.breake.domain.usecase.LoginUseCase
 import com.yapp.breake.presentation.login.model.LoginNavState
-import com.yapp.breake.presentation.login.model.LoginSnackBarState
 import com.yapp.breake.presentation.login.model.LoginUiState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Job
@@ -34,7 +34,7 @@ internal class LoginViewModel @Inject constructor(
 	private val _uiState = MutableStateFlow<LoginUiState>(LoginUiState.LoginIdle)
 	val uiState = _uiState.asStateFlow()
 
-	private val _snackBarFlow = MutableSharedFlow<LoginSnackBarState>()
+	private val _snackBarFlow = MutableSharedFlow<SnackBarState>()
 	val snackBarFlow = _snackBarFlow.asSharedFlow()
 
 	private val _navigationFlow = MutableSharedFlow<LoginNavState>()
@@ -68,7 +68,7 @@ internal class LoginViewModel @Inject constructor(
 				onError = { throwable ->
 					_uiState.value = LoginUiState.LoginIdle
 					_snackBarFlow.emit(
-						LoginSnackBarState.Error(
+						SnackBarState.Error(
 							uiString = UiString.ResourceString(
 								resId = R.string.login_snackbar_login_error,
 							),
@@ -92,7 +92,7 @@ internal class LoginViewModel @Inject constructor(
 					UserStatus.INACTIVE -> {
 						_uiState.value = LoginUiState.LoginIdle
 						_snackBarFlow.emit(
-							LoginSnackBarState.Error(
+							SnackBarState.Error(
 								uiString = UiString.ResourceString(
 									resId = R.string.login_snackbar_login_error_inactive,
 								),
@@ -116,7 +116,7 @@ internal class LoginViewModel @Inject constructor(
 		viewModelScope.launch {
 			_uiState.value = LoginUiState.LoginIdle
 			_snackBarFlow.emit(
-				LoginSnackBarState.Error(
+				SnackBarState.Error(
 					uiString = UiString.DynamicString(message),
 				),
 			)
@@ -127,7 +127,7 @@ internal class LoginViewModel @Inject constructor(
 		val status = decideDestinationUseCase(
 			onError = { error ->
 				_snackBarFlow.emit(
-					LoginSnackBarState.Error(
+					SnackBarState.Error(
 						uiString = UiString.ResourceString(
 							resId = R.string.login_snackbar_next_destination_error,
 						),

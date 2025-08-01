@@ -36,10 +36,10 @@ import com.yapp.breake.core.designsystem.component.TopAppbarType
 import com.yapp.breake.core.designsystem.theme.LocalPadding
 import com.yapp.breake.core.navigation.compositionlocal.LocalMainAction
 import com.yapp.breake.core.navigation.compositionlocal.LocalNavigatorAction
+import com.yapp.breake.core.ui.SnackBarState
 import com.yapp.breake.core.ui.isValidInput
 import com.yapp.breake.presentation.nickname.component.SettingNicknameTextField
 import com.yapp.breake.presentation.nickname.model.NicknameNavState
-import com.yapp.breake.presentation.nickname.model.NicknameSnackBarState
 import com.yapp.breake.presentation.nickname.model.NicknameUiState
 import com.yapp.breake.presentation.setting.R
 import com.yapp.breake.core.designsystem.R as DesignSystemR
@@ -87,13 +87,13 @@ fun NicknameRoute(
 	LaunchedEffect(true) {
 		viewModel.snackBarFlow.collect {
 			when (it) {
-				is NicknameSnackBarState.Success -> {
+				is SnackBarState.Success -> {
 					mainAction.onShowSuccessMessage(
 						message = it.uiString.asString(context = context),
 					)
 				}
 
-				is NicknameSnackBarState.Error -> {
+				is SnackBarState.Error -> {
 					mainAction.onShowErrorMessage(
 						message = it.uiString.asString(context = context),
 					)

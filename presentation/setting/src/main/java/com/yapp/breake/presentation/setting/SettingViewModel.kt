@@ -3,12 +3,12 @@ package com.yapp.breake.presentation.setting
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.yapp.breake.core.model.user.Destination
+import com.yapp.breake.core.ui.SnackBarState
 import com.yapp.breake.core.ui.UiString
 import com.yapp.breake.domain.usecase.DeleteAccountUseCase
 import com.yapp.breake.domain.usecase.GetNicknameUseCase
 import com.yapp.breake.domain.usecase.LogoutUseCase
 import com.yapp.breake.presentation.setting.model.SettingEffect
-import com.yapp.breake.presentation.setting.model.SettingSnackBarState
 import com.yapp.breake.presentation.setting.model.SettingUiState
 import com.yapp.breake.presentation.setting.model.SettingUser
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -31,7 +31,7 @@ class SettingViewModel @Inject constructor(
 
 	private var deleteJob: Job? = null
 
-	private val _snackBarFlow = MutableSharedFlow<SettingSnackBarState>()
+	private val _snackBarFlow = MutableSharedFlow<SnackBarState>()
 	val snackBarFlow = _snackBarFlow.asSharedFlow()
 
 	private val _uiState = MutableStateFlow<SettingUiState>(SettingUiState.SettingIdle())
@@ -87,7 +87,7 @@ class SettingViewModel @Inject constructor(
 			val dest = logoutUseCase(
 				onError = {
 					_snackBarFlow.emit(
-						SettingSnackBarState.Error(
+						SnackBarState.Error(
 							uiString = UiString.ResourceString(R.string.setting_snackbar_logout_error),
 						),
 					)
@@ -123,7 +123,7 @@ class SettingViewModel @Inject constructor(
 			val dest = deleteAccountUseCase(
 				onError = {
 					_snackBarFlow.emit(
-						SettingSnackBarState.Error(
+						SnackBarState.Error(
 							uiString = UiString.ResourceString(R.string.setting_snackbar_delete_error),
 						),
 					)
@@ -136,7 +136,7 @@ class SettingViewModel @Inject constructor(
 					appInfo = _uiState.value.appInfo,
 				)
 				_snackBarFlow.emit(
-					SettingSnackBarState.Success(
+					SnackBarState.Success(
 						uiString = UiString.ResourceString(R.string.setting_snackbar_delete_success),
 					),
 				)
@@ -156,7 +156,7 @@ class SettingViewModel @Inject constructor(
 			}
 			viewModelScope.launch {
 				_snackBarFlow.emit(
-					SettingSnackBarState.Error(
+					SnackBarState.Error(
 						uiString = UiString.ResourceString(R.string.setting_snackbar_delete_cancel),
 					),
 				)
