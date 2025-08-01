@@ -113,6 +113,11 @@ timber = "5.0.1"
 # https://github.com/skydoves/sandwich/releases
 sandwich = "2.1.2"   # 네트워크 응답을 처리하기 위한 라이브러리
 
+## Browser
+# https://developer.android.com/jetpack/androidx/releases/browser
+# 2025/08/01 기준 1.9.0 버전은 API 36만 지원
+androidxBrowser = "1.8.0"  # WebView 대신 Chrome Custom Tabs 사용
+
 ## Test
 # https://github.com/junit-team/junit4
 junit4 = "4.13.2"
@@ -247,6 +252,9 @@ glance-tools-appwidget-host = { group = "com.google.android.glance.tools", name 
 
 # Sandwich
 sandwich-retrofit = { group = "com.github.skydoves", name = "sandwich-retrofit", version.ref = "sandwich" }
+
+# Chrome Custom Tabs
+androidx-browser = { group = "androidx.browser", name = "browser", version.ref = "androidxBrowser" }
 
 # verify
 verify-detektFormatting = { module = "io.gitlab.arturbosch.detekt:detekt-formatting", version.ref = "detekt" }

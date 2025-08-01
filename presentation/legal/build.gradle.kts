@@ -7,3 +7,7 @@ plugins {
 android {
 	setNamespace("presentation.legal")
 }
+
+dependencies {
+	implementation(libs.androidx.browser)
+}
