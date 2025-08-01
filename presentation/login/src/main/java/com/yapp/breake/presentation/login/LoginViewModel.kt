@@ -42,6 +42,18 @@ internal class LoginViewModel @Inject constructor(
 
 	private var loginJob: Job? = null
 
+	fun showPrivacyPolicy() {
+		viewModelScope.launch {
+			_navigationFlow.emit(LoginNavState.NavigateToPrivacyPolicy)
+		}
+	}
+
+	fun showTermsOfService() {
+		viewModelScope.launch {
+			_navigationFlow.emit(LoginNavState.NavigateToTermsOfService)
+		}
+	}
+
 	fun loginWithKakao() {
 		viewModelScope.launch {
 			_uiState.value = LoginUiState.LoginOnWebView
