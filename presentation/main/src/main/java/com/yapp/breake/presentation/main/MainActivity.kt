@@ -1,7 +1,9 @@
 package com.yapp.breake.presentation.main
 
 import android.os.Bundle
+import android.widget.Toast
 import androidx.activity.ComponentActivity
+import androidx.activity.compose.BackHandler
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
@@ -13,8 +15,11 @@ import androidx.compose.material3.SnackbarDuration
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableLongStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.window.Popup
@@ -52,7 +57,23 @@ class MainActivity : ComponentActivity() {
 			val snackBarHostState = remember { SnackbarHostState() }
 
 			val mainAction = object : MainAction {
-				override fun onFinish() = finish()
+				@Composable override fun OnFinishBackHandler() {
+					var backPressedTime by remember { mutableLongStateOf(0L) }
+					BackHandler {
+						if (System.currentTimeMillis() - backPressedTime <= 2000L) {
+							finish()
+						} else {
+							Toast.makeText(
+								this@MainActivity,
+								this@MainActivity.getString(
+									R.string.exit_message,
+								),
+								Toast.LENGTH_SHORT,
+							).show()
+						}
+						backPressedTime = System.currentTimeMillis()
+					}
+				}
 
 				@Composable override fun OnShowLoading() {
 					Popup {

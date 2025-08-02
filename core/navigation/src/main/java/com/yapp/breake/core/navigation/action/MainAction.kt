@@ -3,7 +3,7 @@ package com.yapp.breake.core.navigation.action
 import androidx.compose.runtime.Composable
 
 interface MainAction {
-	fun onFinish()
+	@Composable fun OnFinishBackHandler()
 
 	@Composable fun OnShowLoading()
 	fun onShowErrorMessage(message: String)
