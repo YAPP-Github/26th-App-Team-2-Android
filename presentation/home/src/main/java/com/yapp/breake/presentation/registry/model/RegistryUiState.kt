@@ -13,7 +13,6 @@ sealed class RegistryUiState(
 ) {
 	@Stable
 	data class App(
-		val scrollIndex: Int = 0,
 		val searchingText: String = "",
 		override val groupId: Long,
 		override val groupName: String,
