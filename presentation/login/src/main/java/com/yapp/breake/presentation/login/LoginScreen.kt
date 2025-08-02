@@ -46,14 +46,13 @@ internal fun LoginRoute(viewModel: LoginViewModel = hiltViewModel()) {
 	val mainAction = LocalMainAction.current
 	val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
-	BackHandler {
-		if (uiState == LoginUiState.LoginLoading) {
-			viewModel.loginCancel()
-		}
-	}
-
 	if (uiState == LoginUiState.LoginLoading) {
 		mainAction.OnShowLoading()
+		BackHandler {
+			viewModel.loginCancel()
+		}
+	} else {
+		mainAction.OnFinishBackHandler()
 	}
 
 	LaunchedEffect(true) {
