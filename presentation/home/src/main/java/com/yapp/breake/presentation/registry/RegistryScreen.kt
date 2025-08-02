@@ -101,9 +101,10 @@ fun RegistryRoute(
 			AppRegistryScreen(
 				padding = padding,
 				registryUiState = registryUiState as RegistryUiState.App,
+				lazyColumnIndexFlow = viewModel.lazyColumnIndexFlow,
 				focusManager = focusManager,
 				onSearchTextChange = viewModel::updateSearchingText,
-				onSearchApp = viewModel::searchApp,
+				onSearchApp = { viewModel.searchApp(shouldShowNotFound = true) },
 				onSelectApp = viewModel::selectApp,
 				onBackClick = viewModel::cancelSelectingApps,
 				onRegisterApps = viewModel::completeSelectingApps,

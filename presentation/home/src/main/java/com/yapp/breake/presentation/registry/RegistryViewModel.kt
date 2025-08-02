@@ -86,6 +86,9 @@ class RegistryViewModel @Inject constructor(
 	private val _modalFlow = MutableStateFlow<RegistryModalState>(RegistryModalState.Idle)
 	val registryModalFlow = _modalFlow.asStateFlow()
 
+	private val _lazyColumnIndexFlow = MutableSharedFlow<Int>()
+	val lazyColumnIndexFlow = _lazyColumnIndexFlow.asSharedFlow()
+
 	// ------------- Group Registry -------------
 	fun updateGroupName(groupName: String) {
 		val currentUiState = _registryUiState.value
@@ -203,9 +206,10 @@ class RegistryViewModel @Inject constructor(
 		_registryUiState.value = currentUiState.copy(
 			searchingText = searchingText,
 		)
+		searchApp(shouldShowNotFound = false)
 	}
 
-	fun searchApp() {
+	fun searchApp(shouldShowNotFound: Boolean) {
 		val currentUiState = _registryUiState.value as RegistryUiState.App
 		val query = currentUiState.searchingText
 
@@ -218,16 +222,21 @@ class RegistryViewModel @Inject constructor(
 
 		// 결과가 없으면 상태 갱신하지 않음
 		if (matchedIndex == -1) {
-			viewModelScope.launch {
-				_snackBarFlow.emit(
-					RegistrySnackBarState.Error(
-						UiString.ResourceString(R.string.registry_app_error_message, query),
-					),
-				)
+			// ime 에서 완료 버튼을 통해 검색을 시도했을 때만 에러 스낵바 표시
+			if (shouldShowNotFound) {
+				viewModelScope.launch {
+					_snackBarFlow.emit(
+						RegistrySnackBarState.Error(
+							UiString.ResourceString(R.string.registry_app_error_message, query),
+						),
+					)
+				}
 			}
 			return
 		}
-		_registryUiState.value = currentUiState.copy(scrollIndex = matchedIndex)
+		viewModelScope.launch {
+			_lazyColumnIndexFlow.emit(matchedIndex)
+		}
 	}
 
 	fun selectApp(selectedIndex: Int) {
