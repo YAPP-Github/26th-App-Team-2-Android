@@ -64,6 +64,8 @@ fun SettingRoute(
 	BackHandler {
 		if (uiState is SettingUiState.SettingDeletingAccount) {
 			viewModel.cancelDeletingAccount()
+		} else {
+			navAction.popBackStack()
 		}
 	}
 
