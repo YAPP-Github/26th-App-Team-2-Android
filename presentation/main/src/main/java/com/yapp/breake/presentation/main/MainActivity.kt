@@ -31,6 +31,7 @@ import com.yapp.breake.core.navigation.action.MainAction
 import com.yapp.breake.core.navigation.compositionlocal.LocalMainAction
 import com.yapp.breake.core.navigation.compositionlocal.LocalNavigatorAction
 import com.yapp.breake.core.navigation.route.Route
+import com.yapp.breake.presentation.main.component.LogoutWarningDialog
 import com.yapp.breake.presentation.main.navigation.MainNavigator
 import com.yapp.breake.presentation.main.navigation.rememberMainNavigator
 import dagger.hilt.android.AndroidEntryPoint
@@ -73,6 +74,17 @@ class MainActivity : ComponentActivity() {
 						}
 						backPressedTime = System.currentTimeMillis()
 					}
+				}
+
+				@Composable
+				override fun OnShowLogoutDialog(
+					onConfirm: () -> Unit,
+					onDismiss: () -> Unit,
+				) {
+					LogoutWarningDialog(
+						onConfirm = onConfirm,
+						onDismissRequest = onDismiss,
+					)
 				}
 
 				@Composable override fun OnShowLoading() {
