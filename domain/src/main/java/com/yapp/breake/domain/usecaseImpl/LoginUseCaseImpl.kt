@@ -2,6 +2,7 @@ package com.yapp.breake.domain.usecaseImpl
 
 import com.yapp.breake.core.model.user.UserStatus
 import com.yapp.breake.domain.repository.NicknameRepository
+import com.yapp.breake.domain.repository.SessionRepository
 import com.yapp.breake.domain.repository.TokenRepository
 import com.yapp.breake.domain.usecase.LoginUseCase
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -18,6 +19,7 @@ import javax.inject.Named
 class LoginUseCaseImpl @Inject constructor(
 	@Named("TokenRepo") private val tokenRepository: TokenRepository,
 	@Named("NicknameRepo") private val nicknameRepository: NicknameRepository,
+	private val sessionRepository: SessionRepository,
 ) : LoginUseCase {
 
 	@OptIn(ExperimentalCoroutinesApi::class)
@@ -40,6 +42,11 @@ class LoginUseCaseImpl @Inject constructor(
 						onError = onError,
 					)
 				}
+			} else {
+				sessionRepository.updateLocalOnboardingFlag(
+					isComplete = false,
+					onError = onError,
+				)
 			}
 			userToken.status
 		}
