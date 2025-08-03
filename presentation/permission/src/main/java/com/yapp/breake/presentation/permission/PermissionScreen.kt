@@ -112,7 +112,7 @@ fun PermissionRoute(
 
 				PermissionNavState.NavigateToMain -> {
 					navAction.navigateToHome(
-						navOptions = navAction.getNavOptionsClearingBackStack(),
+						navOptions = navProvider.getNavOptionsClearingBackStack(),
 					)
 				}
 

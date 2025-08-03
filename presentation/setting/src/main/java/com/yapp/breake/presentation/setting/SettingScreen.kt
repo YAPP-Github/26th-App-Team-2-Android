@@ -43,6 +43,7 @@ import com.yapp.breake.core.designsystem.theme.LocalPadding
 import com.yapp.breake.core.designsystem.theme.White
 import com.yapp.breake.core.navigation.compositionlocal.LocalMainAction
 import com.yapp.breake.core.navigation.compositionlocal.LocalNavigatorAction
+import com.yapp.breake.core.navigation.compositionlocal.LocalNavigatorProvider
 import com.yapp.breake.core.ui.SnackBarState
 import com.yapp.breake.presentation.setting.component.DeleteWarningDialog
 import com.yapp.breake.presentation.setting.model.SettingEffect
@@ -58,6 +59,7 @@ fun SettingRoute(
 	val screenHorizontalPadding = LocalPadding.current.screenPaddingHorizontal
 	val context = LocalContext.current
 	val navAction = LocalNavigatorAction.current
+	val navProvider = LocalNavigatorProvider.current
 	val mainAction = LocalMainAction.current
 
 	BackHandler {
@@ -76,7 +78,7 @@ fun SettingRoute(
 		viewModel.navigationFlow.collect {
 			when (it) {
 				is SettingEffect.NavigateToLogin -> navAction.navigateToLogin(
-					navAction.getNavOptionsClearingBackStack(),
+					navProvider.getNavOptionsClearingBackStack(),
 				)
 
 				is SettingEffect.NavigateToNickname -> navAction.navigateToNickname()

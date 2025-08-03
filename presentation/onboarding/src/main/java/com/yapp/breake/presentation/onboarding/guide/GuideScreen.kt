@@ -49,6 +49,7 @@ import com.yapp.breake.core.designsystem.theme.LocalPadding
 import com.yapp.breake.core.designsystem.theme.White
 import com.yapp.breake.core.navigation.compositionlocal.LocalMainAction
 import com.yapp.breake.core.navigation.compositionlocal.LocalNavigatorAction
+import com.yapp.breake.core.navigation.compositionlocal.LocalNavigatorProvider
 import com.yapp.breake.presentation.onboarding.R
 import com.yapp.breake.presentation.onboarding.guide.model.GuideModalState
 import com.yapp.breake.presentation.onboarding.guide.model.GuideNavState
@@ -64,6 +65,7 @@ fun GuideRoute(
 	val screenWidth = LocalConfiguration.current.screenWidthDp.dp
 	val screenHorizontalPadding = LocalPadding.current.screenPaddingHorizontal
 	val navAction = LocalNavigatorAction.current
+	val navProvider = LocalNavigatorProvider.current
 	val mainAction = LocalMainAction.current
 	val modalState by viewModel.modalFlow.collectAsStateWithLifecycle()
 
@@ -86,7 +88,7 @@ fun GuideRoute(
 		viewModel.navigationFlow.collect { effect ->
 			when (effect) {
 				GuideNavState.NavigateToLogin -> navAction.navigateToLogin(
-					navAction.getNavOptionsClearingBackStack(),
+					navProvider.getNavOptionsClearingBackStack(),
 				)
 
 				GuideNavState.NavigateToPermission -> navAction.navigateToPermission()

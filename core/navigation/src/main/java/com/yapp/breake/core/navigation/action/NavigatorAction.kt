@@ -3,7 +3,6 @@ package com.yapp.breake.core.navigation.action
 import androidx.navigation.NavOptions
 
 interface NavigatorAction {
-	fun getNavOptionsClearingBackStack(): NavOptions
 	fun popBackStack(navOptions: NavOptions? = null)
 	fun navigateToLogin(navOptions: NavOptions? = null)
 	fun navigateToSignup(navOptions: NavOptions? = null)

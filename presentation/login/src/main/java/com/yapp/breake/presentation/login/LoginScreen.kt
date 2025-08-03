@@ -28,6 +28,7 @@ import com.yapp.breake.core.designsystem.theme.BrakeTheme
 import com.yapp.breake.core.designsystem.theme.LocalPadding
 import com.yapp.breake.core.navigation.compositionlocal.LocalMainAction
 import com.yapp.breake.core.navigation.compositionlocal.LocalNavigatorAction
+import com.yapp.breake.core.navigation.compositionlocal.LocalNavigatorProvider
 import com.yapp.breake.core.ui.SnackBarState
 import com.yapp.breake.presentation.login.component.LoginNoticeText
 import com.yapp.breake.presentation.login.model.LoginNavState.NavigateToHome
@@ -43,6 +44,7 @@ internal fun LoginRoute(viewModel: LoginViewModel = hiltViewModel()) {
 	val context = LocalContext.current
 	val padding = LocalPadding.current.screenPaddingHorizontal
 	val navAction = LocalNavigatorAction.current
+	val navProvider = LocalNavigatorProvider.current
 	val mainAction = LocalMainAction.current
 	val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
@@ -75,7 +77,7 @@ internal fun LoginRoute(viewModel: LoginViewModel = hiltViewModel()) {
 				NavigateToPrivacyPolicy -> navAction.navigateToPrivacy()
 				NavigateToTermsOfService -> navAction.navigateToTerms()
 				NavigateToHome -> navAction.navigateToHome(
-					navOptions = navAction.getNavOptionsClearingBackStack(),
+					navOptions = navProvider.getNavOptionsClearingBackStack(),
 				)
 				NavigateToSignup -> navAction.navigateToSignup()
 				NavigateToOnboarding -> navAction.navigateToGuide()

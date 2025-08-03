@@ -41,15 +41,6 @@ internal class MainNavigator(
 
 	fun navigatorAction(): NavigatorAction {
 		return object : NavigatorAction {
-			override fun getNavOptionsClearingBackStack(): NavOptions {
-				return navOptions {
-					popUpTo(navController.graph.id) {
-						inclusive = true
-					}
-					launchSingleTop = true
-				}
-			}
-
 			override fun popBackStack(navOptions: NavOptions?) = popBackStackIfNotHome()
 			override fun navigateToLogin(navOptions: NavOptions?) =
 				navController.navigateToLogin(navOptions)
