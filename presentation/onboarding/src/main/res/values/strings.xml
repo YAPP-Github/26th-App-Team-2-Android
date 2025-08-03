@@ -3,6 +3,8 @@
     <string name="guide_continue_button_next">다음</string>
 	<string name="guide_continue_button_confirm">확인</string>
 
+	<string name="onboarding_snackbar_logout_error">로그아웃 중 오류가 발생했습니다.</string>
+
 	<string name="complete_title">반가워요</string>
 	<string name="complete_description">목표를 세우고 지키는\n새로운 일상을 경험해보세요"</string>
 	<string name="complete_button">시작하기</string>
