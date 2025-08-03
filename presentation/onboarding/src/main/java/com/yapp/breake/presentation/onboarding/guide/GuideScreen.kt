@@ -50,7 +50,7 @@ import com.yapp.breake.core.designsystem.theme.White
 import com.yapp.breake.core.navigation.compositionlocal.LocalMainAction
 import com.yapp.breake.core.navigation.compositionlocal.LocalNavigatorAction
 import com.yapp.breake.presentation.onboarding.R
-import com.yapp.breake.presentation.onboarding.guide.model.GuideEffect
+import com.yapp.breake.presentation.onboarding.guide.model.GuideModalState
 import com.yapp.breake.presentation.onboarding.guide.model.GuideNavState
 import kotlinx.collections.immutable.persistentListOf
 import kotlinx.coroutines.launch
@@ -73,6 +73,13 @@ fun GuideRoute(
 				message = it.asString(context = context),
 			)
 		}
+	}
+
+	if (modalState is GuideModalState.ShowLogoutModal) {
+		mainAction.OnShowLogoutDialog(
+			onConfirm = viewModel::logout,
+			onDismiss = viewModel::dismissModal,
+		)
 	}
 
 	LaunchedEffect(true) {
