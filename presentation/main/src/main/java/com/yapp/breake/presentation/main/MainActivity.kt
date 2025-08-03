@@ -30,6 +30,7 @@ import com.yapp.breake.core.designsystem.theme.Gray900
 import com.yapp.breake.core.navigation.action.MainAction
 import com.yapp.breake.core.navigation.compositionlocal.LocalMainAction
 import com.yapp.breake.core.navigation.compositionlocal.LocalNavigatorAction
+import com.yapp.breake.core.navigation.compositionlocal.LocalNavigatorProvider
 import com.yapp.breake.core.navigation.route.Route
 import com.yapp.breake.presentation.main.component.LogoutWarningDialog
 import com.yapp.breake.presentation.main.navigation.MainNavigator
@@ -126,6 +127,7 @@ class MainActivity : ComponentActivity() {
 			CompositionLocalProvider(
 				LocalMainAction provides mainAction,
 				LocalNavigatorAction provides navigator.navigatorAction(),
+				LocalNavigatorProvider provides navigator.navigatorProvider(),
 			) {
 				BrakeTheme {
 					MainScreen(
