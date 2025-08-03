@@ -45,7 +45,6 @@ import com.yapp.breake.core.navigation.compositionlocal.LocalMainAction
 import com.yapp.breake.core.navigation.compositionlocal.LocalNavigatorAction
 import com.yapp.breake.core.ui.SnackBarState
 import com.yapp.breake.presentation.setting.component.DeleteWarningDialog
-import com.yapp.breake.presentation.setting.component.LogoutWarningDialog
 import com.yapp.breake.presentation.setting.model.SettingEffect
 import com.yapp.breake.presentation.setting.model.SettingUiState
 
@@ -79,6 +78,7 @@ fun SettingRoute(
 				is SettingEffect.NavigateToLogin -> navAction.navigateToLogin(
 					navAction.getNavOptionsClearingBackStack(),
 				)
+
 				is SettingEffect.NavigateToNickname -> navAction.navigateToNickname()
 				is SettingEffect.NavigateToPrivacyPolicy -> navAction.navigateToPrivacy()
 				is SettingEffect.NavigateToTermsOfService -> navAction.navigateToTerms()
@@ -106,12 +106,12 @@ fun SettingRoute(
 
 	when (uiState) {
 		is SettingUiState.SettingLogoutWarning -> {
-			LogoutWarningDialog(
-				onDismissRequest = viewModel::dismissDialog,
+			mainAction.OnShowLogoutDialog(
 				onConfirm = {
 					viewModel.dismissDialog()
 					viewModel.logout()
 				},
+				onDismiss = viewModel::dismissDialog,
 			)
 		}
 
