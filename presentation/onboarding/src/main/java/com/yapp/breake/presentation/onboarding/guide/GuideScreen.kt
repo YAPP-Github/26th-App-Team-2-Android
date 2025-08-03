@@ -36,8 +36,10 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import androidx.compose.runtime.getValue
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.yapp.breake.core.designsystem.component.BrakeTopAppbar
 import com.yapp.breake.core.designsystem.component.LargeButton
 import com.yapp.breake.core.designsystem.component.VerticalSpacer
@@ -49,6 +51,7 @@ import com.yapp.breake.core.navigation.compositionlocal.LocalMainAction
 import com.yapp.breake.core.navigation.compositionlocal.LocalNavigatorAction
 import com.yapp.breake.presentation.onboarding.R
 import com.yapp.breake.presentation.onboarding.guide.model.GuideEffect
+import com.yapp.breake.presentation.onboarding.guide.model.GuideNavState
 import kotlinx.collections.immutable.persistentListOf
 import kotlinx.coroutines.launch
 
@@ -62,6 +65,7 @@ fun GuideRoute(
 	val screenHorizontalPadding = LocalPadding.current.screenPaddingHorizontal
 	val navAction = LocalNavigatorAction.current
 	val mainAction = LocalMainAction.current
+	val modalState by viewModel.modalFlow.collectAsStateWithLifecycle()
 
 	LaunchedEffect(true) {
 		viewModel.snackBarFlow.collect {
@@ -74,11 +78,13 @@ fun GuideRoute(
 	LaunchedEffect(true) {
 		viewModel.navigationFlow.collect { effect ->
 			when (effect) {
-				GuideEffect.NavigateToBack -> navAction.popBackStack()
+				GuideNavState.NavigateToLogin -> navAction.navigateToLogin(
+					navAction.getNavOptionsClearingBackStack(),
+				)
 
-				GuideEffect.NavigateToPermission -> navAction.navigateToPermission()
+				GuideNavState.NavigateToPermission -> navAction.navigateToPermission()
 
-				GuideEffect.NavigateToComplete -> navAction.navigateToComplete()
+				GuideNavState.NavigateToComplete -> navAction.navigateToComplete()
 			}
 		}
 	}
@@ -86,7 +92,7 @@ fun GuideRoute(
 	GuideScreen(
 		screenWidth = screenWidth,
 		screenHorizontalPadding = screenHorizontalPadding,
-		onBackClick = viewModel::popBackStack,
+		onBackClick = viewModel::tryLogout,
 		onNextClick = { viewModel.continueFromGuide(context) },
 	)
 }

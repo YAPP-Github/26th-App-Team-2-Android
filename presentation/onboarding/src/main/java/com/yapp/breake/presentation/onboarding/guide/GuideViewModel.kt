@@ -4,8 +4,12 @@ import android.content.Context
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.breake.core.permission.PermissionManager
+import com.yapp.breake.core.model.user.Destination
 import com.yapp.breake.core.ui.UiString
 import com.yapp.breake.presentation.onboarding.guide.model.GuideEffect
+import com.yapp.breake.domain.usecase.LogoutUseCase
+import com.yapp.breake.presentation.onboarding.R
+import com.yapp.breake.presentation.onboarding.guide.model.GuideNavState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.asSharedFlow
@@ -20,20 +24,39 @@ class GuideViewModel @Inject constructor(
 	val snackBarFlow = _snackBarFlow.asSharedFlow()
 
 	private val _navigationFlow = MutableSharedFlow<GuideEffect>()
+	private val _navigationFlow = MutableSharedFlow<GuideNavState>()
 	val navigationFlow = _navigationFlow.asSharedFlow()
 
 	fun popBackStack() {
+	fun tryLogout() {
+	}
+
+	fun dismissModal() {
+	}
+
+	fun logout() {
 		viewModelScope.launch {
-			_navigationFlow.emit(GuideEffect.NavigateToBack)
+			val dest = logoutUseCase(
+				onError = { error ->
+					_snackBarFlow.emit(
+						UiString.ResourceString(
+							resId = R.string.onboarding_snackbar_logout_error,
+						),
+					)
+				},
+			)
+			if (dest is Destination.Login) {
+				_navigationFlow.emit(GuideNavState.NavigateToLogin)
+			}
 		}
 	}
 
 	fun continueFromGuide(context: Context) {
 		viewModelScope.launch {
 			if (permissionManager.isAllGranted(context)) {
-				_navigationFlow.emit(GuideEffect.NavigateToComplete)
+				_navigationFlow.emit(GuideNavState.NavigateToComplete)
 			} else {
-				_navigationFlow.emit(GuideEffect.NavigateToPermission)
+				_navigationFlow.emit(GuideNavState.NavigateToPermission)
 			}
 		}
 	}
