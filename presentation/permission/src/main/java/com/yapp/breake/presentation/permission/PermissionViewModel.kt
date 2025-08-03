@@ -8,8 +8,8 @@ import com.breake.core.permission.PermissionType
 import com.yapp.breake.core.model.user.Destination
 import com.yapp.breake.core.ui.UiString
 import com.yapp.breake.domain.usecase.DecideNextDestinationFromPermissionUseCase
-import com.yapp.breake.presentation.permission.model.PermissionEffect
-import com.yapp.breake.presentation.permission.model.PermissionEffect.RequestPermission
+import com.yapp.breake.presentation.permission.model.PermissionNavState
+import com.yapp.breake.presentation.permission.model.PermissionNavState.RequestPermission
 import com.yapp.breake.presentation.permission.model.PermissionItem
 import com.yapp.breake.presentation.permission.model.PermissionUiState
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -36,7 +36,7 @@ class PermissionViewModel @Inject constructor(
 		MutableStateFlow<PermissionUiState>(PermissionUiState(permissions = persistentListOf()))
 	val uiState = _uiState.asStateFlow()
 
-	private val _navigationFlow = MutableSharedFlow<PermissionEffect>()
+	private val _navigationFlow = MutableSharedFlow<PermissionNavState>()
 	val navigationFlow = _navigationFlow.asSharedFlow()
 
 	private fun stackPermissions(context: Context): PersistentList<PermissionItem> {
@@ -81,9 +81,9 @@ class PermissionViewModel @Inject constructor(
 				},
 			)
 			when (status) {
-				is Destination.PermissionOrHome -> _navigationFlow.emit(PermissionEffect.NavigateToMain)
+				is Destination.PermissionOrHome -> _navigationFlow.emit(PermissionNavState.NavigateToMain)
 				is Destination.Onboarding -> _navigationFlow.emit(
-					PermissionEffect.NavigateToComplete,
+					PermissionNavState.NavigateToComplete,
 				)
 				else -> {}
 			}
@@ -111,7 +111,7 @@ class PermissionViewModel @Inject constructor(
 
 	fun popBackStack() {
 		viewModelScope.launch {
-			_navigationFlow.emit(PermissionEffect.NavigateToBack)
+			_navigationFlow.emit(PermissionNavState.NavigateToBack)
 		}
 	}
 
