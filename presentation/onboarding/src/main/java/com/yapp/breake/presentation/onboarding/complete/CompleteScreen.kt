@@ -29,7 +29,7 @@ import com.yapp.breake.core.designsystem.theme.White
 import com.yapp.breake.core.navigation.compositionlocal.LocalMainAction
 import com.yapp.breake.core.navigation.compositionlocal.LocalNavigatorAction
 import com.yapp.breake.presentation.onboarding.R
-import com.yapp.breake.presentation.onboarding.complete.model.CompleteEffect
+import com.yapp.breake.presentation.onboarding.complete.model.CompleteNavState
 
 @Composable
 fun CompleteRoute(
@@ -51,11 +51,11 @@ fun CompleteRoute(
 	LaunchedEffect(true) {
 		viewModel.navigationFlow.collect { effect ->
 			when (effect) {
-				CompleteEffect.NavigateToMain -> navAction.navigateToHome(
+				CompleteNavState.NavigateToMain -> navAction.navigateToHome(
 					navOptions = navAction.getNavOptionsClearingBackStack(),
 				)
 
-				CompleteEffect.NavigateToBack -> navAction.popBackStack()
+				CompleteNavState.NavigateToBack -> navAction.popBackStack()
 			}
 		}
 	}
