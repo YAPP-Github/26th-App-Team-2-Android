@@ -16,6 +16,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.selection.selectable
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -49,16 +50,20 @@ internal fun MainBottomNavBar(
 	) {
 		Row(
 			modifier = modifier
-				.fillMaxWidth(0.78f)
+				// REPORT 개발 후 width 조정 필요
+				.fillMaxWidth(0.52f)
+				.widthIn(max = 216.dp)
 				.wrapContentHeight()
 				.background(
 					color = Gray800,
 					shape = RoundedCornerShape(60.dp),
 				)
-				.padding(horizontal = 46.dp, vertical = 16.dp),
+				.padding(horizontal = 28.dp, vertical = 16.dp),
 			horizontalArrangement = Arrangement.SpaceBetween,
+			verticalAlignment = Alignment.CenterVertically,
 		) {
-			tabs.forEach { tab ->
+			// 임시로 REPORT 탭을 제외하고 나머지 탭만 표시, REPORT 개발 후 포함 예정
+			tabs.filter { it != MainTab.REPORT }.forEach { tab ->
 				MainBottomNavItem(
 					tab = tab,
 					selected = tab == currentTab,
