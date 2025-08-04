@@ -16,3 +16,7 @@ android {
 		buildConfig = true
 	}
 }
+
+dependencies {
+	implementation(libs.androidx.browser)
+}

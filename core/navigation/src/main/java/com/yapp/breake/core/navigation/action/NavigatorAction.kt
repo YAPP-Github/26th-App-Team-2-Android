@@ -14,4 +14,6 @@ interface NavigatorAction {
 	fun navigateToHome(navOptions: NavOptions? = null)
 	fun navigateToRegistry(groupId: Long?, navOptions: NavOptions? = null)
 	fun navigateToNickname(navOptions: NavOptions? = null)
+	fun navigateToOpinion(navOptions: NavOptions? = null)
+	fun navigateToInquiry(navOptions: NavOptions? = null)
 }

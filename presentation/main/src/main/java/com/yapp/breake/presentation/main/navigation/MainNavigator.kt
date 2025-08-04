@@ -14,6 +14,8 @@ import com.yapp.breake.core.navigation.provider.NavigatorProvider
 import com.yapp.breake.core.navigation.route.MainTabRoute
 import com.yapp.breake.core.navigation.route.Route
 import com.yapp.breake.core.navigation.route.stringRoute
+import com.yapp.breake.presentation.feeback.inquiry.navigation.navigateToInquiry
+import com.yapp.breake.presentation.feeback.opinion.navigation.navigateToOpinion
 import com.yapp.breake.presentation.home.navigation.navigateToHome
 import com.yapp.breake.presentation.legal.navigation.navigateToPrivacy
 import com.yapp.breake.presentation.legal.navigation.navigateToTerms
@@ -74,6 +76,14 @@ internal class MainNavigator(
 
 			override fun navigateToNickname(navOptions: NavOptions?) {
 				navController.navigateToNickname(navOptions)
+			}
+
+			override fun navigateToOpinion(navOptions: NavOptions?) {
+				navController.navigateToOpinion(navOptions)
+			}
+
+			override fun navigateToInquiry(navOptions: NavOptions?) {
+				navController.navigateToInquiry(navOptions)
 			}
 		}
 	}

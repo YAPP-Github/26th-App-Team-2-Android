@@ -4,6 +4,8 @@ import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.navigation.compose.NavHost
+import com.yapp.breake.presentation.feeback.inquiry.navigation.inquiryNavGraph
+import com.yapp.breake.presentation.feeback.opinion.navigation.opinionNavGraph
 import com.yapp.breake.presentation.home.navigation.homeNavGraph
 import com.yapp.breake.presentation.legal.navigation.legalNavGraph
 import com.yapp.breake.presentation.login.navigation.loginNavGraph
@@ -42,5 +44,7 @@ internal fun MainNavHost(
 			onChangeDarkTheme = onChangeDarkTheme,
 		)
 		nicknameNavGraph()
+		inquiryNavGraph()
+		opinionNavGraph()
 	}
 }
