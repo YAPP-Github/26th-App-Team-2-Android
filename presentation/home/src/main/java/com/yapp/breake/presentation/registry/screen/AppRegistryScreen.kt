@@ -58,11 +58,14 @@ import com.yapp.breake.presentation.registry.component.SearchTextField
 import com.yapp.breake.presentation.registry.model.AppModel
 import com.yapp.breake.presentation.registry.model.RegistryUiState
 import kotlinx.collections.immutable.persistentListOf
+import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.SharedFlow
 
 @Composable
 fun AppRegistryScreen(
 	padding: Dp,
 	registryUiState: RegistryUiState.App,
+	lazyColumnIndexFlow: SharedFlow<Int>,
 	focusManager: FocusManager,
 	onSearchTextChange: (String) -> Unit,
 	onSearchApp: () -> Unit,
@@ -76,8 +79,10 @@ fun AppRegistryScreen(
 		onBackClick()
 	}
 
-	LaunchedEffect(registryUiState.scrollIndex) {
-		lazyListState.scrollToItem(index = registryUiState.scrollIndex)
+	LaunchedEffect(true) {
+		lazyColumnIndexFlow.collect {
+			lazyListState.scrollToItem(index = it)
+		}
 	}
 
 	BaseScaffold(
@@ -275,6 +280,7 @@ private fun AppScreenPreview() {
 			apps = apps,
 			selectedApps = persistentListOf(),
 		),
+		lazyColumnIndexFlow = MutableSharedFlow<Int>(),
 		onSearchTextChange = {},
 		onSearchApp = {},
 		onSelectApp = {},

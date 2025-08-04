@@ -43,9 +43,9 @@ import com.yapp.breake.core.designsystem.theme.LocalPadding
 import com.yapp.breake.core.designsystem.theme.White
 import com.yapp.breake.core.navigation.compositionlocal.LocalMainAction
 import com.yapp.breake.core.navigation.compositionlocal.LocalNavigatorAction
+import com.yapp.breake.core.navigation.compositionlocal.LocalNavigatorProvider
 import com.yapp.breake.core.ui.SnackBarState
 import com.yapp.breake.presentation.setting.component.DeleteWarningDialog
-import com.yapp.breake.presentation.setting.component.LogoutWarningDialog
 import com.yapp.breake.presentation.setting.model.SettingEffect
 import com.yapp.breake.presentation.setting.model.SettingUiState
 
@@ -59,11 +59,14 @@ fun SettingRoute(
 	val screenHorizontalPadding = LocalPadding.current.screenPaddingHorizontal
 	val context = LocalContext.current
 	val navAction = LocalNavigatorAction.current
+	val navProvider = LocalNavigatorProvider.current
 	val mainAction = LocalMainAction.current
 
 	BackHandler {
 		if (uiState is SettingUiState.SettingDeletingAccount) {
 			viewModel.cancelDeletingAccount()
+		} else {
+			navAction.popBackStack()
 		}
 	}
 
@@ -75,8 +78,9 @@ fun SettingRoute(
 		viewModel.navigationFlow.collect {
 			when (it) {
 				is SettingEffect.NavigateToLogin -> navAction.navigateToLogin(
-					navAction.getNavOptionsClearingBackStack(),
+					navProvider.getNavOptionsClearingBackStack(),
 				)
+
 				is SettingEffect.NavigateToNickname -> navAction.navigateToNickname()
 				is SettingEffect.NavigateToPrivacyPolicy -> navAction.navigateToPrivacy()
 				is SettingEffect.NavigateToTermsOfService -> navAction.navigateToTerms()
@@ -104,12 +108,12 @@ fun SettingRoute(
 
 	when (uiState) {
 		is SettingUiState.SettingLogoutWarning -> {
-			LogoutWarningDialog(
-				onDismissRequest = viewModel::dismissDialog,
+			mainAction.OnShowLogoutDialog(
 				onConfirm = {
 					viewModel.dismissDialog()
 					viewModel.logout()
 				},
+				onDismiss = viewModel::dismissDialog,
 			)
 		}
 

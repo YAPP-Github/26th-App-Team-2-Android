@@ -56,9 +56,12 @@ import com.yapp.breake.core.designsystem.theme.LocalPadding
 import com.yapp.breake.core.designsystem.theme.White
 import com.yapp.breake.core.navigation.compositionlocal.LocalMainAction
 import com.yapp.breake.core.navigation.compositionlocal.LocalNavigatorAction
+import com.yapp.breake.core.navigation.compositionlocal.LocalNavigatorProvider
 import com.yapp.breake.core.navigation.route.InitialRoute
-import com.yapp.breake.presentation.permission.model.PermissionEffect
+import com.yapp.breake.core.navigation.route.stringRoute
+import com.yapp.breake.presentation.permission.model.PermissionNavState
 import com.yapp.breake.presentation.permission.model.PermissionItem
+import com.yapp.breake.presentation.permission.model.PermissionModalState
 import com.yapp.breake.presentation.permission.model.PermissionUiState
 import kotlinx.collections.immutable.persistentMapOf
 import kotlinx.coroutines.launch
@@ -75,6 +78,8 @@ fun PermissionRoute(
 	val screenHorizontalPadding = LocalPadding.current.screenPaddingHorizontal
 	val navAction = LocalNavigatorAction.current
 	val mainAction = LocalMainAction.current
+	val navProvider = LocalNavigatorProvider.current
+	val modalState by viewModel.modalFlow.collectAsStateWithLifecycle()
 
 	// ViewModel 초기화,
 	// UiState 초기화시 context 사용이 필요하며, 이는 ViewModel 내부에서만 이루어질 수 없음
@@ -94,22 +99,24 @@ fun PermissionRoute(
 	LaunchedEffect(true) {
 		viewModel.navigationFlow.collect { effect ->
 			when (effect) {
-				PermissionEffect.NavigateToBack -> {
-					navAction.popBackStack()
+				PermissionNavState.NavigateToLogin -> {
+					navAction.navigateToLogin(navProvider.getNavOptionsClearingBackStack())
 				}
 
-				is PermissionEffect.RequestPermission -> {
+				PermissionNavState.NavigateToBack -> navAction.popBackStack()
+
+				is PermissionNavState.RequestPermission -> {
 					// 권한 요청을 위한 Intent 실행
 					context.startActivity(effect.intent)
 				}
 
-				PermissionEffect.NavigateToMain -> {
+				PermissionNavState.NavigateToMain -> {
 					navAction.navigateToHome(
-						navOptions = navAction.getNavOptionsClearingBackStack(),
+						navOptions = navProvider.getNavOptionsClearingBackStack(),
 					)
 				}
 
-				PermissionEffect.NavigateToComplete -> {
+				PermissionNavState.NavigateToComplete -> {
 					navAction.navigateToComplete(
 						navOptions {
 							popUpTo(InitialRoute.Permission) { inclusive = true }
@@ -133,11 +140,26 @@ fun PermissionRoute(
 		}
 	}
 
+	if (modalState is PermissionModalState.ShowLogoutModal) {
+		mainAction.OnShowLogoutDialog(
+			onConfirm = viewModel::logout,
+			onDismiss = viewModel::dismissModal,
+		)
+	}
+
 	PermissionScreen(
 		uiState = uiState,
 		screenWidth = screenWidth,
 		screenHorizontalPadding = screenHorizontalPadding,
-		onBackClick = viewModel::popBackStack,
+		onBackClick = {
+			if (navProvider.getPreviousDestination() ==
+				InitialRoute.Onboarding.Guide.stringRoute()
+			) {
+				viewModel.popBackStack()
+			} else {
+				viewModel.tryLogout()
+			}
+		},
 		onRequestPermissionClick = { permissionItem ->
 			viewModel.requestPermission(context, permissionItem)
 		},

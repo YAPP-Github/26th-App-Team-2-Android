@@ -1,8 +1,11 @@
 package com.yapp.breake.domain.usecaseImpl
 
 import com.yapp.breake.core.model.user.UserStatus
+import com.yapp.breake.domain.repository.NicknameRepository
+import com.yapp.breake.domain.repository.SessionRepository
 import com.yapp.breake.domain.repository.TokenRepository
 import com.yapp.breake.domain.usecase.LoginUseCase
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import javax.inject.Inject
@@ -15,8 +18,11 @@ import javax.inject.Named
  */
 class LoginUseCaseImpl @Inject constructor(
 	@Named("TokenRepo") private val tokenRepository: TokenRepository,
+	@Named("NicknameRepo") private val nicknameRepository: NicknameRepository,
+	private val sessionRepository: SessionRepository,
 ) : LoginUseCase {
 
+	@OptIn(ExperimentalCoroutinesApi::class)
 	override operator fun invoke(
 		authCode: String,
 		provider: String,
@@ -25,7 +31,23 @@ class LoginUseCaseImpl @Inject constructor(
 		provider = provider,
 		authorizationCode = authCode,
 		onError = onError,
-	).map {
-		it.status
-	}
+	)
+		.map { userToken ->
+			if (userToken.status == UserStatus.ACTIVE) {
+				nicknameRepository.getRemoteUserName(
+					onError = onError,
+				).collect { userName ->
+					nicknameRepository.saveLocalUserName(
+						nickname = userName.nickname,
+						onError = onError,
+					)
+				}
+			} else {
+				sessionRepository.updateLocalOnboardingFlag(
+					isComplete = false,
+					onError = onError,
+				)
+			}
+			userToken.status
+		}
 }

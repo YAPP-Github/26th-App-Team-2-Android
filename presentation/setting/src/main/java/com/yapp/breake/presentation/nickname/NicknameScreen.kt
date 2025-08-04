@@ -69,6 +69,8 @@ fun NicknameRoute(
 	BackHandler {
 		if (uiState is NicknameUiState.NicknameUpdating) {
 			viewModel.cancelUpdateNickname()
+		} else {
+			navAction.popBackStack()
 		}
 	}
 

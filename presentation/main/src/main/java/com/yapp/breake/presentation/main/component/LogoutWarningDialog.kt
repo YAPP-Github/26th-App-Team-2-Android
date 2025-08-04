@@ -1,4 +1,4 @@
-package com.yapp.breake.presentation.setting.component
+package com.yapp.breake.presentation.main.component
 
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.material3.Text
@@ -10,7 +10,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import com.yapp.breake.core.designsystem.component.TwoButtonDialog
 import com.yapp.breake.core.designsystem.theme.BrakeTheme
 import com.yapp.breake.core.designsystem.theme.White
-import com.yapp.breake.presentation.setting.R
+import com.yapp.breake.presentation.main.R
 
 @Composable
 internal fun LogoutWarningDialog(
@@ -19,13 +19,13 @@ internal fun LogoutWarningDialog(
 ) {
 	TwoButtonDialog(
 		onDismissRequest = onDismissRequest,
-		dismissButtonText = stringResource(R.string.setting_logout_dialog_dismiss_text),
-		confirmButtonText = stringResource(R.string.setting_logout_dialog_confirm_text),
+		dismissButtonText = stringResource(R.string.logout_cancel),
+		confirmButtonText = stringResource(R.string.logout_confirm),
 		onConfirmButtonClick = onConfirm,
 	) {
 		Text(
 			modifier = Modifier.fillMaxWidth(),
-			text = stringResource(R.string.setting_logout_dialog_title),
+			text = stringResource(R.string.logout_message),
 			style = BrakeTheme.typography.subtitle22SB,
 			color = White,
 			textAlign = TextAlign.Center,

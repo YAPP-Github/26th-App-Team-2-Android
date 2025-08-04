@@ -5,8 +5,7 @@ import androidx.lifecycle.viewModelScope
 import com.yapp.breake.core.ui.UiString
 import com.yapp.breake.domain.usecase.StoreOnboardingCompletionUseCase
 import com.yapp.breake.presentation.onboarding.R
-import com.yapp.breake.presentation.onboarding.complete.model.CompleteEffect
-import com.yapp.breake.presentation.onboarding.guide.model.GuideEffect
+import com.yapp.breake.presentation.onboarding.complete.model.CompleteNavState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.asSharedFlow
@@ -20,7 +19,7 @@ class CompleteViewModel @Inject constructor(
 	private val _snackBarFlow = MutableSharedFlow<UiString>()
 	val snackBarFlow = _snackBarFlow.asSharedFlow()
 
-	private val _navigationFlow = MutableSharedFlow<GuideEffect>()
+	private val _navigationFlow = MutableSharedFlow<CompleteNavState>()
 	val navigationFlow = _navigationFlow.asSharedFlow()
 
 	fun completeOnboarding() {
@@ -33,7 +32,7 @@ class CompleteViewModel @Inject constructor(
 					)
 				},
 			)
-			_navigationFlow.emit(CompleteEffect.NavigateToMain)
+			_navigationFlow.emit(CompleteNavState.NavigateToMain)
 		}
 	}
 }

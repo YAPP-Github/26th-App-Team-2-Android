@@ -10,8 +10,10 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navOptions
 import com.yapp.breake.core.navigation.action.NavigatorAction
+import com.yapp.breake.core.navigation.provider.NavigatorProvider
 import com.yapp.breake.core.navigation.route.MainTabRoute
 import com.yapp.breake.core.navigation.route.Route
+import com.yapp.breake.core.navigation.route.stringRoute
 import com.yapp.breake.presentation.home.navigation.navigateToHome
 import com.yapp.breake.presentation.legal.navigation.navigateToPrivacy
 import com.yapp.breake.presentation.legal.navigation.navigateToTerms
@@ -39,15 +41,6 @@ internal class MainNavigator(
 
 	fun navigatorAction(): NavigatorAction {
 		return object : NavigatorAction {
-			override fun getNavOptionsClearingBackStack(): NavOptions {
-				return navOptions {
-					popUpTo(navController.graph.id) {
-						inclusive = true
-					}
-					launchSingleTop = true
-				}
-			}
-
 			override fun popBackStack(navOptions: NavOptions?) = popBackStackIfNotHome()
 			override fun navigateToLogin(navOptions: NavOptions?) =
 				navController.navigateToLogin(navOptions)
@@ -81,6 +74,24 @@ internal class MainNavigator(
 
 			override fun navigateToNickname(navOptions: NavOptions?) {
 				navController.navigateToNickname(navOptions)
+			}
+		}
+	}
+
+	fun navigatorProvider(): NavigatorProvider {
+		return object : NavigatorProvider {
+			override fun getNavOptionsClearingBackStack(): NavOptions {
+				return navOptions {
+					popUpTo(navController.graph.id) {
+						inclusive = true
+					}
+					launchSingleTop = true
+				}
+			}
+
+			override fun getPreviousDestination(): String {
+				return navController.previousBackStackEntry?.destination?.route
+					?: startDestination.stringRoute()
 			}
 		}
 	}

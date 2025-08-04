@@ -38,6 +38,8 @@ internal fun HomeRoute(
 	val mainAction = LocalMainAction.current
 	val context = LocalContext.current
 
+	mainAction.OnFinishBackHandler()
+
 	Box(
 		modifier = Modifier
 			.fillMaxSize()

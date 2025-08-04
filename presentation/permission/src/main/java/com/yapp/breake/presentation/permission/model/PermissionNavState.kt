@@ -5,19 +5,22 @@ import androidx.compose.runtime.Immutable
 import androidx.compose.runtime.Stable
 
 @Stable
-interface PermissionEffect {
+interface PermissionNavState {
 
 	@Immutable
-	data object NavigateToBack : PermissionEffect
+	data object NavigateToBack : PermissionNavState
+
+	@Immutable
+	data object NavigateToLogin : PermissionNavState
 
 	@Immutable
 	data class RequestPermission(
 		val intent: Intent,
-	) : PermissionEffect
+	) : PermissionNavState
 
 	@Immutable
-	data object NavigateToComplete : PermissionEffect
+	data object NavigateToComplete : PermissionNavState
 
 	@Immutable
-	data object NavigateToMain : PermissionEffect
+	data object NavigateToMain : PermissionNavState
 }

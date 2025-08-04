@@ -8,9 +8,11 @@ import com.breake.core.permission.PermissionType
 import com.yapp.breake.core.model.user.Destination
 import com.yapp.breake.core.ui.UiString
 import com.yapp.breake.domain.usecase.DecideNextDestinationFromPermissionUseCase
-import com.yapp.breake.presentation.permission.model.PermissionEffect
-import com.yapp.breake.presentation.permission.model.PermissionEffect.RequestPermission
+import com.yapp.breake.domain.usecase.LogoutUseCase
+import com.yapp.breake.presentation.permission.model.PermissionNavState
+import com.yapp.breake.presentation.permission.model.PermissionNavState.RequestPermission
 import com.yapp.breake.presentation.permission.model.PermissionItem
+import com.yapp.breake.presentation.permission.model.PermissionModalState
 import com.yapp.breake.presentation.permission.model.PermissionUiState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.collections.immutable.PersistentList
@@ -27,6 +29,7 @@ import javax.inject.Inject
 class PermissionViewModel @Inject constructor(
 	private val permissionManager: PermissionManager,
 	private val decideDestinationUseCase: DecideNextDestinationFromPermissionUseCase,
+	private val logoutUseCase: LogoutUseCase,
 ) : ViewModel() {
 
 	private val _snackBarFlow = MutableSharedFlow<UiString>()
@@ -36,8 +39,12 @@ class PermissionViewModel @Inject constructor(
 		MutableStateFlow<PermissionUiState>(PermissionUiState(permissions = persistentListOf()))
 	val uiState = _uiState.asStateFlow()
 
-	private val _navigationFlow = MutableSharedFlow<PermissionEffect>()
+	private val _navigationFlow = MutableSharedFlow<PermissionNavState>()
 	val navigationFlow = _navigationFlow.asSharedFlow()
+
+	private val _modalFlow =
+		MutableStateFlow<PermissionModalState>(PermissionModalState.PermissionIdle)
+	val modalFlow = _modalFlow.asStateFlow()
 
 	private fun stackPermissions(context: Context): PersistentList<PermissionItem> {
 		try {
@@ -81,9 +88,9 @@ class PermissionViewModel @Inject constructor(
 				},
 			)
 			when (status) {
-				is Destination.PermissionOrHome -> _navigationFlow.emit(PermissionEffect.NavigateToMain)
+				is Destination.PermissionOrHome -> _navigationFlow.emit(PermissionNavState.NavigateToMain)
 				is Destination.Onboarding -> _navigationFlow.emit(
-					PermissionEffect.NavigateToComplete,
+					PermissionNavState.NavigateToComplete,
 				)
 				else -> {}
 			}
@@ -109,9 +116,34 @@ class PermissionViewModel @Inject constructor(
 		}
 	}
 
+	fun tryLogout() {
+		_modalFlow.value = PermissionModalState.ShowLogoutModal
+	}
+
+	fun dismissModal() {
+		_modalFlow.value = PermissionModalState.PermissionIdle
+	}
+
+	fun logout() {
+		viewModelScope.launch {
+			val dest = logoutUseCase(
+				onError = { error ->
+					_snackBarFlow.emit(
+						UiString.ResourceString(
+							resId = R.string.permission_snackbar_logout_error,
+						),
+					)
+				},
+			)
+			if (dest is Destination.Login) {
+				_navigationFlow.emit(PermissionNavState.NavigateToLogin)
+			}
+		}
+	}
+
 	fun popBackStack() {
 		viewModelScope.launch {
-			_navigationFlow.emit(PermissionEffect.NavigateToBack)
+			_navigationFlow.emit(PermissionNavState.NavigateToBack)
 		}
 	}
 
