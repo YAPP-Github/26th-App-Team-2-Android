@@ -62,6 +62,18 @@ class SettingViewModel @Inject constructor(
 		}
 	}
 
+	fun showOpinion() {
+		viewModelScope.launch {
+			_navigationFlow.emit(SettingEffect.NavigateToOpinion)
+		}
+	}
+
+	fun showInquiry() {
+		viewModelScope.launch {
+			_navigationFlow.emit(SettingEffect.NavigateToInquiry)
+		}
+	}
+
 	fun showPrivacyPolicy() {
 		viewModelScope.launch {
 			_navigationFlow.emit(SettingEffect.NavigateToPrivacyPolicy)

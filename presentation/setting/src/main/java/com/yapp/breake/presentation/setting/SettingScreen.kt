@@ -80,8 +80,9 @@ fun SettingRoute(
 				is SettingEffect.NavigateToLogin -> navAction.navigateToLogin(
 					navProvider.getNavOptionsClearingBackStack(),
 				)
-
 				is SettingEffect.NavigateToNickname -> navAction.navigateToNickname()
+				is SettingEffect.NavigateToOpinion -> navAction.navigateToOpinion()
+				is SettingEffect.NavigateToInquiry -> navAction.navigateToInquiry()
 				is SettingEffect.NavigateToPrivacyPolicy -> navAction.navigateToPrivacy()
 				is SettingEffect.NavigateToTermsOfService -> navAction.navigateToTerms()
 			}
@@ -135,6 +136,8 @@ fun SettingRoute(
 		paddingValue = paddingValue,
 		uiState = uiState,
 		onChangeProfile = viewModel::modifyNickname,
+		onOpinionClick = viewModel::showOpinion,
+		onInquiryClick = viewModel::showInquiry,
 		onPrivacyClick = viewModel::showPrivacyPolicy,
 		onTermsClick = viewModel::showTermsOfService,
 		onDeleteAccount = viewModel::tryDeleteAccount,
@@ -148,6 +151,8 @@ fun SettingScreen(
 	paddingValue: PaddingValues,
 	uiState: SettingUiState,
 	onChangeProfile: () -> Unit,
+	onOpinionClick: () -> Unit,
+	onInquiryClick: () -> Unit,
 	onPrivacyClick: () -> Unit,
 	onTermsClick: () -> Unit,
 	onDeleteAccount: () -> Unit,
@@ -218,12 +223,12 @@ fun SettingScreen(
 		) {
 			SettingRow(
 				id = R.string.setting_opinion_title,
-				onClick = {},
+				onClick = onOpinionClick,
 			)
 			HorizontalDivider(thickness = 1.dp, color = Gray800)
 			SettingRow(
 				id = R.string.setting_inquiry,
-				onClick = {},
+				onClick = onInquiryClick,
 			)
 		}
 

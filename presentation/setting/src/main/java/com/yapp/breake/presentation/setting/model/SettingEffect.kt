@@ -12,6 +12,12 @@ interface SettingEffect {
 	data object NavigateToNickname : SettingEffect
 
 	@Immutable
+	data object NavigateToOpinion : SettingEffect
+
+	@Immutable
+	data object NavigateToInquiry : SettingEffect
+
+	@Immutable
 	data object NavigateToTermsOfService : SettingEffect
 
 	@Immutable
