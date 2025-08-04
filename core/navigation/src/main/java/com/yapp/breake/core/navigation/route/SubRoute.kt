@@ -14,4 +14,12 @@ interface SubRoute : Route {
 
 	@Serializable
 	data object Terms : SubRoute
+
+	sealed interface Feedback : SubRoute {
+		@Serializable
+		data object Inquiry : Feedback
+
+		@Serializable
+		data object Opinion : Feedback
+	}
 }
