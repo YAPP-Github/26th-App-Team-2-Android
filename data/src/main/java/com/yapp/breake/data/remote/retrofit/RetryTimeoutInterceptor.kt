@@ -4,10 +4,8 @@ import okhttp3.Interceptor
 import okhttp3.Response
 import timber.log.Timber
 import java.io.IOException
-import java.net.ConnectException
 import java.net.SocketTimeoutException
 import java.net.UnknownHostException
-import java.util.concurrent.TimeoutException
 
 class RetryTimeoutInterceptor(private val maxRetries: Int) : Interceptor {
 
@@ -37,11 +35,10 @@ class RetryTimeoutInterceptor(private val maxRetries: Int) : Interceptor {
 
 	private fun canRetryException(e: Exception): Boolean {
 		return when (e) {
-			// Timeout 관련 예외는 재시도 가능
+			// IP 주소를 찾을 수 없는 경우 재시도 제외
+			is UnknownHostException -> false
+			// Read, Write Timeout 관련 예외는 재시도 가능
 			is SocketTimeoutException -> true
-			is ConnectException -> true
-			is UnknownHostException -> true
-			is TimeoutException -> true
 
 			// 기타 IOException은 원인을 더 자세히 검사
 			is IOException -> {
@@ -49,8 +46,6 @@ class RetryTimeoutInterceptor(private val maxRetries: Int) : Interceptor {
 				val cause = e.cause
 				when (cause) {
 					is SocketTimeoutException -> true
-					is TimeoutException -> true
-					is ConnectException -> true
 					else -> false
 				}
 			}
