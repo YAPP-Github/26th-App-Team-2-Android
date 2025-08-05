@@ -7,6 +7,7 @@ import com.yapp.breake.data.remote.retrofit.ApiConfig
 import com.yapp.breake.data.remote.retrofit.HeaderSelectionInterceptor
 import com.yapp.breake.data.remote.retrofit.HttpNetworkLogger
 import com.yapp.breake.data.remote.retrofit.RetrofitBrakeApi
+import com.yapp.breake.data.remote.retrofit.RetryTimeoutInterceptor
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -34,11 +35,12 @@ internal object NetworkModule {
 	): OkHttpClient =
 		OkHttpClient.Builder()
 			.apply {
-				interceptors.get().forEach { addInterceptor(it) }
+				interceptors.get().forEach(::addInterceptor)
 			}
-			.connectTimeout(30, TimeUnit.SECONDS)
-			.readTimeout(60, TimeUnit.SECONDS)
-			.writeTimeout(60, TimeUnit.SECONDS)
+			.connectTimeout(100, TimeUnit.MILLISECONDS)
+			.writeTimeout(300, TimeUnit.MILLISECONDS)
+			.readTimeout(1200, TimeUnit.MILLISECONDS)
+			.addInterceptor(RetryTimeoutInterceptor(maxRetries = 5))
 			.build()
 
 	@Provides
