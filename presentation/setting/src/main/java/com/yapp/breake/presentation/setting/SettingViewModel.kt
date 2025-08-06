@@ -2,6 +2,8 @@ package com.yapp.breake.presentation.setting
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.google.firebase.analytics.FirebaseAnalytics
+import com.google.firebase.analytics.logEvent
 import com.yapp.breake.core.model.user.Destination
 import com.yapp.breake.core.ui.SnackBarState
 import com.yapp.breake.core.ui.UiString
@@ -27,6 +29,7 @@ class SettingViewModel @Inject constructor(
 	getNicknameUseCase: GetNicknameUseCase,
 	private val deleteAccountUseCase: DeleteAccountUseCase,
 	private val logoutUseCase: LogoutUseCase,
+	private val firebaseAnalytics: FirebaseAnalytics,
 ) : ViewModel() {
 
 	private var deleteJob: Job? = null
@@ -118,6 +121,9 @@ class SettingViewModel @Inject constructor(
 				},
 			)
 			if (dest is Destination.Login) {
+				firebaseAnalytics.logEvent("app_logout") {
+					param(FirebaseAnalytics.Param.METHOD, "user_logout")
+				}
 				_navigationFlow.emit(SettingEffect.NavigateToLogin)
 			} else if (dest is Destination.PermissionOrHome) {
 				Timber.e("Logout failed with destination: $dest")
@@ -168,6 +174,9 @@ class SettingViewModel @Inject constructor(
 						uiString = UiString.ResourceString(R.string.setting_snackbar_delete_success),
 					),
 				)
+				firebaseAnalytics.logEvent("app_delete_account") {
+					param(FirebaseAnalytics.Param.METHOD, "user_delete")
+				}
 				_navigationFlow.emit(SettingEffect.NavigateToLogin)
 			}
 		}
