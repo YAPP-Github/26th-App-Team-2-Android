@@ -37,9 +37,9 @@ internal object NetworkModule {
 			.apply {
 				interceptors.get().forEach(::addInterceptor)
 			}
-			.connectTimeout(300, TimeUnit.MILLISECONDS)
-			.writeTimeout(500, TimeUnit.MILLISECONDS)
-			.readTimeout(900, TimeUnit.MILLISECONDS)
+			.connectTimeout(500, TimeUnit.MILLISECONDS)
+			.writeTimeout(1300, TimeUnit.MILLISECONDS)
+			.readTimeout(1500, TimeUnit.MILLISECONDS)
 			.addInterceptor(RetryTimeoutInterceptor(maxRetries = 5))
 			.build()
 
