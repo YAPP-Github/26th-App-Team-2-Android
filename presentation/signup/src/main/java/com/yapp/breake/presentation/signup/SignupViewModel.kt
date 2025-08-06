@@ -2,6 +2,8 @@ package com.yapp.breake.presentation.signup
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.google.firebase.analytics.FirebaseAnalytics
+import com.google.firebase.analytics.logEvent
 import com.yapp.breake.core.ui.UiString
 import com.yapp.breake.domain.usecase.UpdateNicknameUseCase
 import com.yapp.breake.presentation.signup.model.SignupEffect
@@ -19,6 +21,7 @@ import javax.inject.Inject
 @HiltViewModel
 class SignupViewModel @Inject constructor(
 	private val updateNicknameUseCase: UpdateNicknameUseCase,
+	private val firebaseAnalytics: FirebaseAnalytics,
 ) : ViewModel() {
 	private var updateJob: Job? = null
 
@@ -34,6 +37,9 @@ class SignupViewModel @Inject constructor(
 	fun onBackPressed() {
 		viewModelScope.launch {
 			_navigationFlow.emit(SignupEffect.NavigateToBack)
+		}
+		firebaseAnalytics.logEvent(FirebaseAnalytics.Event.SCREEN_VIEW) {
+			param(FirebaseAnalytics.Param.SCREEN_NAME, "login_screen")
 		}
 	}
 
@@ -53,6 +59,9 @@ class SignupViewModel @Inject constructor(
 					},
 					onSuccess = {
 						_uiState.value = SignupUiState.SignupIdle(name)
+						firebaseAnalytics.logEvent(FirebaseAnalytics.Event.SIGN_UP) {
+							param(FirebaseAnalytics.Param.METHOD, "nickname_registration")
+						}
 						_navigationFlow.emit(SignupEffect.NavigateToOnboarding)
 					},
 				)
