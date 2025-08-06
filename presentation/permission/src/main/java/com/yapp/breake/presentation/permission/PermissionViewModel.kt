@@ -5,6 +5,8 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.breake.core.permission.PermissionManager
 import com.breake.core.permission.PermissionType
+import com.google.firebase.analytics.FirebaseAnalytics
+import com.google.firebase.analytics.logEvent
 import com.yapp.breake.core.model.user.Destination
 import com.yapp.breake.core.ui.UiString
 import com.yapp.breake.domain.usecase.DecideNextDestinationFromPermissionUseCase
@@ -30,6 +32,7 @@ class PermissionViewModel @Inject constructor(
 	private val permissionManager: PermissionManager,
 	private val decideDestinationUseCase: DecideNextDestinationFromPermissionUseCase,
 	private val logoutUseCase: LogoutUseCase,
+	private val firebaseAnalytics: FirebaseAnalytics,
 ) : ViewModel() {
 
 	private val _snackBarFlow = MutableSharedFlow<UiString>()
@@ -87,6 +90,7 @@ class PermissionViewModel @Inject constructor(
 					)
 				},
 			)
+			firebaseAnalytics.logEvent("done_permission", null)
 			when (status) {
 				is Destination.PermissionOrHome -> _navigationFlow.emit(PermissionNavState.NavigateToMain)
 				is Destination.Onboarding -> _navigationFlow.emit(
@@ -104,6 +108,9 @@ class PermissionViewModel @Inject constructor(
 			decideNextDestination()
 		} else {
 			_uiState.value = PermissionUiState(permissions = permissionList)
+			firebaseAnalytics.logEvent(FirebaseAnalytics.Event.SCREEN_VIEW) {
+				param(FirebaseAnalytics.Param.SCREEN_NAME, "permission_screen")
+			}
 		}
 	}
 
@@ -152,6 +159,9 @@ class PermissionViewModel @Inject constructor(
 				},
 			)
 			if (dest is Destination.Login) {
+				firebaseAnalytics.logEvent("app_logout") {
+					param(FirebaseAnalytics.Param.METHOD, "user_logout")
+				}
 				_navigationFlow.emit(PermissionNavState.NavigateToLogin)
 			}
 		}
@@ -160,6 +170,9 @@ class PermissionViewModel @Inject constructor(
 	fun popBackStack() {
 		viewModelScope.launch {
 			_navigationFlow.emit(PermissionNavState.NavigateToBack)
+		}
+		firebaseAnalytics.logEvent(FirebaseAnalytics.Event.SCREEN_VIEW) {
+			param(FirebaseAnalytics.Param.SCREEN_NAME, "onboarding_guide_screen")
 		}
 	}
 
