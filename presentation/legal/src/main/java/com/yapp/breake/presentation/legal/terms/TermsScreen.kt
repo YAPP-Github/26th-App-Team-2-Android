@@ -21,7 +21,7 @@ fun TermsRoute(
 	val navAction = LocalNavigatorAction.current
 
 	TermsScreen(
-		onBack = navAction::popBackStack,
+		onBack = { viewModel.onBackPressed(navAction::popBackStack) },
 	)
 }
 
