@@ -8,4 +8,7 @@ sealed interface PermissionModalState {
 
 	@Immutable
 	data object ShowLogoutModal : PermissionModalState
+
+	@Immutable
+	data object ShowAccessibilityAgreementModal : PermissionModalState
 }

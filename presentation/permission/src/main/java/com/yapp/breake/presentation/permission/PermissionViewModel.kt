@@ -92,6 +92,7 @@ class PermissionViewModel @Inject constructor(
 				is Destination.Onboarding -> _navigationFlow.emit(
 					PermissionNavState.NavigateToComplete,
 				)
+
 				else -> {}
 			}
 		}
@@ -107,10 +108,25 @@ class PermissionViewModel @Inject constructor(
 	}
 
 	fun requestPermission(context: Context, type: PermissionItem) {
+		if (type == PermissionItem.ACCESSIBILITY) {
+			_modalFlow.value = PermissionModalState.ShowAccessibilityAgreementModal
+		} else {
+			viewModelScope.launch {
+				_navigationFlow.emit(
+					RequestPermission(
+						permissionManager.getIntent(context, parsePermissionItemToType(type)),
+					),
+				)
+			}
+		}
+	}
+
+	fun requestAccessibilityPermission(context: Context) {
+		_modalFlow.value = PermissionModalState.PermissionIdle
 		viewModelScope.launch {
 			_navigationFlow.emit(
 				RequestPermission(
-					permissionManager.getIntent(context, parsePermissionItemToType(type)),
+					permissionManager.getIntent(context, PermissionType.ACCESSIBILITY),
 				),
 			)
 		}
