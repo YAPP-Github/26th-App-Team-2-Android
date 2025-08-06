@@ -73,6 +73,8 @@ fun SignupRoute(viewModel: SignupViewModel = hiltViewModel()) {
 	BackHandler {
 		if (uiState is SignupUiState.SignupNameRegistering) {
 			viewModel.cancelNameSubmit()
+		} else {
+			navAction.popBackStack()
 		}
 	}
 
