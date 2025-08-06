@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -285,7 +286,14 @@ fun PermissionScreen(
 										0.9f
 									},
 								)
-								.padding(horizontal = 0.dp),
+								.padding(horizontal = 0.dp)
+								.clickable(
+									interactionSource = null,
+									indication = null,
+									onClick = {
+										onRequestPermissionClick(uiState.permissions[pagerState.currentPage])
+									},
+								),
 							painter = painterResource(
 								id = contentMap[this]!!.third,
 							),
