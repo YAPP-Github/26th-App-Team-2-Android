@@ -1,6 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
 
+	<!-- 네트워크 통신(Firebase) -->
+	<uses-permission android:name="android.permission.INTERNET"/>
+
+	<!-- 네트워크 상태 확인(Firebase) -->
+	<uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
+
+	<!-- 백그라운드 업로드 시(Firebase) -->
+	<uses-permission android:name="android.permission.WAKE_LOCK"/>
+
     <application>
 
         <activity

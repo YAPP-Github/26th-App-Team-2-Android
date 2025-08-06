@@ -1,3 +1,4 @@
+import com.yapp.breake.configureFirebase
 import com.yapp.breake.libs
 import com.yapp.breake.configureHiltAndroid
 import com.yapp.breake.configureRoborazzi
@@ -15,6 +16,7 @@ android {
 
 configureHiltAndroid()
 configureRoborazzi()
+configureFirebase()
 
 dependencies {
     implementation(project(":domain"))
