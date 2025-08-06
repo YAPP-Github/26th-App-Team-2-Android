@@ -5,6 +5,8 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.breake.core.permission.PermissionManager
 import com.breake.core.permission.PermissionType
+import com.google.firebase.analytics.FirebaseAnalytics
+import com.google.firebase.analytics.logEvent
 import com.yapp.breake.core.model.user.Destination
 import com.yapp.breake.core.model.user.UserStatus
 import com.yapp.breake.core.ui.SnackBarState
@@ -29,6 +31,7 @@ internal class LoginViewModel @Inject constructor(
 	private val loginUseCase: LoginUseCase,
 	private val decideDestinationUseCase: DecideNextDestinationFromPermissionUseCase,
 	private val permissionManager: PermissionManager,
+	private val firebaseAnalytics: FirebaseAnalytics,
 ) : ViewModel() {
 
 	private val _uiState = MutableStateFlow<LoginUiState>(LoginUiState.LoginIdle)
@@ -58,16 +61,35 @@ internal class LoginViewModel @Inject constructor(
 		viewModelScope.launch {
 			_uiState.value = LoginUiState.LoginOnWebView
 		}
+		firebaseAnalytics.logEvent(FirebaseAnalytics.Event.SCREEN_VIEW) {
+			param(FirebaseAnalytics.Param.SCREEN_NAME, "kakao_webView_activity")
+		}
 	}
 
 	fun authCancel() {
 		_uiState.value = LoginUiState.LoginIdle
+		firebaseAnalytics.apply {
+			logEvent("cancel_kakao_login") {
+				param("reason", "user_cancel")
+			}
+			logEvent(FirebaseAnalytics.Event.SCREEN_VIEW) {
+				param(FirebaseAnalytics.Param.SCREEN_NAME, "login_screen")
+			}
+		}
 	}
 
 	fun loginCancel() {
 		loginJob?.run {
 			cancel()
 			_uiState.value = LoginUiState.LoginIdle
+		}
+		firebaseAnalytics.apply {
+			logEvent("cancel_server_login") {
+				param("reason", "user_cancel")
+			}
+			logEvent(FirebaseAnalytics.Event.SCREEN_VIEW) {
+				param(FirebaseAnalytics.Param.SCREEN_NAME, "login_screen")
+			}
 		}
 	}
 
@@ -86,6 +108,9 @@ internal class LoginViewModel @Inject constructor(
 							),
 						),
 					)
+					firebaseAnalytics.logEvent("cancel_server_login") {
+						param("reason", "server_error")
+					}
 				},
 			).catch {
 				Timber.e(it, "로그인 중 에러 발생")
@@ -110,6 +135,9 @@ internal class LoginViewModel @Inject constructor(
 								),
 							),
 						)
+						firebaseAnalytics.logEvent("cancel_server_login") {
+							param("reason", "server_not_allowed")
+						}
 					}
 				}
 			}
@@ -133,6 +161,14 @@ internal class LoginViewModel @Inject constructor(
 				),
 			)
 		}
+		firebaseAnalytics.apply {
+			logEvent("cancel_kakao_login") {
+				param("reason", message)
+			}
+			logEvent(FirebaseAnalytics.Event.SCREEN_VIEW) {
+				param(FirebaseAnalytics.Param.SCREEN_NAME, "login_screen")
+			}
+		}
 	}
 
 	private suspend fun decideNextDestination(context: Context) {
@@ -145,19 +181,39 @@ internal class LoginViewModel @Inject constructor(
 						),
 					),
 				)
+				firebaseAnalytics.apply {
+					logEvent("cancel_client_login") {
+						param("reason", "client_error")
+					}
+					logEvent(FirebaseAnalytics.Event.SCREEN_VIEW) {
+						param(FirebaseAnalytics.Param.SCREEN_NAME, "login_screen")
+					}
+				}
 			},
 		)
 		when (status) {
 			is Destination.PermissionOrHome -> if (checkPermissions(context)) {
 				_navigationFlow.emit(LoginNavState.NavigateToHome)
+				firebaseAnalytics.logEvent(FirebaseAnalytics.Event.LOGIN) {
+					param(FirebaseAnalytics.Param.METHOD, "user_login")
+				}
 			} else {
 				_navigationFlow.emit(LoginNavState.NavigateToPermission)
+				firebaseAnalytics.logEvent(FirebaseAnalytics.Event.LOGIN) {
+					param(FirebaseAnalytics.Param.METHOD, "user_login")
+				}
 			}
 
 			is Destination.Onboarding -> {
 				_navigationFlow.emit(
 					LoginNavState.NavigateToOnboarding,
 				)
+				firebaseAnalytics.apply {
+					logEvent(FirebaseAnalytics.Event.LOGIN) {
+						param(FirebaseAnalytics.Param.METHOD, "user_login")
+					}
+					logEvent(FirebaseAnalytics.Event.TUTORIAL_BEGIN, null)
+				}
 			}
 
 			else -> {}
