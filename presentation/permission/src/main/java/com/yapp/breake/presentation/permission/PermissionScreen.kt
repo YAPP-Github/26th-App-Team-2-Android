@@ -60,6 +60,7 @@ import com.yapp.breake.core.navigation.compositionlocal.LocalNavigatorAction
 import com.yapp.breake.core.navigation.compositionlocal.LocalNavigatorProvider
 import com.yapp.breake.core.navigation.route.InitialRoute
 import com.yapp.breake.core.navigation.route.stringRoute
+import com.yapp.breake.presentation.permission.component.OnShowAccessibilityAgreementDialog
 import com.yapp.breake.presentation.permission.model.PermissionNavState
 import com.yapp.breake.presentation.permission.model.PermissionItem
 import com.yapp.breake.presentation.permission.model.PermissionModalState
@@ -141,11 +142,18 @@ fun PermissionRoute(
 		}
 	}
 
-	if (modalState is PermissionModalState.ShowLogoutModal) {
-		mainAction.OnShowLogoutDialog(
+	when (modalState) {
+		is PermissionModalState.ShowLogoutModal -> mainAction.OnShowLogoutDialog(
 			onConfirm = viewModel::logout,
 			onDismiss = viewModel::dismissModal,
 		)
+		is PermissionModalState.ShowAccessibilityAgreementModal -> {
+			OnShowAccessibilityAgreementDialog(
+				onConfirm = { viewModel.requestAccessibilityPermission(context) },
+				onDismiss = viewModel::dismissModal,
+			)
+		}
+		else -> {}
 	}
 
 	PermissionScreen(

@@ -39,7 +39,7 @@ import com.yapp.breake.core.designsystem.util.MultipleEventsCutter
 import com.yapp.breake.core.designsystem.util.get
 
 @Composable
-internal fun BaseDialog(
+fun BaseDialog(
 	onDismissRequest: () -> Unit,
 	confirmButton: (@Composable () -> Unit)? = null,
 	dismissButton: (@Composable () -> Unit)? = null,
