@@ -139,4 +139,9 @@ class MainActivity : ComponentActivity() {
 			}
 		}
 	}
+
+	override fun onDestroy() {
+		viewModel.analyzeFinishApp()
+		super.onDestroy()
+	}
 }
