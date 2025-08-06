@@ -2,6 +2,8 @@ package com.yapp.breake.presentation.onboarding.complete
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.google.firebase.analytics.FirebaseAnalytics
+import com.google.firebase.analytics.logEvent
 import com.yapp.breake.core.ui.UiString
 import com.yapp.breake.domain.usecase.StoreOnboardingCompletionUseCase
 import com.yapp.breake.presentation.onboarding.R
@@ -15,6 +17,7 @@ import javax.inject.Inject
 @HiltViewModel
 class CompleteViewModel @Inject constructor(
 	private val storeOnboardingCompletionUseCase: StoreOnboardingCompletionUseCase,
+	private val firebaseAnalytics: FirebaseAnalytics,
 ) : ViewModel() {
 	private val _snackBarFlow = MutableSharedFlow<UiString>()
 	val snackBarFlow = _snackBarFlow.asSharedFlow()
@@ -32,6 +35,9 @@ class CompleteViewModel @Inject constructor(
 					)
 				},
 			)
+			firebaseAnalytics.logEvent(FirebaseAnalytics.Event.TUTORIAL_COMPLETE) {
+				param(FirebaseAnalytics.Param.SUCCESS, "true")
+			}
 			_navigationFlow.emit(CompleteNavState.NavigateToMain)
 		}
 	}
