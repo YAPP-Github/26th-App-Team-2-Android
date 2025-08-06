@@ -70,7 +70,7 @@ fun NicknameRoute(
 		if (uiState is NicknameUiState.NicknameUpdating) {
 			viewModel.cancelUpdateNickname()
 		} else {
-			navAction.popBackStack()
+			viewModel::popBackStack
 		}
 	}
 
@@ -82,6 +82,9 @@ fun NicknameRoute(
 		viewModel.navigationFlow.collect {
 			when (it) {
 				NicknameNavState.NavigateToSetting -> navAction.popBackStack()
+				NicknameNavState.PopBackStack -> {
+					navAction.popBackStack()
+				}
 			}
 		}
 	}
