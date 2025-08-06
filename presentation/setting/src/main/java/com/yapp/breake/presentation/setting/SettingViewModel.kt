@@ -146,6 +146,10 @@ class SettingViewModel @Inject constructor(
 		deleteJob = viewModelScope.launch {
 			val dest = deleteAccountUseCase(
 				onError = {
+					_uiState.value = SettingUiState.SettingLoaded(
+						user = _uiState.value.user,
+						appInfo = _uiState.value.appInfo,
+					)
 					_snackBarFlow.emit(
 						SnackBarState.Error(
 							uiString = UiString.ResourceString(R.string.setting_snackbar_delete_error),
