@@ -3,6 +3,8 @@ package com.yapp.breake.core.detection
 import android.accessibilityservice.AccessibilityService
 import android.accessibilityservice.AccessibilityServiceInfo
 import android.view.accessibility.AccessibilityEvent
+import com.google.firebase.analytics.FirebaseAnalytics
+import com.google.firebase.analytics.logEvent
 import com.yapp.breake.core.model.app.AppGroupState
 import com.yapp.breake.core.util.OverlayLauncher
 import com.yapp.breake.core.util.getAppNameFromPackage
@@ -20,6 +22,9 @@ class AppLaunchDetectionService : AccessibilityService() {
 
 	@Inject
 	lateinit var findAppGroupUsecase: FindAppGroupUseCase
+
+	@Inject
+	lateinit var firebaseAnalytics: FirebaseAnalytics
 
 	private val serviceJob = SupervisorJob()
 	private val serviceScope = CoroutineScope(Dispatchers.Main + serviceJob)
@@ -52,18 +57,37 @@ class AppLaunchDetectionService : AccessibilityService() {
 				Timber.i("앱 그룹: ${appGroup.name}, 상태: $it")
 			}
 
+			val appName = getAppNameFromPackage(packageName) ?: packageName
+
 			when (blockingState) {
 				AppGroupState.NeedSetting, AppGroupState.Blocking -> {
 					OverlayLauncher.startOverlay(
 						context = applicationContext,
 						appGroup = appGroup,
-						appName = getAppNameFromPackage(packageName),
+						appName = appName,
 						appGroupState = blockingState,
 					)
+					firebaseAnalytics.run {
+						if (blockingState == AppGroupState.Blocking) {
+							logEvent("app_launch_detected") {
+								param("app_group_state", "blocking")
+								param("app_name", appName)
+							}
+						} else {
+							logEvent("app_launch_detected") {
+								param("app_group_state", "need_setting")
+								param("app_name", appName)
+							}
+						}
+					}
 				}
 
 				AppGroupState.Using -> {
 					Timber.i("$packageName 앱은 사용 상태입니다. 아무 작업도 하지 않습니다.")
+					firebaseAnalytics.logEvent("app_launch_detected") {
+						param("app_group_state", "using")
+						param("app_name", appName)
+					}
 				}
 
 				else -> {}
