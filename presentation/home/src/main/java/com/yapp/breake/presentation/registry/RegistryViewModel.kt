@@ -4,6 +4,8 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.toRoute
+import com.google.firebase.analytics.FirebaseAnalytics
+import com.google.firebase.analytics.logEvent
 import com.yapp.breake.core.appscanner.InstalledAppScanner
 import com.yapp.breake.core.model.app.App
 import com.yapp.breake.core.model.app.AppGroup
@@ -42,6 +44,7 @@ class RegistryViewModel @Inject constructor(
 	private val appGroupRepository: AppGroupRepository,
 	private val createNewGroupUseCase: CreateNewGroupUseCase,
 	private val deleteGroupUseCase: DeleteGroupUseCase,
+	private val firebaseAnalytics: FirebaseAnalytics,
 ) : ViewModel() {
 	// TODO: 그룹 아이디가 없을 시(새 그룹) 추후 데이터베이스 연동 후 가장 작고 사용 가능한 그룹 넘버 부여
 	private val appGroupId = savedStateHandle.toRoute<SubRoute.Registry>().groupId ?: 10L
@@ -137,6 +140,9 @@ class RegistryViewModel @Inject constructor(
 				}.build(),
 			)
 		}
+		firebaseAnalytics.logEvent("start_selecting_app") {
+			param("group_id", appGroupId)
+		}
 	}
 
 	fun removeSelectedApp(selectedIndex: Int) {
@@ -154,6 +160,9 @@ class RegistryViewModel @Inject constructor(
 	fun cancelCreatingNewGroup() {
 		viewModelScope.launch {
 			_navigationFlow.emit(RegistryNavState.NavigateToHome)
+		}
+		firebaseAnalytics.logEvent("cancel_creating_modifying_group") {
+			param("group_id", appGroupId)
 		}
 	}
 
@@ -196,6 +205,13 @@ class RegistryViewModel @Inject constructor(
 					UiString.ResourceString(R.string.registry_snackbar_group_creation_successful),
 				),
 			)
+			firebaseAnalytics.logEvent("create_modify_group") {
+				param("group_id", currentUiState.groupId)
+				param("group_name", currentUiState.groupName)
+				for (selectedApp in currentUiState.selectedApps) {
+					param("app_name", selectedApp.name)
+				}
+			}
 			_navigationFlow.emit(RegistryNavState.NavigateToHome)
 		}
 	}
@@ -274,6 +290,9 @@ class RegistryViewModel @Inject constructor(
 				}.toPersistentList(),
 			)
 		}
+		firebaseAnalytics.logEvent("complete_selecting_apps") {
+			param("group_id", currentUiState.groupId)
+		}
 	}
 
 	// 선택한 앱을 그룹에 포함시키지 않고 그룹 화면으로 돌아가기
@@ -294,6 +313,9 @@ class RegistryViewModel @Inject constructor(
 				}.build(),
 				selectedApps = currentUiState.selectedApps,
 			)
+			firebaseAnalytics.logEvent("cancel_selecting_apps") {
+				param("group_id", currentUiState.groupId)
+			}
 		}
 	}
 
@@ -320,6 +342,13 @@ class RegistryViewModel @Inject constructor(
 					UiString.ResourceString(R.string.registry_snackbar_group_deletion_successful),
 				),
 			)
+			firebaseAnalytics.logEvent("delete_group") {
+				param("group_id", registryUiState.value.groupId)
+				param("group_name", registryUiState.value.groupName)
+				for (selectedApp in registryUiState.value.selectedApps) {
+					param("app_name", selectedApp.name)
+				}
+			}
 			_navigationFlow.emit(RegistryNavState.NavigateToHome)
 		}
 	}
