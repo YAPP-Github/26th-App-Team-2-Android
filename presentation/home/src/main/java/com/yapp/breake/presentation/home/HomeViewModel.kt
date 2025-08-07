@@ -3,6 +3,8 @@ package com.yapp.breake.presentation.home
 import androidx.compose.runtime.Stable
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.google.firebase.analytics.FirebaseAnalytics
+import com.google.firebase.analytics.logEvent
 import com.yapp.breake.core.model.app.AppGroup
 import com.yapp.breake.core.model.app.AppGroupState
 import com.yapp.breake.domain.repository.AppGroupRepository
@@ -22,6 +24,7 @@ import javax.inject.Inject
 internal class HomeViewModel @Inject constructor(
 	appGroupRepository: AppGroupRepository,
 	private val setBlockingAlarmUseCase: SetBlockingAlarmUseCase,
+	private val firebaseAnalytics: FirebaseAnalytics,
 ) : ViewModel() {
 
 	val homeUiState: StateFlow<HomeUiState> = appGroupRepository
@@ -63,6 +66,9 @@ internal class HomeViewModel @Inject constructor(
 		_homeModalState.update {
 			HomeModalState.StopUsingDialog(appGroup)
 		}
+		firebaseAnalytics.logEvent("try_stop_session") {
+			param("where", "home_screen")
+		}
 	}
 
 	fun stopAppUsing(appGroup: AppGroup) {
@@ -80,11 +86,23 @@ internal class HomeViewModel @Inject constructor(
 		viewModelScope.launch {
 			_homeEvent.emit(HomeEvent.ShowStopUsingSuccess(groupName))
 		}
+		firebaseAnalytics.logEvent("stop_session") {
+			param("reason", "user_stop")
+		}
 	}
 
 	fun navigateToRegistry(groupId: Long? = null) {
 		viewModelScope.launch {
 			_homeEvent.emit(HomeEvent.NavigateToRegistry(groupId))
+		}
+		if (groupId != null) {
+			firebaseAnalytics.logEvent("try_edit_existed_group") {
+				param("group_id", groupId)
+			}
+		} else {
+			firebaseAnalytics.logEvent("try_add_new_group") {
+				param("group_id", "null")
+			}
 		}
 	}
 

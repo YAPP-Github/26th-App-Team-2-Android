@@ -21,7 +21,7 @@ fun PrivacyRoute(
 	val navAction = LocalNavigatorAction.current
 
 	PrivacyScreen(
-		onBack = navAction::popBackStack,
+		onBack = { viewModel.onBackPressed(navAction::popBackStack) },
 	)
 }
 

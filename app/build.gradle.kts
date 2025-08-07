@@ -5,6 +5,8 @@ import java.util.TimeZone
 plugins {
 	alias(libs.plugins.breake.android.application)
 	id("com.google.android.gms.oss-licenses-plugin")
+	alias(libs.plugins.google.services)
+	alias(libs.plugins.firebase.crashlytics)
 	alias(libs.plugins.baselineprofile)
 	alias(libs.plugins.roborazzi.plugin)
 }
@@ -58,6 +60,11 @@ dependencies {
 	implementation(projects.presentation.main)
 	implementation(projects.presentation.home)
 	implementation(projects.overlay.main)
+
+	implementation(platform(libs.firebase.bom))
+	implementation(libs.firebase.analytics)
+	implementation(libs.firebase.crashlytics)
+
 	implementation(libs.androidx.profileinstaller)
 	testImplementation(projects.core.testing)
 }

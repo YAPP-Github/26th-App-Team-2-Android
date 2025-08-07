@@ -1,14 +1,16 @@
 package com.yapp.breake.presentation.legal.terms
 
 import androidx.lifecycle.ViewModel
-import com.yapp.breake.presentation.legal.terms.model.TermsUiState
+import com.google.firebase.analytics.FirebaseAnalytics
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.asStateFlow
 import javax.inject.Inject
 
 @HiltViewModel
-class TermsViewModel @Inject constructor() : ViewModel() {
-	private val _uiState = MutableStateFlow<TermsUiState>(TermsUiState.PrivacyIdle)
-	val uiState = _uiState.asStateFlow()
+class TermsViewModel @Inject constructor(
+	private val firebaseAnalytics: FirebaseAnalytics,
+) : ViewModel() {
+	fun onBackPressed(onBack: () -> Unit) {
+		firebaseAnalytics.logEvent("privacy_policy_back_pressed", null)
+		onBack()
+	}
 }

@@ -4,6 +4,8 @@ import android.content.Context
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.breake.core.permission.PermissionManager
+import com.google.firebase.analytics.FirebaseAnalytics
+import com.google.firebase.analytics.logEvent
 import com.yapp.breake.core.model.user.Destination
 import com.yapp.breake.core.ui.UiString
 import com.yapp.breake.domain.usecase.LogoutUseCase
@@ -22,6 +24,7 @@ import javax.inject.Inject
 class GuideViewModel @Inject constructor(
 	private val permissionManager: PermissionManager,
 	private val logoutUseCase: LogoutUseCase,
+	private val firebaseAnalytics: FirebaseAnalytics,
 ) : ViewModel() {
 	private val _snackBarFlow = MutableSharedFlow<UiString>()
 	val snackBarFlow = _snackBarFlow.asSharedFlow()
@@ -52,6 +55,9 @@ class GuideViewModel @Inject constructor(
 				},
 			)
 			if (dest is Destination.Login) {
+				firebaseAnalytics.logEvent("logout") {
+					param("reason", "user_requested")
+				}
 				_navigationFlow.emit(GuideNavState.NavigateToLogin)
 			}
 		}

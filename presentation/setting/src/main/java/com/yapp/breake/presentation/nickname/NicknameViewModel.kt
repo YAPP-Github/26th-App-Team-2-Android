@@ -2,6 +2,8 @@ package com.yapp.breake.presentation.nickname
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.google.firebase.analytics.FirebaseAnalytics
+import com.google.firebase.analytics.logEvent
 import com.yapp.breake.core.ui.SnackBarState
 import com.yapp.breake.core.ui.UiString
 import com.yapp.breake.domain.usecase.GetNicknameUseCase
@@ -23,6 +25,7 @@ import javax.inject.Inject
 class NicknameViewModel @Inject constructor(
 	getNicknameUseCase: GetNicknameUseCase,
 	private val updateNicknameUseCase: UpdateNicknameUseCase,
+	private val firebaseAnalytics: FirebaseAnalytics,
 ) : ViewModel() {
 
 	private var updateJob: Job? = null
@@ -71,6 +74,9 @@ class NicknameViewModel @Inject constructor(
 							uiString = UiString.ResourceString(R.string.nickname_snackbar_update_success),
 						),
 					)
+					firebaseAnalytics.logEvent("update_nickname") {
+						param("nickname", nickname)
+					}
 					_navigationFlow.emit(NicknameNavState.NavigateToSetting)
 				},
 			)
@@ -83,6 +89,15 @@ class NicknameViewModel @Inject constructor(
 			_nicknameUiState.value = NicknameUiState.NicknameIdle(
 				nickname = _nicknameUiState.value.nickname,
 			)
+		}
+	}
+
+	fun popBackStack() {
+		viewModelScope.launch {
+			firebaseAnalytics.logEvent(FirebaseAnalytics.Event.SCREEN_VIEW) {
+				param(FirebaseAnalytics.Param.SCREEN_NAME, "setting_screen")
+			}
+			_navigationFlow.emit(NicknameNavState.PopBackStack)
 		}
 	}
 }

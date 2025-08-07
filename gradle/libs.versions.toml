@@ -53,6 +53,16 @@ composeShimmer = "1.3.2"    # Compose에서의 로딩 애니메이션 효과
 # https://github.com/ehsannarmani/ComposeCharts/releases
 composeCharts = "0.1.7"    # Compose에서 차트 그리기
 
+## Google Services
+# https://developers.google.com/android/guides/releases
+googleServices = "4.4.3"  # Google Play Services 및 Firebase 통합을 위한 Gradle 플러그인
+
+## Firebase
+# https://firebase.google.com/support/release-notes/android
+# 34.0.0 버전부터 Firebase KTX 라이브러리 없이 DSL 사용 가능
+firebaseBom = "34.0.0"  # Firebase BOM (Bill of Materials)
+firebaseCrashlytics = "3.0.5" # Firebase Crashlytics NDK 지원
+
 ## Kotlin Symbol Processing
 # https://github.com/google/ksp/
 ksp = "2.1.21-2.0.2"
@@ -188,6 +198,11 @@ room-compiler ={module="androidx.room:room-compiler",version.ref = "room" }
 # DataStore
 datastore = { group = "androidx.datastore", name = "datastore-preferences", version.ref = "androidxDatastore" }
 
+# Firebase
+firebase-bom = { group = "com.google.firebase", name = "firebase-bom", version.ref = "firebaseBom" }
+firebase-analytics = { group = "com.google.firebase", name = "firebase-analytics" }
+firebase-crashlytics = { group = "com.google.firebase", name = "firebase-crashlytics-ndk" }
+
 # Hilt
 hilt-core = { group = "com.google.dagger", name = "hilt-core", version.ref = "hilt" }
 hilt-compiler = { group = "com.google.dagger", name = "hilt-compiler", version.ref = "hilt" }
@@ -279,6 +294,8 @@ ktlint = { id = "org.jlleitschuh.gradle.ktlint", version.ref = "ktlint" }
 verify-detekt = { id = "io.gitlab.arturbosch.detekt", version.ref = "detekt" }
 compose-compiler = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
 android-test = { id = "com.android.test", version.ref = "agp" }
+google-services = { id = "com.google.gms.google-services", version.ref = "googleServices" }
+firebase-crashlytics = { id = "com.google.firebase.crashlytics", version.ref = "firebaseCrashlytics" }
 baselineprofile = { id = "androidx.baselineprofile", version.ref = "baselineprofile" }
 roborazzi-plugin = { id = "io.github.takahirom.roborazzi", version.ref = "roborazzi" }
 
