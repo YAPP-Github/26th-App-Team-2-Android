@@ -16,6 +16,7 @@ import com.yapp.breake.core.util.toByteArray
 import com.yapp.breake.domain.repository.AppGroupRepository
 import com.yapp.breake.domain.usecase.CreateNewGroupUseCase
 import com.yapp.breake.domain.usecase.DeleteGroupUseCase
+import com.yapp.breake.domain.usecase.GrantNewGroupIdUseCase
 import com.yapp.breake.presentation.home.R
 import com.yapp.breake.presentation.registry.model.AppModel.Companion.initialAppsMapper
 import com.yapp.breake.presentation.registry.model.RegistryModalState
@@ -24,7 +25,6 @@ import com.yapp.breake.presentation.registry.model.RegistrySnackBarState
 import com.yapp.breake.presentation.registry.model.RegistryUiState
 import com.yapp.breake.presentation.registry.model.SelectedAppModel
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.collections.immutable.PersistentList
 import kotlinx.collections.immutable.persistentListOf
 import kotlinx.collections.immutable.toPersistentList
 import kotlinx.coroutines.Dispatchers
@@ -34,7 +34,6 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.runBlocking
 import javax.inject.Inject
 
 @HiltViewModel
@@ -44,41 +43,48 @@ class RegistryViewModel @Inject constructor(
 	private val appGroupRepository: AppGroupRepository,
 	private val createNewGroupUseCase: CreateNewGroupUseCase,
 	private val deleteGroupUseCase: DeleteGroupUseCase,
+	grantNewGroupIdUseCase: GrantNewGroupIdUseCase,
 	private val firebaseAnalytics: FirebaseAnalytics,
 ) : ViewModel() {
-	// TODO: 그룹 아이디가 없을 시(새 그룹) 추후 데이터베이스 연동 후 가장 작고 사용 가능한 그룹 넘버 부여
-	private val appGroupId = savedStateHandle.toRoute<SubRoute.Registry>().groupId ?: 10L
-	private val targetAppGroup: AppGroup? = runBlocking {
-		appGroupRepository.getAppGroupById(appGroupId)
-	}
-	private val selectedApps: PersistentList<SelectedAppModel> =
-		persistentListOf<SelectedAppModel>().builder().apply {
-			targetAppGroup?.let {
-				it.apps.forEachIndexed { index, appModel ->
-					add(
-						SelectedAppModel(
-							index = index,
-							name = appModel.name,
-							packageName = appModel.packageName,
-							icon = appScanner.getIconDrawable(appModel.packageName),
-						),
-					)
-				}
-			}
-		}.build()
-	private val cachedAppsDeferred = viewModelScope.async(Dispatchers.IO) {
-		appScanner.getInstalledAppsMetaData().map(initialAppsMapper).toPersistentList()
-	}
-
-	private val _registryUiState: MutableStateFlow<RegistryUiState> =
-		MutableStateFlow<RegistryUiState>(
-			RegistryUiState.Group.Initial(
-				groupId = appGroupId,
-				groupName = targetAppGroup?.name ?: "",
-				selectedApps = selectedApps,
-			),
-		)
+	private val _registryUiState: MutableStateFlow<RegistryUiState> = MutableStateFlow(
+		RegistryUiState.Group.Initial(
+			groupId = 0L,
+			groupName = "",
+			selectedApps = persistentListOf(),
+		),
+	)
 	val registryUiState = _registryUiState.asStateFlow()
+
+	init {
+		viewModelScope.launch {
+			val groupId = savedStateHandle.toRoute<SubRoute.Registry>().groupId
+				?: grantNewGroupIdUseCase({})
+
+			val targetAppGroup = appGroupRepository.getAppGroupById(groupId)
+
+			val selectedApps =
+				persistentListOf<SelectedAppModel>().builder().apply {
+					targetAppGroup?.let { group ->
+						group.apps.forEachIndexed { index, appModel ->
+							add(
+								SelectedAppModel(
+									index = index,
+									name = appModel.name,
+									packageName = appModel.packageName,
+									icon = appScanner.getIconDrawable(appModel.packageName),
+								),
+							)
+						}
+					}
+				}.build()
+
+			_registryUiState.value = RegistryUiState.Group.Initial(
+				groupId = groupId,
+				groupName = targetAppGroup?.name.orEmpty(),
+				selectedApps = selectedApps,
+			)
+		}
+	}
 
 	private val _snackBarFlow = MutableSharedFlow<RegistrySnackBarState>()
 	val snackBarFlow = _snackBarFlow.asSharedFlow()
@@ -91,6 +97,10 @@ class RegistryViewModel @Inject constructor(
 
 	private val _lazyColumnIndexFlow = MutableSharedFlow<Int>()
 	val lazyColumnIndexFlow = _lazyColumnIndexFlow.asSharedFlow()
+
+	private val cachedAppsDeferred = viewModelScope.async(Dispatchers.IO) {
+		appScanner.getInstalledAppsMetaData().map(initialAppsMapper).toPersistentList()
+	}
 
 	// ------------- Group Registry -------------
 	fun updateGroupName(groupName: String) {
@@ -141,7 +151,7 @@ class RegistryViewModel @Inject constructor(
 			)
 		}
 		firebaseAnalytics.logEvent("start_selecting_app") {
-			param("group_id", appGroupId)
+			param("group_id", registryUiState.value.groupId)
 		}
 	}
 
@@ -162,7 +172,7 @@ class RegistryViewModel @Inject constructor(
 			_navigationFlow.emit(RegistryNavState.NavigateToHome)
 		}
 		firebaseAnalytics.logEvent("cancel_creating_modifying_group") {
-			param("group_id", appGroupId)
+			param("group_id", registryUiState.value.groupId)
 		}
 	}
 
@@ -183,7 +193,7 @@ class RegistryViewModel @Inject constructor(
 				},
 				group = currentUiState.let {
 					AppGroup(
-						id = 1,
+						id = it.groupId,
 						name = it.groupName,
 						appGroupState = AppGroupState.NeedSetting,
 						apps = it.selectedApps.map { selectedApp ->
