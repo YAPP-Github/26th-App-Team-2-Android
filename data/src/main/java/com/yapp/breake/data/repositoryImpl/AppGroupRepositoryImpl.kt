@@ -22,6 +22,9 @@ class AppGroupRepositoryImpl @Inject constructor(
 		)
 	}
 
+	override suspend fun getAvailableMinGroupId(): Long =
+		appGroupDao.getAvailableMinGroupId()
+
 	override suspend fun deleteAppGroupByGroupId(groupId: Long) {
 		appGroupDao.deleteAppGroupById(groupId)
 	}

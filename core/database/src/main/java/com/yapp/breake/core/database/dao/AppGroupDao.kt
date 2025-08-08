@@ -17,6 +17,21 @@ interface AppGroupDao {
 	@Insert(onConflict = OnConflictStrategy.REPLACE)
 	suspend fun insertAppGroup(groupEntity: GroupEntity)
 
+	@Query(
+		"""
+		SELECT CASE
+			WHEN NOT EXISTS(SELECT 1 FROM `group_table` WHERE groupId = 1) THEN 1
+			ELSE (
+				SELECT MIN(t1.groupId + 1)
+				FROM `group_table` t1
+				LEFT JOIN `group_table` t2 ON t1.groupId + 1 = t2.groupId
+				WHERE t2.groupId IS NULL
+			)
+		END
+		""",
+	)
+	suspend fun getAvailableMinGroupId(): Long
+
 	@Transaction
 	@Query("SELECT * FROM `group_table`")
 	fun observeAppGroup(): Flow<List<AppGroupEntity>>
