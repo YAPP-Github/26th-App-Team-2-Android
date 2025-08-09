@@ -111,6 +111,7 @@ private fun HomeContent(
 					onEditClick = {
 						onShowEditScreen(it.id)
 					},
+					onAddClick = onShowAddScreen,
 				)
 			}
 

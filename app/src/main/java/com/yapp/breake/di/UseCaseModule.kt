@@ -10,6 +10,7 @@ import com.yapp.breake.domain.usecaseImpl.DeleteAccountUseCaseImpl
 import com.yapp.breake.domain.usecase.DeleteGroupUseCase
 import com.yapp.breake.domain.usecase.FindAppGroupUseCase
 import com.yapp.breake.domain.usecase.GetNicknameUseCase
+import com.yapp.breake.domain.usecase.GrantNewGroupIdUseCase
 import com.yapp.breake.domain.usecase.LoginUseCase
 import com.yapp.breake.domain.usecase.LogoutUseCase
 import com.yapp.breake.domain.usecaseImpl.LogoutUseCaseImpl
@@ -25,6 +26,7 @@ import com.yapp.breake.domain.usecaseImpl.CreateNewGroupUseCaseImpl
 import com.yapp.breake.domain.usecaseImpl.DeleteGroupUseCaseImpl
 import com.yapp.breake.domain.usecaseImpl.FindAppGroupUsecaseImpl
 import com.yapp.breake.domain.usecaseImpl.GetNicknameUseCaseImpl
+import com.yapp.breake.domain.usecaseImpl.GrantNewGroupIdUseCaseImpl
 import com.yapp.breake.domain.usecaseImpl.LoginUseCaseImpl
 import com.yapp.breake.domain.usecaseImpl.SetAlarmUsecaseImpl
 import com.yapp.breake.domain.usecaseImpl.SetBlockingAlarmUseCaseImpl
@@ -113,4 +115,9 @@ internal abstract class UseCaseModule {
 	abstract fun bindDeleteGroupUseCase(
 		deleteGroupUseCase: DeleteGroupUseCaseImpl,
 	): DeleteGroupUseCase
+
+	@Binds
+	abstract fun bindGrantNewGroupIdUseCase(
+		grantNewGroupIdUseCase: GrantNewGroupIdUseCaseImpl,
+	): GrantNewGroupIdUseCase
 }
