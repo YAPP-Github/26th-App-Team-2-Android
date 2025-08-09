@@ -37,7 +37,6 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -61,7 +60,6 @@ internal fun ListScreen(
 	onEditClick: (AppGroup) -> Unit,
 	onAddClick: () -> Unit,
 ) {
-	val scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior()
 	val listState = rememberLazyListState()
 	val showTitle by remember {
 		derivedStateOf {
@@ -77,7 +75,6 @@ internal fun ListScreen(
 	val headerKey = "groupsHeader"
 
 	Scaffold(
-		modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
 		topBar = {
 			TopAppBar(
 				title = {
@@ -108,7 +105,6 @@ internal fun ListScreen(
 						)
 					}
 				},
-				scrollBehavior = scrollBehavior,
 				colors = TopAppBarDefaults.topAppBarColors(
 					containerColor = container,
 					scrolledContainerColor = container,
