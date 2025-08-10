@@ -71,7 +71,7 @@ class AlarmSchedulerImpl @Inject constructor(
 			putExtra(EXTRA_APP_NAME_ID, appName)
 		}
 
-		val pendingIntentFlags = PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
+		val pendingIntentFlags = PendingIntent.FLAG_IMMUTABLE
 		return PendingIntent.getBroadcast(
 			context,
 			groupId.toInt(),
@@ -86,9 +86,10 @@ class AlarmSchedulerImpl @Inject constructor(
 		pendingIntent: PendingIntent,
 	) {
 		val triggerAtMillis = triggerTime.atZone(ZoneId.systemDefault()).toInstant().toEpochMilli()
-		alarmManager.setExactAndAllowWhileIdle(
-			AlarmManager.RTC_WAKEUP,
-			triggerAtMillis,
+		val alarmInfo = AlarmManager.AlarmClockInfo(triggerAtMillis, pendingIntent)
+
+		alarmManager.setAlarmClock(
+			alarmInfo,
 			pendingIntent,
 		)
 	}
