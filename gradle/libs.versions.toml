@@ -73,6 +73,13 @@ hilt = "2.56.2"
 # https://developer.android.com/jetpack/androidx/releases/hilt
 hiltNavigationCompose = "1.2.0"
 
+# WorkManager
+# https://developer.android.com/jetpack/androidx/releases/work
+work-ktx = "2.10.3"
+# https://developer.android.com/jetpack/androidx/releases/hilt
+work-hilt = "1.2.0"
+androidxHilt = "1.2.0"  # androidx.hilt 라이브러리 버전
+
 ## Network
 # okhttp
 # # https://square.github.io/okhttp/
@@ -198,6 +205,11 @@ room-compiler ={module="androidx.room:room-compiler",version.ref = "room" }
 # DataStore
 datastore = { group = "androidx.datastore", name = "datastore-preferences", version.ref = "androidxDatastore" }
 
+# WorkManager
+work-runtime-ktx = { group = "androidx.work", name = "work-runtime-ktx", version.ref = "work-ktx" }
+work-hilt = { group = "androidx.hilt", name = "hilt-work", version.ref = "work-hilt" }
+androidx-hilt-compiler = { group = "androidx.hilt", name = "hilt-compiler", version.ref = "androidxHilt" }
+
 # Firebase
 firebase-bom = { group = "com.google.firebase", name = "firebase-bom", version.ref = "firebaseBom" }
 firebase-analytics = { group = "com.google.firebase", name = "firebase-analytics" }
@@ -307,4 +319,5 @@ breake-android-library = { id = "breake.android.library"}
 breake-kotlin-library = { id = "breake.kotlin.library"}
 breake-android-room = { id = "breake.android.room"}
 breake-android-hilt = { id = "breake.android.hilt"}
+breake-work-hilt = { id = "breake.work.hilt"}
 breake-kotlin-hilt = { id = "breake.kotlin.hilt"}
