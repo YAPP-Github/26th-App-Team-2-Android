@@ -16,6 +16,10 @@ gradlePlugin {
 			id = "breake.android.hilt"
 			implementationClass = "com.yapp.breake.HiltAndroidPlugin"
 		}
+		register("workHilt") {
+			id = "breake.work.hilt"
+			implementationClass = "com.yapp.breake.HiltWorkPlugin"
+		}
 		register("kotlinHilt") {
 			id = "breake.kotlin.hilt"
 			implementationClass = "com.yapp.breake.HiltKotlinPlugin"
