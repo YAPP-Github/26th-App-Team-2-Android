@@ -2,6 +2,8 @@ package com.yapp.breake.overlay.snooze
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.yapp.breake.core.model.app.AppGroupState
+import com.yapp.breake.domain.usecase.SetAlarmUseCase
 import com.yapp.breake.domain.usecase.SetSnoozeAlarmUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -12,6 +14,7 @@ import javax.inject.Inject
 @HiltViewModel
 internal class SnoozeViewModel @Inject constructor(
 	private val setSnoozeAlarmUsecase: SetSnoozeAlarmUseCase,
+	private val setAlarmUsecase: SetAlarmUseCase,
 ) : ViewModel() {
 
 	private val _toastEffect: MutableSharedFlow<String> = MutableSharedFlow()
@@ -26,6 +29,16 @@ internal class SnoozeViewModel @Inject constructor(
 			}.onFailure {
 				sendToastMessage("알람 설정에 실패했습니다. 정확한 알람 권한을 확인해주세요.")
 			}
+		}
+	}
+
+	fun setBlock(groupId: Long, appName: String) {
+		viewModelScope.launch {
+			setAlarmUsecase(
+				groupId = groupId,
+				appGroupState = AppGroupState.Blocking,
+				appName = appName,
+			)
 		}
 	}
 
