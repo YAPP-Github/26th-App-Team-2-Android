@@ -76,6 +76,7 @@ internal fun HomeRoute(
 						),
 					)
 				}
+
 				is HomeEvent.NavigateToRegistry -> {
 					navAction.navigateToRegistry(groupId = event.groupId)
 				}
@@ -99,6 +100,8 @@ private fun HomeContent(
 		label = "HomeContent",
 	) { state ->
 		when (state) {
+			HomeUiState.Loading -> {}
+
 			HomeUiState.Nothing -> {
 				NothingScreen(
 					onAddClick = onShowAddScreen,

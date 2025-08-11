@@ -33,7 +33,7 @@ internal class HomeViewModel @Inject constructor(
 		.stateIn(
 			scope = viewModelScope,
 			started = SharingStarted.Eagerly,
-			initialValue = HomeUiState.Nothing,
+			initialValue = HomeUiState.Loading,
 		)
 
 	private val _homeModalState: MutableStateFlow<HomeModalState> =
@@ -113,6 +113,7 @@ internal class HomeViewModel @Inject constructor(
 
 @Stable
 internal sealed interface HomeUiState {
+	data object Loading : HomeUiState
 	data object Nothing : HomeUiState
 	data class GroupList(val appGroups: List<AppGroup>) : HomeUiState
 	data class Blocking(val appGroup: AppGroup) : HomeUiState
