@@ -4,6 +4,7 @@ import java.util.TimeZone
 
 plugins {
 	alias(libs.plugins.breake.android.application)
+	alias(libs.plugins.breake.work.hilt)
 	id("com.google.android.gms.oss-licenses-plugin")
 	alias(libs.plugins.google.services)
 	alias(libs.plugins.firebase.crashlytics)
