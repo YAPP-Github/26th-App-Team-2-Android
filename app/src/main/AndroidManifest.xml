@@ -32,6 +32,18 @@
 			android:enabled="true"
 			android:exported="false" />
 
+		<!-- Work 라이브러리에 내장된 InitializationProvider 에서 자동 WorkManager 초기화 제외 설정 -->
+		<provider
+			android:name="androidx.startup.InitializationProvider"
+			android:authorities="${applicationId}.androidx-startup"
+			android:exported="false"
+			tools:node="merge">
+			<meta-data
+				android:name="androidx.work.WorkManagerInitializer"
+				android:value="androidx.startup"
+				tools:node="remove" />
+		</provider>
+
 		<service
 			android:name=".core.detection.AppLaunchDetectionService"
 			android:exported="false"
