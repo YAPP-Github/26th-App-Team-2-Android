@@ -17,6 +17,7 @@ import com.yapp.breake.core.util.OverlayLauncher
 import com.yapp.breake.core.util.getAppNameFromPackage
 import com.yapp.breake.domain.repository.AppGroupRepository
 import com.yapp.breake.domain.usecase.FindAppGroupUseCase
+import com.yapp.breake.domain.usecase.SetAlarmUseCase
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -33,6 +34,9 @@ class AppLaunchDetectionService : AccessibilityService() {
 
 	@Inject
 	lateinit var appGroupRepository: AppGroupRepository
+
+	@Inject
+	lateinit var setAlarmUsecase: SetAlarmUseCase
 
 	@Inject
 	lateinit var firebaseAnalytics: FirebaseAnalytics
@@ -191,6 +195,13 @@ class AppLaunchDetectionService : AccessibilityService() {
 					return@launch
 				}
 			}
+			setAlarmUsecase(
+				groupId = groupId,
+				appGroupState = AppGroupState.Blocking,
+				appName = appGroup?.let { it.apps.find { it.packageName == currentAppPkg }?.name }
+					?: "Unknown App",
+				// 현재 appName은 사실상 사용 안함
+			)
 		}
 	}
 
