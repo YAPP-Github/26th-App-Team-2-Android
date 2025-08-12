@@ -10,7 +10,9 @@
 			android:configChanges="uiMode"
 			android:exported="true"
 			android:launchMode="singleTop"
-			android:theme="@null">
+			android:theme="@null"
+			android:noHistory="true">
+			<!-- noHistory=true: Activity 를 벗어나면 그대로 종료, 다시 돌아오면 메인 Entry 에 접근하여 새로 앱 실행 -->
 
 			<intent-filter>
 				<action android:name="com.yapp.breake.alarm.action.SHOW_BREAK_TIME_OVERLAY" />
