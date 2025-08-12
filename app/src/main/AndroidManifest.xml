@@ -44,6 +44,18 @@
 				tools:node="remove" />
 		</provider>
 
+		<!-- 재부팅 감지 BroadcastReceiver -->
+		<receiver
+			android:name="com.yapp.breake.core.alarm.scheduler.ReschedulerBootReceiver"
+			android:enabled="true"
+			android:exported="false">
+			<intent-filter>
+				<action android:name="android.intent.action.BOOT_COMPLETED" />
+				<action android:name="android.intent.action.QUICKBOOT_POWERON" />
+				<action android:name="com.htc.intent.action.QUICKBOOT_POWERON"/>
+			</intent-filter>
+		</receiver>
+
 		<service
 			android:name=".core.detection.AppLaunchDetectionService"
 			android:exported="false"
