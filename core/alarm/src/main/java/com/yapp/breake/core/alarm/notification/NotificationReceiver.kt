@@ -6,10 +6,9 @@ import android.content.Intent
 import com.yapp.breake.core.alarm.scheduler.AlarmSchedulerImpl.Companion.EXTRA_APP_NAME_ID
 import com.yapp.breake.core.alarm.scheduler.AlarmSchedulerImpl.Companion.EXTRA_GROUP_ID
 import com.yapp.breake.core.common.AlarmAction
+import com.yapp.breake.core.model.accessibility.IntentConfig
 import com.yapp.breake.core.model.app.AppGroup
 import com.yapp.breake.core.model.app.AppGroupState
-import com.yapp.breake.core.util.AppLaunchUtil
-import com.yapp.breake.core.util.OverlayLauncher
 import com.yapp.breake.domain.repository.AppGroupRepository
 import com.yapp.breake.domain.usecase.ResetAppGroupUsecase
 import com.yapp.breake.domain.usecase.SetAlarmUseCase
@@ -61,36 +60,26 @@ class NotificationReceiver : BroadcastReceiver() {
 	private suspend fun startBlocking(context: Context, appGroup: AppGroup, appName: String?) {
 		Timber.i("ID: ${appGroup.id} 차단이 시작되었습니다")
 
-		val isUserUsingApp = AppLaunchUtil.isAppLaunching(context, appGroup)
-		if (isUserUsingApp) {
-			OverlayLauncher.startOverlay(
-				context = context,
-				appGroup = appGroup,
-				appName = appName,
-				appGroupState = AppGroupState.SnoozeBlocking,
-				snoozesCount = appGroup.snoozesCount,
-			)
+		val broadcastIntent = Intent().apply {
+			action = IntentConfig.RECEIVER_IDENTITY
+			setPackage(context.packageName)
+			putExtra(IntentConfig.EXTRA_GROUP_ID, appGroup.id)
+			putExtra(IntentConfig.EXTRA_GROUP_STATE, AppGroupState.SnoozeBlocking)
+			putExtra(IntentConfig.EXTRA_SNOOZES_COUNT, appGroup.snoozesCount)
 		}
-
-		setAlarmUsecase(
-			groupId = appGroup.id,
-			appGroupState = AppGroupState.Blocking,
-			appName = appName ?: "Unknown App",
-		)
+		context.sendBroadcast(broadcastIntent)
 	}
 
 	private suspend fun stopBlocking(context: Context, appGroup: AppGroup, appName: String?) {
 		Timber.i("ID: ${appGroup.id} 차단이 해제되었습니다")
 		resetAppGroupUsecase(groupId = appGroup.id)
 
-		val isUserUsingApp = AppLaunchUtil.isAppLaunching(context, appGroup)
-		if (isUserUsingApp) {
-			OverlayLauncher.startOverlay(
-				context = context,
-				appGroup = appGroup,
-				appName = appName,
-				appGroupState = AppGroupState.NeedSetting,
-			)
+		val broadcastIntent = Intent().apply {
+			action = IntentConfig.RECEIVER_IDENTITY
+			putExtra(IntentConfig.EXTRA_GROUP_ID, appGroup.id)
+			putExtra(IntentConfig.EXTRA_GROUP_STATE, AppGroupState.NeedSetting)
+			putExtra(IntentConfig.EXTRA_SNOOZES_COUNT, 0)
 		}
+		context.sendBroadcast(broadcastIntent)
 	}
 }
