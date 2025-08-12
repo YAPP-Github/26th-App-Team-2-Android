@@ -53,8 +53,8 @@ class AppLaunchDetectionService : AccessibilityService() {
 	 * NotificationReceiver에서 전달받은 인텐트를 처리하여 오버레이 띄우기 시도
 	 */
 	private val commandReceiver = object : BroadcastReceiver() {
-		override fun onReceive(context: Context?, intent: Intent?) {
-			val pkg = intent?.`package`
+		override fun onReceive(context: Context?, intent: Intent) {
+			val pkg = intent.`package`
 			if (pkg == applicationContext.packageName) {
 				Timber.i(
 					"NotificationReceiver -> Accessibility 명령 수신됨: ${intent.action}, 그룹 ID: ${
@@ -74,6 +74,7 @@ class AppLaunchDetectionService : AccessibilityService() {
 	 *
 	 * IntentFilter 를 통해 송신자가 수신자 (해당 BroadcastReceiver) 를 식별할 수 있도록 설정
 	 */
+	@SuppressLint("UnspecifiedRegisterReceiverFlag")
 	override fun onCreate() {
 		super.onCreate()
 		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
@@ -83,7 +84,6 @@ class AppLaunchDetectionService : AccessibilityService() {
 				RECEIVER_NOT_EXPORTED,
 			)
 		} else {
-			@SuppressLint("UnspecifiedRegisterReceiverFlag")
 			registerReceiver(
 				commandReceiver,
 				IntentFilter(IntentConfig.RECEIVER_IDENTITY),
