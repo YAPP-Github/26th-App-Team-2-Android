@@ -36,6 +36,7 @@ class SetSnoozeAlarmUsecaseImpl @Inject constructor(
 			appGroupRepository.updateAppGroupState(
 				groupId = groupId,
 				appGroupState = AppGroupState.Using,
+				startTime = startTime,
 				endTime = triggerTime,
 			)
 			appGroupRepository.insertSnooze(

@@ -25,9 +25,11 @@ fun LocalDateTime.toSimpleTime(): String {
 	return this.format(formatter)
 }
 
-fun LocalDateTime.getRemainingSeconds(): Long {
-	val now = LocalDateTime.now()
-	val remaining = ChronoUnit.SECONDS.between(now, this)
+fun getRemainingSeconds(
+	endTime: LocalDateTime?,
+): Long {
+	if (endTime == null) return 0L
+	val remaining = ChronoUnit.SECONDS.between(LocalDateTime.now(), endTime)
 	return maxOf(0L, remaining)
 }
 

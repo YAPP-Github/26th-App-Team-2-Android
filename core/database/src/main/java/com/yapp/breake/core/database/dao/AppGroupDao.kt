@@ -48,9 +48,17 @@ interface AppGroupDao {
 	suspend fun deleteAppGroupById(groupId: Long)
 
 	@Query(
-		"UPDATE `group_table` SET appGroupState = :appGroupState, endTime = :endTime WHERE groupId = :groupId",
+		"UPDATE `group_table` SET " +
+			"appGroupState = :appGroupState," +
+			" startTime = :startTime," +
+			" endTime = :endTime WHERE groupId = :groupId",
 	)
-	suspend fun updateAppGroupState(groupId: Long, appGroupState: AppGroupState, endTime: LocalDateTime?)
+	suspend fun updateAppGroupState(
+		groupId: Long,
+		appGroupState: AppGroupState,
+		startTime: LocalDateTime?,
+		endTime: LocalDateTime?,
+	)
 
 	@Query(
 		"INSERT INTO `snooze_table` (parentGroupId, snoozeTime) VALUES (:parentGroupId, :snoozeTime)",

@@ -2,7 +2,7 @@
   "formatVersion": 1,
   "database": {
     "version": 1,
-    "identityHash": "4b1846f0af223874c009aa012f0cfc21",
+    "identityHash": "7ee6229b6c620d6833f9096700e96f9d",
     "entities": [
       {
         "tableName": "app_table",
@@ -120,7 +120,7 @@
       },
       {
         "tableName": "group_table",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`groupId` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `name` TEXT NOT NULL, `appGroupState` TEXT NOT NULL, `endTime` TEXT)",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`groupId` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `name` TEXT NOT NULL, `appGroupState` TEXT NOT NULL, `startTime` TEXT, `endTime` TEXT)",
         "fields": [
           {
             "fieldPath": "groupId",
@@ -141,6 +141,11 @@
             "notNull": true
           },
           {
+            "fieldPath": "startTime",
+            "columnName": "startTime",
+            "affinity": "TEXT"
+          },
+          {
             "fieldPath": "endTime",
             "columnName": "endTime",
             "affinity": "TEXT"
@@ -156,7 +161,7 @@
     ],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '4b1846f0af223874c009aa012f0cfc21')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '7ee6229b6c620d6833f9096700e96f9d')"
     ]
   }
 }

@@ -13,7 +13,6 @@ class ResetAppGroupUsecaseImpl @Inject constructor(
 		return appGroupRepository.updateAppGroupState(
 			groupId = groupId,
 			appGroupState = AppGroupState.NeedSetting,
-			endTime = null,
 		).also {
 			appGroupRepository.resetSnooze(groupId)
 		}

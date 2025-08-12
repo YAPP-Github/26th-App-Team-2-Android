@@ -31,7 +31,7 @@ class SetAlarmUsecaseImpl @Inject constructor(
 		}
 
 		val startTime = LocalDateTime.now()
-		val triggerTime = startTime.plusSeconds(time.toLong())
+		val triggerTime = startTime.plusSeconds(time)
 
 		return alarmScheduler.scheduleAlarm(
 			groupId = groupId,
@@ -46,6 +46,7 @@ class SetAlarmUsecaseImpl @Inject constructor(
 				} else {
 					appGroupState
 				},
+				startTime = startTime,
 				endTime = triggerTime,
 			)
 		}

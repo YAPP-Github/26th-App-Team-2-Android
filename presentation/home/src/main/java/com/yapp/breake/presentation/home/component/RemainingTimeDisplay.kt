@@ -99,12 +99,10 @@ internal fun RemainingTimeTextDisplay(
 ) {
 
 	LaunchedEffect(endTime) {
-		endTime?.let { time ->
-			onTimeChange(time.getRemainingSeconds())
-			while (remainingSeconds > 0) {
-				delay(50)
-				onTimeChange(time.getRemainingSeconds())
-			}
+		onTimeChange(getRemainingSeconds(endTime))
+		while (remainingSeconds > 0) {
+			delay(50)
+			onTimeChange(getRemainingSeconds(endTime))
 		}
 	}
 

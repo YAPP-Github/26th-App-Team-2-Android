@@ -35,7 +35,7 @@ internal fun CircularProgressTimer(
 ) {
 	val animatedProgress by animateFloatAsState(
 		targetValue = progress,
-		animationSpec = tween(durationMillis = 300),
+		animationSpec = tween(durationMillis = 150),
 		label = "progress_animation",
 	)
 

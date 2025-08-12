@@ -19,6 +19,7 @@ internal fun AppGroupEntity.toAppGroup(appScanner: InstalledAppScanner): AppGrou
 			it.toApp(appScanner)
 		},
 		snoozes = snoozes.map(SnoozeEntity::toSnooze),
+		startTime = group.startTime,
 		endTime = group.endTime,
 	)
 }
@@ -27,6 +28,7 @@ internal fun AppGroup.toGroupEntity(): GroupEntity = GroupEntity(
 	groupId = id,
 	name = name,
 	appGroupState = appGroupState,
+	startTime = startTime,
 	endTime = endTime,
 )
 

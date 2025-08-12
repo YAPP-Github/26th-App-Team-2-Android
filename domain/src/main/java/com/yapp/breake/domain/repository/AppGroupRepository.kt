@@ -22,7 +22,8 @@ interface AppGroupRepository {
 	suspend fun updateAppGroupState(
 		groupId: Long,
 		appGroupState: AppGroupState,
-		endTime: LocalDateTime?,
+		startTime: LocalDateTime? = null,
+		endTime: LocalDateTime? = null,
 	): Result<Unit>
 
 	suspend fun insertSnooze(

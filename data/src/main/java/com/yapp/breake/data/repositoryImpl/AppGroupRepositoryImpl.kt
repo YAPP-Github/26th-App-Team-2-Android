@@ -50,12 +50,14 @@ class AppGroupRepositoryImpl @Inject constructor(
 	override suspend fun updateAppGroupState(
 		groupId: Long,
 		appGroupState: AppGroupState,
+		startTime: LocalDateTime?,
 		endTime: LocalDateTime?,
 	): Result<Unit> {
 		return try {
 			appGroupDao.updateAppGroupState(
 				groupId = groupId,
 				appGroupState = appGroupState,
+				startTime = startTime,
 				endTime = endTime,
 			)
 			Result.success(Unit)

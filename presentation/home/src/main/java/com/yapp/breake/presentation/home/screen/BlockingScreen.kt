@@ -94,6 +94,7 @@ private fun BlockingAppGroup(
 		)
 		VerticalSpacer(20.dp)
 		ProgressTime(
+			startTime = appGroup.startTime,
 			endTime = appGroup.endTime,
 			minuteTextStyle = BrakeTheme.typography.subtitle14B,
 			startColor = Color(0xFF8E97B0),

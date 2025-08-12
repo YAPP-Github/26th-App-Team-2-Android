@@ -95,6 +95,7 @@ private fun UsingAppGroup(
 			horizontalAlignment = Alignment.CenterHorizontally,
 		) {
 			ProgressTime(
+				startTime = appGroup.startTime,
 				endTime = appGroup.endTime,
 				modifier = Modifier.fillMaxWidth(),
 			) {

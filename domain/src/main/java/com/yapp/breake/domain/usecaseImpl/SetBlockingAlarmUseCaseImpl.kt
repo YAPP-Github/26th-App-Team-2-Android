@@ -36,6 +36,7 @@ class SetBlockingAlarmUseCaseImpl @Inject constructor(
 			appGroupRepository.updateAppGroupState(
 				groupId = groupId,
 				appGroupState = AppGroupState.Blocking,
+				startTime = startTime,
 				endTime = triggerTime,
 			)
 		}
