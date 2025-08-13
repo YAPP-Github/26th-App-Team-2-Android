@@ -6,8 +6,8 @@ import android.app.PendingIntent
 import android.app.Service
 import android.content.Context
 import android.content.Intent
+import android.graphics.BitmapFactory
 import android.os.IBinder
-import android.widget.RemoteViews
 import androidx.core.app.NotificationCompat
 import com.yapp.breake.core.alarm.R
 import kotlinx.coroutines.CoroutineScope
@@ -118,8 +118,6 @@ class AlarmCountdownService : Service() {
 		val collapsedTitle = "$groupName 사용중 • ${totalMinutes}분 남음"
 		val collapsedContent = "${targetTime}까지 사용 가능"
 
-		Timber.d("Updating notification - Remaining: $timeText, Target: $targetTime")
-
 		val cancelIntent = Intent(this, AlarmCountdownService::class.java).apply {
 			action = ACTION_CANCEL_ALARM
 			putExtra(EXTRA_GROUP_ID, groupId)
@@ -137,20 +135,19 @@ class AlarmCountdownService : Service() {
 		} else {
 			0
 		}
-
-		val expandedViews = RemoteViews(packageName, R.layout.notification_countdown_expanded)
-		expandedViews.setTextViewText(R.id.tv_app_name_expanded, groupName)
-		expandedViews.setTextViewText(R.id.tv_description_expanded, "알람 시간: $targetTime")
-		expandedViews.setTextViewText(R.id.tv_countdown_expanded, timeText)
-		expandedViews.setTextViewText(R.id.tv_remaining_info, "남은 시간")
-		expandedViews.setProgressBar(R.id.progress_countdown_expanded, 100, progress, false)
-		expandedViews.setOnClickPendingIntent(R.id.btn_cancel_expanded, cancelPendingIntent)
+		val largeIcon = try {
+			BitmapFactory.decodeResource(resources, R.drawable.ic_alarm)
+		} catch (e: Exception) {
+			Timber.w("Failed to decode large icon: ${e.message}")
+			null
+		}
 
 		val notification = NotificationCompat.Builder(this, CHANNEL_ID)
-			.setSmallIcon(R.drawable.ic_alarm_notification)
+			.setSmallIcon(R.drawable.ic_alarm)
+			.setLargeIcon(largeIcon)
 			.setContentTitle(collapsedTitle)
 			.setContentText(collapsedContent)
-			.setCustomBigContentView(expandedViews)
+			.setProgress(100, progress, false)
 			.setPriority(NotificationCompat.PRIORITY_HIGH)
 			.setCategory(NotificationCompat.CATEGORY_ALARM)
 			.setOngoing(true)
