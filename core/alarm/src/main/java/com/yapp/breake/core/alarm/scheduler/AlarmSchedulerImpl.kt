@@ -6,7 +6,9 @@ import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
 import android.os.Build
+import androidx.core.app.NotificationManagerCompat
 import com.yapp.breake.core.alarm.notification.NotificationReceiver
+import com.yapp.breake.core.alarm.service.AlarmCountdownService
 import com.yapp.breake.core.common.AlarmAction
 import com.yapp.breake.domain.repository.AlarmScheduler
 import timber.log.Timber
@@ -21,7 +23,7 @@ class AlarmSchedulerImpl @Inject constructor(
 
 	override fun scheduleAlarm(
 		groupId: Long,
-		appName: String,
+		groupName: String,
 		triggerTime: LocalDateTime,
 		action: AlarmAction,
 	): Result<LocalDateTime> {
@@ -31,11 +33,21 @@ class AlarmSchedulerImpl @Inject constructor(
 			return Result.failure(SecurityException("정확한 알람 권한이 없습니다."))
 		}
 
-		val intent = getPendingIntent(groupId, appName, action.name)
+		val notificationEnabled = NotificationManagerCompat.from(context).areNotificationsEnabled()
+		Timber.d("Notification permission enabled: $notificationEnabled")
+
+		val intent = getPendingIntent(groupId, groupName, action.name)
 		Timber.d("$triggerTime 에 알람을 예약합니다. ID: $groupId, 액션: ${action.name}")
 
 		return try {
 			scheduleAlarm(triggerTime, intent)
+			try {
+				Timber.d("Starting AlarmCountdownService")
+				AlarmCountdownService.start(context, groupId, groupName, triggerTime)
+				Timber.d("AlarmCountdownService started successfully")
+			} catch (e: Exception) {
+				Timber.e("포그라운드 서비스 시작 실패: $e")
+			}
 			Result.success(triggerTime)
 		} catch (se: SecurityException) {
 			Timber.e("SecurityException: ID: $groupId 에 대한 정확한 알람을 예약할 수 없습니다. $se")
@@ -50,6 +62,12 @@ class AlarmSchedulerImpl @Inject constructor(
 			alarmManager.cancel(it)
 			it.cancel()
 		}
+
+		try {
+			AlarmCountdownService.stop(context)
+		} catch (e: Exception) {
+			Timber.e("포그라운드 서비스 중지 실패: $e")
+		}
 	}
 
 	private fun canScheduleExactAlarms(): Boolean {
@@ -62,13 +80,13 @@ class AlarmSchedulerImpl @Inject constructor(
 
 	private fun getPendingIntent(
 		groupId: Long,
-		appName: String,
+		groupName: String,
 		intentAction: String,
 	): PendingIntent {
 		val intent = Intent(context, NotificationReceiver::class.java).apply {
 			action = intentAction
 			putExtra(EXTRA_GROUP_ID, groupId)
-			putExtra(EXTRA_APP_NAME_ID, appName)
+			putExtra(EXTRA_GROUP_NAME_ID, groupName)
 		}
 
 		val pendingIntentFlags = PendingIntent.FLAG_IMMUTABLE
@@ -96,6 +114,6 @@ class AlarmSchedulerImpl @Inject constructor(
 
 	companion object {
 		const val EXTRA_GROUP_ID = "EXTRA_GROUP_ID"
-		const val EXTRA_APP_NAME_ID = "EXTRA_APP_NAME_ID"
+		const val EXTRA_GROUP_NAME_ID = "EXTRA_GROUP_NAME_ID"
 	}
 }

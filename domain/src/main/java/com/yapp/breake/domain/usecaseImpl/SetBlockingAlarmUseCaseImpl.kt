@@ -17,7 +17,7 @@ class SetBlockingAlarmUseCaseImpl @Inject constructor(
 
 	override suspend operator fun invoke(
 		groupId: Long,
-		appName: String,
+		groupName: String,
 	): Result<LocalDateTime> {
 		alarmScheduler.cancelAlarm(
 			groupId = groupId,
@@ -29,7 +29,7 @@ class SetBlockingAlarmUseCaseImpl @Inject constructor(
 
 		return alarmScheduler.scheduleAlarm(
 			groupId = groupId,
-			appName = appName,
+			groupName = groupName,
 			triggerTime = triggerTime,
 			action = AlarmAction.ACTION_BLOCKING,
 		).onSuccess {

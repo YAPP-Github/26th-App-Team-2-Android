@@ -20,11 +20,11 @@ internal class SnoozeViewModel @Inject constructor(
 	private val _toastEffect: MutableSharedFlow<String> = MutableSharedFlow()
 	val toastEffect: SharedFlow<String> get() = _toastEffect
 
-	fun setSnooze(groupId: Long, appName: String) {
+	fun setSnooze(groupId: Long, groupName: String) {
 		viewModelScope.launch {
 			setSnoozeAlarmUsecase(
 				groupId = groupId,
-				appName = appName,
+				groupName = groupName,
 			).onSuccess {
 			}.onFailure {
 				sendToastMessage("알람 설정에 실패했습니다. 정확한 알람 권한을 확인해주세요.")
@@ -32,12 +32,12 @@ internal class SnoozeViewModel @Inject constructor(
 		}
 	}
 
-	fun setBlock(groupId: Long, appName: String) {
+	fun setBlock(groupId: Long, groupName: String) {
 		viewModelScope.launch {
 			setAlarmUsecase(
 				groupId = groupId,
 				appGroupState = AppGroupState.Blocking,
-				appName = appName,
+				groupName = groupName,
 			)
 		}
 	}

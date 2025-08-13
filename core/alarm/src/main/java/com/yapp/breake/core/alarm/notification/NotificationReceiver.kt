@@ -3,8 +3,8 @@ package com.yapp.breake.core.alarm.notification
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
-import com.yapp.breake.core.alarm.scheduler.AlarmSchedulerImpl.Companion.EXTRA_APP_NAME_ID
 import com.yapp.breake.core.alarm.scheduler.AlarmSchedulerImpl.Companion.EXTRA_GROUP_ID
+import com.yapp.breake.core.alarm.scheduler.AlarmSchedulerImpl.Companion.EXTRA_GROUP_NAME_ID
 import com.yapp.breake.core.common.AlarmAction
 import com.yapp.breake.core.model.accessibility.IntentConfig
 import com.yapp.breake.core.model.app.AppGroup
@@ -38,7 +38,7 @@ class NotificationReceiver : BroadcastReceiver() {
 	override fun onReceive(context: Context, intent: Intent) {
 		serviceScope.launch {
 			val groupId = intent.getLongExtra(EXTRA_GROUP_ID, 0)
-			val appName = intent.getStringExtra(EXTRA_APP_NAME_ID)
+			val appName = intent.getStringExtra(EXTRA_GROUP_NAME_ID)
 			val appGroup = appGroupRepository.getAppGroupById(groupId)
 			val intentAction = intent.action
 
