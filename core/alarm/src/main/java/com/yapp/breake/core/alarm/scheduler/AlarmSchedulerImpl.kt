@@ -36,18 +36,14 @@ class AlarmSchedulerImpl @Inject constructor(
 		val notificationEnabled = NotificationManagerCompat.from(context).areNotificationsEnabled()
 		Timber.d("Notification permission enabled: $notificationEnabled")
 
-		val intent = getPendingIntent(groupId, groupName, action.name)
+		val intent = getPendingIntent(groupId, action.name)
 		Timber.d("$triggerTime 에 알람을 예약합니다. ID: $groupId, 액션: ${action.name}")
 
 		return try {
-			scheduleAlarm(triggerTime, intent)
-			try {
-				Timber.d("Starting AlarmCountdownService")
-				AlarmCountdownService.start(context, groupId, groupName, triggerTime)
-				Timber.d("AlarmCountdownService started successfully")
-			} catch (e: Exception) {
-				Timber.e("포그라운드 서비스 시작 실패: $e")
+			if (action == AlarmAction.ACTION_USING) {
+				AlarmCountdownService.start(context, groupName, triggerTime)
 			}
+			scheduleAlarm(triggerTime, intent)
 			Result.success(triggerTime)
 		} catch (se: SecurityException) {
 			Timber.e("SecurityException: ID: $groupId 에 대한 정확한 알람을 예약할 수 없습니다. $se")
@@ -56,18 +52,14 @@ class AlarmSchedulerImpl @Inject constructor(
 	}
 
 	override fun cancelAlarm(groupId: Long, action: AlarmAction) {
-		val intent = getPendingIntent(groupId, "", action.name)
+		val intent = getPendingIntent(groupId, action.name)
 
 		intent.let {
 			alarmManager.cancel(it)
 			it.cancel()
 		}
 
-		try {
-			AlarmCountdownService.stop(context)
-		} catch (e: Exception) {
-			Timber.e("포그라운드 서비스 중지 실패: $e")
-		}
+		AlarmCountdownService.stop(context)
 	}
 
 	private fun canScheduleExactAlarms(): Boolean {
@@ -80,13 +72,11 @@ class AlarmSchedulerImpl @Inject constructor(
 
 	private fun getPendingIntent(
 		groupId: Long,
-		groupName: String,
 		intentAction: String,
 	): PendingIntent {
 		val intent = Intent(context, NotificationReceiver::class.java).apply {
 			action = intentAction
 			putExtra(EXTRA_GROUP_ID, groupId)
-			putExtra(EXTRA_GROUP_NAME_ID, groupName)
 		}
 
 		val pendingIntentFlags = PendingIntent.FLAG_IMMUTABLE
@@ -114,6 +104,5 @@ class AlarmSchedulerImpl @Inject constructor(
 
 	companion object {
 		const val EXTRA_GROUP_ID = "EXTRA_GROUP_ID"
-		const val EXTRA_GROUP_NAME_ID = "EXTRA_GROUP_NAME_ID"
 	}
 }

@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Notification Channel -->
+    <string name="alarm_countdown_channel_name">알람 카운트다운</string>
+    <string name="alarm_countdown_channel_description">알람까지의 남은 시간을 실시간으로 표시합니다</string>
+
+    <!-- Notification Content -->
+    <string name="alarm_preparing_title">알람 준비중…</string>
+    <string name="alarm_preparing_content">카운트다운을 시작합니다</string>
+    <string name="alarm_using_format">%1$s 사용중 • %2$d분 남음</string>
+    <string name="alarm_available_until_format">%1$s까지 사용 가능</string>
+    <string name="alarm_cancel_action">취소</string>
+
+    <!-- Time Format -->
+    <string name="time_format_hour_minute">HH시 mm분</string>
+</resources>
+
