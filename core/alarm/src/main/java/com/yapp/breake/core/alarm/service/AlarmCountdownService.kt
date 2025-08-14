@@ -2,6 +2,7 @@ package com.yapp.breake.core.alarm.service
 
 import android.app.NotificationChannel
 import android.app.NotificationManager
+import android.app.PendingIntent
 import android.app.Service
 import android.content.Context
 import android.content.Intent
@@ -135,11 +136,14 @@ class AlarmCountdownService : Service() {
 			null
 		}
 
+		val contentIntent = createMainActivityPendingIntent()
+
 		val notification = NotificationCompat.Builder(this, CHANNEL_ID)
 			.setSmallIcon(R.drawable.ic_alarm)
 			.setColor(ContextCompat.getColor(this, android.R.color.transparent))
 			.setContentTitle(collapsedTitle)
 			.setContentText(collapsedContent)
+			.setContentIntent(contentIntent)
 			.setProgress(100, progress, false)
 			.setPriority(NotificationCompat.PRIORITY_HIGH)
 			.setCategory(NotificationCompat.CATEGORY_ALARM)
@@ -184,10 +188,13 @@ class AlarmCountdownService : Service() {
 	}
 
 	private fun showInitialNotification() {
+		val contentIntent = createMainActivityPendingIntent()
+
 		val notification = NotificationCompat.Builder(this, CHANNEL_ID)
 			.setSmallIcon(R.drawable.ic_alarm)
 			.setContentTitle(getString(R.string.alarm_preparing_title))
 			.setContentText(getString(R.string.alarm_preparing_content))
+			.setContentIntent(contentIntent)
 			.setPriority(NotificationCompat.PRIORITY_HIGH)
 			.setCategory(NotificationCompat.CATEGORY_ALARM)
 			.setOngoing(true)
@@ -202,6 +209,24 @@ class AlarmCountdownService : Service() {
 			Timber.d("Initial notification shown")
 		} catch (e: Exception) {
 			Timber.e("Failed to show initial notification: $e")
+		}
+	}
+
+	private fun createMainActivityPendingIntent(): PendingIntent? {
+		return try {
+			val launchIntent = packageManager.getLaunchIntentForPackage(packageName)
+			launchIntent?.let { intent ->
+				intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TOP
+				PendingIntent.getActivity(
+					this,
+					0,
+					intent,
+					PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE,
+				)
+			}
+		} catch (e: Exception) {
+			Timber.e("Failed to create main activity pending intent: $e")
+			null
 		}
 	}
 
