@@ -1,6 +1,7 @@
 package com.yapp.breake.overlay.timer
 
 import android.widget.Toast
+import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
@@ -57,6 +58,7 @@ private fun TimerOverlay(
 			onTimerConfirm = {
 				viewModel.setBreakTimeAlarm(groupId, groupName)
 			},
+			onBackPressToInit = viewModel::resetToInitialState,
 			timerUiState = timerUiState,
 		)
 	}
@@ -76,6 +78,7 @@ private fun TimerContent(
 	onConfirm: () -> Unit,
 	onCloseOverlay: () -> Unit,
 	onExitManageApp: () -> Unit,
+	onBackPressToInit: () -> Unit,
 	timerUiState: TimerUiState,
 ) {
 	when (timerUiState) {
@@ -88,6 +91,10 @@ private fun TimerContent(
 		}
 
 		is TimerUiState.TimeSetting -> {
+			BackHandler {
+				onBackPressToInit()
+			}
+
 			TimerScreen(
 				appName = appName,
 				onTimeChange = onSetTime,
@@ -96,6 +103,10 @@ private fun TimerContent(
 		}
 
 		is TimerUiState.SetComplete -> {
+			BackHandler {
+				onCloseOverlay()
+			}
+
 			SetCompleteScreen(
 				durationMinutes = timerUiState.durationMinutes,
 				endTime = timerUiState.endTime,
