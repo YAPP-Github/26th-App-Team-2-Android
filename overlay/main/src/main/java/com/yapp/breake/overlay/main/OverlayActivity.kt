@@ -81,6 +81,7 @@ class OverlayActivity : ComponentActivity() {
 				AppGroupState.NeedSetting -> {
 					TimerRoute(
 						appName = overlayData.appName,
+						groupName = overlayData.groupName,
 						groupId = overlayData.groupId,
 						onExitManageApp = ::onExitManageApp,
 						onCloseOverlay = ::finish,
@@ -90,7 +91,6 @@ class OverlayActivity : ComponentActivity() {
 				AppGroupState.SnoozeBlocking -> {
 					SnoozeRoute(
 						groupId = overlayData.groupId,
-						appName = overlayData.appName,
 						groupName = overlayData.groupName,
 						snoozesCount = overlayData.snoozesCount,
 						onCloseOverlay = ::finish,

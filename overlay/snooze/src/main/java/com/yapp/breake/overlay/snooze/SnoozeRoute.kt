@@ -16,7 +16,6 @@ import com.yapp.breake.overlay.snooze.component.SnoozeScreen
 @Composable
 fun SnoozeRoute(
 	groupId: Long,
-	appName: String,
 	groupName: String,
 	snoozesCount: Int,
 	onCloseOverlay: () -> Unit,
@@ -25,7 +24,6 @@ fun SnoozeRoute(
 ) {
 	SnoozeOverlay(
 		groupId = groupId,
-		appName = appName,
 		groupName = groupName,
 		snoozesCount = snoozesCount,
 		onCloseOverlay = onCloseOverlay,
@@ -37,7 +35,6 @@ fun SnoozeRoute(
 @Composable
 private fun SnoozeOverlay(
 	groupId: Long,
-	appName: String,
 	groupName: String,
 	snoozesCount: Int,
 	onCloseOverlay: () -> Unit,
@@ -51,7 +48,7 @@ private fun SnoozeOverlay(
 	DisposableEffect(lifecycleOwner) {
 		val observer = LifecycleEventObserver { _, event ->
 			if (event == Lifecycle.Event.ON_STOP) {
-				viewModel.setBlock(groupId, appName)
+				viewModel.setBlock(groupId, groupName)
 			}
 		}
 		lifecycleOwner.lifecycle.addObserver(observer)
@@ -64,11 +61,11 @@ private fun SnoozeOverlay(
 		SnoozeScreen(
 			snoozeCount = snoozesCount,
 			onExitManageApp = {
-				viewModel.setBlock(groupId, appName)
+				viewModel.setBlock(groupId, groupName)
 				onExitManageApp()
 			},
 			onSnooze = {
-				viewModel.setSnooze(groupId, appName)
+				viewModel.setSnooze(groupId, groupName)
 				onCloseOverlay()
 			},
 		)

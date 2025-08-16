@@ -17,7 +17,7 @@ class SetAlarmUsecaseImpl @Inject constructor(
 
 	override suspend operator fun invoke(
 		groupId: Long,
-		appName: String,
+		groupName: String,
 		appGroupState: AppGroupState,
 		second: Int,
 		isUsingApp: Boolean,
@@ -35,7 +35,7 @@ class SetAlarmUsecaseImpl @Inject constructor(
 
 		return alarmScheduler.scheduleAlarm(
 			groupId = groupId,
-			appName = appName,
+			groupName = groupName,
 			triggerTime = triggerTime,
 			action = action,
 		).onSuccess {

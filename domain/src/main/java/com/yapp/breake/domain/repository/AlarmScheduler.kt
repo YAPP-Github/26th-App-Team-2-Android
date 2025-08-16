@@ -7,7 +7,7 @@ interface AlarmScheduler {
 
 	fun scheduleAlarm(
 		groupId: Long,
-		appName: String,
+		groupName: String,
 		triggerTime: LocalDateTime,
 		action: AlarmAction,
 	): Result<LocalDateTime>

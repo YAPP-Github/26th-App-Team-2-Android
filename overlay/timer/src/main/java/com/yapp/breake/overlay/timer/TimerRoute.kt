@@ -18,12 +18,14 @@ import com.yapp.breake.overlay.timer.component.SetCompleteScreen
 @Composable
 fun TimerRoute(
 	appName: String,
+	groupName: String,
 	groupId: Long,
 	onExitManageApp: () -> Unit,
 	onCloseOverlay: () -> Unit,
 ) {
 	TimerOverlay(
 		appName = appName,
+		groupName = groupName,
 		groupId = groupId,
 		onExitManageApp = onExitManageApp,
 		onCloseOverlay = onCloseOverlay,
@@ -33,6 +35,7 @@ fun TimerRoute(
 @Composable
 private fun TimerOverlay(
 	appName: String,
+	groupName: String,
 	groupId: Long,
 	onExitManageApp: () -> Unit,
 	onCloseOverlay: () -> Unit,
@@ -52,7 +55,7 @@ private fun TimerOverlay(
 			onCloseOverlay = onCloseOverlay,
 			onExitManageApp = onExitManageApp,
 			onTimerConfirm = {
-				viewModel.setBreakTimeAlarm(groupId, appName)
+				viewModel.setBreakTimeAlarm(groupId, groupName)
 			},
 			timerUiState = timerUiState,
 		)

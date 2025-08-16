@@ -198,9 +198,7 @@ class AppLaunchDetectionService : AccessibilityService() {
 			setAlarmUsecase(
 				groupId = groupId,
 				appGroupState = AppGroupState.Blocking,
-				appName = appGroup?.let { it.apps.find { it.packageName == currentAppPkg }?.name }
-					?: "Unknown App",
-				// 현재 appName은 사실상 사용 안함
+				groupName = appGroup?.name ?: "그룹",
 			)
 		}
 	}

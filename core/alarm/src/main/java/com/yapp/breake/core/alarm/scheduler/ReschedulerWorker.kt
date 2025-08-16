@@ -32,7 +32,7 @@ class ReschedulerWorker @AssistedInject constructor(
 						AppGroupState.Using, AppGroupState.Blocking -> {
 							alarmScheduler.scheduleAlarm(
 								groupId = group.id,
-								appName = group.name,
+								groupName = group.name,
 								triggerTime = group.endTime ?: return@forEach,
 								action = if (state == AppGroupState.Using) {
 									AlarmAction.ACTION_USING

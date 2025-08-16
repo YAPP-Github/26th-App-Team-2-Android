@@ -25,14 +25,14 @@ internal class TimerViewModel @Inject constructor(
 	private val _toastEffect: MutableSharedFlow<String> = MutableSharedFlow()
 	val toastEffect: SharedFlow<String> get() = _toastEffect
 
-	fun setBreakTimeAlarm(groupId: Long, appName: String) {
+	fun setBreakTimeAlarm(groupId: Long, groupName: String) {
 		val uiState = timerUiState.value as? TimerUiState.TimeSetting ?: return
 
 		viewModelScope.launch {
 			setAlarmUsecase(
 				second = uiState.time,
 				groupId = groupId,
-				appName = appName,
+				groupName = groupName,
 				appGroupState = AppGroupState.Using,
 			).onSuccess {
 				confirmTime(uiState.time, it)
