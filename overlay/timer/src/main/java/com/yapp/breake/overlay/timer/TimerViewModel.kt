@@ -25,6 +25,15 @@ internal class TimerViewModel @Inject constructor(
 	private val _toastEffect: MutableSharedFlow<String> = MutableSharedFlow()
 	val toastEffect: SharedFlow<String> get() = _toastEffect
 
+	fun resetToInitialState() {
+		_timerUiState.update {
+			when (it) {
+				is TimerUiState.TimeSetting -> TimerUiState.Init
+				else -> it
+			}
+		}
+	}
+
 	fun setBreakTimeAlarm(groupId: Long, groupName: String) {
 		val uiState = timerUiState.value as? TimerUiState.TimeSetting ?: return
 

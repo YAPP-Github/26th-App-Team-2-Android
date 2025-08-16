@@ -58,7 +58,7 @@ class OverlayViewHolder(private val context: Context) {
 			WindowManager.LayoutParams.MATCH_PARENT,
 			WindowManager.LayoutParams.MATCH_PARENT,
 			WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY,
-			0,
+			WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE,
 			PixelFormat.TRANSLUCENT,
 		).apply {
 			gravity = Gravity.CENTER

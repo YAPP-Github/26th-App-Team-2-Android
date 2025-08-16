@@ -55,7 +55,7 @@ class NotificationReceiver : BroadcastReceiver() {
 	 *  2. 오버레이 시작 - 사용 중이면 오버레이 시작
 	 *  3. 알람 스케줄러 시작 - 차단이 완료되면 알람 스케줄러를 시작
 	 * */
-	private fun startBlocking(context: Context, appGroup: AppGroup) {
+	private suspend fun startBlocking(context: Context, appGroup: AppGroup) {
 		Timber.i("ID: ${appGroup.id} 차단이 시작되었습니다")
 
 		val broadcastIntent = Intent().apply {
@@ -66,6 +66,12 @@ class NotificationReceiver : BroadcastReceiver() {
 			putExtra(IntentConfig.EXTRA_SNOOZES_COUNT, appGroup.snoozesCount)
 		}
 		context.sendBroadcast(broadcastIntent)
+
+		setAlarmUsecase(
+			groupId = appGroup.id,
+			groupName = appGroup.name,
+			appGroupState = AppGroupState.Blocking,
+		)
 	}
 
 	private suspend fun stopBlocking(context: Context, appGroup: AppGroup) {
