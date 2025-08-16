@@ -4,7 +4,7 @@ import android.content.Intent
 import android.os.Build
 import android.os.Bundle
 import androidx.activity.ComponentActivity
-import androidx.activity.compose.BackHandler
+import androidx.activity.OnBackPressedCallback
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.runtime.Composable
@@ -25,19 +25,29 @@ class OverlayActivity : ComponentActivity() {
 
 	private val overlayViewHolder by lazy { OverlayViewHolder(this) }
 
+	/**
+	 * Back 버튼을 눌렀을 때, 해당 액티비티 즉각 종료
+	 *
+	 * Timer
+	 */
+	private val callback = object : OnBackPressedCallback(true) {
+		override fun handleOnBackPressed() {
+			onExitManageApp()
+		}
+	}
+
 	override fun onCreate(savedInstanceState: Bundle?) {
 		enableEdgeToEdge()
 		super.onCreate(savedInstanceState)
 		Timber.d("OverlayActivity onCreate called")
+
+		onBackPressedDispatcher.addCallback(this, callback)
 		showOverlay(intent.action)
 
 		setContent {
 			BrakeTheme {
 				BaseScaffold { }
 			}
-			MainBackHandler(
-				overlayViewHolder = overlayViewHolder,
-			)
 		}
 	}
 
@@ -84,7 +94,7 @@ class OverlayActivity : ComponentActivity() {
 						groupName = overlayData.groupName,
 						groupId = overlayData.groupId,
 						onExitManageApp = ::onExitManageApp,
-						onCloseOverlay = ::finish,
+						onCloseOverlay = ::finishAndRemoveTask,
 					)
 				}
 
@@ -93,7 +103,7 @@ class OverlayActivity : ComponentActivity() {
 						groupId = overlayData.groupId,
 						groupName = overlayData.groupName,
 						snoozesCount = overlayData.snoozesCount,
-						onCloseOverlay = ::finish,
+						onCloseOverlay = ::finishAndRemoveTask,
 						onStartHome = ::onStartHome,
 						onExitManageApp = ::onExitManageApp,
 					)
@@ -113,9 +123,18 @@ class OverlayActivity : ComponentActivity() {
 		}
 	}
 
+	// Recent Apps 버튼, Device Home 버튼, Back 버튼을 눌렀을 때, 즉 오버레이 화면을 벗어나면 해당 액티비티 즉각 종료
+	override fun onPause() {
+		super.onPause()
+		overlayViewHolder.remove()
+		finishAndRemoveTask()
+	}
+
+	// onPause 에서 이미 종료 처리
 	override fun onStop() {
 		Timber.d("onStop called")
 		overlayViewHolder.remove()
+		finishAndRemoveTask()
 		super.onStop()
 	}
 
@@ -139,16 +158,7 @@ class OverlayActivity : ComponentActivity() {
 			addCategory(Intent.CATEGORY_HOME)
 			flags = Intent.FLAG_ACTIVITY_NEW_TASK
 		}
-		finish()
+		finishAndRemoveTask()
 		startActivity(homeIntent)
-	}
-}
-
-@Composable
-private fun MainBackHandler(
-	overlayViewHolder: OverlayViewHolder,
-) {
-	BackHandler {
-		overlayViewHolder.remove()
 	}
 }
