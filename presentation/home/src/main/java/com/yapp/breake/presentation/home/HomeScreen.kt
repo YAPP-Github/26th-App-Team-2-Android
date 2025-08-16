@@ -1,5 +1,10 @@
 package com.yapp.breake.presentation.home
 
+import android.Manifest
+import android.content.pm.PackageManager
+import android.os.Build
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
@@ -14,6 +19,8 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -26,6 +33,7 @@ import com.yapp.breake.presentation.home.screen.BlockingScreen
 import com.yapp.breake.presentation.home.screen.ListScreen
 import com.yapp.breake.presentation.home.screen.NothingScreen
 import com.yapp.breake.presentation.home.screen.UsingScreen
+import androidx.core.content.ContextCompat
 
 @Composable
 internal fun HomeRoute(
@@ -38,7 +46,27 @@ internal fun HomeRoute(
 	val mainAction = LocalMainAction.current
 	val context = LocalContext.current
 
+	val hasRequestedNotificationPermission = remember { mutableStateOf(false) }
+	val notificationPermissionLauncher = rememberLauncherForActivityResult(
+		contract = ActivityResultContracts.RequestPermission(),
+	) { _ ->
+		hasRequestedNotificationPermission.value = true
+	}
+
 	mainAction.OnFinishBackHandler()
+
+	LaunchedEffect(Unit) {
+		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+			val hasNotificationPermission = ContextCompat.checkSelfPermission(
+				context,
+				Manifest.permission.POST_NOTIFICATIONS,
+			) == PackageManager.PERMISSION_GRANTED
+
+			if (!hasNotificationPermission && !hasRequestedNotificationPermission.value) {
+				notificationPermissionLauncher.launch(Manifest.permission.POST_NOTIFICATIONS)
+			}
+		}
+	}
 
 	Box(
 		modifier = Modifier
