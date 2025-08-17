@@ -38,15 +38,17 @@ internal fun AppGroupList(
 
 @Composable
 internal fun AppGroupItem(
-	appGroup: AppGroup,
-	onEditClick: () -> Unit,
 	modifier: Modifier = Modifier,
+	appGroup: AppGroup,
+	clickable: Boolean = true,
+	onEditClick: () -> Unit,
 ) {
 	AppGroupBox(
 		modifier = modifier,
 	) {
 		AppGroupItemContent(
 			appGroup = appGroup,
+			clickable = clickable,
 			onEditClick = onEditClick,
 		)
 	}
@@ -54,9 +56,10 @@ internal fun AppGroupItem(
 
 @Composable
 internal fun AppGroupItemContent(
-	appGroup: AppGroup,
-	onEditClick: () -> Unit,
 	modifier: Modifier = Modifier,
+	appGroup: AppGroup,
+	clickable: Boolean = true,
+	onEditClick: () -> Unit,
 	isDimmed: Boolean = false,
 ) {
 	Column(
@@ -64,6 +67,7 @@ internal fun AppGroupItemContent(
 	) {
 		AppGroupTitle(
 			name = appGroup.name,
+			clickable = clickable,
 			onEditClick = onEditClick,
 		)
 		VerticalSpacer(12.dp)
