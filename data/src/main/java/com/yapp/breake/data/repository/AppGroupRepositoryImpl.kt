@@ -16,19 +16,17 @@ internal class AppGroupRepositoryImpl @Inject constructor(
 
 	override suspend fun insertAppGroup(appGroup: AppGroup) {
 		if (appGroupLocalDataSource.isAppGroupExists(appGroup.id)) {
-			appGroupRemoteDataSource.createAppGroup(
-				appGroup = appGroup,
-				onSuccess = {
-					appGroupLocalDataSource.insertAppGroup(appGroup)
-				},
-			)
-		} else {
 			appGroupRemoteDataSource.updateAppGroup(
 				appGroup = appGroup,
-				onSuccess = {
-					appGroupLocalDataSource.insertAppGroup(appGroup)
-				},
-			)
+			).collect { updatedGroup ->
+				appGroupLocalDataSource.insertAppGroup(updatedGroup)
+			}
+		} else {
+			appGroupRemoteDataSource.createAppGroup(
+				appGroup = appGroup,
+			).collect { newGroup ->
+				appGroupLocalDataSource.insertAppGroup(newGroup)
+			}
 		}
 	}
 

@@ -8,7 +8,7 @@ import java.time.LocalDateTime
 
 @Entity(tableName = BreakeDatabase.GROUP_TABLE_NAME)
 data class GroupEntity(
-	@PrimaryKey(autoGenerate = true) val groupId: Long = 0,
+	@PrimaryKey val groupId: Long,
 	val name: String,
 	val appGroupState: AppGroupState,
 	val goalMinutes: Int?,

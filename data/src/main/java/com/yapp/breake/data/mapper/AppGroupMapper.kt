@@ -7,9 +7,11 @@ import com.yapp.breake.core.database.entity.GroupEntity
 import com.yapp.breake.core.database.entity.SnoozeEntity
 import com.yapp.breake.core.model.app.App
 import com.yapp.breake.core.model.app.AppGroup
+import com.yapp.breake.core.model.app.AppGroupState
 import com.yapp.breake.core.model.app.Snooze
 import com.yapp.breake.core.util.toByteArray
 import com.yapp.breake.data.remote.model.AppGroupRequest
+import com.yapp.breake.data.remote.model.AppGroupResponse
 import com.yapp.breake.data.remote.model.AppRequest
 
 internal fun AppGroupEntity.toAppList(appScanner: InstalledAppScanner): AppGroup {
@@ -73,5 +75,27 @@ internal fun AppGroup.toAppGroupRequest(): AppGroupRequest {
 				groupAppId = app.id,
 			)
 		},
+	)
+}
+
+internal fun AppGroupResponse.toAppGroup(): AppGroup {
+	return AppGroup(
+		id = data.groupId,
+		name = data.name,
+		appGroupState = AppGroupState.NeedSetting,
+		apps = data.groupApps.map { groupApp ->
+			App(
+				id = groupApp.groupAppId,
+				name = groupApp.name,
+				packageName = groupApp.packageName,
+				icon = null,
+				category = "",
+			)
+		},
+		snoozes = emptyList(),
+		goalMinutes = null,
+		sessionStartTime = null,
+		startTime = null,
+		endTime = null,
 	)
 }
