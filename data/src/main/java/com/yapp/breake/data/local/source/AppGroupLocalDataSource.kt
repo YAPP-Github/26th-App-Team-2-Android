@@ -12,6 +12,11 @@ interface AppGroupLocalDataSource {
 		onError: suspend (Throwable) -> Unit = {},
 	)
 
+	suspend fun isAppGroupExists(
+		groupId: Long,
+		onError: suspend (Throwable) -> Unit = {},
+	): Boolean
+
 	suspend fun getAvailableMinGroupId(
 		onError: suspend (Throwable) -> Unit = {},
 	): Long

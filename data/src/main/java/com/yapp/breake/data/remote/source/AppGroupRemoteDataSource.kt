@@ -1,24 +1,24 @@
 package com.yapp.breake.data.remote.source
 
-import com.yapp.breake.data.remote.model.AppGroupRequest
-import com.yapp.breake.data.remote.model.AppGroupResponse
-import kotlinx.coroutines.flow.Flow
+import com.yapp.breake.core.model.app.AppGroup
 
 internal interface AppGroupRemoteDataSource {
 
-	fun createAppGroup(
-		request: AppGroupRequest,
-		onError: suspend (Throwable) -> Unit,
-	): Flow<AppGroupResponse>
+    suspend fun createAppGroup(
+        appGroup: AppGroup,
+        onSuccess: suspend () -> Unit,
+        onError: suspend (Throwable) -> Unit = {},
+    )
 
-	fun updateAppGroup(
-		groupId: Long,
-		request: AppGroupRequest,
-		onError: suspend (Throwable) -> Unit,
-	): Flow<AppGroupResponse>
+    suspend fun updateAppGroup(
+        appGroup: AppGroup,
+        onSuccess: suspend () -> Unit,
+        onError: suspend (Throwable) -> Unit = {},
+    )
 
-	fun deleteAppGroup(
-		groupId: Long,
-		onError: suspend (Throwable) -> Unit,
-	): Flow<Unit>
+    suspend fun deleteAppGroup(
+        groupId: Long,
+        onSuccess: suspend () -> Unit,
+        onError: suspend (Throwable) -> Unit = {},
+    )
 }

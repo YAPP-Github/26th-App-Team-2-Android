@@ -17,6 +17,9 @@ interface AppGroupDao {
 	@Insert(onConflict = OnConflictStrategy.REPLACE)
 	suspend fun insertAppGroup(groupEntity: GroupEntity)
 
+	@Query("SELECT EXISTS(SELECT 1 FROM `group_table` WHERE groupId = :groupId)")
+	suspend fun isAppGroupExists(groupId: Long): Boolean
+
 	@Query(
 		"""
 		SELECT CASE

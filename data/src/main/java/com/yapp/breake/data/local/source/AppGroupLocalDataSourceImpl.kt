@@ -4,7 +4,7 @@ import com.yapp.breake.core.appscanner.InstalledAppScanner
 import com.yapp.breake.core.database.dao.AppGroupDao
 import com.yapp.breake.core.model.app.AppGroup
 import com.yapp.breake.core.model.app.AppGroupState
-import com.yapp.breake.data.mapper.toAppGroup
+import com.yapp.breake.data.mapper.toAppList
 import com.yapp.breake.data.mapper.toGroupEntity
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch
@@ -25,6 +25,18 @@ internal class AppGroupLocalDataSourceImpl @Inject constructor(
 			appGroupDao.insertAppGroup(appGroup.toGroupEntity())
 		} catch (e: Exception) {
 			onError(Throwable("앱 그룹 저장에 실패했습니다"))
+		}
+	}
+
+	override suspend fun isAppGroupExists(
+		groupId: Long,
+		onError: suspend (Throwable) -> Unit,
+	): Boolean {
+		return try {
+			appGroupDao.isAppGroupExists(groupId)
+		} catch (e: Exception) {
+			onError(Throwable("앱 그룹 존재 여부 확인에 실패했습니다"))
+			false
 		}
 	}
 
@@ -55,7 +67,7 @@ internal class AppGroupLocalDataSourceImpl @Inject constructor(
 	): Flow<List<AppGroup>> {
 		return appGroupDao.observeAppGroup()
 			.map { appGroupEntities ->
-				appGroupEntities.map { it.toAppGroup(appScanner) }
+				appGroupEntities.map { it.toAppList(appScanner) }
 			}
 			.catch { onError(Throwable("앱 그룹 목록 관찰에 실패했습니다")) }
 	}
@@ -64,7 +76,7 @@ internal class AppGroupLocalDataSourceImpl @Inject constructor(
 		onError: suspend (Throwable) -> Unit,
 	): List<AppGroup> {
 		return try {
-			appGroupDao.getAppGroup().map { it.toAppGroup(appScanner) }
+			appGroupDao.getAppGroup().map { it.toAppList(appScanner) }
 		} catch (e: Exception) {
 			onError(Throwable("앱 그룹 목록을 가져오는데 실패했습니다"))
 			emptyList()
@@ -76,7 +88,7 @@ internal class AppGroupLocalDataSourceImpl @Inject constructor(
 		onError: suspend (Throwable) -> Unit,
 	): AppGroup? {
 		return try {
-			appGroupDao.getAppGroupById(groupId)?.toAppGroup(appScanner)
+			appGroupDao.getAppGroupById(groupId)?.toAppList(appScanner)
 		} catch (e: Exception) {
 			onError(Throwable("앱 그룹 정보를 가져오는데 실패했습니다"))
 			null

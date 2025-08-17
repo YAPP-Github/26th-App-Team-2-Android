@@ -11,18 +11,37 @@ import javax.inject.Inject
 
 internal class AppGroupRepositoryImpl @Inject constructor(
 	private val appGroupLocalDataSource: AppGroupLocalDataSource,
-	private val appGroupRemoteDataSource: AppGroupRemoteDataSource
+	private val appGroupRemoteDataSource: AppGroupRemoteDataSource,
 ) : AppGroupRepository {
 
 	override suspend fun insertAppGroup(appGroup: AppGroup) {
-		appGroupLocalDataSource.insertAppGroup(appGroup)
+		if (appGroupLocalDataSource.isAppGroupExists(appGroup.id)) {
+			appGroupRemoteDataSource.createAppGroup(
+				appGroup = appGroup,
+				onSuccess = {
+					appGroupLocalDataSource.insertAppGroup(appGroup)
+				},
+			)
+		} else {
+			appGroupRemoteDataSource.updateAppGroup(
+				appGroup = appGroup,
+				onSuccess = {
+					appGroupLocalDataSource.insertAppGroup(appGroup)
+				},
+			)
+		}
 	}
 
 	override suspend fun getAvailableMinGroupId(): Long =
 		appGroupLocalDataSource.getAvailableMinGroupId()
 
 	override suspend fun deleteAppGroupByGroupId(groupId: Long) {
-		appGroupLocalDataSource.deleteAppGroupById(groupId = groupId)
+		appGroupRemoteDataSource.deleteAppGroup(
+			groupId = groupId,
+			onSuccess = {
+				appGroupLocalDataSource.deleteAppGroupById(groupId = groupId)
+			},
+		)
 	}
 
 	override suspend fun clearAppGroup() {
