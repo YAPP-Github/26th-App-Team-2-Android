@@ -6,6 +6,8 @@ import com.yapp.breake.data.remote.source.AppGroupRemoteDataSource
 import com.yapp.breake.data.remote.source.AppGroupRemoteDataSourceImpl
 import com.yapp.breake.data.remote.source.NameRemoteDataSource
 import com.yapp.breake.data.remote.source.NameRemoteDataSourceImpl
+import com.yapp.breake.data.remote.source.StatisticRemoteDataSource
+import com.yapp.breake.data.remote.source.StatisticRemoteDataSourceImpl
 import com.yapp.breake.data.remote.source.TokenRemoteDataSource
 import com.yapp.breake.data.remote.source.TokenRemoteDataSourceImpl
 import dagger.Binds
@@ -41,4 +43,10 @@ internal abstract class RemoteSourceModule {
 	abstract fun bindAppGroupRemoteDataSource(
 		appGroupRemoteDataSource: AppGroupRemoteDataSourceImpl,
 	): AppGroupRemoteDataSource
+
+	@Binds
+	@Singleton
+	abstract fun bindSessionRemoteDataSource(
+		sessionRemoteDataSource: StatisticRemoteDataSourceImpl,
+	): StatisticRemoteDataSource
 }

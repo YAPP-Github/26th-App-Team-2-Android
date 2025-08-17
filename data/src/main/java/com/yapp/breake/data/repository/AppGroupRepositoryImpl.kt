@@ -1,4 +1,4 @@
-package com.yapp.breake.data.repositoryImpl
+package com.yapp.breake.data.repository
 
 import com.yapp.breake.core.model.app.AppGroup
 import com.yapp.breake.core.model.app.AppGroupState
