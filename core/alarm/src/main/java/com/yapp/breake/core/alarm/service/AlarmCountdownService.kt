@@ -31,6 +31,8 @@ class AlarmCountdownService : Service() {
 	private var serviceJob: Job? = null
 	private var notificationManager: NotificationManager? = null
 	private var initialRemainingTime: Long = 0L
+	private var remainingNotificationShown = false
+	private val remainingTimeAlert = 60_000L
 
 	override fun onCreate() {
 		super.onCreate()
@@ -77,6 +79,7 @@ class AlarmCountdownService : Service() {
 
 	private fun startCountdown(groupName: String, triggerTime: LocalDateTime) {
 		serviceJob?.cancel()
+		remainingNotificationShown = false
 
 		val now = LocalDateTime.now()
 		initialRemainingTime =
@@ -94,6 +97,11 @@ class AlarmCountdownService : Service() {
 					Timber.d("Countdown finished, stopping service")
 					stopSelf()
 					break
+				}
+
+				if (!remainingNotificationShown && remainingTime <= remainingTimeAlert) {
+					showWarningNotification()
+					remainingNotificationShown = true
 				}
 
 				updateCustomNotification(groupName, remainingTime, triggerTime)
@@ -183,8 +191,22 @@ class AlarmCountdownService : Service() {
 			lockscreenVisibility = android.app.Notification.VISIBILITY_PUBLIC
 			setSound(null, null)
 		}
+
+		val warningChannel = NotificationChannel(
+			WARNING_CHANNEL_ID,
+			getString(R.string.alarm_warning_channel_name),
+			NotificationManager.IMPORTANCE_HIGH,
+		).apply {
+			description = getString(R.string.alarm_warning_channel_description)
+			enableLights(true)
+			enableVibration(true)
+			setShowBadge(true)
+			lockscreenVisibility = android.app.Notification.VISIBILITY_PUBLIC
+		}
+
 		notificationManager?.createNotificationChannel(channel)
-		Timber.d("Notification channel created")
+		notificationManager?.createNotificationChannel(warningChannel)
+		Timber.d("Notification channels created")
 	}
 
 	private fun showInitialNotification() {
@@ -212,6 +234,30 @@ class AlarmCountdownService : Service() {
 		}
 	}
 
+	private fun showWarningNotification() {
+		val contentIntent = createMainActivityPendingIntent()
+
+		val notification = NotificationCompat.Builder(this, WARNING_CHANNEL_ID)
+			.setSmallIcon(R.drawable.ic_alarm)
+			.setContentTitle(getString(R.string.alarm_warning_title))
+			.setContentText(getString(R.string.alarm_warning_content))
+			.setContentIntent(contentIntent)
+			.setPriority(NotificationCompat.PRIORITY_HIGH)
+			.setCategory(NotificationCompat.CATEGORY_ALARM)
+			.setAutoCancel(true)
+			.setDefaults(NotificationCompat.DEFAULT_ALL)
+			.setVisibility(NotificationCompat.VISIBILITY_PUBLIC)
+			.setShowWhen(true)
+			.build()
+
+		try {
+			notificationManager?.notify(WARNING_NOTIFICATION_ID, notification)
+			Timber.d("Warning notification shown")
+		} catch (e: Exception) {
+			Timber.e("Warning notification: $e")
+		}
+	}
+
 	private fun createMainActivityPendingIntent(): PendingIntent? {
 		return try {
 			val launchIntent = packageManager.getLaunchIntentForPackage(packageName)
@@ -232,7 +278,9 @@ class AlarmCountdownService : Service() {
 
 	companion object {
 		const val CHANNEL_ID = "alarm_countdown_channel"
+		const val WARNING_CHANNEL_ID = "alarm_warning_channel"
 		const val NOTIFICATION_ID = 1001
+		const val WARNING_NOTIFICATION_ID = 1002
 		const val EXTRA_GROUP_NAME = "EXTRA_GROUP_NAME"
 		const val EXTRA_TRIGGER_TIME = "EXTRA_TRIGGER_TIME"
 		const val ACTION_CANCEL_ALARM = "ACTION_CANCEL_ALARM"
