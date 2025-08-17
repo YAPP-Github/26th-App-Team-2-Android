@@ -2,6 +2,7 @@ package com.yapp.breake.core.model.app
 
 data class App(
 	val packageName: String,
+	val id: Long,
 	val name: String,
 	val icon: ByteArray?,
 	val category: String,

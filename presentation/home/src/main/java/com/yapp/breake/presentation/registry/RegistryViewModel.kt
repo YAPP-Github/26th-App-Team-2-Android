@@ -199,6 +199,7 @@ class RegistryViewModel @Inject constructor(
 						apps = it.selectedApps.map { selectedApp ->
 							App(
 								packageName = selectedApp.packageName,
+								id = 0L,
 								name = selectedApp.name,
 								icon = selectedApp.icon.toByteArray(),
 								// TODO: 카테고리 추후 추가 필요

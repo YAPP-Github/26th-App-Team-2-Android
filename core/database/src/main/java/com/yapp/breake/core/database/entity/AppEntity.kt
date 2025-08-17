@@ -22,6 +22,7 @@ import com.yapp.breake.core.database.entity.AppGroupEntity.Companion.PARENT_GROU
 )
 data class AppEntity(
 	@PrimaryKey val packageName: String,
+	val id: Long,
 	val name: String,
 	val category: String,
 	val parentGroupId: Long,

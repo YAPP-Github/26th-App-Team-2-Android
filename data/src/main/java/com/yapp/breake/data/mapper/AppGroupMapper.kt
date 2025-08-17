@@ -35,6 +35,7 @@ internal fun AppGroup.toGroupEntity(): GroupEntity = GroupEntity(
 internal fun AppEntity.toApp(appScanner: InstalledAppScanner): App {
 	return App(
 		packageName = packageName,
+		id = id,
 		name = name,
 		icon = appScanner.getIconDrawable(packageName).toByteArray(),
 		category = category,
@@ -44,6 +45,7 @@ internal fun AppEntity.toApp(appScanner: InstalledAppScanner): App {
 internal fun App.toAppEntity(parentGroupId: Long): AppEntity {
 	return AppEntity(
 		packageName = packageName,
+		id = id,
 		name = name,
 		category = category,
 		parentGroupId = parentGroupId,

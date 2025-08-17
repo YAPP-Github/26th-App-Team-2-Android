@@ -18,6 +18,7 @@ import com.yapp.breake.core.database.entity.SnoozeEntity
 		SnoozeEntity::class,
 		GroupEntity::class,
 	],
+	autoMigrations = [],
 	version = 1,
 	exportSchema = true,
 )

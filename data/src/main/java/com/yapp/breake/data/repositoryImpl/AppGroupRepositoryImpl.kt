@@ -16,6 +16,7 @@ class AppGroupRepositoryImpl @Inject constructor(
 	private val appGroupDao: AppGroupDao,
 	private val appScanner: InstalledAppScanner,
 ) : AppGroupRepository {
+
 	override suspend fun insertAppGroup(appGroup: AppGroup) {
 		appGroupDao.insertAppGroup(
 			appGroup.toGroupEntity(),

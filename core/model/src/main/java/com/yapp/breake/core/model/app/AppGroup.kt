@@ -23,6 +23,7 @@ data class AppGroup(
 			apps = listOf(
 				App(
 					packageName = "com.example.app1",
+					id = 1L,
 					category = "앱",
 					name = "앱1",
 					icon = null,
