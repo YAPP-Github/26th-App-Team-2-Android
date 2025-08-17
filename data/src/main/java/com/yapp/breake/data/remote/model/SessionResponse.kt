@@ -11,4 +11,3 @@ internal data class SessionResponse(
 internal data class SessionData(
 	val sessionId: Long,
 )
-

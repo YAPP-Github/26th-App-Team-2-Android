@@ -28,6 +28,12 @@ interface AppGroupRepository {
 		endTime: LocalDateTime? = null,
 	): Result<Unit>
 
+	suspend fun updateGroupSessionInfo(
+		groupId: Long,
+		goalMinutes: Int?,
+		sessionStartTime: LocalDateTime?,
+	): Result<Unit>
+
 	suspend fun insertSnooze(
 		groupId: Long,
 	): Result<Unit>

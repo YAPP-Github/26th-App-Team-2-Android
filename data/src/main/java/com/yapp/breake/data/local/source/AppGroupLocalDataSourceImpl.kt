@@ -114,6 +114,23 @@ internal class AppGroupLocalDataSourceImpl @Inject constructor(
 		}
 	}
 
+	override suspend fun updateGroupSessionInfo(
+		groupId: Long,
+		goalMinutes: Int?,
+		sessionStartTime: LocalDateTime?,
+		onError: suspend (Throwable) -> Unit,
+	) {
+		try {
+			appGroupDao.updateGroupSessionInfo(
+				groupId = groupId,
+				goalMinutes = goalMinutes,
+				sessionStartTime = sessionStartTime,
+			)
+		} catch (e: Exception) {
+			onError(Throwable("그룹 세션 정보 업데이트에 실패했습니다"))
+		}
+	}
+
 	override suspend fun insertSnooze(
 		parentGroupId: Long,
 		snoozeTime: LocalDateTime,

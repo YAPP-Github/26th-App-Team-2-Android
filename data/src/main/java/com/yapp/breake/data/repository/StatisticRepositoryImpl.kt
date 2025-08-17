@@ -1,6 +1,6 @@
 package com.yapp.breake.data.repository
 
-import com.yapp.breake.core.model.app.Session
+import com.yapp.breake.core.model.app.AppGroup
 import com.yapp.breake.core.model.app.Statistics
 import com.yapp.breake.data.remote.source.StatisticRemoteDataSource
 import com.yapp.breake.domain.repository.StatisticRepository
@@ -12,10 +12,10 @@ internal class StatisticRepositoryImpl @Inject constructor(
 	private val statisticRemoteDataSource: StatisticRemoteDataSource,
 ) : StatisticRepository {
 
-	override suspend fun pushSession(session: Session): Result<Unit> {
+	override suspend fun pushSession(appGroup: AppGroup): Result<Unit> {
 		return try {
 			statisticRemoteDataSource.pushSession(
-				session = session,
+				appGroup = appGroup,
 				onSuccess = {
 					Result.success(Unit)
 				},
@@ -39,4 +39,3 @@ internal class StatisticRepositoryImpl @Inject constructor(
 		)
 	}
 }
-

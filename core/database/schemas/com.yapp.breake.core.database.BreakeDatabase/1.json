@@ -2,7 +2,7 @@
   "formatVersion": 1,
   "database": {
     "version": 1,
-    "identityHash": "37433aff7dddd9d89b42c8cf41e2b994",
+    "identityHash": "efcb773a808d0776d9ac123f33ec544a",
     "entities": [
       {
         "tableName": "app_table",
@@ -126,7 +126,7 @@
       },
       {
         "tableName": "group_table",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`groupId` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `name` TEXT NOT NULL, `appGroupState` TEXT NOT NULL, `startTime` TEXT, `endTime` TEXT)",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`groupId` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `name` TEXT NOT NULL, `appGroupState` TEXT NOT NULL, `goalMinutes` INTEGER, `sessionStartTime` TEXT, `startTime` TEXT, `endTime` TEXT)",
         "fields": [
           {
             "fieldPath": "groupId",
@@ -145,6 +145,16 @@
             "columnName": "appGroupState",
             "affinity": "TEXT",
             "notNull": true
+          },
+          {
+            "fieldPath": "goalMinutes",
+            "columnName": "goalMinutes",
+            "affinity": "INTEGER"
+          },
+          {
+            "fieldPath": "sessionStartTime",
+            "columnName": "sessionStartTime",
+            "affinity": "TEXT"
           },
           {
             "fieldPath": "startTime",
@@ -167,7 +177,7 @@
     ],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '37433aff7dddd9d89b42c8cf41e2b994')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, 'efcb773a808d0776d9ac123f33ec544a')"
     ]
   }
 }

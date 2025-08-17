@@ -67,6 +67,17 @@ interface AppGroupDao {
 	)
 
 	@Query(
+		"UPDATE `group_table` SET " +
+			"goalMinutes = :goalMinutes," +
+			" sessionStartTime = :sessionStartTime WHERE groupId = :groupId",
+	)
+	suspend fun updateGroupSessionInfo(
+		groupId: Long,
+		goalMinutes: Int?,
+		sessionStartTime: LocalDateTime?,
+	)
+
+	@Query(
 		"INSERT INTO `snooze_table` (parentGroupId, snoozeTime) VALUES (:parentGroupId, :snoozeTime)",
 	)
 	suspend fun insertSnooze(parentGroupId: Long, snoozeTime: LocalDateTime)

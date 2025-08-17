@@ -47,6 +47,13 @@ interface AppGroupLocalDataSource {
 		onError: suspend (Throwable) -> Unit = {},
 	)
 
+	suspend fun updateGroupSessionInfo(
+		groupId: Long,
+		goalMinutes: Int?,
+		sessionStartTime: LocalDateTime?,
+		onError: suspend (Throwable) -> Unit = {},
+	)
+
 	suspend fun insertSnooze(
 		parentGroupId: Long,
 		snoozeTime: LocalDateTime,

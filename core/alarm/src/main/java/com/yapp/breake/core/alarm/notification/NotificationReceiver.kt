@@ -76,7 +76,7 @@ class NotificationReceiver : BroadcastReceiver() {
 
 	private suspend fun stopBlocking(context: Context, appGroup: AppGroup) {
 		Timber.i("ID: ${appGroup.id} 차단이 해제되었습니다")
-		resetAppGroupUsecase(groupId = appGroup.id)
+		resetAppGroupUsecase(appGroup)
 
 		val broadcastIntent = Intent().apply {
 			action = IntentConfig.RECEIVER_IDENTITY

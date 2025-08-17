@@ -79,6 +79,23 @@ internal class AppGroupRepositoryImpl @Inject constructor(
 		}
 	}
 
+	override suspend fun updateGroupSessionInfo(
+		groupId: Long,
+		goalMinutes: Int?,
+		sessionStartTime: LocalDateTime?,
+	): Result<Unit> {
+		return try {
+			appGroupLocalDataSource.updateGroupSessionInfo(
+				groupId = groupId,
+				goalMinutes = goalMinutes,
+				sessionStartTime = sessionStartTime,
+			)
+			Result.success(Unit)
+		} catch (e: Exception) {
+			Result.failure(e)
+		}
+	}
+
 	override suspend fun insertSnooze(groupId: Long): Result<Unit> {
 		return try {
 			appGroupLocalDataSource.insertSnooze(

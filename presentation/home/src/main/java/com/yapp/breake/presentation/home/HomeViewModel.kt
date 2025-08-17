@@ -75,7 +75,6 @@ internal class HomeViewModel @Inject constructor(
 		viewModelScope.launch {
 			setBlockingAlarmUseCase(
 				groupId = appGroup.id,
-				groupName = "",
 			).onSuccess {
 				showStopUsingSuccess(appGroup.name)
 			}

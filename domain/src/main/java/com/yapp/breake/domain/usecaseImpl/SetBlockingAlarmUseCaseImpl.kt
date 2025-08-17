@@ -10,14 +10,13 @@ import java.time.LocalDateTime
 import javax.inject.Inject
 
 class SetBlockingAlarmUseCaseImpl @Inject constructor(
-    private val alarmScheduler: AlarmScheduler,
-    private val appGroupRepository: AppGroupRepository,
-    private val constTimeProvider: ConstTimeProvider,
+	private val alarmScheduler: AlarmScheduler,
+	private val appGroupRepository: AppGroupRepository,
+	private val constTimeProvider: ConstTimeProvider,
 ) : SetBlockingAlarmUseCase {
 
 	override suspend operator fun invoke(
 		groupId: Long,
-		groupName: String,
 	): Result<LocalDateTime> {
 		alarmScheduler.cancelAlarm(
 			groupId = groupId,
@@ -29,7 +28,7 @@ class SetBlockingAlarmUseCaseImpl @Inject constructor(
 
 		return alarmScheduler.scheduleAlarm(
 			groupId = groupId,
-			groupName = groupName,
+			groupName = "",
 			triggerTime = triggerTime,
 			action = AlarmAction.ACTION_BLOCKING,
 		).onSuccess {

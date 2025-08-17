@@ -7,12 +7,9 @@ import com.yapp.breake.core.database.entity.GroupEntity
 import com.yapp.breake.core.database.entity.SnoozeEntity
 import com.yapp.breake.core.model.app.App
 import com.yapp.breake.core.model.app.AppGroup
-import com.yapp.breake.core.model.app.AppGroupState
 import com.yapp.breake.core.model.app.Snooze
-import com.yapp.breake.data.remote.model.AppGroupRequest
-import com.yapp.breake.data.remote.model.AppGroupResponse
-import com.yapp.breake.data.remote.model.GroupApp
 import com.yapp.breake.core.util.toByteArray
+import com.yapp.breake.data.remote.model.AppGroupRequest
 import com.yapp.breake.data.remote.model.AppRequest
 
 internal fun AppGroupEntity.toAppList(appScanner: InstalledAppScanner): AppGroup {
@@ -24,6 +21,8 @@ internal fun AppGroupEntity.toAppList(appScanner: InstalledAppScanner): AppGroup
 			it.toApp(appScanner)
 		},
 		snoozes = snoozes.map(SnoozeEntity::toSnooze),
+		goalMinutes = group.goalMinutes,
+		sessionStartTime = group.sessionStartTime,
 		startTime = group.startTime,
 		endTime = group.endTime,
 	)
@@ -33,6 +32,8 @@ internal fun AppGroup.toGroupEntity(): GroupEntity = GroupEntity(
 	groupId = id,
 	name = name,
 	appGroupState = appGroupState,
+	goalMinutes = goalMinutes,
+	sessionStartTime = sessionStartTime,
 	startTime = startTime,
 	endTime = endTime,
 )
@@ -69,8 +70,8 @@ internal fun AppGroup.toAppGroupRequest(): AppGroupRequest {
 		groupApps = this.apps.map { app ->
 			AppRequest(
 				name = app.name,
-				groupAppId = app.id
+				groupAppId = app.id,
 			)
-		}
+		},
 	)
 }

@@ -2,7 +2,7 @@ package com.yapp.breake.data.remote.source
 
 import com.skydoves.sandwich.suspendOnFailure
 import com.skydoves.sandwich.suspendOnSuccess
-import com.yapp.breake.core.model.app.Session
+import com.yapp.breake.core.model.app.AppGroup
 import com.yapp.breake.core.model.app.Statistics
 import com.yapp.breake.data.mapper.toDateString
 import com.yapp.breake.data.mapper.toSessionRequest
@@ -18,11 +18,16 @@ internal class StatisticRemoteDataSourceImpl @Inject constructor(
 ) : StatisticRemoteDataSource {
 
 	override suspend fun pushSession(
-		session: Session,
+		appGroup: AppGroup,
 		onSuccess: suspend (Long) -> Unit,
 		onError: suspend (Throwable) -> Unit,
 	) {
-		retrofitBrakeApi.sendSession(session.toSessionRequest())
+		val request = appGroup.toSessionRequest() ?: run {
+			onError(Throwable("세션 요청을 생성하는 중 오류가 발생했습니다"))
+			return
+		}
+
+		retrofitBrakeApi.sendSession(request)
 			.suspendOnSuccess {
 				onSuccess(data.data.sessionId)
 			}.suspendOnFailure {

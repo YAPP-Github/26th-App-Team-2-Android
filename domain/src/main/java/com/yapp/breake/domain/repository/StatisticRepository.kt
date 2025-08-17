@@ -1,13 +1,13 @@
 package com.yapp.breake.domain.repository
 
-import com.yapp.breake.core.model.app.Session
+import com.yapp.breake.core.model.app.AppGroup
 import com.yapp.breake.core.model.app.Statistics
 import kotlinx.coroutines.flow.Flow
 import java.time.LocalDate
 
 interface StatisticRepository {
 
-	suspend fun pushSession(session: Session): Result<Unit>
+	suspend fun pushSession(appGroup: AppGroup): Result<Unit>
 
 	fun getStatistics(
 		startDate: LocalDate,
@@ -15,4 +15,3 @@ interface StatisticRepository {
 		onError: suspend (Throwable) -> Unit,
 	): Flow<List<Statistics>>
 }
-

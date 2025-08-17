@@ -1,7 +1,9 @@
 package com.yapp.breake.domain.usecase
 
+import com.yapp.breake.core.model.app.AppGroup
+
 interface ResetAppGroupUsecase {
 	suspend operator fun invoke(
-		groupId: Long,
+		appGroup: AppGroup,
 	): Result<Unit>
 }

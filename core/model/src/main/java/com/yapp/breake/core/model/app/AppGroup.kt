@@ -8,6 +8,8 @@ data class AppGroup(
 	val appGroupState: AppGroupState,
 	val apps: List<App>,
 	val snoozes: List<Snooze>,
+	val goalMinutes: Int?,
+	val sessionStartTime: LocalDateTime?,
 	val startTime: LocalDateTime?,
 	val endTime: LocalDateTime?,
 ) {
@@ -30,6 +32,8 @@ data class AppGroup(
 				),
 			),
 			snoozes = emptyList(),
+			goalMinutes = 30,
+			sessionStartTime = null,
 			startTime = LocalDateTime.now().minusMinutes(2).minusSeconds(3),
 			endTime = LocalDateTime.now().plusMinutes(12).plusSeconds(7),
 		)
