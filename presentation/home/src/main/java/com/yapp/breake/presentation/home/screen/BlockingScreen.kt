@@ -83,6 +83,7 @@ private fun BlockingAppGroup(
 	) {
 		AppGroupItemContent(
 			appGroup = appGroup,
+			clickable = false,
 			onEditClick = onEditClick,
 			isDimmed = true,
 		)

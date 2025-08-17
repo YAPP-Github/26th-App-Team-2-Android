@@ -82,6 +82,7 @@ private fun UsingAppGroup(
 	) {
 		AppGroupItemContent(
 			appGroup = appGroup,
+			clickable = false,
 			onEditClick = onEditClick,
 		)
 		VerticalSpacer(16.dp)

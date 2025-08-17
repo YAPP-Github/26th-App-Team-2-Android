@@ -55,6 +55,7 @@ internal fun AppGroupBox(
 @Composable
 internal fun AppGroupTitle(
 	name: String,
+	clickable: Boolean,
 	onEditClick: () -> Unit,
 ) {
 	Row(
@@ -77,7 +78,11 @@ internal fun AppGroupTitle(
 			contentDescription = stringResource(R.string.edit_app_group_icon_content_description),
 			modifier = Modifier
 				.clip(CircleShape)
-				.clickable(onClick = onEditClick),
+				.clickable(
+					enabled = clickable,
+					onClick = onEditClick,
+				),
+			alpha = if (clickable) 1f else 0.4f,
 		)
 	}
 }
