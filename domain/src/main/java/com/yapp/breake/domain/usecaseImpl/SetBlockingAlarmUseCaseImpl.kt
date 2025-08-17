@@ -4,15 +4,15 @@ import com.yapp.breake.core.common.AlarmAction
 import com.yapp.breake.core.model.app.AppGroupState
 import com.yapp.breake.domain.repository.AlarmScheduler
 import com.yapp.breake.domain.repository.AppGroupRepository
-import com.yapp.breake.domain.repository.ConstTimeProvider
+import com.yapp.breake.domain.etc.ConstTimeProvider
 import com.yapp.breake.domain.usecase.SetBlockingAlarmUseCase
 import java.time.LocalDateTime
 import javax.inject.Inject
 
 class SetBlockingAlarmUseCaseImpl @Inject constructor(
-	private val alarmScheduler: AlarmScheduler,
-	private val appGroupRepository: AppGroupRepository,
-	private val constTimeProvider: ConstTimeProvider,
+    private val alarmScheduler: AlarmScheduler,
+    private val appGroupRepository: AppGroupRepository,
+    private val constTimeProvider: ConstTimeProvider,
 ) : SetBlockingAlarmUseCase {
 
 	override suspend operator fun invoke(

@@ -1,7 +1,7 @@
 package com.yapp.breake.data.di
 
-import com.yapp.breake.data.repositoryImpl.ConstTimeProviderImpl
-import com.yapp.breake.domain.repository.ConstTimeProvider
+import com.yapp.breake.data.etc.ConstTimeProviderImpl
+import com.yapp.breake.domain.etc.ConstTimeProvider
 import dagger.Binds
 import dagger.Module
 import dagger.hilt.InstallIn

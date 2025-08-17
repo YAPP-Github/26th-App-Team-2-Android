@@ -1,8 +1,8 @@
-package com.yapp.breake.data.repositoryImpl
+package com.yapp.breake.data.etc
 
 import com.yapp.breake.core.common.Constants
 import com.yapp.breake.data.BuildConfig
-import com.yapp.breake.domain.repository.ConstTimeProvider
+import com.yapp.breake.domain.etc.ConstTimeProvider
 import javax.inject.Inject
 import javax.inject.Singleton
 

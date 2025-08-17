@@ -1,33 +1,28 @@
 package com.yapp.breake.data.repositoryImpl
 
-import com.yapp.breake.core.appscanner.InstalledAppScanner
-import com.yapp.breake.core.database.dao.AppGroupDao
 import com.yapp.breake.core.model.app.AppGroup
 import com.yapp.breake.core.model.app.AppGroupState
-import com.yapp.breake.data.mapper.toAppGroup
-import com.yapp.breake.data.mapper.toGroupEntity
+import com.yapp.breake.data.local.source.AppGroupLocalDataSource
+import com.yapp.breake.data.remote.source.AppGroupRemoteDataSource
 import com.yapp.breake.domain.repository.AppGroupRepository
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.map
 import java.time.LocalDateTime
 import javax.inject.Inject
 
-class AppGroupRepositoryImpl @Inject constructor(
-	private val appGroupDao: AppGroupDao,
-	private val appScanner: InstalledAppScanner,
+internal class AppGroupRepositoryImpl @Inject constructor(
+	private val appGroupLocalDataSource: AppGroupLocalDataSource,
+	private val appGroupRemoteDataSource: AppGroupRemoteDataSource
 ) : AppGroupRepository {
 
 	override suspend fun insertAppGroup(appGroup: AppGroup) {
-		appGroupDao.insertAppGroup(
-			appGroup.toGroupEntity(),
-		)
+		appGroupLocalDataSource.insertAppGroup(appGroup)
 	}
 
 	override suspend fun getAvailableMinGroupId(): Long =
-		appGroupDao.getAvailableMinGroupId()
+		appGroupLocalDataSource.getAvailableMinGroupId()
 
 	override suspend fun deleteAppGroupByGroupId(groupId: Long) {
-		appGroupDao.deleteAppGroupById(groupId)
+		appGroupLocalDataSource.deleteAppGroupById(groupId = groupId)
 	}
 
 	override suspend fun clearAppGroup() {
@@ -35,21 +30,15 @@ class AppGroupRepositoryImpl @Inject constructor(
 	}
 
 	override fun observeAppGroup(): Flow<List<AppGroup>> {
-		return appGroupDao.observeAppGroup().map { appGroupEntities ->
-			appGroupEntities.map {
-				it.toAppGroup(appScanner)
-			}
-		}
+		return appGroupLocalDataSource.observeAppGroup()
 	}
 
 	override suspend fun getAppGroup(): List<AppGroup> {
-		return appGroupDao.getAppGroup().map {
-			it.toAppGroup(appScanner)
-		}
+		return appGroupLocalDataSource.getAppGroup()
 	}
 
 	override suspend fun getAppGroupById(groupId: Long): AppGroup? {
-		return appGroupDao.getAppGroupById(groupId)?.toAppGroup(appScanner)
+		return appGroupLocalDataSource.getAppGroupById(groupId = groupId)
 	}
 
 	override suspend fun updateAppGroupState(
@@ -59,7 +48,7 @@ class AppGroupRepositoryImpl @Inject constructor(
 		endTime: LocalDateTime?,
 	): Result<Unit> {
 		return try {
-			appGroupDao.updateAppGroupState(
+			appGroupLocalDataSource.updateAppGroupState(
 				groupId = groupId,
 				appGroupState = appGroupState,
 				startTime = startTime,
@@ -73,7 +62,7 @@ class AppGroupRepositoryImpl @Inject constructor(
 
 	override suspend fun insertSnooze(groupId: Long): Result<Unit> {
 		return try {
-			appGroupDao.insertSnooze(
+			appGroupLocalDataSource.insertSnooze(
 				parentGroupId = groupId,
 				snoozeTime = LocalDateTime.now(),
 			)
@@ -85,7 +74,9 @@ class AppGroupRepositoryImpl @Inject constructor(
 
 	override suspend fun resetSnooze(groupId: Long): Result<Unit> {
 		return try {
-			appGroupDao.resetSnooze(groupId)
+			appGroupLocalDataSource.resetSnooze(
+				groupId = groupId,
+			)
 			Result.success(Unit)
 		} catch (e: Exception) {
 			Result.failure(e)

@@ -1,7 +1,9 @@
 package com.yapp.breake.data.remote.retrofit
 
 import com.skydoves.sandwich.ApiResponse
+import com.yapp.breake.data.remote.model.AppGroupResponse
 import com.yapp.breake.data.remote.model.BaseResponse
+import com.yapp.breake.data.remote.model.AppGroupRequest
 import com.yapp.breake.data.remote.model.LoginRequest
 import com.yapp.breake.data.remote.model.LoginResponse
 import com.yapp.breake.data.remote.model.MemberRequest
@@ -13,8 +15,11 @@ import retrofit2.http.DELETE
 import retrofit2.http.GET
 import retrofit2.http.PATCH
 import retrofit2.http.POST
+import retrofit2.http.PUT
+import retrofit2.http.Path
 
 internal interface RetrofitBrakeApi {
+
 	@POST("/v1/auth/login")
 	suspend fun getTokens(
 		@Body request: LoginRequest,
@@ -40,4 +45,16 @@ internal interface RetrofitBrakeApi {
 	suspend fun logoutAuth(
 		@Body accessToken: String,
 	): ApiResponse<BaseResponse>
+
+	@POST("/v1/groups")
+	suspend fun createAppGroup(@Body request: AppGroupRequest): ApiResponse<AppGroupResponse>
+
+	@PUT("/v1/groups/{groupId}")
+	suspend fun updateAppGroup(
+		@Path("groupId") groupId: Long,
+		@Body request: AppGroupRequest,
+	): ApiResponse<AppGroupResponse>
+
+	@DELETE("/v1/groups/{groupId}")
+	suspend fun deleteAppGroup(@Path("groupId") groupId: Long): ApiResponse<BaseResponse>
 }
