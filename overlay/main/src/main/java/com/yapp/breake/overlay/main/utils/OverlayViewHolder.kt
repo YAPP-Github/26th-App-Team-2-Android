@@ -56,13 +56,14 @@ class OverlayViewHolder(private val context: Context) {
 
 		val params = WindowManager.LayoutParams(
 			WindowManager.LayoutParams.MATCH_PARENT,
+
 			WindowManager.LayoutParams.MATCH_PARENT,
 			WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY,
 			WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE,
 			PixelFormat.TRANSLUCENT,
 		).apply {
 			gravity = Gravity.CENTER
-			softInputMode = WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE
+			softInputMode = WindowManager.LayoutParams.SOFT_INPUT_ADJUST_UNSPECIFIED
 		}
 
 		try {
