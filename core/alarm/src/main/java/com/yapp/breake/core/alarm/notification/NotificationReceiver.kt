@@ -9,6 +9,7 @@ import com.yapp.breake.core.model.accessibility.IntentConfig
 import com.yapp.breake.core.model.app.AppGroup
 import com.yapp.breake.core.model.app.AppGroupState
 import com.yapp.breake.domain.repository.AppGroupRepository
+import com.yapp.breake.domain.repository.StatisticRepository
 import com.yapp.breake.domain.usecase.ResetAppGroupUsecase
 import com.yapp.breake.domain.usecase.SetAlarmUseCase
 import dagger.hilt.android.AndroidEntryPoint
@@ -24,6 +25,9 @@ class NotificationReceiver : BroadcastReceiver() {
 
 	@Inject
 	lateinit var appGroupRepository: AppGroupRepository
+
+	@Inject
+	lateinit var statisticRepository: StatisticRepository
 
 	@Inject
 	lateinit var setAlarmUsecase: SetAlarmUseCase
@@ -66,6 +70,8 @@ class NotificationReceiver : BroadcastReceiver() {
 			putExtra(IntentConfig.EXTRA_SNOOZES_COUNT, appGroup.snoozesCount)
 		}
 		context.sendBroadcast(broadcastIntent)
+
+		statisticRepository.pushSession(appGroup)
 
 		setAlarmUsecase(
 			groupId = appGroup.id,

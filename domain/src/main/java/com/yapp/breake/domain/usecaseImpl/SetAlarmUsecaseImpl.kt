@@ -39,11 +39,13 @@ class SetAlarmUsecaseImpl @Inject constructor(
 			triggerTime = triggerTime,
 			action = action,
 		).onSuccess {
-			appGroupRepository.updateGroupSessionInfo(
-				groupId = groupId,
-				goalMinutes = second,
-				sessionStartTime = startTime,
-			)
+			if (appGroupState == AppGroupState.Using) {
+				appGroupRepository.updateGroupSessionInfo(
+					groupId = groupId,
+					goalMinutes = second,
+					sessionStartTime = startTime,
+				)
+			}
 
 			appGroupRepository.updateAppGroupState(
 				groupId = groupId,

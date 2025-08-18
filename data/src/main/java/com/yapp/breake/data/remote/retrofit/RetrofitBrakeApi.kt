@@ -62,10 +62,10 @@ internal interface RetrofitBrakeApi {
 	@DELETE("/v1/groups/{groupId}")
 	suspend fun deleteAppGroup(@Path("groupId") groupId: Long): ApiResponse<BaseResponse>
 
-	@POST("/v1/sessions")
+	@POST("/v1/session")
 	suspend fun sendSession(@Body request: SessionRequest): ApiResponse<SessionResponse>
 
-	@POST("/v1/sessions")
+	@POST("/v1/statistics")
 	suspend fun getStatistics(
 		@Query("start") start: String,
 		@Query("end") end: String,

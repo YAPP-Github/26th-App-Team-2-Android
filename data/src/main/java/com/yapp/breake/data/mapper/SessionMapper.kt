@@ -9,7 +9,7 @@ private val dateFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm")
 
 internal fun AppGroup.toSessionRequest(): SessionRequest? {
 	val startTime = this.sessionStartTime
-	val endTime = this.endTime?.minusSeconds(Constants.BLOCKING_TIME)
+	val endTime = this.endTime
 	val goalMinutes = this.goalMinutes
 
 	if (startTime == null || endTime == null || goalMinutes == null) {
