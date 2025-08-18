@@ -7,7 +7,7 @@ import java.time.LocalDateTime
 
 interface AppGroupRepository {
 
-	suspend fun insertAppGroup(appGroup: AppGroup)
+	suspend fun insertAppGroup(appGroup: AppGroup): AppGroup
 
 	suspend fun getAvailableMinGroupId(): Long
 

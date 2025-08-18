@@ -18,5 +18,5 @@ internal data class AppGroupData(
 internal data class GroupApp(
 	val groupAppId: Long,
 	val name: String,
-	val packageName: String,
+	val packageName: String = "",
 )

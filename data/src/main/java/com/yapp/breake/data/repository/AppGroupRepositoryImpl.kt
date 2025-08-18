@@ -6,6 +6,8 @@ import com.yapp.breake.data.local.source.AppGroupLocalDataSource
 import com.yapp.breake.data.remote.source.AppGroupRemoteDataSource
 import com.yapp.breake.domain.repository.AppGroupRepository
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.map
 import java.time.LocalDateTime
 import javax.inject.Inject
 
@@ -14,19 +16,32 @@ internal class AppGroupRepositoryImpl @Inject constructor(
 	private val appGroupRemoteDataSource: AppGroupRemoteDataSource,
 ) : AppGroupRepository {
 
-	override suspend fun insertAppGroup(appGroup: AppGroup) {
-		if (appGroupLocalDataSource.isAppGroupExists(appGroup.id)) {
+	override suspend fun insertAppGroup(appGroup: AppGroup): AppGroup {
+		return if (appGroupLocalDataSource.isAppGroupExists(appGroup.id)) {
 			appGroupRemoteDataSource.updateAppGroup(
 				appGroup = appGroup,
-			).collect { updatedGroup ->
+			).map { updatedGroup ->
 				appGroupLocalDataSource.insertAppGroup(updatedGroup)
-			}
+
+				updatedGroup
+			}.first()
 		} else {
 			appGroupRemoteDataSource.createAppGroup(
 				appGroup = appGroup,
-			).collect { newGroup ->
-				appGroupLocalDataSource.insertAppGroup(newGroup)
-			}
+			).map { newGroup ->
+				val appsWithOriginalPackages = newGroup.apps.map { newApp ->
+					val originalApp = appGroup.apps.find { it.name == newApp.name }
+					if (originalApp != null) {
+						newApp.copy(packageName = originalApp.packageName)
+					} else {
+						newApp
+					}
+				}
+				val groupWithOriginalPackages = newGroup.copy(apps = appsWithOriginalPackages)
+				appGroupLocalDataSource.insertAppGroup(groupWithOriginalPackages)
+
+				groupWithOriginalPackages
+			}.first()
 		}
 	}
 

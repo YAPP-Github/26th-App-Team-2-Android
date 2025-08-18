@@ -8,6 +8,7 @@ import com.yapp.breake.data.mapper.toAppGroupRequest
 import com.yapp.breake.data.remote.retrofit.RetrofitBrakeApi
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
+import timber.log.Timber
 import javax.inject.Inject
 
 internal class AppGroupRemoteDataSourceImpl @Inject constructor(
@@ -23,6 +24,7 @@ internal class AppGroupRemoteDataSourceImpl @Inject constructor(
 				emit(data.toAppGroup())
 			}.suspendOnFailure {
 				onError(Throwable("앱 그룹을 생성하는 중 오류가 발생했습니다"))
+				Timber.e("Error creating app group: $this")
 			}
 	}
 
@@ -35,6 +37,7 @@ internal class AppGroupRemoteDataSourceImpl @Inject constructor(
 				emit(data.toAppGroup())
 			}.suspendOnFailure {
 				onError(Throwable("앱 그룹을 수정하는 중 오류가 발생했습니다"))
+				Timber.e("Error updating app group: $this")
 			}
 	}
 
@@ -48,6 +51,7 @@ internal class AppGroupRemoteDataSourceImpl @Inject constructor(
 				onSuccess()
 			}.suspendOnFailure {
 				onError(Throwable("앱 그룹을 삭제하는 중 오류가 발생했습니다"))
+				Timber.e("Error deleting app group: $this")
 			}
 	}
 }
