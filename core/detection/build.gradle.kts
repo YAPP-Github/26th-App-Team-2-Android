@@ -14,8 +14,4 @@ dependencies {
 	implementation(projects.core.util)
 	implementation(projects.core.common)
 	implementation(projects.core.model)
-
-	implementation(platform(libs.firebase.bom))
-	implementation(libs.firebase.analytics)
-	implementation(libs.firebase.crashlytics)
 }
