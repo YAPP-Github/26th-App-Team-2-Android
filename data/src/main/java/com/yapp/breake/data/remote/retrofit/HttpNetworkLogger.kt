@@ -9,7 +9,7 @@ internal class HttpNetworkLogger : Interceptor {
 		val request = chain.request()
 
 		val logMessage = StringBuilder()
-		logMessage.appendLine("\nRequest URL: ${request.url}")
+		logMessage.appendLine("\n${request.method} Request URL: ${request.url}")
 
 		if (request.body != null) {
 			val buffer = okio.Buffer()
@@ -23,7 +23,7 @@ internal class HttpNetworkLogger : Interceptor {
 			val endTime = System.nanoTime()
 
 			val durationMs = (endTime - startTime) / 1e6
-			logMessage.appendLine("Response URL: ${response.request.url}")
+			logMessage.appendLine("${request.method} Response URL: ${response.request.url}")
 			logMessage.appendLine("Response Code: ${response.code}")
 			logMessage.appendLine("Response Time: ${durationMs}ms")
 
@@ -46,7 +46,7 @@ internal class HttpNetworkLogger : Interceptor {
 		} catch (e: Exception) {
 			val endTime = System.nanoTime()
 			val durationMs = (endTime - startTime) / 1e6
-			logMessage.appendLine("Error occurred: ${e.message}")
+			logMessage.appendLine("${request.method} Error occurred: ${e.message}")
 			logMessage.appendLine("Response Time: ${durationMs}ms")
 
 			Timber.e(logMessage.toString())
