@@ -12,4 +12,6 @@ interface AppRepository {
 	suspend fun getAppGroupIdByPackage(packageName: String): Long?
 
 	suspend fun deleteAppByParentGroupId(parentGroupId: Long)
+
+	suspend fun clearApps()
 }

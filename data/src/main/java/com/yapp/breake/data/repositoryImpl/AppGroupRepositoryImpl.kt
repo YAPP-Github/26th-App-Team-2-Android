@@ -30,6 +30,10 @@ class AppGroupRepositoryImpl @Inject constructor(
 		appGroupDao.deleteAppGroupById(groupId)
 	}
 
+	override suspend fun clearAppGroup() {
+		appGroupDao.clearAppGroup()
+	}
+
 	override fun observeAppGroup(): Flow<List<AppGroup>> {
 		return appGroupDao.observeAppGroup().map { appGroupEntities ->
 			appGroupEntities.map {
