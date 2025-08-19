@@ -47,6 +47,9 @@ interface AppGroupDao {
 	@Query("DELETE FROM `group_table` WHERE groupId = :groupId")
 	suspend fun deleteAppGroupById(groupId: Long)
 
+	@Query("DELETE FROM `group_table`")
+	suspend fun clearAppGroup()
+
 	@Query(
 		"UPDATE `group_table` SET " +
 			"appGroupState = :appGroupState," +
