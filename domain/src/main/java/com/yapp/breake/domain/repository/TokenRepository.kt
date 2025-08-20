@@ -60,4 +60,11 @@ interface TokenRepository {
 	suspend fun clearLocalAuthCode(
 		onError: suspend (Throwable) -> Unit,
 	)
+
+	/**
+	 * 원격 계정 로그아웃 메서드
+	 *
+	 * 저장된 AccessToken을 이용하여 서버에 로그아웃 요청
+	 */
+	fun logoutRemoteAccount()
 }

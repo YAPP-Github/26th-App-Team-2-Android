@@ -42,4 +42,8 @@ internal class FakeTokenRepositoryImpl @Inject constructor() : TokenRepository {
 	override suspend fun clearLocalAuthCode(onError: suspend (Throwable) -> Unit) {
 		// Fake 구현체에서는 아무 동작도 하지 않음
 	}
+
+	override fun logoutRemoteAccount() {
+		// Fake 구현체에서는 아무 동작도 하지 않음
+	}
 }

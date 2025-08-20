@@ -15,4 +15,9 @@ interface TokenRemoteDataSource {
 		refreshToken: String,
 		onError: suspend (Throwable) -> Unit,
 	): Flow<RefreshResponse>
+
+	suspend fun logoutAccount(
+		accessToken: String,
+		onError: suspend (Throwable) -> Unit,
+	)
 }

@@ -58,7 +58,7 @@ internal class TokenRepositoryImpl @Inject constructor(
 			)
 			// 5분 후에 authCode 자동 삭제
 			@OptIn(DelicateCoroutinesApi::class)
-			GlobalScope.launch(kotlinx.coroutines.Dispatchers.IO) {
+			GlobalScope.launch(Dispatchers.IO) {
 				delay(5 * 60 * 1000L)
 				authLocalDataSource.clearAuthCode(onError = onError)
 			}
@@ -122,5 +122,17 @@ internal class TokenRepositoryImpl @Inject constructor(
 
 	override suspend fun clearLocalAuthCode(onError: suspend (Throwable) -> Unit) {
 		authLocalDataSource.clearAuthCode(onError = onError)
+	}
+
+	override fun logoutRemoteAccount() {
+		CoroutineScope(Dispatchers.IO + SupervisorJob()).launch {
+			tokenRemoteDataSource.logoutAccount(
+				// 해당 함수 호출부 다음 코드 라인의 Main Thread에서 접근하여 비우는 로직보다 먼저 접근
+				accessToken = tokenLocalDataSource.getUserAccessToken({
+					Timber.e("서버에 로그아웃 요청 실패: $it")
+				}).firstOrNull() ?: "",
+				onError = { Timber.e("서버에 로그아웃 요청 실패: $it") },
+			)
+		}
 	}
 }
