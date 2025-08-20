@@ -9,8 +9,10 @@ import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.yapp.breake.core.navigation.compositionlocal.LocalMainAction
@@ -24,6 +26,8 @@ internal fun ReportRoute(
 	viewModel: ReportViewModel = hiltViewModel(),
 ) {
 	val reportUiState by viewModel.reportUiState.collectAsStateWithLifecycle()
+	val mainAction = LocalMainAction.current
+	val context = LocalContext.current
 
 	Box(
 		modifier = Modifier
@@ -33,7 +37,18 @@ internal fun ReportRoute(
 		ReportContent(
 			reportUiState = reportUiState,
 			onRetry = viewModel::refreshReport,
+			loadingContent = {
+				mainAction.OnShowLoading()
+			},
 		)
+	}
+
+	LaunchedEffect(true) {
+		viewModel.snackBarFlow.collect {
+			mainAction.onShowErrorMessage(
+				message = it.asString(context = context),
+			)
+		}
 	}
 }
 
@@ -41,8 +56,8 @@ internal fun ReportRoute(
 private fun ReportContent(
 	reportUiState: ReportUiState,
 	onRetry: () -> Unit,
+	loadingContent: @Composable () -> Unit
 ) {
-	val mainAction = LocalMainAction.current
 	AnimatedContent(
 		targetState = reportUiState,
 		transitionSpec = {
@@ -58,7 +73,7 @@ private fun ReportContent(
 			}
 
 			ReportUiState.Loading -> {
-				mainAction.OnShowLoading()
+				loadingContent()
 			}
 
 			is ReportUiState.Success -> {
