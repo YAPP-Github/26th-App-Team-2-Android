@@ -5,7 +5,6 @@ import com.yapp.breake.domain.repository.AppGroupRepository
 import com.yapp.breake.domain.repository.AppRepository
 import com.yapp.breake.domain.repository.NicknameRepository
 import com.yapp.breake.domain.repository.SessionRepository
-import com.yapp.breake.domain.repository.TokenRepository
 import com.yapp.breake.domain.usecase.DecideStartDestinationUseCase
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.firstOrNull
@@ -15,16 +14,12 @@ import javax.inject.Named
 
 class DecideStartDestinationUseCaseImpl @Inject constructor(
 	private val sessionRepository: SessionRepository,
-	@Named("TokenRepo") private val tokenRepository: TokenRepository,
 	@Named("NicknameRepo") private val nicknameRepository: NicknameRepository,
 	private val appGroupRepository: AppGroupRepository,
 	private val appRepository: AppRepository,
 ) : DecideStartDestinationUseCase {
 
 	override suspend fun invoke(): Destination = try {
-		tokenRepository.refreshTokens(
-			onError = { throw ServerException() },
-		)
 		val userName = nicknameRepository.getRemoteUserName(
 			onError = {},
 		).first()
@@ -51,7 +46,6 @@ class DecideStartDestinationUseCaseImpl @Inject constructor(
 	}
 
 	companion object {
-		class ServerException : Exception()
 		class LocalStorageException : Exception()
 	}
 }
