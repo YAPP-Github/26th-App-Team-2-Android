@@ -7,8 +7,11 @@ import com.yapp.breake.data.local.source.TokenLocalDataSource
 import com.yapp.breake.data.remote.source.TokenRemoteDataSource
 import com.yapp.breake.data.repository.mapper.toData
 import com.yapp.breake.domain.repository.TokenRepository
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.DelicateCoroutinesApi
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch
@@ -18,7 +21,6 @@ import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.runBlocking
 import timber.log.Timber
 import javax.inject.Inject
 
@@ -78,9 +80,6 @@ internal class TokenRepositoryImpl @Inject constructor(
 		}
 	}
 
-	override suspend fun getLocalAccessToken(onError: suspend (Throwable) -> Unit): Flow<String> =
-		tokenLocalDataSource.getUserAccessToken(onError = onError)
-
 	override suspend fun clearLocalTokens(onError: suspend (Throwable) -> Unit) {
 		authLocalDataSource.updateAuthCode(
 			authCode = null,
@@ -124,13 +123,4 @@ internal class TokenRepositoryImpl @Inject constructor(
 	override suspend fun clearLocalAuthCode(onError: suspend (Throwable) -> Unit) {
 		authLocalDataSource.clearAuthCode(onError = onError)
 	}
-
-	override val canGetLocalTokensRetry
-		get() = runBlocking {
-			var isAvailable = true
-			authLocalDataSource.getAuthCode(
-				onError = { isAvailable = false },
-			).collect()
-			isAvailable
-		}
 }
