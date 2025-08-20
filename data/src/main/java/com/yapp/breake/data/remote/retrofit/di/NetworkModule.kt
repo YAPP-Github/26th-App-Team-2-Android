@@ -8,6 +8,7 @@ import com.yapp.breake.data.remote.retrofit.HeaderSelectionInterceptor
 import com.yapp.breake.data.remote.retrofit.HttpNetworkLogger
 import com.yapp.breake.data.remote.retrofit.RetrofitBrakeApi
 import com.yapp.breake.data.remote.retrofit.RetryTimeoutInterceptor
+import com.yapp.breake.data.remote.retrofit.RefreshTokenInterceptor
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -32,6 +33,7 @@ internal object NetworkModule {
 	@Singleton
 	fun provideOkhttpClient(
 		interceptors: Provider<Set<@JvmSuppressWildcards Interceptor>>,
+		userTokenDataSource: DataStore<DatastoreUserToken>,
 	): OkHttpClient =
 		OkHttpClient.Builder()
 			.apply {
@@ -40,7 +42,12 @@ internal object NetworkModule {
 			.connectTimeout(10, TimeUnit.SECONDS)
 			.writeTimeout(30, TimeUnit.SECONDS)
 			.readTimeout(30, TimeUnit.SECONDS)
-			.addInterceptor(RetryTimeoutInterceptor(maxRetries = 5))
+			.addInterceptor(RetryTimeoutInterceptor(maxRetries = 1))
+			.addInterceptor(
+				RefreshTokenInterceptor(
+					userTokenDataSource = userTokenDataSource,
+				),
+			)
 			.build()
 
 	@Provides
