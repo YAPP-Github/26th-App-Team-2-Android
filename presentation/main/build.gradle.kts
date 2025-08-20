@@ -31,6 +31,9 @@ dependencies {
 	implementation(libs.androidx.activity.compose)
 	implementation(libs.androidx.lifecycle.runtimeCompose)
 	implementation(libs.androidx.lifecycle.viewModelCompose)
+
+	implementation(libs.core.splashscreen)
+
 	implementation(libs.kotlinx.immutable)
 	androidTestImplementation(libs.hilt.android.testing)
 	kspAndroidTest(libs.hilt.android.compiler)

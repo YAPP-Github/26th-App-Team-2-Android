@@ -28,8 +28,7 @@
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_brake_launcher_round"
         android:supportsRtl="true"
-		android:theme="@style/Theme.Breake"
-        tools:targetApi="31" >
+		android:theme="@style/Theme.Breake.Splash">
 
 		<receiver
 			android:name=".core.alarm.notification.NotificationReceiver"

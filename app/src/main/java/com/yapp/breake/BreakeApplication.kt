@@ -1,7 +1,6 @@
 package com.yapp.breake
 
 import android.app.Application
-import android.os.Build
 import androidx.hilt.work.HiltWorkerFactory
 import androidx.work.Configuration
 import androidx.work.WorkManager
@@ -25,14 +24,7 @@ class BreakeApplication : Application(), Configuration.Provider {
 			.build()
 
 	override fun onCreate() {
-		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
-			// API 31+ 기본 스플래시 사용
-			super.onCreate()
-		} else {
-			// API 28~30에서는 커스텀 배경 적용
-			setTheme(R.style.Theme_Breake_Splash)
-			super.onCreate()
-		}
+		super.onCreate()
 
 		// WorkManager 초기화
 		WorkManager.initialize(this, workManagerConfiguration)

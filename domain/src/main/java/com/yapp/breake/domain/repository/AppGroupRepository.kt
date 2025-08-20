@@ -13,6 +13,8 @@ interface AppGroupRepository {
 
 	suspend fun deleteAppGroupByGroupId(groupId: Long)
 
+	suspend fun clearAppGroup()
+
 	fun observeAppGroup(): Flow<List<AppGroup>>
 
 	suspend fun getAppGroup(): List<AppGroup>

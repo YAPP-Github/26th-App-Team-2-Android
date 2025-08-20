@@ -34,4 +34,8 @@ class AppRepositoryImpl @Inject constructor(
 	override suspend fun deleteAppByParentGroupId(parentGroupId: Long) {
 		appDao.deleteAppsByParentGroupId(parentGroupId)
 	}
+
+	override suspend fun clearApps() {
+		appDao.clearApps()
+	}
 }
