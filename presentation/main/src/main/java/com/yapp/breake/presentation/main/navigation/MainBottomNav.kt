@@ -62,8 +62,7 @@ internal fun MainBottomNavBar(
 			horizontalArrangement = Arrangement.SpaceBetween,
 			verticalAlignment = Alignment.CenterVertically,
 		) {
-			// 임시로 REPORT 탭을 제외하고 나머지 탭만 표시, REPORT 개발 후 포함 예정
-			tabs.filter { it != MainTab.REPORT }.forEach { tab ->
+			tabs.forEach { tab ->
 				MainBottomNavItem(
 					tab = tab,
 					selected = tab == currentTab,

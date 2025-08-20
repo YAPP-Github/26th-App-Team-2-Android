@@ -111,6 +111,3 @@ internal class HomeViewModel @Inject constructor(
 		_homeModalState.update { HomeModalState.Nothing }
 	}
 }
-
-
-

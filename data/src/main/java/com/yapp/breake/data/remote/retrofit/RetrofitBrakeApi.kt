@@ -65,7 +65,7 @@ internal interface RetrofitBrakeApi {
 	@POST("/v1/session")
 	suspend fun sendSession(@Body request: SessionRequest): ApiResponse<SessionResponse>
 
-	@POST("/v1/statistics")
+	@GET("/v1/statistics")
 	suspend fun getStatistics(
 		@Query("start") start: String,
 		@Query("end") end: String,

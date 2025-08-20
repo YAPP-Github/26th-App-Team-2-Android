@@ -39,13 +39,14 @@ internal class StatisticRemoteDataSourceImpl @Inject constructor(
 		startDate: LocalDate,
 		endDate: LocalDate,
 		onError: suspend (Throwable) -> Unit,
-	): Flow<List<Statistics>> = flow {
+	): Flow<List<Statistics>?> = flow {
 		retrofitBrakeApi.getStatistics(
 			start = startDate.toDateString(),
 			end = endDate.toDateString(),
 		).suspendOnSuccess {
 			emit(data.data.toStatistics())
 		}.suspendOnFailure {
+			emit(null)
 			onError(Throwable("통계 정보를 가져오는 중 오류가 발생했습니다"))
 		}
 	}

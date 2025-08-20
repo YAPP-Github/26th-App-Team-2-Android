@@ -71,8 +71,6 @@ class NotificationReceiver : BroadcastReceiver() {
 		}
 		context.sendBroadcast(broadcastIntent)
 
-		statisticRepository.pushSession(appGroup)
-
 		setAlarmUsecase(
 			groupId = appGroup.id,
 			groupName = appGroup.name,

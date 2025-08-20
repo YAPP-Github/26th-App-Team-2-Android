@@ -5,7 +5,9 @@ import com.yapp.breake.core.model.app.Statistics
 import com.yapp.breake.data.remote.source.StatisticRemoteDataSource
 import com.yapp.breake.domain.repository.StatisticRepository
 import kotlinx.coroutines.flow.Flow
+import java.time.DayOfWeek
 import java.time.LocalDate
+import java.time.temporal.TemporalAdjusters
 import javax.inject.Inject
 
 internal class StatisticRepositoryImpl @Inject constructor(
@@ -28,10 +30,12 @@ internal class StatisticRepositoryImpl @Inject constructor(
 	}
 
 	override fun getStatistics(
-		startDate: LocalDate,
-		endDate: LocalDate,
 		onError: suspend (Throwable) -> Unit,
-	): Flow<List<Statistics>> {
+	): Flow<List<Statistics>?> {
+		val today = LocalDate.now()
+		val startDate = today.with(TemporalAdjusters.previousOrSame(DayOfWeek.MONDAY))
+		val endDate = today.with(TemporalAdjusters.nextOrSame(DayOfWeek.SUNDAY))
+
 		return statisticRemoteDataSource.getStatistic(
 			startDate = startDate,
 			endDate = endDate,

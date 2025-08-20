@@ -6,6 +6,7 @@ import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.runBlocking
 import okhttp3.Interceptor
 import okhttp3.Response
+import timber.log.Timber
 import javax.inject.Inject
 
 class HeaderSelectionInterceptor @Inject constructor(
@@ -22,6 +23,8 @@ class HeaderSelectionInterceptor @Inject constructor(
 				null
 			}
 		}
+
+		Timber.d("Token: $token")
 
 		val request = if (token != null) {
 			if (!path.startsWith("/v1/auth/login")) {

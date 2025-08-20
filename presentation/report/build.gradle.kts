@@ -7,3 +7,7 @@ plugins {
 android {
 	setNamespace("presentation.report")
 }
+
+dependencies {
+	implementation(projects.core.util)
+}

@@ -8,3 +8,7 @@ plugins {
 android {
 	setNamespace("core.ui")
 }
+
+dependencies {
+	implementation(projects.core.designsystem)
+}

@@ -17,5 +17,5 @@ internal interface StatisticRemoteDataSource {
 		startDate: LocalDate,
 		endDate: LocalDate,
 		onError: suspend (Throwable) -> Unit,
-	): Flow<List<Statistics>>
+	): Flow<List<Statistics>?>
 }
