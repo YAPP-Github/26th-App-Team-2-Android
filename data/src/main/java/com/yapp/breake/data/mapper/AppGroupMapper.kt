@@ -72,6 +72,7 @@ internal fun AppGroup.toAppGroupRequest(): AppGroupRequest {
 		groupApps = this.apps.map { app ->
 			AppRequest(
 				name = app.name,
+				packageName = app.packageName,
 			)
 		},
 	)

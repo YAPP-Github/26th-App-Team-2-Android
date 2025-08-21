@@ -8,7 +8,6 @@ import com.yapp.breake.data.remote.source.AppGroupRemoteDataSource
 import com.yapp.breake.domain.repository.AppGroupRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.first
-import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onEach
 import java.time.LocalDateTime
