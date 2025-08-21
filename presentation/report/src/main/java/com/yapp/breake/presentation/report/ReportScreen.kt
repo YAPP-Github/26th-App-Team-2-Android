@@ -56,7 +56,7 @@ internal fun ReportRoute(
 private fun ReportContent(
 	reportUiState: ReportUiState,
 	onRetry: () -> Unit,
-	loadingContent: @Composable () -> Unit
+	loadingContent: @Composable () -> Unit,
 ) {
 	AnimatedContent(
 		targetState = reportUiState,

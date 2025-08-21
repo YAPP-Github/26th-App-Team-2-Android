@@ -7,7 +7,9 @@ import com.yapp.breake.data.remote.source.AppGroupRemoteDataSource
 import com.yapp.breake.domain.repository.AppGroupRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.onEach
 import java.time.LocalDateTime
 import javax.inject.Inject
 
@@ -58,15 +60,26 @@ internal class AppGroupRepositoryImpl @Inject constructor(
 	}
 
 	override suspend fun clearAppGroup() {
-		appGroupDao.clearAppGroup()
+		appGroupLocalDataSource.clearAppGroup()
 	}
 
 	override fun observeAppGroup(): Flow<List<AppGroup>> {
 		return appGroupLocalDataSource.observeAppGroup()
+			.onEach { localList ->
+				if (localList.isEmpty()) {
+					appGroupRemoteDataSource.getAppGroups().collect { remoteList ->
+						appGroupLocalDataSource.insertAppGroups(remoteList)
+					}
+				}
+			}
 	}
 
 	override suspend fun getAppGroup(): List<AppGroup> {
-		return appGroupLocalDataSource.getAppGroup()
+		val local = appGroupLocalDataSource.getAppGroup()
+		if (local.isNotEmpty()) return local
+		val remoteList = appGroupRemoteDataSource.getAppGroups().firstOrNull() ?: emptyList()
+		appGroupLocalDataSource.insertAppGroups(remoteList)
+		return remoteList
 	}
 
 	override suspend fun getAppGroupById(groupId: Long): AppGroup? {

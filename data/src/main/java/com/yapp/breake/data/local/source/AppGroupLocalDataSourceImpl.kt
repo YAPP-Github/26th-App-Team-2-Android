@@ -28,6 +28,18 @@ internal class AppGroupLocalDataSourceImpl @Inject constructor(
 		}
 	}
 
+	override suspend fun insertAppGroups(
+		appGroups: List<AppGroup>,
+		onError: suspend (Throwable) -> Unit,
+	) {
+		try {
+			if (appGroups.isEmpty()) return
+			appGroupDao.insertAppGroups(appGroups.map(AppGroup::toGroupEntity))
+		} catch (e: Exception) {
+			onError(Throwable("앱 그룹 일괄 저장에 실패했습니다"))
+		}
+	}
+
 	override suspend fun isAppGroupExists(
 		groupId: Long,
 		onError: suspend (Throwable) -> Unit,
@@ -154,6 +166,14 @@ internal class AppGroupLocalDataSourceImpl @Inject constructor(
 			appGroupDao.resetSnooze(groupId)
 		} catch (e: Exception) {
 			onError(Throwable("스누즈 초기화에 실패했습니다"))
+		}
+	}
+
+	override suspend fun clearAppGroup(onError: suspend (Throwable) -> Unit) {
+		try {
+			appGroupDao.clearAppGroup()
+		} catch (e: Exception) {
+			onError(Throwable("앱 그룹 초기화에 실패했습니다"))
 		}
 	}
 }

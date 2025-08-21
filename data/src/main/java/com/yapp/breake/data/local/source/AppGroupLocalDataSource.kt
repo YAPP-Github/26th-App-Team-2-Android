@@ -12,6 +12,11 @@ interface AppGroupLocalDataSource {
 		onError: suspend (Throwable) -> Unit = {},
 	)
 
+	suspend fun insertAppGroups(
+		appGroups: List<AppGroup>,
+		onError: suspend (Throwable) -> Unit = {},
+	)
+
 	suspend fun isAppGroupExists(
 		groupId: Long,
 		onError: suspend (Throwable) -> Unit = {},
@@ -62,6 +67,10 @@ interface AppGroupLocalDataSource {
 
 	suspend fun resetSnooze(
 		groupId: Long,
+		onError: suspend (Throwable) -> Unit = {},
+	)
+
+	suspend fun clearAppGroup(
 		onError: suspend (Throwable) -> Unit = {},
 	)
 }

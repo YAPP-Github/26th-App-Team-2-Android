@@ -15,6 +15,9 @@ import java.time.LocalDateTime
 interface AppGroupDao {
 
 	@Insert(onConflict = OnConflictStrategy.REPLACE)
+	suspend fun insertAppGroups(groupEntities: List<GroupEntity>)
+
+	@Insert(onConflict = OnConflictStrategy.REPLACE)
 	suspend fun insertAppGroup(groupEntity: GroupEntity)
 
 	@Query("SELECT EXISTS(SELECT 1 FROM `group_table` WHERE groupId = :groupId)")

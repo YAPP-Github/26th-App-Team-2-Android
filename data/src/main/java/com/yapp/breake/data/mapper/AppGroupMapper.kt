@@ -12,7 +12,6 @@ import com.yapp.breake.core.model.app.Snooze
 import com.yapp.breake.core.util.toByteArray
 import com.yapp.breake.data.remote.model.AppGroupData
 import com.yapp.breake.data.remote.model.AppGroupRequest
-import com.yapp.breake.data.remote.model.AppGroupResponse
 import com.yapp.breake.data.remote.model.AppRequest
 
 internal fun AppGroupEntity.toAppList(appScanner: InstalledAppScanner): AppGroup {
