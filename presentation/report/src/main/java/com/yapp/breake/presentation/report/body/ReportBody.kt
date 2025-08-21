@@ -118,7 +118,6 @@ internal fun ReportBody(
 						color = MaterialTheme.colorScheme.onSurface,
 					)
 				}
-				VerticalSpacer(30.dp)
 				WeeklyChart(
 					statistics = reportUiState.weeklyStatistics,
 					modifier = Modifier.fillMaxWidth(),

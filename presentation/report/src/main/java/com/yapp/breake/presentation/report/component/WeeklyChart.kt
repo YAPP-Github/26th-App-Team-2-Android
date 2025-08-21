@@ -110,11 +110,19 @@ internal fun WeeklyChart(
 			val totalSpacing = chartSpacing * 6
 			val barWidth = (availableWidth - totalSpacing) / 7
 			val startX = 20.dp.toPx()
-			val startY = 20.dp.toPx()
-			val chartHeight = size.height - 40.dp.toPx()
+
+			val labelTextStyle = TextStyle(
+				fontSize = 12.sp,
+				fontWeight = FontWeight.Medium,
+				fontFamily = pretendard,
+				color = Gray700,
+			)
+			val labelHalf = textMeasurer.measure("0", labelTextStyle).size.height / 2f
+
+			val chartHeight = size.height - (labelHalf * 2)
 
 			timeLabels.forEach { time ->
-				val y = startY + chartHeight - ((time / maxHours) * chartHeight).toFloat()
+				val y = labelHalf + chartHeight - ((time / maxHours) * chartHeight).toFloat()
 
 				val displayText = if (time % 1.0 == 0.0) {
 					time.toInt().toString()
@@ -125,26 +133,21 @@ internal fun WeeklyChart(
 				drawText(
 					textMeasurer = textMeasurer,
 					text = displayText,
-					topLeft = Offset(startX - 20.dp.toPx(), y - 6.dp.toPx()),
-					style = TextStyle(
-						fontSize = 12.sp,
-						fontWeight = FontWeight.Medium,
-						fontFamily = pretendard,
-						color = Gray700,
-					),
+					topLeft = Offset(startX - 20.dp.toPx(), y - labelHalf),
+					style = labelTextStyle,
 				)
 			}
 
 			statistics.forEachIndexed { index, stat ->
 				val x = startX + index * (barWidth + chartSpacing)
-				val cornerRadius = CornerRadius(8.dp.toPx())
+				val cornerRadius = CornerRadius(7.dp.toPx())
 
 				val goalHeight =
 					(stat.goalTime.toMinutes() / 60.0 / maxHours * chartHeight).toFloat()
 
 				drawRoundRect(
 					color = Color(0x40DADFED),
-					topLeft = Offset(x, startY + chartHeight - goalHeight),
+					topLeft = Offset(x, labelHalf + chartHeight - goalHeight),
 					size = androidx.compose.ui.geometry.Size(barWidth, goalHeight),
 					cornerRadius = cornerRadius,
 				)
@@ -153,9 +156,9 @@ internal fun WeeklyChart(
 					addRoundRect(
 						androidx.compose.ui.geometry.RoundRect(
 							left = x,
-							top = startY + chartHeight - goalHeight,
+							top = labelHalf + chartHeight - goalHeight,
 							right = x + barWidth,
-							bottom = startY + chartHeight,
+							bottom = labelHalf + chartHeight,
 							cornerRadius = cornerRadius,
 						),
 					)
@@ -164,7 +167,7 @@ internal fun WeeklyChart(
 				clipPath(clipPath) {
 					drawStripePattern(
 						x = x,
-						y = startY + chartHeight - goalHeight,
+						y = labelHalf + chartHeight - goalHeight,
 						width = barWidth,
 						height = goalHeight,
 					)
@@ -179,7 +182,7 @@ internal fun WeeklyChart(
 
 				drawRoundRect(
 					color = actualBarColor,
-					topLeft = Offset(x, startY + chartHeight - animatedActualHeight),
+					topLeft = Offset(x, labelHalf + chartHeight - animatedActualHeight),
 					size = androidx.compose.ui.geometry.Size(barWidth, animatedActualHeight),
 					cornerRadius = cornerRadius,
 				)
