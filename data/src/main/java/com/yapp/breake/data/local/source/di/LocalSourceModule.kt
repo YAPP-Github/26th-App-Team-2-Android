@@ -2,6 +2,8 @@ package com.yapp.breake.data.local.source.di
 
 import com.yapp.breake.data.local.source.AppGroupLocalDataSource
 import com.yapp.breake.data.local.source.AppGroupLocalDataSourceImpl
+import com.yapp.breake.data.local.source.AppLocalDataSource
+import com.yapp.breake.data.local.source.AppLocalDataSourceImpl
 import com.yapp.breake.data.local.source.AuthLocalDataSource
 import com.yapp.breake.data.local.source.AuthLocalDataSourceImpl
 import com.yapp.breake.data.local.source.TokenLocalDataSource
@@ -41,4 +43,9 @@ internal abstract class LocalSourceModule {
 	abstract fun bindAppGroupLocalDataSource(
 		appGroupLocalDataSource: AppGroupLocalDataSourceImpl,
 	): AppGroupLocalDataSource
+
+	@Binds
+	internal abstract fun bindAppLocalDataSource(
+		appLocalDataSourceImpl: AppLocalDataSourceImpl,
+	): AppLocalDataSource
 }
