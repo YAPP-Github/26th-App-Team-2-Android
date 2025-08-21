@@ -10,6 +10,7 @@ import com.yapp.breake.core.model.app.AppGroup
 import com.yapp.breake.core.model.app.AppGroupState
 import com.yapp.breake.core.model.app.Snooze
 import com.yapp.breake.core.util.toByteArray
+import com.yapp.breake.data.remote.model.AppGroupData
 import com.yapp.breake.data.remote.model.AppGroupRequest
 import com.yapp.breake.data.remote.model.AppGroupResponse
 import com.yapp.breake.data.remote.model.AppRequest
@@ -78,12 +79,12 @@ internal fun AppGroup.toAppGroupRequest(): AppGroupRequest {
 	)
 }
 
-internal fun AppGroupResponse.toAppGroup(): AppGroup {
+internal fun AppGroupData.toAppGroup(): AppGroup {
 	return AppGroup(
-		id = data.groupId,
-		name = data.name,
+		id = groupId,
+		name = name,
 		appGroupState = AppGroupState.NeedSetting,
-		apps = data.groupApps.map { groupApp ->
+		apps = groupApps.map { groupApp ->
 			App(
 				id = groupApp.groupAppId,
 				name = groupApp.name,

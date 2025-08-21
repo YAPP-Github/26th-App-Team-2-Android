@@ -4,6 +4,7 @@ import com.skydoves.sandwich.ApiResponse
 import com.yapp.breake.data.remote.model.AppGroupResponse
 import com.yapp.breake.data.remote.model.BaseResponse
 import com.yapp.breake.data.remote.model.AppGroupRequest
+import com.yapp.breake.data.remote.model.GroupListResponse
 import com.yapp.breake.data.remote.model.LoginRequest
 import com.yapp.breake.data.remote.model.LoginResponse
 import com.yapp.breake.data.remote.model.MemberRequest
@@ -49,6 +50,9 @@ internal interface RetrofitBrakeApi {
 	suspend fun logoutAuth(
 		@Body accessToken: String,
 	): ApiResponse<BaseResponse>
+
+	@GET("/v1/groups")
+	suspend fun getAppGroups(): ApiResponse<GroupListResponse>
 
 	@POST("/v1/groups")
 	suspend fun createAppGroup(@Body request: AppGroupRequest): ApiResponse<AppGroupResponse>

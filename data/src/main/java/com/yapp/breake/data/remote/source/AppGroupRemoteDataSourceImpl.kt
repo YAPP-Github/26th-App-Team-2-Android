@@ -15,13 +15,23 @@ internal class AppGroupRemoteDataSourceImpl @Inject constructor(
 	private val retrofitBrakeApi: RetrofitBrakeApi,
 ) : AppGroupRemoteDataSource {
 
+	override fun getAppGroups(onError: suspend (Throwable) -> Unit): Flow<List<AppGroup>> = flow {
+		retrofitBrakeApi.getAppGroups()
+			.suspendOnSuccess {
+				emit(data.data.groups.map { it.toAppGroup() })
+			}.suspendOnFailure {
+				onError(Throwable("앱 그룹을 가져오는 중 오류가 발생했습니다"))
+				Timber.e("Error fetching app groups: $this")
+			}
+	}
+
 	override fun createAppGroup(
 		appGroup: AppGroup,
 		onError: suspend (Throwable) -> Unit,
 	): Flow<AppGroup> = flow {
 		retrofitBrakeApi.createAppGroup(appGroup.toAppGroupRequest())
 			.suspendOnSuccess {
-				emit(data.toAppGroup())
+				emit(data.data.toAppGroup())
 			}.suspendOnFailure {
 				onError(Throwable("앱 그룹을 생성하는 중 오류가 발생했습니다"))
 				Timber.e("Error creating app group: $this")
@@ -34,7 +44,7 @@ internal class AppGroupRemoteDataSourceImpl @Inject constructor(
 	): Flow<AppGroup> = flow {
 		retrofitBrakeApi.updateAppGroup(appGroup.id, appGroup.toAppGroupRequest())
 			.suspendOnSuccess {
-				emit(data.toAppGroup())
+				emit(data.data.toAppGroup())
 			}.suspendOnFailure {
 				onError(Throwable("앱 그룹을 수정하는 중 오류가 발생했습니다"))
 				Timber.e("Error updating app group: $this")

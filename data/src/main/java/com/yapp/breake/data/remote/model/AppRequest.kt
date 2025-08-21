@@ -3,6 +3,7 @@ package com.yapp.breake.data.remote.model
 import kotlinx.serialization.Serializable
 
 @Serializable
-internal data class AppGroupResponse(
-	val data: AppGroupData,
-) : BaseResponse(code = 0)
+internal data class AppRequest(
+	val name: String,
+	val groupAppId: Long? = null,
+)

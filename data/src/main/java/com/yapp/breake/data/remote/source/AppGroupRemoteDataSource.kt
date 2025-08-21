@@ -5,6 +5,10 @@ import kotlinx.coroutines.flow.Flow
 
 internal interface AppGroupRemoteDataSource {
 
+	fun getAppGroups(
+		onError: suspend (Throwable) -> Unit = {},
+	): Flow<List<AppGroup>>
+
 	fun createAppGroup(
 		appGroup: AppGroup,
 		onError: suspend (Throwable) -> Unit = {},
