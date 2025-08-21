@@ -1,4 +1,4 @@
-package com.yapp.breake.core.auth
+package com.yapp.breake.core.auth.kakao
 
 import android.webkit.CookieManager
 import android.webkit.WebView
