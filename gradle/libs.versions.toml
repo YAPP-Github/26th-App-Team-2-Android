@@ -37,6 +37,12 @@ baselineprofile = "1.3.4"
 # https://developer.android.com/jetpack/androidx/releases/core#core-splashscreen
 coreSplashscreen = "1.0.1"
 
+## Credentials
+# https://developer.android.com/jetpack/androidx/releases/credentials
+androidxCredentials = "1.5.0"
+# https://developers.google.com/identity/android-credential-manager/releases
+googleCredentialManager = "1.1.1"
+
 ## Compose
 # https://developer.android.com/develop/ui/compose/bom/bom-mapping
 androidxComposeBom = "2025.06.00"
@@ -177,6 +183,11 @@ kotlin-gradlePlugin = { module = "org.jetbrains.kotlin:kotlin-gradle-plugin", ve
 # AndroidX
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "androidxCore" }
 androidx-appcompat = { group = "androidx.appcompat", name = "appcompat", version.ref = "androidxAppCompat" }
+
+# Credentials
+androidx-credentials = { group = "androidx.credentials", name = "credentials", version.ref = "androidxCredentials" }
+androidx-credentials-auth = { group = "androidx.credentials", name = "credentials-play-services-auth", version.ref = "androidxCredentials" }
+google-credential-manager = { group = "com.google.android.libraries.identity.googleid", name = "googleid", version.ref = "googleCredentialManager" }
 
 # Compose
 androidx-lifecycle-runtimeCompose = { group = "androidx.lifecycle", name = "lifecycle-runtime-compose", version.ref = "androidxLifecycle" }
