@@ -5,4 +5,4 @@ import kotlinx.serialization.Serializable
 @Serializable
 internal data class AppGroupResponse(
 	val data: AppGroupData,
-) : BaseResponse(code = 0)
+) : BaseResponse(status = 0)

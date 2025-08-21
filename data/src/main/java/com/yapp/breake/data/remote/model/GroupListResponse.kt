@@ -5,7 +5,7 @@ import kotlinx.serialization.Serializable
 @Serializable
 internal data class GroupListResponse(
 	val data: GroupListData,
-) : BaseResponse(code = 0)
+) : BaseResponse(status = 0)
 
 @Serializable
 internal data class GroupListData(
