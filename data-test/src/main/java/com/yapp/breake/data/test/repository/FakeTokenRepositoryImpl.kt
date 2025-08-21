@@ -31,11 +31,6 @@ internal class FakeTokenRepositoryImpl @Inject constructor() : TokenRepository {
 		onError = onError,
 	)
 
-	override suspend fun getLocalAccessToken(onError: suspend (Throwable) -> Unit): Flow<String> =
-		flow {
-			emit("FakeAccessToken")
-		}
-
 	override suspend fun clearLocalTokens(onError: suspend (Throwable) -> Unit) {
 		// Fake 구현체 에서는 아무 동작도 하지 않음
 	}
@@ -48,5 +43,7 @@ internal class FakeTokenRepositoryImpl @Inject constructor() : TokenRepository {
 		// Fake 구현체에서는 아무 동작도 하지 않음
 	}
 
-	override val canGetLocalTokensRetry: Boolean = true
+	override fun logoutRemoteAccount() {
+		// Fake 구현체에서는 아무 동작도 하지 않음
+	}
 }

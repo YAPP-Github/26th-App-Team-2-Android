@@ -7,8 +7,11 @@ import com.yapp.breake.data.local.source.TokenLocalDataSource
 import com.yapp.breake.data.remote.source.TokenRemoteDataSource
 import com.yapp.breake.data.repository.mapper.toData
 import com.yapp.breake.domain.repository.TokenRepository
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.DelicateCoroutinesApi
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch
@@ -18,7 +21,6 @@ import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.runBlocking
 import timber.log.Timber
 import javax.inject.Inject
 
@@ -56,7 +58,7 @@ internal class TokenRepositoryImpl @Inject constructor(
 			)
 			// 5분 후에 authCode 자동 삭제
 			@OptIn(DelicateCoroutinesApi::class)
-			GlobalScope.launch(kotlinx.coroutines.Dispatchers.IO) {
+			GlobalScope.launch(Dispatchers.IO) {
 				delay(5 * 60 * 1000L)
 				authLocalDataSource.clearAuthCode(onError = onError)
 			}
@@ -77,9 +79,6 @@ internal class TokenRepositoryImpl @Inject constructor(
 			}
 		}
 	}
-
-	override suspend fun getLocalAccessToken(onError: suspend (Throwable) -> Unit): Flow<String> =
-		tokenLocalDataSource.getUserAccessToken(onError = onError)
 
 	override suspend fun clearLocalTokens(onError: suspend (Throwable) -> Unit) {
 		authLocalDataSource.updateAuthCode(
@@ -125,12 +124,15 @@ internal class TokenRepositoryImpl @Inject constructor(
 		authLocalDataSource.clearAuthCode(onError = onError)
 	}
 
-	override val canGetLocalTokensRetry
-		get() = runBlocking {
-			var isAvailable = true
-			authLocalDataSource.getAuthCode(
-				onError = { isAvailable = false },
-			).collect()
-			isAvailable
+	override fun logoutRemoteAccount() {
+		CoroutineScope(Dispatchers.IO + SupervisorJob()).launch {
+			tokenRemoteDataSource.logoutAccount(
+				// 해당 함수 호출부 다음 코드 라인의 Main Thread에서 접근하여 비우는 로직보다 먼저 접근
+				accessToken = tokenLocalDataSource.getUserAccessToken({
+					Timber.e("서버에 로그아웃 요청 실패: $it")
+				}).firstOrNull() ?: "",
+				onError = { Timber.e("서버에 로그아웃 요청 실패: $it") },
+			)
 		}
+	}
 }

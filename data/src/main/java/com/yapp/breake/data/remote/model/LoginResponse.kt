@@ -6,4 +6,4 @@ import kotlinx.serialization.Serializable
 @Serializable
 data class LoginResponse(
 	@SerialName("data") val data: LoginToken,
-) : BaseResponse(code = 0)
+) : BaseResponse(status = 0)

@@ -36,14 +36,6 @@ interface TokenRepository {
 	): Flow<UserToken>
 
 	/**
-	 * 로컬에서 액세스 토큰을 가져오는 메서드
-	 *
-	 * @param onError 오류 발생 시 호출되는 콜백
-	 * @return [Flow]로 감싸진 액세스 토큰 문자열
-	 */
-	suspend fun getLocalAccessToken(onError: suspend (Throwable) -> Unit): Flow<String>
-
-	/**
 	 * 로컬에 저장된 토큰을 모두 초기화하는 메서드
 	 *
 	 * 로컬에 저장된 AuthCode, AccessToken, RefreshToken 모두 초기화
@@ -70,11 +62,9 @@ interface TokenRepository {
 	)
 
 	/**
-	 * 로그인 재시도 가능 여부 확인 메서드
+	 * 원격 계정 로그아웃 메서드
 	 *
-	 * AuthCode가 로컬에 저장되어 있는지 확인하여 로그인 재시도 가능 여부를 반환
-	 *
-	 * @return [Boolean] 로그인 재시도 가능 여부
+	 * 저장된 AccessToken을 이용하여 서버에 로그아웃 요청
 	 */
-	val canGetLocalTokensRetry: Boolean
+	fun logoutRemoteAccount()
 }

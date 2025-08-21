@@ -47,4 +47,16 @@ internal class TokenRemoteDataSourceImpl @Inject constructor(
 			onError(Throwable("서버 연결에 문제가 있습니다"))
 		}
 	}
+
+	override suspend fun logoutAccount(
+		accessToken: String,
+		onError: suspend (Throwable) -> Unit,
+	) {
+		retrofitBrakeApi.logoutAuth(accessToken).suspendOnSuccess {
+			Timber.d("logoutAccount successful")
+		}.suspendOnFailure {
+			Timber.e("logoutAccount failed")
+			onError(Throwable("로그아웃 중 오류가 발생했습니다"))
+		}
+	}
 }

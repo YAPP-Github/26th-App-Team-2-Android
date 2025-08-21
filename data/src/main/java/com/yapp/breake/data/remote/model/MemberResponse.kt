@@ -6,4 +6,4 @@ import kotlinx.serialization.Serializable
 @Serializable
 data class MemberResponse(
 	@SerialName("data") val data: MemberData,
-) : BaseResponse(code = 0)
+) : BaseResponse(status = 0)
