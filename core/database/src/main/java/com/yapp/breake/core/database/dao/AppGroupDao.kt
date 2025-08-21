@@ -43,10 +43,6 @@ interface AppGroupDao {
 	fun observeAppGroup(): Flow<List<AppGroupEntity>>
 
 	@Transaction
-	@Query("SELECT * FROM `group_table`")
-	suspend fun getAppGroup(): List<AppGroupEntity>
-
-	@Transaction
 	@Query("SELECT * FROM `group_table` WHERE groupId = :groupId")
 	suspend fun getAppGroupById(groupId: Long): AppGroupEntity?
 

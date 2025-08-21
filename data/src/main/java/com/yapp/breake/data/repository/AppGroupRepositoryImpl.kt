@@ -3,6 +3,7 @@ package com.yapp.breake.data.repository
 import com.yapp.breake.core.model.app.AppGroup
 import com.yapp.breake.core.model.app.AppGroupState
 import com.yapp.breake.data.local.source.AppGroupLocalDataSource
+import com.yapp.breake.data.local.source.AppLocalDataSource
 import com.yapp.breake.data.remote.source.AppGroupRemoteDataSource
 import com.yapp.breake.domain.repository.AppGroupRepository
 import kotlinx.coroutines.flow.Flow
@@ -16,6 +17,7 @@ import javax.inject.Inject
 internal class AppGroupRepositoryImpl @Inject constructor(
 	private val appGroupLocalDataSource: AppGroupLocalDataSource,
 	private val appGroupRemoteDataSource: AppGroupRemoteDataSource,
+	private val appLocalDataSource: AppLocalDataSource,
 ) : AppGroupRepository {
 
 	override suspend fun insertAppGroup(appGroup: AppGroup): AppGroup {
@@ -24,25 +26,14 @@ internal class AppGroupRepositoryImpl @Inject constructor(
 				appGroup = appGroup,
 			).map { updatedGroup ->
 				appGroupLocalDataSource.insertAppGroup(updatedGroup)
-
 				updatedGroup
 			}.first()
 		} else {
 			appGroupRemoteDataSource.createAppGroup(
 				appGroup = appGroup,
 			).map { newGroup ->
-				val appsWithOriginalPackages = newGroup.apps.map { newApp ->
-					val originalApp = appGroup.apps.find { it.name == newApp.name }
-					if (originalApp != null) {
-						newApp.copy(packageName = originalApp.packageName)
-					} else {
-						newApp
-					}
-				}
-				val groupWithOriginalPackages = newGroup.copy(apps = appsWithOriginalPackages)
-				appGroupLocalDataSource.insertAppGroup(groupWithOriginalPackages)
-
-				groupWithOriginalPackages
+				appGroupLocalDataSource.insertAppGroup(newGroup)
+				newGroup
 			}.first()
 		}
 	}
@@ -69,17 +60,12 @@ internal class AppGroupRepositoryImpl @Inject constructor(
 				if (localList.isEmpty()) {
 					appGroupRemoteDataSource.getAppGroups().collect { remoteList ->
 						appGroupLocalDataSource.insertAppGroups(remoteList)
+						remoteList.forEach {
+							appLocalDataSource.insertApps(it.id, it.apps)
+						}
 					}
 				}
 			}
-	}
-
-	override suspend fun getAppGroup(): List<AppGroup> {
-		val local = appGroupLocalDataSource.getAppGroup()
-		if (local.isNotEmpty()) return local
-		val remoteList = appGroupRemoteDataSource.getAppGroups().firstOrNull() ?: emptyList()
-		appGroupLocalDataSource.insertAppGroups(remoteList)
-		return remoteList
 	}
 
 	override suspend fun getAppGroupById(groupId: Long): AppGroup? {

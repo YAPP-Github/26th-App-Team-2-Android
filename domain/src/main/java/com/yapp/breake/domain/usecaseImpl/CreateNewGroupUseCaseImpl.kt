@@ -18,9 +18,7 @@ class CreateNewGroupUseCaseImpl @Inject constructor(
 		try {
 			val appGroup = appGroupRepository.insertAppGroup(group)
 
-			appGroup.apps.forEach { app ->
-				appRepository.insertApp(appGroup.id, app)
-			}
+			appRepository.insertApps(appGroup.id, appGroup.apps)
 		} catch (e: Exception) {
 			onError(e)
 		}

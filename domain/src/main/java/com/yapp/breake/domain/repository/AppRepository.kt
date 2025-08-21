@@ -7,6 +7,8 @@ interface AppRepository {
 
 	suspend fun insertApp(parentGroupId: Long, app: App)
 
+	suspend fun insertApps(parentGroupId: Long, apps: List<App>)
+
 	fun observeApp(): Flow<List<App>>
 
 	suspend fun getAppGroupIdByPackage(packageName: String): Long?
