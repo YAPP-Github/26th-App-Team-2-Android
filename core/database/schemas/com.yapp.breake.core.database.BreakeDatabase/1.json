@@ -2,22 +2,22 @@
   "formatVersion": 1,
   "database": {
     "version": 1,
-    "identityHash": "44a95c2cf0dda44c0465dc2eb8158a32",
+    "identityHash": "91aaba8b38b996f0cddd761a8a7fbd0b",
     "entities": [
       {
         "tableName": "app_table",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`packageName` TEXT NOT NULL, `id` INTEGER NOT NULL, `name` TEXT NOT NULL, `category` TEXT NOT NULL, `parentGroupId` INTEGER NOT NULL, PRIMARY KEY(`packageName`), FOREIGN KEY(`parentGroupId`) REFERENCES `group_table`(`groupId`) ON UPDATE NO ACTION ON DELETE CASCADE )",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER NOT NULL, `packageName` TEXT NOT NULL, `name` TEXT NOT NULL, `category` TEXT NOT NULL, `parentGroupId` INTEGER NOT NULL, PRIMARY KEY(`id`), FOREIGN KEY(`parentGroupId`) REFERENCES `group_table`(`groupId`) ON UPDATE NO ACTION ON DELETE CASCADE )",
         "fields": [
-          {
-            "fieldPath": "packageName",
-            "columnName": "packageName",
-            "affinity": "TEXT",
-            "notNull": true
-          },
           {
             "fieldPath": "id",
             "columnName": "id",
             "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "packageName",
+            "columnName": "packageName",
+            "affinity": "TEXT",
             "notNull": true
           },
           {
@@ -42,7 +42,7 @@
         "primaryKey": {
           "autoGenerate": false,
           "columnNames": [
-            "packageName"
+            "id"
           ]
         },
         "indices": [
@@ -177,7 +177,7 @@
     ],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '44a95c2cf0dda44c0465dc2eb8158a32')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '91aaba8b38b996f0cddd761a8a7fbd0b')"
     ]
   }
 }

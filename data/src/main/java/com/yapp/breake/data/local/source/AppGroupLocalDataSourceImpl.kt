@@ -84,17 +84,6 @@ internal class AppGroupLocalDataSourceImpl @Inject constructor(
 			.catch { onError(Throwable("앱 그룹 목록 관찰에 실패했습니다")) }
 	}
 
-	override suspend fun getAppGroup(
-		onError: suspend (Throwable) -> Unit,
-	): List<AppGroup> {
-		return try {
-			appGroupDao.getAppGroup().map { it.toAppList(appScanner) }
-		} catch (e: Exception) {
-			onError(Throwable("앱 그룹 목록을 가져오는데 실패했습니다"))
-			emptyList()
-		}
-	}
-
 	override suspend fun getAppGroupById(
 		groupId: Long,
 		onError: suspend (Throwable) -> Unit,

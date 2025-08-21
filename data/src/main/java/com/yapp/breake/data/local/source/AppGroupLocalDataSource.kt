@@ -35,10 +35,6 @@ interface AppGroupLocalDataSource {
 		onError: suspend (Throwable) -> Unit = {},
 	): Flow<List<AppGroup>>
 
-	suspend fun getAppGroup(
-		onError: suspend (Throwable) -> Unit = {},
-	): List<AppGroup>
-
 	suspend fun getAppGroupById(
 		groupId: Long,
 		onError: suspend (Throwable) -> Unit = {},
