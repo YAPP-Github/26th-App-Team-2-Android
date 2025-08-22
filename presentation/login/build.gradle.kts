@@ -11,4 +11,6 @@ android {
 dependencies {
 	implementation(projects.core.auth)
 	implementation(projects.core.permission)
+
+	implementation(libs.google.credential.manager)
 }
