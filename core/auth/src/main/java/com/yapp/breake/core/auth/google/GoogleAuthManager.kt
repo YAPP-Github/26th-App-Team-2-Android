@@ -5,34 +5,32 @@ import androidx.credentials.CredentialManager
 import androidx.credentials.CustomCredential
 import androidx.credentials.GetCredentialRequest
 import androidx.credentials.GetCredentialResponse
+import androidx.credentials.exceptions.GetCredentialCancellationException
 import androidx.credentials.exceptions.GetCredentialException
-import com.google.android.libraries.identity.googleid.GetGoogleIdOption
+import com.google.android.libraries.identity.googleid.GetSignInWithGoogleOption
 import com.google.android.libraries.identity.googleid.GoogleIdTokenCredential
 import com.google.android.libraries.identity.googleid.GoogleIdTokenParsingException
-import com.yapp.breake.core.auth.BuildConfig
-import dagger.hilt.android.qualifiers.ApplicationContext
+import timber.log.Timber
+import java.math.BigInteger
+import java.security.SecureRandom
 import javax.inject.Inject
 import javax.inject.Singleton
 
 @Singleton
-class GoogleAuthManager @Inject constructor(
-	@ApplicationContext private val applicationContext: Context,
-) {
-	private val credentialManager = CredentialManager.create(applicationContext)
+class GoogleAuthManager @Inject constructor() {
+	private lateinit var credentialManager: CredentialManager
+	private lateinit var googleIdOption: GetSignInWithGoogleOption
 
-	suspend fun signInWithGoogle(
-		context: Context,
-		nonce: String?,
-	): Result<GoogleIdTokenCredential> {
-		val googleIdOption = GetGoogleIdOption.Builder()
-			// 이미 인증되지 않은 계정 포함
-			.setFilterByAuthorizedAccounts(false)
-			.setServerClientId(BuildConfig.GOOGLE_AUTH_WEB_CLIENT_ID)
-			// 자동 계정 선택 비활성화
-			.setAutoSelectEnabled(false)
-			.apply { nonce?.let { setNonce(it) } }
-			.build()
+	fun initializeGoogleAuthManager(applicationContext: Context, webClientId: String) {
+		credentialManager = CredentialManager.create(applicationContext)
+		val newNonce: String = BigInteger(130, SecureRandom()).toString(32)
 
+		googleIdOption = GetSignInWithGoogleOption.Builder(
+			serverClientId = webClientId,
+		).setNonce(newNonce).build()
+	}
+
+	suspend fun signInWithGoogle(context: Context): Result<GoogleIdTokenCredential> {
 		val request = GetCredentialRequest.Builder()
 			.addCredentialOption(googleIdOption)
 			.build()
@@ -45,7 +43,12 @@ class GoogleAuthManager @Inject constructor(
 				context = context,
 			)
 			handleSignInResult(result)
+		} catch (e: GetCredentialCancellationException) {
+			// 사용자가 직접 취소한 경우
+			Timber.i("사용자가 Google 로그인을 취소했습니다")
+			Result.failure(e)
 		} catch (e: GetCredentialException) {
+			Timber.e(e, "Google Credential 요청 실패")
 			Result.failure(e)
 		}
 	}
@@ -60,12 +63,15 @@ class GoogleAuthManager @Inject constructor(
 						val googleIdTokenCredential = GoogleIdTokenCredential.createFrom(credential.data)
 						Result.success(googleIdTokenCredential)
 					} catch (e: GoogleIdTokenParsingException) {
+						Timber.e(e, "Google Credential ID Token 파싱 실패")
 						Result.failure(e)
 					}
 				} else {
+					Timber.e("예상치 못한 credential 타입: ${credential.type}")
 					Result.failure(IllegalStateException("Unexpected credential type"))
 				}
 			}
+
 			else -> Result.failure(IllegalStateException("Not Allowed credential type"))
 		}
 	}
