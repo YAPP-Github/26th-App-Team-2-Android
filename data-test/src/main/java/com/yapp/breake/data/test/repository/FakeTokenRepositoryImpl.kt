@@ -31,10 +31,6 @@ internal class FakeTokenRepositoryImpl @Inject constructor() : TokenRepository {
 		onError = onError,
 	)
 
-	override suspend fun clearLocalTokens(onError: suspend (Throwable) -> Unit) {
-		// Fake 구현체 에서는 아무 동작도 하지 않음
-	}
-
 	override suspend fun refreshTokens(onError: suspend (Throwable) -> Unit) {
 		// Fake 구현체 에서는 아무 동작도 하지 않음
 	}

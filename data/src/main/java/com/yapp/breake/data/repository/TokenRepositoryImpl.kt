@@ -80,19 +80,6 @@ internal class TokenRepositoryImpl @Inject constructor(
 		}
 	}
 
-	override suspend fun clearLocalTokens(onError: suspend (Throwable) -> Unit) {
-		authLocalDataSource.updateAuthCode(
-			authCode = null,
-			onError = onError,
-		)
-		tokenLocalDataSource.updateUserToken(
-			userAccessToken = null,
-			userRefreshToken = null,
-			userStatus = UserStatus.INACTIVE,
-			onError = onError,
-		)
-	}
-
 	override suspend fun refreshTokens(onError: suspend (Throwable) -> Unit) {
 		val refreshToken = tokenLocalDataSource.getUserRefreshToken(onError).firstOrNull()
 		refreshToken?.let {

@@ -35,17 +35,6 @@ interface TokenRepository {
 		onError: suspend (Throwable) -> Unit,
 	): Flow<UserToken>
 
-	/**
-	 * 로컬에 저장된 토큰을 모두 초기화하는 메서드
-	 *
-	 * 로컬에 저장된 AuthCode, AccessToken, RefreshToken 모두 초기화
-	 *
-	 * @param onError 오류 발생 시 호출되는 콜백
-	 */
-	suspend fun clearLocalTokens(
-		onError: suspend (Throwable) -> Unit,
-	)
-
 	suspend fun refreshTokens(
 		onError: suspend (Throwable) -> Unit,
 	)
