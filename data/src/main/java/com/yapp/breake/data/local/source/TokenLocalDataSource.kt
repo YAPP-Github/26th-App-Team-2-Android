@@ -8,6 +8,7 @@ interface TokenLocalDataSource {
 		userAccessToken: String?,
 		userRefreshToken: String?,
 		userStatus: UserStatus?,
+		userProvider: String?,
 		onError: suspend (Throwable) -> Unit,
 	)
 
@@ -16,6 +17,8 @@ interface TokenLocalDataSource {
 	fun getUserRefreshToken(onError: suspend (Throwable) -> Unit): Flow<String>
 
 	fun getUserStatus(onError: suspend (Throwable) -> Unit): Flow<UserStatus>
+
+	fun getUserProvider(onError: suspend (Throwable) -> Unit): Flow<String?>
 
 	suspend fun clearUserToken(onError: suspend (Throwable) -> Unit)
 }

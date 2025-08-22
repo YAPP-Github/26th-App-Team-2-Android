@@ -15,6 +15,7 @@ internal class TokenLocalDataSourceImpl @Inject constructor(
 		userAccessToken: String?,
 		userRefreshToken: String?,
 		userStatus: UserStatus?,
+		userProvider: String?,
 		onError: suspend (Throwable) -> Unit,
 	) {
 		userTokenDataSource.updateData { tokenObject ->
@@ -22,6 +23,7 @@ internal class TokenLocalDataSourceImpl @Inject constructor(
 				accessToken = userAccessToken ?: tokenObject.accessToken,
 				refreshToken = userRefreshToken ?: tokenObject.refreshToken,
 				status = userStatus ?: tokenObject.status,
+				provider = userProvider ?: tokenObject.provider,
 			)
 		}.runCatching {
 			// 성공적인 업데이트 후 아무 작업도 하지 않음
@@ -68,12 +70,23 @@ internal class TokenLocalDataSourceImpl @Inject constructor(
 			}
 	}
 
+	override fun getUserProvider(onError: suspend (Throwable) -> Unit): Flow<String?> = flow {
+		userTokenDataSource.data
+			.catch {
+				onError(it)
+			}
+			.collect { tokenData ->
+				emit(tokenData.provider)
+			}
+	}
+
 	override suspend fun clearUserToken(onError: suspend (Throwable) -> Unit) {
 		userTokenDataSource.updateData { tokenObject ->
 			tokenObject.copy(
 				accessToken = null,
 				refreshToken = null,
 				status = UserStatus.INACTIVE,
+				provider = null,
 			)
 		}.runCatching {
 			// 성공적인 업데이트 후 아무 작업도 하지 않음

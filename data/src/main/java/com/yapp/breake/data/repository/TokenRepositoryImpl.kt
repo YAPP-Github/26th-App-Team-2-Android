@@ -47,6 +47,7 @@ internal class TokenRepositoryImpl @Inject constructor(
 			userAccessToken = it.accessToken,
 			userRefreshToken = it.refreshToken,
 			userStatus = it.status,
+			userProvider = provider,
 			onError = onError,
 		)
 	}.onEach {
@@ -94,6 +95,7 @@ internal class TokenRepositoryImpl @Inject constructor(
 					userAccessToken = it.accessToken,
 					userRefreshToken = it.refreshToken,
 					userStatus = it.status,
+					userProvider = null,
 					onError = onError,
 				)
 				Timber.d("refreshToken: 토큰 갱신 성공 - ${it.accessToken}, ${it.refreshToken}, ${it.status}")
