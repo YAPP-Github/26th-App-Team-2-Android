@@ -39,7 +39,7 @@ internal class FakeTokenRepositoryImpl @Inject constructor() : TokenRepository {
 		// Fake 구현체에서는 아무 동작도 하지 않음
 	}
 
-	override fun logoutRemoteAccount() {
+	override suspend fun logoutRemoteAccount() {
 		// Fake 구현체에서는 아무 동작도 하지 않음
 	}
 }

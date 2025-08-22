@@ -1,6 +1,7 @@
 package com.yapp.breake.core.auth.google
 
 import android.content.Context
+import androidx.credentials.ClearCredentialStateRequest
 import androidx.credentials.CredentialManager
 import androidx.credentials.CustomCredential
 import androidx.credentials.GetCredentialRequest
@@ -74,5 +75,10 @@ class GoogleAuthManager @Inject constructor() {
 
 			else -> Result.failure(IllegalStateException("Not Allowed credential type"))
 		}
+	}
+
+	suspend fun clearGoogleCredentialState() {
+		credentialManager.clearCredentialState(ClearCredentialStateRequest())
+		Timber.i("Google Credential 상태가 초기화되었습니다.")
 	}
 }

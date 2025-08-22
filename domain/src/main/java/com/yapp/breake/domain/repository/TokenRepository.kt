@@ -55,5 +55,5 @@ interface TokenRepository {
 	 *
 	 * 저장된 AccessToken을 이용하여 서버에 로그아웃 요청
 	 */
-	fun logoutRemoteAccount()
+	suspend fun logoutRemoteAccount()
 }

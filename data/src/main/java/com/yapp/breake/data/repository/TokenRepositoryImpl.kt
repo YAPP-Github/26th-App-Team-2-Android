@@ -1,5 +1,6 @@
 package com.yapp.breake.data.repository
 
+import com.yapp.breake.core.auth.google.GoogleAuthManager
 import com.yapp.breake.core.model.user.UserStatus
 import com.yapp.breake.core.model.user.UserToken
 import com.yapp.breake.data.local.source.AuthLocalDataSource
@@ -28,6 +29,7 @@ internal class TokenRepositoryImpl @Inject constructor(
 	private val tokenRemoteDataSource: TokenRemoteDataSource,
 	private val tokenLocalDataSource: TokenLocalDataSource,
 	private val authLocalDataSource: AuthLocalDataSource,
+	private val googleAuthManager: GoogleAuthManager,
 ) : TokenRepository {
 
 	override fun getRemoteTokens(
@@ -113,7 +115,7 @@ internal class TokenRepositoryImpl @Inject constructor(
 		authLocalDataSource.clearAuthCode(onError = onError)
 	}
 
-	override fun logoutRemoteAccount() {
+	override suspend fun logoutRemoteAccount() {
 		CoroutineScope(Dispatchers.IO + SupervisorJob()).launch {
 			tokenRemoteDataSource.logoutAccount(
 				// 해당 함수 호출부 다음 코드 라인의 Main Thread에서 접근하여 비우는 로직보다 먼저 접근
@@ -123,5 +125,14 @@ internal class TokenRepositoryImpl @Inject constructor(
 				onError = { Timber.e("서버에 로그아웃 요청 실패: $it") },
 			)
 		}
+		tokenLocalDataSource.getUserProvider(
+			onError = {
+				Timber.e("로그아웃 후 유저 프로바이더를 가져오는 데 실패했습니다: $it")
+			},
+		).firstOrNull()?.let { provider ->
+			if (provider == "GOOGLE") {
+				googleAuthManager.clearGoogleCredentialState()
+			}
+		} ?: Timber.e("로그아웃 후 유저 프로바이더가 설정되어 있지 않습니다")
 	}
 }
