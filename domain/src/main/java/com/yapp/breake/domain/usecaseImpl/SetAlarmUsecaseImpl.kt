@@ -4,7 +4,7 @@ import com.yapp.breake.core.common.AlarmAction
 import com.yapp.breake.core.model.app.AppGroupState
 import com.yapp.breake.domain.repository.AlarmScheduler
 import com.yapp.breake.domain.repository.AppGroupRepository
-import com.yapp.breake.domain.repository.ConstTimeProvider
+import com.yapp.breake.domain.etc.ConstTimeProvider
 import com.yapp.breake.domain.usecase.SetAlarmUseCase
 import java.time.LocalDateTime
 import javax.inject.Inject
@@ -39,6 +39,14 @@ class SetAlarmUsecaseImpl @Inject constructor(
 			triggerTime = triggerTime,
 			action = action,
 		).onSuccess {
+			if (appGroupState == AppGroupState.Using) {
+				appGroupRepository.updateGroupSessionInfo(
+					groupId = groupId,
+					goalMinutes = second,
+					sessionStartTime = startTime,
+				)
+			}
+
 			appGroupRepository.updateAppGroupState(
 				groupId = groupId,
 				appGroupState = if (isUsingApp) {

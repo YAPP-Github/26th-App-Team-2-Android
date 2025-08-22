@@ -10,7 +10,7 @@
 			android:configChanges="uiMode"
 			android:exported="true"
 			android:launchMode="singleTop"
-			android:theme="@null">
+			android:theme="@style/Theme.AppCompat.DayNight.NoActionBar">
 
 			<intent-filter>
 				<action android:name="com.yapp.breake.alarm.action.SHOW_BREAK_TIME_OVERLAY" />

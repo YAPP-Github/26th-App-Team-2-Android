@@ -1,4 +1,4 @@
-package com.yapp.breake.domain.repository
+package com.yapp.breake.domain.etc
 
 interface ConstTimeProvider {
 	val snoozeTime: Long

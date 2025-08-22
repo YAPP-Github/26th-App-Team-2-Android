@@ -4,7 +4,7 @@ import com.yapp.breake.core.common.AlarmAction
 import com.yapp.breake.core.model.app.AppGroupState
 import com.yapp.breake.domain.repository.AlarmScheduler
 import com.yapp.breake.domain.repository.AppGroupRepository
-import com.yapp.breake.domain.repository.ConstTimeProvider
+import com.yapp.breake.domain.etc.ConstTimeProvider
 import com.yapp.breake.domain.usecase.SetBlockingAlarmUseCase
 import java.time.LocalDateTime
 import javax.inject.Inject
@@ -17,7 +17,6 @@ class SetBlockingAlarmUseCaseImpl @Inject constructor(
 
 	override suspend operator fun invoke(
 		groupId: Long,
-		groupName: String,
 	): Result<LocalDateTime> {
 		alarmScheduler.cancelAlarm(
 			groupId = groupId,
@@ -29,7 +28,7 @@ class SetBlockingAlarmUseCaseImpl @Inject constructor(
 
 		return alarmScheduler.scheduleAlarm(
 			groupId = groupId,
-			groupName = groupName,
+			groupName = "",
 			triggerTime = triggerTime,
 			action = AlarmAction.ACTION_BLOCKING,
 		).onSuccess {

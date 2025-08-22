@@ -1,5 +1,6 @@
 package com.yapp.breake.core.util.extensions
 
+import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 import java.time.format.FormatStyle
@@ -37,4 +38,9 @@ fun Long.toMinutesAndSeconds(): Pair<Long, Long> {
 	val minutes = this / 60
 	val seconds = this % 60
 	return Pair(minutes, seconds)
+}
+
+fun LocalDate.toShortDateFormat(): String {
+	val formatter = DateTimeFormatter.ofPattern("M/d")
+	return this.format(formatter)
 }

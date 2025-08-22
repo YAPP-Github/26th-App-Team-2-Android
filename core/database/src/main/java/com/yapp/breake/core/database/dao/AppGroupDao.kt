@@ -15,7 +15,13 @@ import java.time.LocalDateTime
 interface AppGroupDao {
 
 	@Insert(onConflict = OnConflictStrategy.REPLACE)
+	suspend fun insertAppGroups(groupEntities: List<GroupEntity>)
+
+	@Insert(onConflict = OnConflictStrategy.REPLACE)
 	suspend fun insertAppGroup(groupEntity: GroupEntity)
+
+	@Query("SELECT EXISTS(SELECT 1 FROM `group_table` WHERE groupId = :groupId)")
+	suspend fun isAppGroupExists(groupId: Long): Boolean
 
 	@Query(
 		"""
@@ -35,10 +41,6 @@ interface AppGroupDao {
 	@Transaction
 	@Query("SELECT * FROM `group_table`")
 	fun observeAppGroup(): Flow<List<AppGroupEntity>>
-
-	@Transaction
-	@Query("SELECT * FROM `group_table`")
-	suspend fun getAppGroup(): List<AppGroupEntity>
 
 	@Transaction
 	@Query("SELECT * FROM `group_table` WHERE groupId = :groupId")
@@ -61,6 +63,17 @@ interface AppGroupDao {
 		appGroupState: AppGroupState,
 		startTime: LocalDateTime?,
 		endTime: LocalDateTime?,
+	)
+
+	@Query(
+		"UPDATE `group_table` SET " +
+			"goalMinutes = :goalMinutes," +
+			" sessionStartTime = :sessionStartTime WHERE groupId = :groupId",
+	)
+	suspend fun updateGroupSessionInfo(
+		groupId: Long,
+		goalMinutes: Int?,
+		sessionStartTime: LocalDateTime?,
 	)
 
 	@Query(

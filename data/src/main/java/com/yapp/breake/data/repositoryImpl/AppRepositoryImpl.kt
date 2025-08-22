@@ -1,41 +1,36 @@
 package com.yapp.breake.data.repositoryImpl
 
-import com.yapp.breake.core.appscanner.InstalledAppScanner
-import com.yapp.breake.core.database.dao.AppDao
 import com.yapp.breake.core.model.app.App
-import com.yapp.breake.data.mapper.toApp
-import com.yapp.breake.data.mapper.toAppEntity
+import com.yapp.breake.data.local.source.AppLocalDataSource
 import com.yapp.breake.domain.repository.AppRepository
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.map
 import javax.inject.Inject
 
 class AppRepositoryImpl @Inject constructor(
-	private val appDao: AppDao,
-	private val appScanner: InstalledAppScanner,
+	private val appLocalDataSource: AppLocalDataSource,
 ) : AppRepository {
 
 	override suspend fun insertApp(parentGroupId: Long, app: App) {
-		appDao.insert(app.toAppEntity(parentGroupId))
+		appLocalDataSource.insertApp(parentGroupId = parentGroupId, app = app)
+	}
+
+	override suspend fun insertApps(parentGroupId: Long, apps: List<App>) {
+		appLocalDataSource.insertApps(parentGroupId = parentGroupId, apps = apps)
 	}
 
 	override fun observeApp(): Flow<List<App>> {
-		return appDao.observeApps().map { appEntities ->
-			appEntities.map {
-				it.toApp(appScanner)
-			}
-		}
+		return appLocalDataSource.observeApp()
 	}
 
 	override suspend fun getAppGroupIdByPackage(packageName: String): Long? {
-		return appDao.getAppByPackageName(packageName)?.parentGroupId
+		return appLocalDataSource.getAppGroupIdByPackage(packageName = packageName)
 	}
 
 	override suspend fun deleteAppByParentGroupId(parentGroupId: Long) {
-		appDao.deleteAppsByParentGroupId(parentGroupId)
+		appLocalDataSource.deleteAppByParentGroupId(parentGroupId = parentGroupId)
 	}
 
 	override suspend fun clearApps() {
-		appDao.clearApps()
+		appLocalDataSource.clearApps()
 	}
 }

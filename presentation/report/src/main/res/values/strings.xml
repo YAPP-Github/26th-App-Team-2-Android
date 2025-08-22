@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="today_total_usage_time">오늘 총 사용 시간</string>
+    <string name="hours">시간 </string>
+    <string name="minutes">분</string>
+    <string name="usage_feedback_less">오늘은 계획보다 적게 사용하셨네요!</string>
+    <string name="chart_legend_used_time">: 사용한 시간</string>
+    <string name="chart_legend_planned_time">: 계획한 시간</string>
+</resources>

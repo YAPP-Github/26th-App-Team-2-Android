@@ -14,6 +14,9 @@ interface AppDao {
 	@Insert(onConflict = OnConflictStrategy.IGNORE)
 	suspend fun insert(entity: AppEntity)
 
+	@Insert(onConflict = OnConflictStrategy.IGNORE)
+	suspend fun insertAll(entities: List<AppEntity>)
+
 	@Query("SELECT * FROM $APP_TABLE_NAME")
 	fun observeApps(): Flow<List<AppEntity>>
 

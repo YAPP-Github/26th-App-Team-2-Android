@@ -21,8 +21,8 @@ import com.yapp.breake.core.database.entity.AppGroupEntity.Companion.PARENT_GROU
 	indices = [Index(value = [PARENT_GROUP_ID])],
 )
 data class AppEntity(
-	@PrimaryKey val packageName: String,
-	val id: Long,
+	@PrimaryKey val id: Long,
+	val packageName: String,
 	val name: String,
 	val category: String,
 	val parentGroupId: Long,

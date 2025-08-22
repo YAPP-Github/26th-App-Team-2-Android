@@ -1,20 +1,30 @@
 package com.yapp.breake.data.remote.retrofit
 
 import com.skydoves.sandwich.ApiResponse
+import com.yapp.breake.data.remote.model.AppGroupResponse
 import com.yapp.breake.data.remote.model.BaseResponse
+import com.yapp.breake.data.remote.model.AppGroupRequest
+import com.yapp.breake.data.remote.model.GroupListResponse
 import com.yapp.breake.data.remote.model.LoginRequest
 import com.yapp.breake.data.remote.model.LoginResponse
 import com.yapp.breake.data.remote.model.MemberRequest
 import com.yapp.breake.data.remote.model.MemberResponse
 import com.yapp.breake.data.remote.model.RefreshRequest
 import com.yapp.breake.data.remote.model.RefreshResponse
+import com.yapp.breake.data.remote.model.SessionRequest
+import com.yapp.breake.data.remote.model.SessionResponse
+import com.yapp.breake.data.remote.model.StatisticResponse
 import retrofit2.http.Body
 import retrofit2.http.DELETE
 import retrofit2.http.GET
 import retrofit2.http.PATCH
 import retrofit2.http.POST
+import retrofit2.http.PUT
+import retrofit2.http.Path
+import retrofit2.http.Query
 
 internal interface RetrofitBrakeApi {
+
 	@POST("/v1/auth/login")
 	suspend fun getTokens(
 		@Body request: LoginRequest,
@@ -40,4 +50,28 @@ internal interface RetrofitBrakeApi {
 	suspend fun logoutAuth(
 		@Body accessToken: String,
 	): ApiResponse<BaseResponse>
+
+	@GET("/v1/groups")
+	suspend fun getAppGroups(): ApiResponse<GroupListResponse>
+
+	@POST("/v1/groups")
+	suspend fun createAppGroup(@Body request: AppGroupRequest): ApiResponse<AppGroupResponse>
+
+	@PUT("/v1/groups/{groupId}")
+	suspend fun updateAppGroup(
+		@Path("groupId") groupId: Long,
+		@Body request: AppGroupRequest,
+	): ApiResponse<AppGroupResponse>
+
+	@DELETE("/v1/groups/{groupId}")
+	suspend fun deleteAppGroup(@Path("groupId") groupId: Long): ApiResponse<BaseResponse>
+
+	@POST("/v1/session")
+	suspend fun sendSession(@Body request: SessionRequest): ApiResponse<SessionResponse>
+
+	@GET("/v1/statistics")
+	suspend fun getStatistics(
+		@Query("start") start: String,
+		@Query("end") end: String,
+	): ApiResponse<StatisticResponse>
 }

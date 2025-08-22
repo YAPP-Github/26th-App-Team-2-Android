@@ -1,6 +1,7 @@
 package com.yapp.breake.core.designsystem.theme
 
 import android.app.Activity
+import androidx.compose.material3.LocalContentColor
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.darkColorScheme
 import androidx.compose.runtime.Composable
@@ -45,6 +46,7 @@ fun BrakeTheme(
 	CompositionLocalProvider(
 		LocalTypography provides Typography,
 		LocalPadding provides Paddings,
+		LocalContentColor provides colorScheme.onSurface,
 	) {
 		MaterialTheme(
 			colorScheme = colorScheme,

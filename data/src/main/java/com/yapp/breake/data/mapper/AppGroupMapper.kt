@@ -7,10 +7,14 @@ import com.yapp.breake.core.database.entity.GroupEntity
 import com.yapp.breake.core.database.entity.SnoozeEntity
 import com.yapp.breake.core.model.app.App
 import com.yapp.breake.core.model.app.AppGroup
+import com.yapp.breake.core.model.app.AppGroupState
 import com.yapp.breake.core.model.app.Snooze
 import com.yapp.breake.core.util.toByteArray
+import com.yapp.breake.data.remote.model.AppGroupData
+import com.yapp.breake.data.remote.model.AppGroupRequest
+import com.yapp.breake.data.remote.model.AppRequest
 
-internal fun AppGroupEntity.toAppGroup(appScanner: InstalledAppScanner): AppGroup {
+internal fun AppGroupEntity.toAppList(appScanner: InstalledAppScanner): AppGroup {
 	return AppGroup(
 		id = group.groupId,
 		name = group.name,
@@ -19,6 +23,8 @@ internal fun AppGroupEntity.toAppGroup(appScanner: InstalledAppScanner): AppGrou
 			it.toApp(appScanner)
 		},
 		snoozes = snoozes.map(SnoozeEntity::toSnooze),
+		goalMinutes = group.goalMinutes,
+		sessionStartTime = group.sessionStartTime,
 		startTime = group.startTime,
 		endTime = group.endTime,
 	)
@@ -28,6 +34,8 @@ internal fun AppGroup.toGroupEntity(): GroupEntity = GroupEntity(
 	groupId = id,
 	name = name,
 	appGroupState = appGroupState,
+	goalMinutes = goalMinutes,
+	sessionStartTime = sessionStartTime,
 	startTime = startTime,
 	endTime = endTime,
 )
@@ -55,5 +63,39 @@ internal fun App.toAppEntity(parentGroupId: Long): AppEntity {
 internal fun SnoozeEntity.toSnooze(): Snooze {
 	return Snooze(
 		startTime = snoozeTime,
+	)
+}
+
+internal fun AppGroup.toAppGroupRequest(): AppGroupRequest {
+	return AppGroupRequest(
+		name = this.name,
+		groupApps = this.apps.map { app ->
+			AppRequest(
+				name = app.name,
+				packageName = app.packageName,
+			)
+		},
+	)
+}
+
+internal fun AppGroupData.toAppGroup(): AppGroup {
+	return AppGroup(
+		id = groupId,
+		name = name,
+		appGroupState = AppGroupState.NeedSetting,
+		apps = groupApps.map { groupApp ->
+			App(
+				id = groupApp.groupAppId,
+				name = groupApp.name,
+				packageName = groupApp.packageName,
+				icon = null,
+				category = "",
+			)
+		},
+		snoozes = emptyList(),
+		goalMinutes = null,
+		sessionStartTime = null,
+		startTime = null,
+		endTime = null,
 	)
 }

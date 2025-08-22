@@ -207,6 +207,8 @@ class RegistryViewModel @Inject constructor(
 							)
 						},
 						snoozes = emptyList(),
+						goalMinutes = null,
+						sessionStartTime = null,
 						startTime = null,
 						endTime = null,
 					)

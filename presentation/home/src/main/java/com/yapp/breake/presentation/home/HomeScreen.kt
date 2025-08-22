@@ -23,17 +23,20 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.core.content.ContextCompat
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.yapp.breake.core.designsystem.theme.LinerGradient
 import com.yapp.breake.core.navigation.compositionlocal.LocalMainAction
 import com.yapp.breake.core.navigation.compositionlocal.LocalNavigatorAction
 import com.yapp.breake.presentation.home.component.StopUsingDialog
+import com.yapp.breake.presentation.home.contract.HomeEvent
+import com.yapp.breake.presentation.home.contract.HomeModalState
+import com.yapp.breake.presentation.home.contract.HomeUiState
 import com.yapp.breake.presentation.home.screen.BlockingScreen
 import com.yapp.breake.presentation.home.screen.ListScreen
 import com.yapp.breake.presentation.home.screen.NothingScreen
 import com.yapp.breake.presentation.home.screen.UsingScreen
-import androidx.core.content.ContextCompat
 
 @Composable
 internal fun HomeRoute(

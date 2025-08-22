@@ -1,6 +1,5 @@
 package com.yapp.breake.presentation.home
 
-import androidx.compose.runtime.Stable
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.google.firebase.analytics.FirebaseAnalytics
@@ -9,6 +8,9 @@ import com.yapp.breake.core.model.app.AppGroup
 import com.yapp.breake.core.model.app.AppGroupState
 import com.yapp.breake.domain.repository.AppGroupRepository
 import com.yapp.breake.domain.usecase.SetBlockingAlarmUseCase
+import com.yapp.breake.presentation.home.contract.HomeEvent
+import com.yapp.breake.presentation.home.contract.HomeModalState
+import com.yapp.breake.presentation.home.contract.HomeUiState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -75,7 +77,6 @@ internal class HomeViewModel @Inject constructor(
 		viewModelScope.launch {
 			setBlockingAlarmUseCase(
 				groupId = appGroup.id,
-				groupName = "",
 			).onSuccess {
 				showStopUsingSuccess(appGroup.name)
 			}
@@ -109,25 +110,4 @@ internal class HomeViewModel @Inject constructor(
 	fun dismiss() {
 		_homeModalState.update { HomeModalState.Nothing }
 	}
-}
-
-@Stable
-internal sealed interface HomeUiState {
-	data object Loading : HomeUiState
-	data object Nothing : HomeUiState
-	data class GroupList(val appGroups: List<AppGroup>) : HomeUiState
-	data class Blocking(val appGroup: AppGroup) : HomeUiState
-	data class Using(val appGroup: AppGroup) : HomeUiState
-}
-
-@Stable
-internal sealed interface HomeModalState {
-	data object Nothing : HomeModalState
-	data class StopUsingDialog(val appGroup: AppGroup) : HomeModalState
-}
-
-@Stable
-internal sealed interface HomeEvent {
-	data class ShowStopUsingSuccess(val groupName: String) : HomeEvent
-	data class NavigateToRegistry(val groupId: Long?) : HomeEvent
 }
