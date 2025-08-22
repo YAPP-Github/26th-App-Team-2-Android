@@ -25,15 +25,6 @@ android {
 				throw IllegalArgumentException("KAKAO_JS_KEY_DEBUG must be set in local.properties")
 			}
 			buildConfigField("String", "KAKAO_JS_KEY", "\"$debugKakaoJsKey\"")
-
-			val debugGoogleAuthWebClientId = gradleLocalProperties(rootDir, providers)
-				.getProperty("GOOGLE_AUTH_WEB_CLIENT_ID_DEBUG")
-			if (debugGoogleAuthWebClientId.isNullOrEmpty()) {
-				throw IllegalArgumentException(
-					"GOOGLE_AUTH_WEB_CLIENT_ID_DEBUG must be set in local.properties",
-				)
-			}
-			buildConfigField("String", "GOOGLE_AUTH_WEB_CLIENT_ID", "\"$debugGoogleAuthWebClientId\"")
 		}
 
 		release {
@@ -50,15 +41,6 @@ android {
 				throw IllegalArgumentException("KAKAO_JS_KEY_RELEASE must be set in local.properties")
 			}
 			buildConfigField("String", "KAKAO_JS_KEY", "\"$releaseKakaoJsKey\"")
-
-			val releaseGoogleAuthWebClientId = gradleLocalProperties(rootDir, providers)
-				.getProperty("GOOGLE_AUTH_WEB_CLIENT_ID_RELEASE")
-			if (releaseGoogleAuthWebClientId.isNullOrEmpty()) {
-				throw IllegalArgumentException(
-					"GOOGLE_AUTH_WEB_CLIENT_ID_RELEASE must be set in local.properties",
-				)
-			}
-			buildConfigField("String", "GOOGLE_AUTH_WEB_CLIENT_ID", "\"$releaseGoogleAuthWebClientId\"")
 		}
 	}
 
