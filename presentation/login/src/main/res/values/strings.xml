@@ -9,4 +9,6 @@
 	<string name="login_snackbar_login_error">서버 문제로 인해 로그인에 실패했습니다.</string>
 	<string name="login_snackbar_login_error_inactive">계정이 비활성화되어 있습니다. 고객센터로 문의해주세요.</string>
 	<string name="login_snackbar_next_destination_error">다음 화면으로 이동에 실패했습니다.</string>
+
+	<string name="login_kakao_button_text">카카오 로그인</string>
 </resources>
