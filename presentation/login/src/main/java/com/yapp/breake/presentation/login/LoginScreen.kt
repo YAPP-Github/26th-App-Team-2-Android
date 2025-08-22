@@ -1,5 +1,6 @@
 package com.yapp.breake.presentation.login
 
+import android.app.Activity
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Box
@@ -22,14 +23,15 @@ import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.yapp.breake.core.auth.KakaoScreen
-import com.yapp.breake.core.designsystem.component.KakaoLoginButton
+import com.yapp.breake.core.auth.kakao.KakaoScreen
 import com.yapp.breake.core.designsystem.theme.BrakeTheme
 import com.yapp.breake.core.designsystem.theme.LocalPadding
 import com.yapp.breake.core.navigation.compositionlocal.LocalMainAction
 import com.yapp.breake.core.navigation.compositionlocal.LocalNavigatorAction
 import com.yapp.breake.core.navigation.compositionlocal.LocalNavigatorProvider
 import com.yapp.breake.core.ui.SnackBarState
+import com.yapp.breake.presentation.login.component.GoogleLoginButton
+import com.yapp.breake.presentation.login.component.KakaoLoginButton
 import com.yapp.breake.presentation.login.component.LoginNoticeText
 import com.yapp.breake.presentation.login.model.LoginNavState.NavigateToHome
 import com.yapp.breake.presentation.login.model.LoginNavState.NavigateToOnboarding
@@ -51,7 +53,7 @@ internal fun LoginRoute(viewModel: LoginViewModel = hiltViewModel()) {
 	if (uiState == LoginUiState.LoginLoading) {
 		mainAction.OnShowLoading()
 		BackHandler {
-			viewModel.loginCancel()
+			viewModel.cancelLogin()
 		}
 	} else {
 		mainAction.OnFinishBackHandler()
@@ -90,14 +92,15 @@ internal fun LoginRoute(viewModel: LoginViewModel = hiltViewModel()) {
 		padding = padding,
 		onPrivacyClick = viewModel::showPrivacyPolicy,
 		onTermsClick = viewModel::showTermsOfService,
-		onLoginClick = viewModel::loginWithKakao,
+		onGoogleLoginClick = { viewModel.loginWithGoogle(context as Activity) },
+		onkakaoLoginClick = viewModel::getKakaoAuthorization,
 	)
 
 	if (uiState == LoginUiState.LoginOnWebView) {
 		KakaoScreen(
-			onBack = viewModel::authCancel,
-			onAuthSuccess = { viewModel.authSuccess(it, context) },
-			onAuthError = viewModel::loginFailure,
+			onBack = viewModel::cancelKakaoAuthorization,
+			onAuthSuccess = { viewModel.loginWithKakao(context = context, authCode = it) },
+			onAuthError = viewModel::failKakaoAuthorization,
 		)
 	}
 }
@@ -107,12 +110,13 @@ fun LoginScreen(
 	padding: Dp,
 	onPrivacyClick: () -> Unit,
 	onTermsClick: () -> Unit,
-	onLoginClick: () -> Unit,
+	onGoogleLoginClick: () -> Unit,
+	onkakaoLoginClick: () -> Unit,
 ) {
 	ConstraintLayout(
 		modifier = Modifier.fillMaxSize(),
 	) {
-		val (title, notice, loginButton) = createRefs()
+		val (title, notice, googleLoginButton, kakaoLoginButton) = createRefs()
 
 		Box(
 			modifier = Modifier
@@ -142,13 +146,28 @@ fun LoginScreen(
 		LoginNoticeText(
 			modifier = Modifier
 				.constrainAs(notice) {
-					bottom.linkTo(loginButton.top, margin = 20.dp)
+					top.linkTo(title.bottom)
+					bottom.linkTo(googleLoginButton.top, margin = 20.dp)
 					start.linkTo(parent.start)
 					end.linkTo(parent.end)
+					// top, bottom 과 linkTo 관계가 설정되어 있을 때, 해당 컴포넌트 y 위치를 바텀(1f)으로 조정
+					verticalBias = 1f
 				}
 				.padding(horizontal = padding),
 			onPrivacyClick = onPrivacyClick,
 			onTermsClick = onTermsClick,
+		)
+
+		GoogleLoginButton(
+			modifier = Modifier
+				.padding(horizontal = padding)
+				.widthIn(max = 400.dp)
+				.constrainAs(googleLoginButton) {
+					bottom.linkTo(kakaoLoginButton.top, margin = 12.dp)
+					start.linkTo(parent.start)
+					end.linkTo(parent.end)
+				},
+			onClick = onGoogleLoginClick,
 		)
 
 		KakaoLoginButton(
@@ -157,13 +176,12 @@ fun LoginScreen(
 				.padding(horizontal = padding)
 				.padding(bottom = 24.dp)
 				.widthIn(max = 400.dp)
-				.constrainAs(loginButton) {
+				.constrainAs(kakaoLoginButton) {
 					bottom.linkTo(parent.bottom)
 					start.linkTo(parent.start)
 					end.linkTo(parent.end)
 				},
-			text = "카카오 로그인",
-			onClick = onLoginClick,
+			onClick = onkakaoLoginClick,
 		)
 	}
 }
