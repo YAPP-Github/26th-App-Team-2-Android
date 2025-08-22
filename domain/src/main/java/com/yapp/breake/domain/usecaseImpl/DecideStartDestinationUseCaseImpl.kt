@@ -40,6 +40,7 @@ class DecideStartDestinationUseCaseImpl @Inject constructor(
 	} catch (_: LocalStorageException) {
 		Destination.Onboarding
 	} catch (_: Exception) {
+		sessionRepository.clearEntireDataStore(onError = {})
 		appGroupRepository.clearAppGroup()
 		appRepository.clearApps()
 		Destination.Login

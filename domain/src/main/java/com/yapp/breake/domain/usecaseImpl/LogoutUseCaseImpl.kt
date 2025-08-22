@@ -18,6 +18,7 @@ class LogoutUseCaseImpl @Inject constructor(
 	override suspend fun invoke(onError: suspend (Throwable) -> Unit): Destination {
 		return try {
 			tokenRepository.logoutRemoteAccount()
+			tokenRepository.clearLocalAuthCode(onError = onError)
 			sessionRepository.clearEntireDataStore(
 				onError = { throwable ->
 					onError(throwable)
