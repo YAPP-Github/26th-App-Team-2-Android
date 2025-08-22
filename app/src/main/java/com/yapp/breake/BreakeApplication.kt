@@ -4,12 +4,15 @@ import android.app.Application
 import androidx.hilt.work.HiltWorkerFactory
 import androidx.work.Configuration
 import androidx.work.WorkManager
+import com.yapp.breake.core.auth.google.GoogleAuthManager
 import dagger.hilt.android.HiltAndroidApp
 import timber.log.Timber
 import javax.inject.Inject
 
 @HiltAndroidApp
 class BreakeApplication : Application(), Configuration.Provider {
+
+	@Inject lateinit var googleAuthManager: GoogleAuthManager
 
 	@Inject lateinit var workerFactory: HiltWorkerFactory
 
@@ -30,6 +33,7 @@ class BreakeApplication : Application(), Configuration.Provider {
 		WorkManager.initialize(this, workManagerConfiguration)
 
 		initTimber()
+		initGoogleAuthManager()
 	}
 
 	private fun initTimber() {
@@ -44,5 +48,13 @@ class BreakeApplication : Application(), Configuration.Provider {
 				},
 			)
 		}
+	}
+
+	private fun initGoogleAuthManager() {
+		googleAuthManager.initializeGoogleAuthManager(
+			applicationContext = this@BreakeApplication,
+			// 빌드 시 google-service.json 에서 web_client_id 가 string resource 로 생성
+			webClientId = getString(R.string.default_web_client_id),
+		)
 	}
 }
