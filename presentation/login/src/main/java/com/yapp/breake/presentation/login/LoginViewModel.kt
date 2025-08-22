@@ -69,7 +69,7 @@ internal class LoginViewModel @Inject constructor(
 					loginService(
 						context = context,
 						authCode = googleCredential.idToken,
-						authProvider = googleLoginProvider,
+						authProvider = GOOGLE_LOGIN_PROVIDER,
 					)
 				}.onFailure {
 					_uiState.value = LoginUiState.LoginIdle
@@ -132,7 +132,7 @@ internal class LoginViewModel @Inject constructor(
 		loginService(
 			context = context,
 			authCode = authCode,
-			authProvider = kakaoLoginProvider,
+			authProvider = KAKAO_LOGIN_PROVIDER,
 		)
 	}
 
@@ -261,7 +261,7 @@ internal class LoginViewModel @Inject constructor(
 	}
 
 	companion object {
-		private val kakaoLoginProvider = "KAKAO"
-		private val googleLoginProvider = "GOOGLE"
+		private const val KAKAO_LOGIN_PROVIDER = "KAKAO"
+		private const val GOOGLE_LOGIN_PROVIDER = "GOOGLE"
 	}
 }
