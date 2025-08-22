@@ -11,4 +11,5 @@
 	<string name="login_snackbar_next_destination_error">다음 화면으로 이동에 실패했습니다.</string>
 
 	<string name="login_kakao_button_text">카카오 로그인</string>
+	<string name="login_google_button_text">Google 로그인</string>
 </resources>
