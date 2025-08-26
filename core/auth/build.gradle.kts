@@ -60,4 +60,7 @@ dependencies {
 
 	// Credential
 	implementation(libs.androidx.credentials)
+	// Need for API 33 and below
+	// https://developer.android.com/identity/sign-in/credential-manager#add-dependencies
+	implementation(libs.androidx.credentials.play.services.auth)
 }

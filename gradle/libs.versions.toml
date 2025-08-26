@@ -26,7 +26,7 @@ androidxActivity = "1.10.1"
 # https://developer.android.com/jetpack/androidx/releases/datastore
 androidxDatastore = "1.1.7"
 # https://developer.android.com/jetpack/androidx/releases/room
-room = "2.7.1"
+room = "2.7.2"
 # https://developer.android.com/jetpack/androidx/releases/glance
 androidxGlance = "1.1.1"
 glanceExperimentalTools = "0.2.2"
@@ -205,6 +205,7 @@ compose-compiler-gradle-plugin = { module = "org.jetbrains.kotlin:compose-compil
 
 # Credentials
 androidx-credentials = { group = "androidx.credentials", name = "credentials", version.ref = "androidxCredentials" }
+androidx-credentials-play-services-auth = { group = "androidx.credentials", name = "credentials-play-services-auth", version.ref = "androidxCredentials" }
 
 # Design
 compose-charts = { module = "io.github.ehsannarmani:compose-charts", version.ref = "composeCharts" }
