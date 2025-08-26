@@ -1,4 +1,4 @@
-package com.yapp.breake.core.auth
+package com.yapp.breake.core.auth.kakao
 
 import android.content.Context
 import android.content.pm.PackageManager

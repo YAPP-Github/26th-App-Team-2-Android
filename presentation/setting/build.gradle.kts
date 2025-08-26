@@ -18,5 +18,7 @@ android {
 }
 
 dependencies {
+	implementation(projects.core.auth)
+
 	implementation(libs.androidx.browser)
 }

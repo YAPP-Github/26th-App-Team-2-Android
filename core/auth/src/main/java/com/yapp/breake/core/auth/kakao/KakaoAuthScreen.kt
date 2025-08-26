@@ -1,4 +1,4 @@
-package com.yapp.breake.core.auth
+package com.yapp.breake.core.auth.kakao
 
 import android.annotation.SuppressLint
 import android.content.Intent
@@ -19,6 +19,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.core.net.toUri
+import com.yapp.breake.core.auth.BuildConfig
+import com.yapp.breake.core.auth.R
 import timber.log.Timber
 import java.net.URISyntaxException
 

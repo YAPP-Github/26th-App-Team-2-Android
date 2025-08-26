@@ -1,12 +1,14 @@
 package com.yapp.breake.presentation.login
 
 import android.content.Context
+import androidx.activity.result.IntentSenderRequest
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.breake.core.permission.PermissionManager
 import com.breake.core.permission.PermissionType
 import com.google.firebase.analytics.FirebaseAnalytics
 import com.google.firebase.analytics.logEvent
+import com.yapp.breake.core.auth.google.GoogleAuthManager
 import com.yapp.breake.core.model.user.Destination
 import com.yapp.breake.core.model.user.UserStatus
 import com.yapp.breake.core.ui.SnackBarState
@@ -31,6 +33,7 @@ internal class LoginViewModel @Inject constructor(
 	private val loginUseCase: LoginUseCase,
 	private val decideDestinationUseCase: DecideNextDestinationFromPermissionUseCase,
 	private val permissionManager: PermissionManager,
+	private val googleAuthManager: GoogleAuthManager,
 	private val firebaseAnalytics: FirebaseAnalytics,
 ) : ViewModel() {
 
@@ -57,7 +60,46 @@ internal class LoginViewModel @Inject constructor(
 		}
 	}
 
-	fun loginWithKakao() {
+	fun loginWithGoogle(context: Context, authCode: String) {
+		loginService(context, authCode, GOOGLE_LOGIN)
+	}
+
+	fun getGoogleAuthorization(
+		context: Context,
+		onRequestGoogleAuth: (IntentSenderRequest) -> Unit,
+	) {
+		_uiState.value = LoginUiState.LoginLoading
+		googleAuthManager.requestGoogleAuthorization(
+			context = context,
+			onRequestGoogleAuth = onRequestGoogleAuth,
+			onFailure = {
+				cancelGoogleAuthorization()
+			},
+		)
+	}
+
+	fun cancelGoogleAuthorization() {
+		_uiState.value = LoginUiState.LoginIdle
+	}
+
+	fun failGoogleAuthorization() {
+		_uiState.value = LoginUiState.LoginIdle
+		viewModelScope.launch {
+			_snackBarFlow.emit(
+				SnackBarState.Error(
+					uiString = UiString.ResourceString(
+						resId = R.string.login_snackbar_login_error,
+					),
+				),
+			)
+		}
+	}
+
+	fun loginWithKakao(context: Context, authCode: String) {
+		loginService(context, authCode, KAKAO_LOGIN)
+	}
+
+	fun getKakaoAuthorization() {
 		viewModelScope.launch {
 			_uiState.value = LoginUiState.LoginOnWebView
 		}
@@ -66,7 +108,7 @@ internal class LoginViewModel @Inject constructor(
 		}
 	}
 
-	fun authCancel() {
+	fun cancelKakaoAuthorization() {
 		_uiState.value = LoginUiState.LoginIdle
 		firebaseAnalytics.apply {
 			logEvent("cancel_kakao_login") {
@@ -78,7 +120,26 @@ internal class LoginViewModel @Inject constructor(
 		}
 	}
 
-	fun loginCancel() {
+	fun failKakaoAuthorization(message: String) {
+		viewModelScope.launch {
+			_uiState.value = LoginUiState.LoginIdle
+			_snackBarFlow.emit(
+				SnackBarState.Error(
+					uiString = UiString.DynamicString(message),
+				),
+			)
+		}
+		firebaseAnalytics.apply {
+			logEvent("cancel_kakao_login") {
+				param("reason", message)
+			}
+			logEvent(FirebaseAnalytics.Event.SCREEN_VIEW) {
+				param(FirebaseAnalytics.Param.SCREEN_NAME, "login_screen")
+			}
+		}
+	}
+
+	fun cancelLogin() {
 		loginJob?.run {
 			cancel()
 			_uiState.value = LoginUiState.LoginIdle
@@ -93,12 +154,13 @@ internal class LoginViewModel @Inject constructor(
 		}
 	}
 
-	fun authSuccess(authCode: String, context: Context) {
+	private fun loginService(context: Context, authCode: String, provider: String) {
 		loginJob?.cancel()
 		loginJob = viewModelScope.launch {
 			_uiState.value = LoginUiState.LoginLoading
 			loginUseCase(
 				authCode = authCode,
+				provider = provider,
 				onError = { throwable ->
 					_uiState.value = LoginUiState.LoginIdle
 					_snackBarFlow.emit(
@@ -152,25 +214,6 @@ internal class LoginViewModel @Inject constructor(
 		return true
 	}
 
-	fun loginFailure(message: String) {
-		viewModelScope.launch {
-			_uiState.value = LoginUiState.LoginIdle
-			_snackBarFlow.emit(
-				SnackBarState.Error(
-					uiString = UiString.DynamicString(message),
-				),
-			)
-		}
-		firebaseAnalytics.apply {
-			logEvent("cancel_kakao_login") {
-				param("reason", message)
-			}
-			logEvent(FirebaseAnalytics.Event.SCREEN_VIEW) {
-				param(FirebaseAnalytics.Param.SCREEN_NAME, "login_screen")
-			}
-		}
-	}
-
 	private suspend fun decideNextDestination(context: Context) {
 		val status = decideDestinationUseCase(
 			onError = { error ->
@@ -218,5 +261,10 @@ internal class LoginViewModel @Inject constructor(
 
 			else -> {}
 		}
+	}
+
+	companion object {
+		const val GOOGLE_LOGIN = "GOOGLE"
+		const val KAKAO_LOGIN = "KAKAO"
 	}
 }

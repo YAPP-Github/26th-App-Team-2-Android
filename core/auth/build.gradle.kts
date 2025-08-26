@@ -54,4 +54,13 @@ dependencies {
 
 	// BackHandler 사용을 위한 의존성
 	implementation(libs.androidx.activity.compose)
+
+	// Google Authorization Login
+	implementation(libs.google.auth)
+
+	// Credential
+	implementation(libs.androidx.credentials)
+	// Need for API 33 and below
+	// https://developer.android.com/identity/sign-in/credential-manager#add-dependencies
+	implementation(libs.androidx.credentials.play.services.auth)
 }

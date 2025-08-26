@@ -11,7 +11,7 @@ import kotlinx.coroutines.flow.Flow
 interface LoginUseCase {
 	operator fun invoke(
 		authCode: String,
-		provider: String = "KAKAO",
+		provider: String,
 		onError: suspend (Throwable) -> Unit,
 	): Flow<UserStatus>
 }

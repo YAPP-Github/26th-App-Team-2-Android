@@ -4,12 +4,15 @@ import android.app.Application
 import androidx.hilt.work.HiltWorkerFactory
 import androidx.work.Configuration
 import androidx.work.WorkManager
+import com.yapp.breake.core.auth.google.GoogleAuthManager
 import dagger.hilt.android.HiltAndroidApp
 import timber.log.Timber
 import javax.inject.Inject
 
 @HiltAndroidApp
 class BreakeApplication : Application(), Configuration.Provider {
+
+	@Inject lateinit var googleAuthManager: GoogleAuthManager
 
 	@Inject lateinit var workerFactory: HiltWorkerFactory
 
@@ -25,6 +28,13 @@ class BreakeApplication : Application(), Configuration.Provider {
 
 	override fun onCreate() {
 		super.onCreate()
+
+		// GoogleAuthManager 초기화
+		googleAuthManager.initializeAuthorizationRequest(
+			context = this,
+			// 컴파일 타임 때 google-services.json 에서 web client id 의 string resource 생성
+			serverClientId = getString(R.string.default_web_client_id),
+		)
 
 		// WorkManager 초기화
 		WorkManager.initialize(this, workManagerConfiguration)

@@ -16,6 +16,7 @@ android {
 
 dependencies {
 	implementation(projects.domain)
+	implementation(projects.core.auth)
 	implementation(projects.core.model)
 	implementation(projects.core.util)
 	implementation(projects.core.datastore)

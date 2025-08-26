@@ -1,5 +1,6 @@
 package com.yapp.breake.data.repository
 
+import com.yapp.breake.core.auth.google.GoogleAuthManager
 import com.yapp.breake.core.model.user.UserStatus
 import com.yapp.breake.core.model.user.UserToken
 import com.yapp.breake.data.local.source.AuthLocalDataSource
@@ -28,6 +29,7 @@ internal class TokenRepositoryImpl @Inject constructor(
 	private val tokenRemoteDataSource: TokenRemoteDataSource,
 	private val tokenLocalDataSource: TokenLocalDataSource,
 	private val authLocalDataSource: AuthLocalDataSource,
+	private val googleAuthManager: GoogleAuthManager,
 ) : TokenRepository {
 
 	override fun getRemoteTokens(
@@ -133,6 +135,7 @@ internal class TokenRepositoryImpl @Inject constructor(
 				}).firstOrNull() ?: "",
 				onError = { Timber.e("서버에 로그아웃 요청 실패: $it") },
 			)
+			googleAuthManager.signOutGoogleAuth()
 		}
 	}
 }

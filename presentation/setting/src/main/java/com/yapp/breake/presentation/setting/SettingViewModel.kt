@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.google.firebase.analytics.FirebaseAnalytics
 import com.google.firebase.analytics.logEvent
+import com.yapp.breake.core.auth.google.GoogleAuthManager
 import com.yapp.breake.core.model.user.Destination
 import com.yapp.breake.core.ui.SnackBarState
 import com.yapp.breake.core.ui.UiString
@@ -29,6 +30,7 @@ class SettingViewModel @Inject constructor(
 	getNicknameUseCase: GetNicknameUseCase,
 	private val deleteAccountUseCase: DeleteAccountUseCase,
 	private val logoutUseCase: LogoutUseCase,
+	private val googleAuthManager: GoogleAuthManager,
 	private val firebaseAnalytics: FirebaseAnalytics,
 ) : ViewModel() {
 
@@ -165,6 +167,7 @@ class SettingViewModel @Inject constructor(
 			)
 			if (dest is Destination.Login) {
 				// 로딩창 먼저 제거 후 스낵바 띄우고 화면 이동: 유저 사용성 증가
+				googleAuthManager.signOutGoogleAuth()
 				_uiState.value = SettingUiState.SettingLoaded(
 					user = _uiState.value.user,
 					appInfo = _uiState.value.appInfo,
