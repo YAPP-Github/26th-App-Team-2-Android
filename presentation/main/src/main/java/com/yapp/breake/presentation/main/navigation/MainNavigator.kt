@@ -7,15 +7,16 @@ import androidx.navigation.NavDestination
 import androidx.navigation.NavDestination.Companion.hasRoute
 import androidx.navigation.NavHostController
 import androidx.navigation.NavOptions
-import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navOptions
 import com.google.firebase.analytics.FirebaseAnalytics
 import com.google.firebase.analytics.logEvent
 import com.yapp.breake.core.navigation.action.NavigatorAction
 import com.yapp.breake.core.navigation.provider.NavigatorProvider
+import com.yapp.breake.core.navigation.route.InitialRoute
 import com.yapp.breake.core.navigation.route.MainTabRoute
 import com.yapp.breake.core.navigation.route.Route
+import com.yapp.breake.core.navigation.route.SubRoute
 import com.yapp.breake.core.navigation.route.stringRoute
 import com.yapp.breake.presentation.feeback.inquiry.navigation.navigateToInquiry
 import com.yapp.breake.presentation.feeback.opinion.navigation.navigateToOpinion
@@ -31,18 +32,44 @@ import com.yapp.breake.presentation.registry.navigation.navigateToRegistry
 import com.yapp.breake.presentation.report.navigation.navigateReport
 import com.yapp.breake.presentation.setting.navigation.navigateSetting
 import com.yapp.breake.presentation.signup.navigation.navigateToSignup
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
 
 internal class MainNavigator(
 	val startDestination: Route,
 	val navController: NavHostController,
 	private val firebaseAnalytics: FirebaseAnalytics,
 ) {
-	private val currentDestination: NavDestination?
-		@Composable get() = navController.currentBackStackEntryAsState().value?.destination
+	// 기존 MainTab 상태 변화의 Composable State Producer 를 State Flow 와 함께 쓰면 recomposition 이 두 번 일어나는 문제가 있어,
+	// 하나의 State Producer 로 통합
+	private val _currentRoute = MutableStateFlow<Route>(startDestination)
+	val currentRoute: StateFlow<Route> = _currentRoute.asStateFlow()
 
-	val currentTab: MainTab?
-		@Composable get() = MainTab.Companion.find { tab ->
-			currentDestination?.hasRoute(tab::class) == true
+	init {
+		// NavController의 destination 변화를 감지
+		navController.addOnDestinationChangedListener { _, destination, _ ->
+			_currentRoute.value = destination.toBrakeRoute
+		}
+	}
+
+	private val NavDestination.toBrakeRoute: Route
+		get() = when (this.route) {
+			MainTabRoute.Home.stringRoute() -> MainTabRoute.Home
+			MainTabRoute.Setting.stringRoute() -> MainTabRoute.Setting
+			MainTabRoute.Report.stringRoute() -> MainTabRoute.Report
+			InitialRoute.Login.stringRoute() -> InitialRoute.Login
+			InitialRoute.SignUp.stringRoute() -> InitialRoute.SignUp
+			InitialRoute.Onboarding.Guide.stringRoute() -> InitialRoute.Onboarding.Guide
+			InitialRoute.Onboarding.Complete.stringRoute() -> InitialRoute.Onboarding.Complete
+			InitialRoute.Permission.stringRoute() -> InitialRoute.Permission
+			SubRoute.Nickname.stringRoute() -> SubRoute.Nickname
+			SubRoute.Privacy.stringRoute() -> SubRoute.Privacy
+			SubRoute.Terms.stringRoute() -> SubRoute.Terms
+			SubRoute.Feedback.Inquiry.stringRoute() -> SubRoute.Feedback.Inquiry
+			SubRoute.Feedback.Opinion.stringRoute() -> SubRoute.Feedback.Opinion
+			else -> SubRoute.Registry()
+			// Registry 타입은 유일하게 인자를 갖는 Route 의 클래스 이므로, else 분기로 Registry 기본 생성자 반환
 		}
 
 	fun navigatorAction(): NavigatorAction {
@@ -204,11 +231,6 @@ internal class MainNavigator(
 
 	private inline fun <reified T : Route> isSameCurrentDestination(): Boolean {
 		return navController.currentDestination?.hasRoute<T>() == true
-	}
-
-	@Composable
-	fun shouldShowBottomBar() = MainTab.Companion.contains {
-		currentDestination?.hasRoute(it::class) == true
 	}
 }
 
