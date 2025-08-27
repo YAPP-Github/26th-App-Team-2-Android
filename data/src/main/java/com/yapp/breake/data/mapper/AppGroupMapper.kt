@@ -53,7 +53,7 @@ internal fun AppEntity.toApp(appScanner: InstalledAppScanner): App {
 internal fun App.toAppEntity(parentGroupId: Long): AppEntity {
 	return AppEntity(
 		packageName = packageName,
-		id = id,
+		id = id ?: 0L,
 		name = name,
 		category = category,
 		parentGroupId = parentGroupId,
@@ -73,6 +73,7 @@ internal fun AppGroup.toAppGroupRequest(): AppGroupRequest {
 			AppRequest(
 				name = app.name,
 				packageName = app.packageName,
+				groupAppId = app.id,
 			)
 		},
 	)

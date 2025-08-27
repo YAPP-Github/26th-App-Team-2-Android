@@ -386,9 +386,9 @@ private fun GroupRegistryScreenPreview() {
 				groupId = 1L,
 				groupName = "그룹 이름",
 				selectedApps = persistentListOf(
-					SelectedAppModel(index = 0, name = "앱1", packageName = "", icon = null),
-					SelectedAppModel(index = 1, name = "앱2", packageName = "", icon = null),
-					SelectedAppModel(index = 2, name = "앱3", packageName = "", icon = null),
+					SelectedAppModel(index = 0, name = "앱1", packageName = "", icon = null, id = 1L),
+					SelectedAppModel(index = 1, name = "앱2", packageName = "", icon = null, id = 2L),
+					SelectedAppModel(index = 2, name = "앱3", packageName = "", icon = null, id = 3L),
 				),
 				apps = persistentListOf(
 					AppModel(

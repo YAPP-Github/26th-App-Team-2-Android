@@ -68,6 +68,7 @@ class RegistryViewModel @Inject constructor(
 						group.apps.forEachIndexed { index, appModel ->
 							add(
 								SelectedAppModel(
+									id = appModel.id,
 									index = index,
 									name = appModel.name,
 									packageName = appModel.packageName,
@@ -128,7 +129,9 @@ class RegistryViewModel @Inject constructor(
 							.takeIf { it >= 0 }?.let { index ->
 								set(
 									index = index,
-									element = cachedApps[index].copy(isSelected = true),
+									element = cachedApps[index].copy(
+										isSelected = true,
+									),
 								)
 							}
 					}
@@ -143,6 +146,7 @@ class RegistryViewModel @Inject constructor(
 										name = selectedApp.name,
 										packageName = selectedApp.packageName,
 										icon = selectedApp.icon,
+										id = selectedApp.id,
 									),
 								)
 							}
@@ -199,10 +203,9 @@ class RegistryViewModel @Inject constructor(
 						apps = it.selectedApps.map { selectedApp ->
 							App(
 								packageName = selectedApp.packageName,
-								id = 0L,
+								id = selectedApp.id,
 								name = selectedApp.name,
 								icon = selectedApp.icon.toByteArray(),
-								// TODO: 카테고리 추후 추가 필요
 								category = "기타",
 							)
 						},
@@ -292,11 +295,16 @@ class RegistryViewModel @Inject constructor(
 				apps = it.apps,
 				selectedApps = it.apps.mapIndexedNotNull { index, appModel ->
 					if (appModel.isSelected) {
+						val existingApp = it.selectedApps.find { selectedApp ->
+							selectedApp.packageName == appModel.packageName
+						}
+
 						SelectedAppModel(
 							index = index,
 							name = appModel.name,
 							packageName = appModel.packageName,
 							icon = appModel.icon,
+							id = existingApp?.id,
 						)
 					} else {
 						null

@@ -6,4 +6,5 @@ import kotlinx.serialization.Serializable
 internal data class AppRequest(
 	val name: String,
 	val packageName: String,
+	val groupAppId: Long? = null,
 )

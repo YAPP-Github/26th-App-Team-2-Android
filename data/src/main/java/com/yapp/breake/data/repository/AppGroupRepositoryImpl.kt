@@ -26,15 +26,15 @@ internal class AppGroupRepositoryImpl @Inject constructor(
 			).map { updatedGroup ->
 				appGroupLocalDataSource.insertAppGroup(updatedGroup)
 				updatedGroup
-			}.first()
+			}
 		} else {
 			appGroupRemoteDataSource.createAppGroup(
 				appGroup = appGroup,
 			).map { newGroup ->
 				appGroupLocalDataSource.insertAppGroup(newGroup)
 				newGroup
-			}.first()
-		}
+			}
+		}.first()
 	}
 
 	override suspend fun getAvailableMinGroupId(): Long =

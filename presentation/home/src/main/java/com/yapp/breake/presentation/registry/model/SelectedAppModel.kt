@@ -9,4 +9,5 @@ data class SelectedAppModel(
 	val name: String,
 	val packageName: String,
 	val icon: Drawable?,
+	val id: Long?,
 )
