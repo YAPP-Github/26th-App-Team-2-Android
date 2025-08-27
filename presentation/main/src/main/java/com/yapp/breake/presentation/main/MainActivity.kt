@@ -11,8 +11,6 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.statusBarsPadding
-import androidx.compose.material3.SnackbarDuration
-import androidx.compose.material3.SnackbarHostState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.collectAsState
@@ -25,7 +23,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.window.Popup
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
-import com.yapp.breake.core.designsystem.component.BrakeSnackbarType
+import com.yapp.breake.presentation.main.component.BrakeSnackbarType
 import com.yapp.breake.core.designsystem.component.DotProgressIndicator
 import com.yapp.breake.core.designsystem.theme.BrakeTheme
 import com.yapp.breake.core.designsystem.theme.Gray900
@@ -33,6 +31,7 @@ import com.yapp.breake.core.navigation.action.MainAction
 import com.yapp.breake.core.navigation.compositionlocal.LocalMainAction
 import com.yapp.breake.core.navigation.compositionlocal.LocalNavigatorAction
 import com.yapp.breake.core.navigation.compositionlocal.LocalNavigatorProvider
+import com.yapp.breake.presentation.main.component.BrakeSnackbarHostState
 import com.yapp.breake.presentation.main.component.LogoutWarningDialog
 import com.yapp.breake.presentation.main.navigation.MainNavigator
 import com.yapp.breake.presentation.main.navigation.rememberMainNavigator
@@ -67,7 +66,7 @@ class MainActivity : ComponentActivity() {
 				else -> {
 					val navigator: MainNavigator = rememberMainNavigator(destination)
 					val coroutineScope: CoroutineScope = rememberCoroutineScope()
-					val snackBarHostState = remember { SnackbarHostState() }
+					val snackBarHostState = remember { BrakeSnackbarHostState() }
 
 					val mainAction = object : MainAction {
 						@Composable
@@ -120,8 +119,8 @@ class MainActivity : ComponentActivity() {
 								snackBarHostState.showSnackbar(
 									message = message,
 									actionLabel = BrakeSnackbarType.ERROR.name,
-									duration = SnackbarDuration.Short,
-									withDismissAction = false,
+									duration = 5000L,
+									onAction = snackBarHostState::dismiss,
 								)
 							}
 						}
@@ -131,8 +130,8 @@ class MainActivity : ComponentActivity() {
 								snackBarHostState.showSnackbar(
 									message = message,
 									actionLabel = BrakeSnackbarType.SUCCESS.name,
-									duration = SnackbarDuration.Short,
-									withDismissAction = false,
+									duration = 3000L,
+									onAction = snackBarHostState::dismiss,
 								)
 							}
 						}
