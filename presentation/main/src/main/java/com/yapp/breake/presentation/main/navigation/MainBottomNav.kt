@@ -1,10 +1,5 @@
 package com.yapp.breake.presentation.main.navigation
 
-import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.animation.fadeIn
-import androidx.compose.animation.fadeOut
-import androidx.compose.animation.slideIn
-import androidx.compose.animation.slideOut
 import androidx.compose.foundation.background
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
@@ -27,7 +22,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import com.yapp.breake.core.designsystem.theme.BrakeTheme
 import com.yapp.breake.core.designsystem.theme.Gray700
@@ -43,15 +37,12 @@ internal fun MainBottomNavBar(
 	onTabSelected: (MainTab) -> Unit,
 	modifier: Modifier = Modifier,
 ) {
-	AnimatedVisibility(
-		visible = visible,
-		enter = fadeIn() + slideIn { IntOffset(0, it.height) },
-		exit = fadeOut() + slideOut { IntOffset(0, it.height) },
-	) {
+	// AnimatedVisibility 를 사용할 경우, 스낵바의 y 좌표 위치 변동 시 애니메이션 활성화 동안 스낵바의 위치가 튀는 현상 발생
+	if (visible) {
 		Row(
 			modifier = modifier
 				// REPORT 개발 후 width 조정 필요
-				.fillMaxWidth(0.52f)
+				.fillMaxWidth(0.70f)
 				.widthIn(max = 216.dp)
 				.wrapContentHeight()
 				.background(
