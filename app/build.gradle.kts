@@ -1,3 +1,4 @@
+import com.android.build.gradle.internal.cxx.configure.gradleLocalProperties
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.TimeZone
@@ -12,11 +13,44 @@ plugins {
 	alias(libs.plugins.roborazzi.plugin)
 }
 
+val releaseKeyFile = gradleLocalProperties(rootDir, providers)
+	.getProperty("RELEASE_KEY_FILE")
+if (releaseKeyFile.isNullOrEmpty()) {
+	throw IllegalArgumentException("RELEASE_KEY_FILE must be set in local.properties")
+}
+
+val releaseStorePassword = gradleLocalProperties(rootDir, providers)
+	.getProperty("RELEASE_STORE_PASSWORD")
+if (releaseStorePassword.isNullOrEmpty()) {
+	throw IllegalArgumentException("RELEASE_STORE_PASSWORD must be set in local.properties")
+}
+
+val releaseKeyAlias = gradleLocalProperties(rootDir, providers)
+	.getProperty("RELEASE_KEY_ALIAS")
+if (releaseKeyAlias.isNullOrEmpty()) {
+	throw IllegalArgumentException("RELEASE_KEY_ALIAS must be set in local.properties")
+}
+
+val releaseKeyPassword = gradleLocalProperties(rootDir, providers)
+	.getProperty("RELEASE_KEY_PASSWORD")
+if (releaseKeyPassword.isNullOrEmpty()) {
+	throw IllegalArgumentException("RELEASE_KEY_PASSWORD must be set in local.properties")
+}
+
 android {
 	namespace = "com.yapp.breake"
 
 	defaultConfig {
 		applicationId = "com.yapp.breake"
+	}
+	signingConfigs {
+		create("release") {
+			// 배포 앱 스토어에 맞춰 local.properties 에서 파일 path 변경
+			storeFile = file(releaseKeyFile)
+			storePassword = releaseStorePassword
+			keyAlias = releaseKeyAlias
+			keyPassword = releaseKeyPassword
+		}
 	}
 	packaging {
 		resources {
@@ -26,9 +60,11 @@ android {
 	}
 	buildTypes {
 		release {
-			isMinifyEnabled = false
+			isMinifyEnabled = true
+			isShrinkResources = true
+			isDebuggable = true
 			proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
-			signingConfig = signingConfigs.getByName("debug")
+			signingConfig = signingConfigs.getByName("release")
 		}
 	}
 
