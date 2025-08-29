@@ -91,7 +91,7 @@ private fun MainScreenContent(
 						InitialRoute.Login ->
 							Modifier
 								.navigationBarsPadding()
-								.padding(bottom = 190.dp)
+								.padding(bottom = 130.dp)	// 기존 190, 배포 환경 구성 완료 전까지 감추기
 
 						else ->
 							Modifier
