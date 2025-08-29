@@ -75,6 +75,7 @@ internal class LoginViewModel @Inject constructor(
 			onFailure = {
 				cancelGoogleAuthorization()
 			},
+			onAlertUpdateGooglePlayServices = ::alterGoogleServicesUpdate,
 		)
 	}
 
@@ -89,6 +90,19 @@ internal class LoginViewModel @Inject constructor(
 				SnackBarState.Error(
 					uiString = UiString.ResourceString(
 						resId = R.string.login_snackbar_login_error,
+					),
+				),
+			)
+		}
+	}
+
+	private fun alterGoogleServicesUpdate() {
+		_uiState.value = LoginUiState.LoginIdle
+		viewModelScope.launch {
+			_snackBarFlow.emit(
+				SnackBarState.Error(
+					uiString = UiString.ResourceString(
+						resId = R.string.login_snackbar_login_error_need_google_services_update,
 					),
 				),
 			)

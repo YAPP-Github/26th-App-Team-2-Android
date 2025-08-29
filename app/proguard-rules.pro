@@ -36,3 +36,7 @@
 -keep,allowoptimization,allowshrinking,allowobfuscation class <3>
 -keep,allowobfuscation,allowshrinking class retrofit2.Response
 ## ------------------ kakao -------------------
+
+# navigation.route 패키지 전체 보호
+-keep class com.yapp.breake.core.navigation.route.** { *; }
+
