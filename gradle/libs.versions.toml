@@ -6,7 +6,7 @@ targetSdk = "35"
 
 ## App version
 versionCode = "9"
-versionName = "1.1.0"
+versionName = "1.1.1"
 
 ## Android gradle plugin
 agp = "8.10.1"
