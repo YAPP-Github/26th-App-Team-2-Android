@@ -58,7 +58,7 @@ class InstalledAppScannerImpl @Inject constructor(
 				}
 			}
 			.filterNot { metaData ->
-				metaData.packageName == "com.yapp.breake"
+				metaData.packageName == context.packageName
 			}
 	}
 
