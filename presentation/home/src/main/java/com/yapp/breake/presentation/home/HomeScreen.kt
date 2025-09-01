@@ -33,10 +33,9 @@ import com.yapp.breake.presentation.home.component.StopUsingDialog
 import com.yapp.breake.presentation.home.contract.HomeEvent
 import com.yapp.breake.presentation.home.contract.HomeModalState
 import com.yapp.breake.presentation.home.contract.HomeUiState
-import com.yapp.breake.presentation.home.screen.BlockingScreen
 import com.yapp.breake.presentation.home.screen.ListScreen
 import com.yapp.breake.presentation.home.screen.NothingScreen
-import com.yapp.breake.presentation.home.screen.UsingScreen
+import com.yapp.breake.presentation.home.screen.TickingScreen
 
 @Composable
 internal fun HomeRoute(
@@ -149,23 +148,15 @@ private fun HomeContent(
 				)
 			}
 
-			is HomeUiState.Blocking -> {
-				BlockingScreen(
-					appGroup = state.appGroup,
+			is HomeUiState.Ticking -> {
+				TickingScreen(
+					appGroups = state.appGroups,
+					onAddClick = onShowAddScreen,
 					onEditClick = {
-						onShowEditScreen(state.appGroup.id)
-					},
-				)
-			}
-
-			is HomeUiState.Using -> {
-				UsingScreen(
-					appGroup = state.appGroup,
-					onEditClick = {
-						onShowEditScreen(state.appGroup.id)
+						onShowEditScreen(it.id)
 					},
 					onStopClick = {
-						viewModel.showStopUsingDialog(state.appGroup)
+						viewModel.showStopUsingDialog(it)
 					},
 				)
 			}
