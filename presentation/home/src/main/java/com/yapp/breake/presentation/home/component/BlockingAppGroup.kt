@@ -59,7 +59,7 @@ internal fun BlockingAppGroup(
 				)
 			}
 		}
-		VerticalSpacer(62.dp)
+		VerticalSpacer(10.dp)
 	}
 }
 
