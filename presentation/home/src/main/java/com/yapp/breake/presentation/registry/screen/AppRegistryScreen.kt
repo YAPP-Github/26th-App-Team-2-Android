@@ -212,6 +212,8 @@ fun AppItem(
 	app: AppModel,
 	onSelectClick: () -> Unit,
 ) {
+	val interactionSource = remember { MutableInteractionSource() }
+
 	Row(
 		modifier = Modifier
 			.fillMaxWidth()
@@ -229,6 +231,7 @@ fun AppItem(
 				disabledSelectedColor = White,
 				disabledUnselectedColor = Gray700,
 			),
+			interactionSource = interactionSource,
 		)
 
 		HorizontalSpacer(16.dp)
@@ -239,13 +242,24 @@ fun AppItem(
 			),
 			contentDescription = null,
 			modifier = Modifier
-				.size(28.dp),
+				.size(28.dp)
+				.clickable(
+					indication = null,
+					interactionSource = interactionSource,
+					onClick = onSelectClick,
+				),
 		)
 
 		HorizontalSpacer(12.dp)
 
 		Text(
 			text = app.name,
+			modifier = Modifier
+				.clickable(
+					indication = null,
+					interactionSource = interactionSource,
+					onClick = onSelectClick,
+				),
 			style = BrakeTheme.typography.body16M,
 			color = White,
 			maxLines = 1,
