@@ -2,6 +2,7 @@ package com.yapp.breake.presentation.home.component
 
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
@@ -19,8 +20,8 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.yapp.breake.core.designsystem.component.HorizontalSpacer
 import com.yapp.breake.core.designsystem.theme.BrakeTheme
-import com.yapp.breake.core.designsystem.theme.Gray900
-import com.yapp.breake.core.designsystem.theme.White
+import com.yapp.breake.core.designsystem.theme.Error
+import com.yapp.breake.core.designsystem.theme.Gray950
 import com.yapp.breake.core.designsystem.util.MultipleEventsCutter
 import com.yapp.breake.core.designsystem.util.get
 import com.yapp.breake.presentation.home.R
@@ -33,14 +34,14 @@ internal fun StopButton(
 	val multipleEventsCutter = remember { MultipleEventsCutter.get() }
 
 	Button(
-		shape = RoundedCornerShape(16.dp),
+		shape = RoundedCornerShape(8.dp),
 		colors = ButtonDefaults.buttonColors(
-			containerColor = Gray900,
-			contentColor = White,
+			containerColor = Gray950.copy(alpha = 0.35f),
+			contentColor = Error,
 		),
 		contentPadding = PaddingValues(vertical = 12.dp, horizontal = 20.dp),
 		onClick = { multipleEventsCutter.processEvent(onStopClick) },
-		modifier = modifier,
+		modifier = modifier.fillMaxWidth(),
 	) {
 		Row(
 			verticalAlignment = Alignment.CenterVertically,

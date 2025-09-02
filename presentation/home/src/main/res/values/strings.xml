@@ -7,6 +7,14 @@
     <string name="second">초</string>
     <string name="stop_usage">사용 종료</string>
 
+	<!-- Group Type -->
+	<string name="group_state_using">사용중</string>
+	<string name="group_state_blocking">사용 금지</string>
+	<string name="group_state_need_setting">사용전</string>
+	<string name="group_title_using">현재 사용 중인 그룹</string>
+	<string name="group_title_blocking">사용 금지 그룹</string>
+	<string name="group_title_need_setting">사용 전 그룹</string>
+
     <!-- Home Nothing Screen -->
     <string name="nothing_screen_title">스크린타임, 이제 줄여볼까요?</string>
     <string name="nothing_screen_subtitle">사용을 자제할 앱을 추가해주세요.</string>
@@ -27,7 +35,7 @@
 
     <!-- Content Descriptions -->
     <string name="add_button_content_description">추가 버튼</string>
-    <string name="stop_button_content_description">중지 버튼</string>
+    <string name="stop_button_content_description">사용 중지</string>
     <string name="home_image_content_description">홈 이미지</string>
     <string name="list_screen_image_content_description">리스트 화면 이미지</string>
     <string name="app_group_icon_content_description">앱 그룹 아이콘</string>

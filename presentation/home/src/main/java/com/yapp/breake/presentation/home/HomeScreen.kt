@@ -5,10 +5,6 @@ import android.content.pm.PackageManager
 import android.os.Build
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.compose.animation.AnimatedContent
-import androidx.compose.animation.fadeIn
-import androidx.compose.animation.fadeOut
-import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
@@ -33,10 +29,9 @@ import com.yapp.breake.presentation.home.component.StopUsingDialog
 import com.yapp.breake.presentation.home.contract.HomeEvent
 import com.yapp.breake.presentation.home.contract.HomeModalState
 import com.yapp.breake.presentation.home.contract.HomeUiState
-import com.yapp.breake.presentation.home.screen.BlockingScreen
 import com.yapp.breake.presentation.home.screen.ListScreen
 import com.yapp.breake.presentation.home.screen.NothingScreen
-import com.yapp.breake.presentation.home.screen.UsingScreen
+import com.yapp.breake.presentation.home.screen.TickingScreen
 
 @Composable
 internal fun HomeRoute(
@@ -123,52 +118,34 @@ private fun HomeContent(
 	onShowAddScreen: () -> Unit,
 	onShowEditScreen: (Long) -> Unit,
 ) {
-	AnimatedContent(
-		targetState = homeUiState,
-		transitionSpec = {
-			fadeIn() togetherWith fadeOut()
-		},
-		label = "HomeContent",
-	) { state ->
-		when (state) {
-			HomeUiState.Loading -> {}
+	when (val state = homeUiState) {
+		HomeUiState.Loading -> {}
 
-			HomeUiState.Nothing -> {
-				NothingScreen(
-					onAddClick = onShowAddScreen,
-				)
-			}
+		HomeUiState.Nothing -> {
+			NothingScreen(
+				onAddClick = onShowAddScreen,
+			)
+		}
 
-			is HomeUiState.GroupList -> {
-				ListScreen(
-					appGroups = state.appGroups,
-					onEditClick = {
-						onShowEditScreen(it.id)
-					},
-					onAddClick = onShowAddScreen,
-				)
-			}
+		is HomeUiState.GroupList -> {
+			ListScreen(
+				appGroups = state.appGroups,
+				onEditClick = {
+					onShowEditScreen(it.id)
+				},
+				onAddClick = onShowAddScreen,
+			)
+		}
 
-			is HomeUiState.Blocking -> {
-				BlockingScreen(
-					appGroup = state.appGroup,
-					onEditClick = {
-						onShowEditScreen(state.appGroup.id)
-					},
-				)
-			}
-
-			is HomeUiState.Using -> {
-				UsingScreen(
-					appGroup = state.appGroup,
-					onEditClick = {
-						onShowEditScreen(state.appGroup.id)
-					},
-					onStopClick = {
-						viewModel.showStopUsingDialog(state.appGroup)
-					},
-				)
-			}
+		is HomeUiState.Ticking -> {
+			TickingScreen(
+				appGroups = state.appGroups,
+				onAddClick = onShowAddScreen,
+				onEditClick = {
+					onShowEditScreen(it.id)
+				},
+				onStopClick = viewModel::showStopUsingDialog,
+			)
 		}
 	}
 }

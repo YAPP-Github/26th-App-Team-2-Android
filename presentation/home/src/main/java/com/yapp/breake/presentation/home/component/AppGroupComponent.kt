@@ -1,7 +1,6 @@
 package com.yapp.breake.presentation.home.component
 
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -9,7 +8,6 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -27,27 +25,29 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.yapp.breake.core.designsystem.component.HorizontalSpacer
-import com.yapp.breake.core.designsystem.theme.AppItemGradient
 import com.yapp.breake.core.designsystem.theme.BrakeTheme
 import com.yapp.breake.core.model.app.App
+import com.yapp.breake.core.model.app.AppGroupState
 import com.yapp.breake.core.util.toImageBitmap
 import com.yapp.breake.presentation.home.R
 
 @Composable
 internal fun AppGroupBox(
 	modifier: Modifier = Modifier,
+	innerModifier: Modifier = Modifier,
 	content: @Composable ColumnScope.() -> Unit,
 ) {
 	Box(
-		modifier = modifier
+		modifier = Modifier
+			.fillMaxWidth()
 			.clip(RoundedCornerShape(16.dp))
-			.background(AppItemGradient),
+			then(modifier),
 	) {
 		Column(
 			content = content,
 			modifier = Modifier
 				.fillMaxWidth()
-				.padding(16.dp),
+				.then(innerModifier),
 		)
 	}
 }
@@ -55,6 +55,7 @@ internal fun AppGroupBox(
 @Composable
 internal fun AppGroupTitle(
 	name: String,
+	appGroupState: AppGroupState,
 	clickable: Boolean,
 	onEditClick: () -> Unit,
 ) {
@@ -62,21 +63,17 @@ internal fun AppGroupTitle(
 		verticalAlignment = Alignment.CenterVertically,
 		modifier = Modifier.fillMaxWidth(),
 	) {
-		Image(
-			painter = painterResource(R.drawable.ic_app_group),
-			contentDescription = stringResource(R.string.app_group_icon_content_description),
-		)
-		HorizontalSpacer(8.dp)
 		Text(
 			text = name,
 			style = BrakeTheme.typography.body16M,
 			color = MaterialTheme.colorScheme.onSurface,
 		)
-		HorizontalSpacer(1f)
+		HorizontalSpacer(8.dp)
 		Image(
 			painter = painterResource(R.drawable.ic_edit),
 			contentDescription = stringResource(R.string.edit_app_group_icon_content_description),
 			modifier = Modifier
+				.size(24.dp)
 				.clip(CircleShape)
 				.clickable(
 					enabled = clickable,
@@ -84,6 +81,8 @@ internal fun AppGroupTitle(
 				),
 			alpha = if (clickable) 1f else 0.4f,
 		)
+		HorizontalSpacer(1f)
+		GroupStateIcon.entries.find { it.groupState == appGroupState }?.icon?.invoke(Modifier)
 	}
 }
 
@@ -106,8 +105,7 @@ internal fun AppsList(
 		horizontalArrangement = Arrangement.spacedBy(4.dp),
 		verticalAlignment = Alignment.CenterVertically,
 		modifier = Modifier
-			.fillMaxWidth()
-			.padding(horizontal = 12.dp),
+			.fillMaxWidth(),
 	) {
 		apps.forEach { app ->
 			val icon = app.icon?.toImageBitmap()

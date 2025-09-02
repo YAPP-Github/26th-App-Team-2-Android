@@ -12,6 +12,7 @@ import com.yapp.breake.presentation.home.contract.HomeEvent
 import com.yapp.breake.presentation.home.contract.HomeModalState
 import com.yapp.breake.presentation.home.contract.HomeUiState
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.collections.immutable.toPersistentList
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
@@ -52,16 +53,15 @@ internal class HomeViewModel @Inject constructor(
 
 		appGroups.forEach { appGroup ->
 			when (appGroup.appGroupState) {
-				AppGroupState.Using -> return HomeUiState.Using(appGroup)
-				AppGroupState.Blocking, AppGroupState.SnoozeBlocking -> return HomeUiState.Blocking(
-					appGroup,
+				AppGroupState.Blocking, AppGroupState.SnoozeBlocking, AppGroupState.Using -> return HomeUiState.Ticking(
+					appGroups.toPersistentList(),
 				)
 
 				AppGroupState.NeedSetting -> {}
 			}
 		}
 
-		return HomeUiState.GroupList(appGroups)
+		return HomeUiState.GroupList(appGroups.toPersistentList())
 	}
 
 	fun showStopUsingDialog(appGroup: AppGroup) {

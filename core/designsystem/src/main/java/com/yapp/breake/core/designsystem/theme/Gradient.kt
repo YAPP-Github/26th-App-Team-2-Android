@@ -29,10 +29,11 @@ val AppItemGradient = Brush.linearGradient(
 	),
 )
 
-val BackgroundGradient = Brush.verticalGradient(
-	colorStops = arrayOf(
-		0f to Color(0x26C0DBFF),
-		0.5817f to Color(0x0BC0DBFF),
-		1f to Color(0x00C0DBFF),
+val BlockingTimerBackgroundGradient = Brush.verticalGradient(
+	colors = listOf(
+		Color(0xFF353A42),
+		Color(0xFF292C31),
 	),
+	startY = 0f,
+	endY = Float.POSITIVE_INFINITY,
 )
