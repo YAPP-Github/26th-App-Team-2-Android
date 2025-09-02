@@ -33,6 +33,7 @@ import com.yapp.breake.core.navigation.compositionlocal.LocalMainAction
 import com.yapp.breake.core.navigation.compositionlocal.LocalNavigatorAction
 import com.yapp.breake.core.navigation.compositionlocal.LocalNavigatorProvider
 import com.yapp.breake.core.ui.SnackBarState
+import com.yapp.breake.presentation.login.component.GoogleLoginButton
 import com.yapp.breake.presentation.login.component.KakaoLoginButton
 import com.yapp.breake.presentation.login.component.LoginNoticeText
 import com.yapp.breake.presentation.login.model.LoginNavState.NavigateToHome
@@ -190,7 +191,7 @@ fun LoginScreen(
 			modifier = Modifier
 				.constrainAs(notice) {
 					top.linkTo(title.bottom)
-					bottom.linkTo(kakaoLoginButton.top, margin = 20.dp)
+					bottom.linkTo(googleLoginButton.top, margin = 20.dp)
 					start.linkTo(parent.start)
 					end.linkTo(parent.end)
 					// top, bottom 과 linkTo 관계가 설정되어 있을 때, 해당 컴포넌트 y 위치를 바텀(1f)으로 조정
@@ -201,17 +202,17 @@ fun LoginScreen(
 			onTermsClick = onTermsClick,
 		)
 
-//		GoogleLoginButton(
-//			modifier = Modifier
-//				.padding(horizontal = padding)
-//				.widthIn(max = 400.dp)
-//				.constrainAs(googleLoginButton) {
-//					bottom.linkTo(kakaoLoginButton.top, margin = 12.dp)
-//					start.linkTo(parent.start)
-//					end.linkTo(parent.end)
-//				},
-//			onClick = onGoogleLoginClick,
-//		)
+		GoogleLoginButton(
+			modifier = Modifier
+				.padding(horizontal = padding)
+				.widthIn(max = 400.dp)
+				.constrainAs(googleLoginButton) {
+					bottom.linkTo(kakaoLoginButton.top, margin = 12.dp)
+					start.linkTo(parent.start)
+					end.linkTo(parent.end)
+				},
+			onClick = onGoogleLoginClick,
+		)
 
 		KakaoLoginButton(
 			modifier = Modifier
