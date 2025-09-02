@@ -4,7 +4,9 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.LocalOverscrollFactory
 import androidx.compose.foundation.background
 import androidx.compose.foundation.gestures.ScrollableDefaults
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -50,23 +52,16 @@ internal fun ListScreen(
 ) {
 	val needSettingState = rememberLazyListState()
 	// 현재 보이는 아이템의 index 추적
-	val currentOffset by remember {
-		derivedStateOf {
-			needSettingState.firstVisibleItemScrollOffset
-		}
-	}
 	val currentIndex by remember {
 		derivedStateOf {
 			// 첫 아이템 패딩 고려
-			val baseIndex = when (val lazyIndex = needSettingState.firstVisibleItemIndex) {
-				0 -> lazyIndex + 1
+			val lazyIndex = needSettingState.firstVisibleItemIndex
+			val currentOffset = needSettingState.firstVisibleItemScrollOffset
+			val adjustedIndex = when {
+				currentOffset >= 80 -> lazyIndex + 1
 				else -> lazyIndex
 			}
-			val adjustedIndex = when {
-				currentOffset >= 270 -> baseIndex + 1
-				else -> baseIndex
-			}
-			adjustedIndex
+			adjustedIndex + 1
 		}
 	}
 
@@ -125,8 +120,9 @@ internal fun ListScreen(
 					LazyRow(
 						flingBehavior = ScrollableDefaults.flingBehavior(),
 						state = needSettingState,
+						contentPadding = PaddingValues(horizontal = 28.dp),
+						horizontalArrangement = Arrangement.spacedBy(12.dp),
 					) {
-						item { HorizontalSpacer(28.dp) }
 						itemsIndexed(appGroups) { index, appGroup ->
 							AppGroupItem(
 								appGroup = appGroup,
@@ -136,11 +132,7 @@ internal fun ListScreen(
 									.background(AppItemGradient),
 								innerModifier = Modifier.padding(16.dp),
 							)
-							if (index != appGroups.lastIndex) {
-								HorizontalSpacer(12.dp)
-							}
 						}
-						item { HorizontalSpacer(28.dp) }
 					}
 				}
 			}

@@ -3,6 +3,7 @@ package com.yapp.breake.presentation.home.screen
 import androidx.compose.foundation.LocalOverscrollFactory
 import androidx.compose.foundation.background
 import androidx.compose.foundation.gestures.ScrollableDefaults
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.aspectRatio
@@ -29,7 +30,6 @@ import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.drawBehind
@@ -79,23 +79,16 @@ internal fun TickingScreen(
 	val tickingPagerState = rememberPagerState(pageCount = { tickingGroups.size })
 	val needSettingState = rememberLazyListState()
 	// 현재 보이는 아이템의 index 추적
-	val currentOffset by remember {
-		derivedStateOf {
-			needSettingState.firstVisibleItemScrollOffset
-		}
-	}
 	val currentIndex by remember {
 		derivedStateOf {
 			// 첫 아이템 패딩 고려
-			val baseIndex = when (val lazyIndex = needSettingState.firstVisibleItemIndex) {
-				0 -> lazyIndex + 1
+			val lazyIndex = needSettingState.firstVisibleItemIndex
+			val currentOffset = needSettingState.firstVisibleItemScrollOffset
+			val adjustedIndex = when {
+				currentOffset >= 80 -> lazyIndex + 1
 				else -> lazyIndex
 			}
-			val adjustedIndex = when {
-				currentOffset >= 270 -> baseIndex + 1
-				else -> baseIndex
-			}
-			adjustedIndex
+			adjustedIndex + 1
 		}
 	}
 
@@ -220,8 +213,9 @@ internal fun TickingScreen(
 								LazyRow(
 									flingBehavior = ScrollableDefaults.flingBehavior(),
 									state = needSettingState,
+									contentPadding = PaddingValues(horizontal = 28.dp),
+									horizontalArrangement = Arrangement.spacedBy(12.dp),
 								) {
-									item { HorizontalSpacer(28.dp) }
 									itemsIndexed(notUsingGroups) { index, appGroup ->
 										AppGroupItem(
 											appGroup = appGroup,
@@ -231,15 +225,13 @@ internal fun TickingScreen(
 												.background(AppItemGradient),
 											innerModifier = Modifier.padding(16.dp),
 										)
-										if (index != notUsingGroups.lastIndex) {
-											HorizontalSpacer(12.dp)
-										}
 									}
-									item { HorizontalSpacer(28.dp) }
 								}
 							}
 						}
 					}
+
+					item { VerticalSpacer(12.dp) }
 				}
 			},
 		)
