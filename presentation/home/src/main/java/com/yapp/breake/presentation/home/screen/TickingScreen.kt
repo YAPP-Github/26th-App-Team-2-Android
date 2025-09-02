@@ -60,7 +60,7 @@ internal fun TickingScreen(
 	onEditClick: (AppGroup) -> Unit,
 	onStopClick: (AppGroup) -> Unit,
 ) {
-	val (tickingGroups, notUsingGroups) = remember {
+	val (tickingGroups, notUsingGroups) = remember(appGroups) {
 		derivedStateOf {
 			val blockingBuilder = persistentListOf<AppGroup>().builder()
 			val remainingBuilder = persistentListOf<AppGroup>().builder()
@@ -133,14 +133,17 @@ internal fun TickingScreen(
 						item { VerticalSpacer(24.dp) }
 
 						item {
+							// currentPage가 범위를 벗어나지 않도록 보장
+							val safeCurrentPage = tickingPagerState.currentPage.coerceIn(0, tickingGroups.size - 1)
+
 							AppGroupSubtitle(
 								modifier = Modifier.padding(horizontal = 28.dp),
-								titleResId = if (tickingGroups[tickingPagerState.currentPage].appGroupState == AppGroupState.Using) {
+								titleResId = if (tickingGroups.getOrNull(safeCurrentPage)?.appGroupState == AppGroupState.Using) {
 									R.string.group_state_using
 								} else {
 									R.string.group_state_blocking
 								},
-								currentIndex = tickingPagerState.currentPage + 1,
+								currentIndex = safeCurrentPage + 1,
 								totalCount = tickingGroups.size,
 							)
 

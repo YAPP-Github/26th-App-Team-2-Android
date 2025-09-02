@@ -5,10 +5,6 @@ import android.content.pm.PackageManager
 import android.os.Build
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.compose.animation.AnimatedContent
-import androidx.compose.animation.fadeIn
-import androidx.compose.animation.fadeOut
-import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
@@ -122,44 +118,34 @@ private fun HomeContent(
 	onShowAddScreen: () -> Unit,
 	onShowEditScreen: (Long) -> Unit,
 ) {
-	AnimatedContent(
-		targetState = homeUiState,
-		transitionSpec = {
-			fadeIn() togetherWith fadeOut()
-		},
-		label = "HomeContent",
-	) { state ->
-		when (state) {
-			HomeUiState.Loading -> {}
+	when (val state = homeUiState) {
+		HomeUiState.Loading -> {}
 
-			HomeUiState.Nothing -> {
-				NothingScreen(
-					onAddClick = onShowAddScreen,
-				)
-			}
+		HomeUiState.Nothing -> {
+			NothingScreen(
+				onAddClick = onShowAddScreen,
+			)
+		}
 
-			is HomeUiState.GroupList -> {
-				ListScreen(
-					appGroups = state.appGroups,
-					onEditClick = {
-						onShowEditScreen(it.id)
-					},
-					onAddClick = onShowAddScreen,
-				)
-			}
+		is HomeUiState.GroupList -> {
+			ListScreen(
+				appGroups = state.appGroups,
+				onEditClick = {
+					onShowEditScreen(it.id)
+				},
+				onAddClick = onShowAddScreen,
+			)
+		}
 
-			is HomeUiState.Ticking -> {
-				TickingScreen(
-					appGroups = state.appGroups,
-					onAddClick = onShowAddScreen,
-					onEditClick = {
-						onShowEditScreen(it.id)
-					},
-					onStopClick = {
-						viewModel.showStopUsingDialog(it)
-					},
-				)
-			}
+		is HomeUiState.Ticking -> {
+			TickingScreen(
+				appGroups = state.appGroups,
+				onAddClick = onShowAddScreen,
+				onEditClick = {
+					onShowEditScreen(it.id)
+				},
+				onStopClick = viewModel::showStopUsingDialog,
+			)
 		}
 	}
 }
