@@ -9,7 +9,9 @@
 			android:name=".OverlayActivity"
 			android:configChanges="uiMode"
 			android:exported="true"
-			android:launchMode="singleTop"
+			android:launchMode="singleTask"
+			android:taskAffinity=""
+			android:excludeFromRecents="true"
 			android:theme="@style/Theme.AppCompat.DayNight.NoActionBar">
 
 			<intent-filter>

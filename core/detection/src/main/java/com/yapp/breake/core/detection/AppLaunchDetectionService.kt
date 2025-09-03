@@ -37,6 +37,7 @@ class AppLaunchDetectionService : AccessibilityService() {
 
 	/** 현재 유저의 사용 앱 캐싱, AccessibilityService 활용이 가장 정확도가 높음 **/
 	private var currentAppPkg: String? = null
+	private var previousAppPkg: String? = null
 
 	/**
 	 * 동적 BroadcastReceiver 정의
@@ -94,6 +95,7 @@ class AppLaunchDetectionService : AccessibilityService() {
 						return
 					} else {
 						Timber.i("앱 실행 감지: 패키지명: $packageName, 클래스명: $className")
+						previousAppPkg = currentAppPkg
 						currentAppPkg = packageName
 					}
 
