@@ -56,9 +56,7 @@ class AppLaunchDetectionService : AccessibilityService() {
 						)
 					}",
 				)
-				if (previousAppPkg != currentAppPkg) {
-					showOverlay(intent)
-				}
+				showOverlay(intent)
 			}
 		}
 	}
