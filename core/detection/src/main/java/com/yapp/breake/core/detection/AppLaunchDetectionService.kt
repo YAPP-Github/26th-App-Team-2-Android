@@ -32,7 +32,7 @@ class AppLaunchDetectionService : AccessibilityService() {
 	lateinit var appGroupRepository: AppGroupRepository
 
 	private val serviceJob = SupervisorJob()
-	private val serviceScope = CoroutineScope(Dispatchers.Main + serviceJob)
+	private val serviceScope = CoroutineScope(Dispatchers.IO + serviceJob)
 
 	/** 현재 유저의 사용 앱 캐싱, AccessibilityService 활용이 가장 정확도가 높음 **/
 	private var currentAppPkg: String? = null
