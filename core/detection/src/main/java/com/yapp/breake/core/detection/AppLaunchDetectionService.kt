@@ -1,7 +1,6 @@
 package com.yapp.breake.core.detection
 
 import android.accessibilityservice.AccessibilityService
-import android.accessibilityservice.AccessibilityServiceInfo
 import android.annotation.SuppressLint
 import android.content.BroadcastReceiver
 import android.content.Context
@@ -33,18 +32,20 @@ class AppLaunchDetectionService : AccessibilityService() {
 	lateinit var appGroupRepository: AppGroupRepository
 
 	private val serviceJob = SupervisorJob()
-	private val serviceScope = CoroutineScope(Dispatchers.Main + serviceJob)
+	private val serviceScope = CoroutineScope(Dispatchers.IO + serviceJob)
 
 	/** 현재 유저의 사용 앱 캐싱, AccessibilityService 활용이 가장 정확도가 높음 **/
 	private var currentAppPkg: String? = null
 	private var previousAppPkg: String? = null
 
+	private var isScreenOn: Boolean = true
+
 	/**
-	 * 동적 BroadcastReceiver 정의
+	 * 차단 예약 알람 이벤트의 동적 BroadcastReceiver 정의
 	 *
-	 * NotificationReceiver에서 전달받은 인텐트를 처리하여 오버레이 띄우기 시도
+	 * NotificationReceiver에서 전달받은 알람의 인텐트를 감지하여 오버레이 띄우기 시도
 	 */
-	private val commandReceiver = object : BroadcastReceiver() {
+	private val alarmReceiver = object : BroadcastReceiver() {
 		override fun onReceive(context: Context?, intent: Intent) {
 			val pkg = intent.`package`
 			if (pkg == applicationContext.packageName) {
@@ -62,6 +63,29 @@ class AppLaunchDetectionService : AccessibilityService() {
 	}
 
 	/**
+	 * 화면 켜짐/꺼짐 이벤트의 동적 BroadcastReceiver 정의
+	 *
+	 * 화면이 꺼진 상태에서 백그라운드 실행 (특히 유튜브 백그라운드) 으로 인해 AccessibilityEvent가 계속 발생하는 문제 방지
+	 */
+	private val screenReaderReceiver = object : BroadcastReceiver() {
+		override fun onReceive(context: Context?, intent: Intent) {
+			when (intent.action) {
+				Intent.ACTION_SCREEN_ON -> {
+					if (!isScreenOn) {
+						isScreenOn = true
+					}
+				}
+
+				Intent.ACTION_SCREEN_OFF -> {
+					if (isScreenOn) {
+						isScreenOn = false
+					}
+				}
+			}
+		}
+	}
+
+	/**
 	 * registerReceiver() 를 통해 동적 BroadcastReceiver 등록
 	 *
 	 * IntentFilter 를 통해 송신자가 수신자 (해당 BroadcastReceiver) 를 식별할 수 있도록 설정
@@ -69,22 +93,33 @@ class AppLaunchDetectionService : AccessibilityService() {
 	@SuppressLint("UnspecifiedRegisterReceiverFlag")
 	override fun onCreate() {
 		super.onCreate()
+
+		val screenIntentFilter = IntentFilter().apply {
+			addAction(Intent.ACTION_SCREEN_ON)
+			addAction(Intent.ACTION_SCREEN_OFF)
+		}
+
 		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
 			registerReceiver(
-				commandReceiver,
+				alarmReceiver,
 				IntentFilter(IntentConfig.RECEIVER_IDENTITY),
 				RECEIVER_NOT_EXPORTED,
 			)
-		} else {
 			registerReceiver(
-				commandReceiver,
-				IntentFilter(IntentConfig.RECEIVER_IDENTITY),
+				screenReaderReceiver,
+				screenIntentFilter,
+				RECEIVER_NOT_EXPORTED,
 			)
+		} else {
+			registerReceiver(alarmReceiver, IntentFilter(IntentConfig.RECEIVER_IDENTITY))
+			registerReceiver(screenReaderReceiver, screenIntentFilter)
 		}
 	}
 
 	override fun onAccessibilityEvent(event: AccessibilityEvent?) {
 		if (event?.eventType == AccessibilityEvent.TYPE_WINDOW_STATE_CHANGED) {
+			if (!isScreenOn) return
+
 			val packageName = event.packageName?.toString()
 			val className = event.className?.toString()
 
@@ -203,19 +238,10 @@ class AppLaunchDetectionService : AccessibilityService() {
 		// 접근성 서비스 중단에 맞춘 이벤트 정의해야 함
 	}
 
-	private fun updateServiceInfo(packageNames: Array<String>) {
-		val info = AccessibilityServiceInfo().apply {
-			eventTypes = AccessibilityEvent.TYPE_WINDOW_STATE_CHANGED
-			feedbackType = AccessibilityServiceInfo.FEEDBACK_GENERIC
-			this.packageNames = packageNames
-		}
-		this.serviceInfo = info
-		Timber.i("접근성 서비스가 업데이트되었고 다음을 모니터링하도록 설정됨: ${packageNames.joinToString()}")
-	}
-
 	override fun onDestroy() {
 		serviceJob.cancel()
-		unregisterReceiver(commandReceiver)
+		unregisterReceiver(alarmReceiver)
+		unregisterReceiver(screenReaderReceiver)
 		super.onDestroy()
 		Timber.d("접근성 서비스가 소멸되었습니다.")
 	}
