@@ -24,11 +24,9 @@ internal fun BlockingAppGroup(
 	appGroup: AppGroup,
 	onEditClick: () -> Unit,
 	modifier: Modifier = Modifier,
-	innerModifier: Modifier = Modifier,
 ) {
 	AppGroupBox(
 		modifier = modifier,
-		innerModifier = innerModifier,
 	) {
 		AppGroupItemContent(
 			appGroup = appGroup,
@@ -73,7 +71,6 @@ private fun BlockingScreenPreview() {
 			modifier = Modifier
 				.fillMaxWidth()
 				.padding(horizontal = 16.dp),
-			innerModifier = Modifier.padding(16.dp),
 		)
 	}
 }

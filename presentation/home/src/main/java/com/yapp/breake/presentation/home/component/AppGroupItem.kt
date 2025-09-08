@@ -12,19 +12,19 @@ import com.yapp.breake.core.model.app.AppGroup
 
 @Composable
 internal fun AppGroupItem(
-	modifier: Modifier = Modifier,
-	innerModifier: Modifier = Modifier,
 	appGroup: AppGroup,
-	clickable: Boolean = true,
 	onEditClick: () -> Unit,
+	modifier: Modifier = Modifier,
+	clickable: Boolean = true,
+	showSummary: Boolean = false,
 ) {
 	AppGroupBox(
 		modifier = modifier,
-		innerModifier = innerModifier,
 	) {
 		AppGroupItemContent(
 			appGroup = appGroup,
 			clickable = clickable,
+			showSummary = showSummary,
 			onEditClick = onEditClick,
 		)
 	}
@@ -32,11 +32,12 @@ internal fun AppGroupItem(
 
 @Composable
 internal fun AppGroupItemContent(
-	modifier: Modifier = Modifier,
 	appGroup: AppGroup,
-	clickable: Boolean = true,
 	onEditClick: () -> Unit,
+	modifier: Modifier = Modifier,
+	clickable: Boolean = true,
 	isDimmed: Boolean = false,
+	showSummary: Boolean = false,
 ) {
 	Column(
 		modifier = modifier,
@@ -51,6 +52,7 @@ internal fun AppGroupItemContent(
 		AppsList(
 			apps = appGroup.apps,
 			isDimmed = isDimmed,
+			showSummary = showSummary,
 		)
 	}
 }

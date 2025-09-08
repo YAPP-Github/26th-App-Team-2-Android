@@ -65,40 +65,38 @@ internal enum class GroupStateIcon(
 			)
 		},
 	),
-	;
+}
 
-	companion object {
-		@Composable
-		private fun ChipIconTemplate(
-			modifier: Modifier = Modifier,
-			contentColor: Color,
-			@DrawableRes iconResId: Int,
-			@StringRes contentResId: Int,
-			contentDescription: String,
-		) {
-			Row(
-				modifier = modifier
-					.clip(RoundedCornerShape(36.dp))
-					.background(Gray800)
-					.padding(horizontal = 12.dp)
-					.padding(vertical = 4.dp),
-				horizontalArrangement = Arrangement.Center,
-				verticalAlignment = Alignment.CenterVertically,
-			) {
-				Icon(
-					painter = painterResource(id = iconResId),
-					contentDescription = contentDescription,
-					tint = contentColor,
-				)
+@Composable
+private fun ChipIconTemplate(
+	modifier: Modifier = Modifier,
+	contentColor: Color,
+	@DrawableRes iconResId: Int,
+	@StringRes contentResId: Int,
+	contentDescription: String,
+) {
+	Row(
+		modifier = modifier
+			.clip(RoundedCornerShape(36.dp))
+			.background(Gray800)
+			.padding(horizontal = 12.dp)
+			.padding(vertical = 4.dp),
+		horizontalArrangement = Arrangement.Center,
+		verticalAlignment = Alignment.CenterVertically,
+	) {
+		Icon(
+			painter = painterResource(id = iconResId),
+			contentDescription = contentDescription,
+			tint = contentColor,
+		)
 
-				HorizontalSpacer(8.dp)
+		HorizontalSpacer(8.dp)
 
-				Text(
-					text = stringResource(id = contentResId),
-					style = BrakeTheme.typography.subtitle14SB,
-					color = contentColor,
-				)
-			}
-		}
+		Text(
+			text = stringResource(id = contentResId),
+			style = BrakeTheme.typography.subtitle14SB,
+			color = contentColor,
+			maxLines = 1,
+		)
 	}
 }

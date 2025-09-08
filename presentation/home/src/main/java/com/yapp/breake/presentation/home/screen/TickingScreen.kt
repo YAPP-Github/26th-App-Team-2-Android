@@ -6,12 +6,10 @@ import androidx.compose.foundation.gestures.ScrollableDefaults
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.itemsIndexed
@@ -151,7 +149,7 @@ internal fun TickingScreen(
 
 							HorizontalPager(
 								state = tickingPagerState,
-								contentPadding = PaddingValues(horizontal = 32.dp),
+								contentPadding = PaddingValues(horizontal = 28.dp),
 								pageSpacing = 16.dp,
 								modifier = Modifier.fillMaxWidth(),
 							) { index ->
@@ -164,8 +162,6 @@ internal fun TickingScreen(
 										onStopClick = { onStopClick(tickingGroups[index]) },
 										modifier = Modifier
 											.fillMaxWidth()
-											.widthIn(max = 400.dp)
-											.aspectRatio(0.7f)
 											.drawBehind {
 												with(bg) {
 													draw(
@@ -174,10 +170,9 @@ internal fun TickingScreen(
 														colorFilter = null,
 													)
 												}
-											},
-										innerModifier = Modifier
+											}
 											.padding(horizontal = 24.dp)
-											.padding(top = 16.dp, bottom = 19.dp),
+											.padding(top = 16.dp, bottom = 10.dp),
 									)
 								} else {
 									BlockingAppGroup(
@@ -185,10 +180,7 @@ internal fun TickingScreen(
 										onEditClick = { onEditClick(tickingGroups[index]) },
 										modifier = Modifier
 											.fillMaxWidth()
-											.widthIn(max = 400.dp)
-											.aspectRatio(0.7f)
-											.background(BlockingTimerBackgroundGradient),
-										innerModifier = Modifier
+											.background(BlockingTimerBackgroundGradient)
 											.padding(horizontal = 24.dp)
 											.padding(top = 16.dp, bottom = 19.dp),
 									)
@@ -225,8 +217,8 @@ internal fun TickingScreen(
 											onEditClick = { onEditClick(appGroup) },
 											modifier = Modifier
 												.width(214.dp)
-												.background(AppItemGradient),
-											innerModifier = Modifier.padding(16.dp),
+												.background(AppItemGradient)
+												.padding(16.dp),
 										)
 									}
 								}

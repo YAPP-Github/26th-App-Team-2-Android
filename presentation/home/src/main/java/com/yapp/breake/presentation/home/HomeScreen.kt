@@ -118,7 +118,7 @@ private fun HomeContent(
 	onShowAddScreen: () -> Unit,
 	onShowEditScreen: (Long) -> Unit,
 ) {
-	when (val state = homeUiState) {
+	when (homeUiState) {
 		HomeUiState.Loading -> {}
 
 		HomeUiState.Nothing -> {
@@ -129,7 +129,7 @@ private fun HomeContent(
 
 		is HomeUiState.GroupList -> {
 			ListScreen(
-				appGroups = state.appGroups,
+				appGroups = homeUiState.appGroups,
 				onEditClick = {
 					onShowEditScreen(it.id)
 				},
@@ -139,7 +139,7 @@ private fun HomeContent(
 
 		is HomeUiState.Ticking -> {
 			TickingScreen(
-				appGroups = state.appGroups,
+				appGroups = homeUiState.appGroups,
 				onAddClick = onShowAddScreen,
 				onEditClick = {
 					onShowEditScreen(it.id)

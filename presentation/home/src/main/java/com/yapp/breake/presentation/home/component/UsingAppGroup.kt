@@ -21,11 +21,9 @@ internal fun UsingAppGroup(
 	onEditClick: () -> Unit,
 	onStopClick: () -> Unit,
 	modifier: Modifier = Modifier,
-	innerModifier: Modifier = Modifier,
 ) {
 	AppGroupBox(
 		modifier = modifier,
-		innerModifier = innerModifier,
 	) {
 		AppGroupItemContent(
 			appGroup = appGroup,

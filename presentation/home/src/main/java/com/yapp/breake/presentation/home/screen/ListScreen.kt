@@ -5,6 +5,7 @@ import androidx.compose.foundation.LocalOverscrollFactory
 import androidx.compose.foundation.background
 import androidx.compose.foundation.gestures.ScrollableDefaults
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
@@ -12,11 +13,10 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyRow
-import androidx.compose.foundation.lazy.itemsIndexed
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -43,7 +43,6 @@ import com.yapp.breake.presentation.home.R
 import com.yapp.breake.presentation.home.component.AppGroupItem
 import com.yapp.breake.presentation.home.component.AppGroupSubtitle
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 internal fun ListScreen(
 	appGroups: List<AppGroup>,
@@ -51,10 +50,8 @@ internal fun ListScreen(
 	onAddClick: () -> Unit,
 ) {
 	val needSettingState = rememberLazyListState()
-	// 현재 보이는 아이템의 index 추적
 	val currentIndex by remember {
 		derivedStateOf {
-			// 첫 아이템 패딩 고려
 			val lazyIndex = needSettingState.firstVisibleItemIndex
 			val currentOffset = needSettingState.firstVisibleItemScrollOffset
 			val adjustedIndex = when {
@@ -116,22 +113,27 @@ internal fun ListScreen(
 
 				VerticalSpacer(12.dp)
 
-				CompositionLocalProvider(LocalOverscrollFactory provides null) {
-					LazyRow(
-						flingBehavior = ScrollableDefaults.flingBehavior(),
-						state = needSettingState,
-						contentPadding = PaddingValues(horizontal = 28.dp),
-						horizontalArrangement = Arrangement.spacedBy(12.dp),
-					) {
-						itemsIndexed(appGroups) { index, appGroup ->
-							AppGroupItem(
-								appGroup = appGroup,
-								onEditClick = { onEditClick(appGroup) },
-								modifier = Modifier
-									.width(214.dp)
-									.background(AppItemGradient),
-								innerModifier = Modifier.padding(16.dp),
-							)
+				BoxWithConstraints {
+					val containerWidth = maxWidth
+
+					CompositionLocalProvider(LocalOverscrollFactory provides null) {
+						LazyRow(
+							flingBehavior = ScrollableDefaults.flingBehavior(),
+							state = needSettingState,
+							contentPadding = PaddingValues(horizontal = 28.dp),
+							horizontalArrangement = Arrangement.spacedBy(12.dp),
+						) {
+							items(appGroups) { appGroup ->
+								AppGroupItem(
+									appGroup = appGroup,
+									onEditClick = { onEditClick(appGroup) },
+									showSummary = true,
+									modifier = Modifier
+										.width(containerWidth * 0.8f)
+										.background(AppItemGradient)
+										.padding(16.dp),
+								)
+							}
 						}
 					}
 				}
