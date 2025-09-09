@@ -1,8 +1,10 @@
 package com.yapp.breake.core.designsystem.component
 
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.aspectRatio
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.CircularProgressIndicator
@@ -14,6 +16,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import com.skydoves.landscapist.coil.CoilImage
 import com.yapp.breake.core.designsystem.R
+import com.yapp.breake.core.designsystem.theme.Gray850
 
 @Composable
 fun CircleImage(
@@ -37,11 +40,11 @@ fun CircleImage(
 		// 이미지 요청 실패 시 표시 내용
 		failure = {
 			Box(
-				modifier = Modifier.matchParentSize(),
+				modifier = Modifier.matchParentSize().background(Gray850).padding(15.dp),
 				contentAlignment = Alignment.Center,
 			) {
 				Image(
-					painter = painterResource(id = R.drawable.img_loading_error),
+					painter = painterResource(id = R.drawable.img_profile_default),
 					contentDescription = null,
 					modifier = Modifier.matchParentSize(),
 				)
