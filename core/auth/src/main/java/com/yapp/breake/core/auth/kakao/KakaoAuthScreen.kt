@@ -1,6 +1,7 @@
 package com.yapp.breake.core.auth.kakao
 
 import android.annotation.SuppressLint
+import android.app.Activity
 import android.content.Intent
 import android.view.ViewGroup.LayoutParams
 import android.webkit.WebResourceError
@@ -9,16 +10,18 @@ import android.webkit.WebView
 import android.webkit.WebViewClient
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.core.net.toUri
+import androidx.core.view.WindowInsetsControllerCompat
 import com.yapp.breake.core.auth.BuildConfig
 import com.yapp.breake.core.auth.R
 import timber.log.Timber
@@ -68,6 +71,24 @@ fun KakaoScreen(
 			// 웹뷰 내에서 뒤로 갈 수 없으면 웹뷰 닫기
 			webViewRef?.destroySafely()
 			onBack()
+		}
+	}
+
+	val view = LocalView.current
+
+	DisposableEffect(view) {
+		val window = (view.context as? Activity)?.window ?: return@DisposableEffect onDispose {}
+		val insetsController = WindowInsetsControllerCompat(window, view)
+
+		// 원래 설정 저장
+		val originalLightStatusBars = insetsController.isAppearanceLightStatusBars
+
+		// Status Bar 아이콘을 어둡게 설정 (밝은 배경용)
+		insetsController.isAppearanceLightStatusBars = true
+
+		onDispose {
+			// 원래 설정으로 복원
+			insetsController.isAppearanceLightStatusBars = originalLightStatusBars
 		}
 	}
 
@@ -185,9 +206,7 @@ fun KakaoScreen(
 
 	AndroidView(
 		factory = { webView },
-		modifier = Modifier
-			.fillMaxSize()
-			.statusBarsPadding(),
+		modifier = Modifier.fillMaxSize(),
 		onRelease = { webView ->
 			webView.destroySafely()
 		},

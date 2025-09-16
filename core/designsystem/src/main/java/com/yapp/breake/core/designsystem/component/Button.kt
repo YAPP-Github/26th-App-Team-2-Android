@@ -21,6 +21,8 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.onGloballyPositioned
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.style.TextAlign
@@ -32,6 +34,7 @@ import com.yapp.breake.core.designsystem.theme.BrakeTheme
 import com.yapp.breake.core.designsystem.theme.Gray200
 import com.yapp.breake.core.designsystem.theme.Gray700
 import com.yapp.breake.core.designsystem.theme.Gray800
+import com.yapp.breake.core.designsystem.theme.LocalDynamicPaddings
 import com.yapp.breake.core.designsystem.theme.Red
 import com.yapp.breake.core.designsystem.util.BooleanProvider
 import com.yapp.breake.core.designsystem.util.MultipleEventsCutter
@@ -53,13 +56,24 @@ fun LargeButton(
 ) {
 	val multipleEventsCutter = remember { MultipleEventsCutter.get() }
 
+	val density = LocalDensity.current
+	val dynamicPaddingsProvider = LocalDynamicPaddings.current
+
 	Button(
 		shape = MaterialTheme.shapes.large,
 		colors = colors,
 		contentPadding = paddingValues,
 		enabled = enabled,
 		onClick = { multipleEventsCutter.processEvent(onClick) },
-		modifier = modifier.fillMaxWidth(),
+		modifier = modifier
+			.fillMaxWidth()
+			.onGloballyPositioned { coordinates ->
+				with(density) {
+					dynamicPaddingsProvider.updateOneButtonHeight(
+						coordinates.size.height.toDp() + (24 + 12).dp,
+					)
+				}
+			},
 	) {
 		Row(
 			modifier = Modifier.fillMaxWidth(),
