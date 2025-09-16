@@ -41,6 +41,7 @@ import com.yapp.breake.core.designsystem.theme.AppItemGradient
 import com.yapp.breake.core.designsystem.theme.BlockingTimerBackgroundGradient
 import com.yapp.breake.core.designsystem.theme.BrakeTheme
 import com.yapp.breake.core.designsystem.theme.Gray900
+import com.yapp.breake.core.designsystem.theme.LocalDynamicPaddings
 import com.yapp.breake.core.model.app.AppGroup
 import com.yapp.breake.core.model.app.AppGroupState
 import com.yapp.breake.presentation.home.R
@@ -89,6 +90,8 @@ internal fun TickingScreen(
 			adjustedIndex + 1
 		}
 	}
+
+	val bottomPadding = LocalDynamicPaddings.current.paddings.bottomNavBarHeight
 
 	// LazyColumn, LazyRow 의 오버 스크롤시 내부 요소의 늘어짐 방지
 	CompositionLocalProvider(LocalOverscrollFactory provides null) {
@@ -226,7 +229,7 @@ internal fun TickingScreen(
 						}
 					}
 
-					item { VerticalSpacer(12.dp) }
+					item { VerticalSpacer(bottomPadding) }
 				}
 			},
 		)

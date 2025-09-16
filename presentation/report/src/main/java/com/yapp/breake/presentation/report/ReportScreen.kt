@@ -15,6 +15,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.yapp.breake.core.designsystem.theme.LocalDynamicPaddings
 import com.yapp.breake.core.navigation.compositionlocal.LocalMainAction
 import com.yapp.breake.core.ui.ErrorBody
 import com.yapp.breake.presentation.report.body.ReportBody
@@ -28,11 +29,13 @@ internal fun ReportRoute(
 	val reportUiState by viewModel.reportUiState.collectAsStateWithLifecycle()
 	val mainAction = LocalMainAction.current
 	val context = LocalContext.current
+	val bottomPadding = LocalDynamicPaddings.current.paddings.bottomNavBarHeight
 
 	Box(
 		modifier = Modifier
 			.fillMaxSize()
-			.padding(padding),
+			.padding(padding)
+			.padding(bottom = bottomPadding),
 	) {
 		ReportContent(
 			reportUiState = reportUiState,
