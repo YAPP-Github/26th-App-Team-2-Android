@@ -1,17 +1,31 @@
 package com.yapp.breake.presentation.main
 
+import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.onGloballyPositioned
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.yapp.breake.core.designsystem.theme.DynamicPaddingsProvider
+import com.yapp.breake.core.designsystem.theme.Gray900
+import com.yapp.breake.core.designsystem.theme.LocalDynamicPaddings
 import com.yapp.breake.core.navigation.route.InitialRoute
 import com.yapp.breake.core.navigation.route.MainTabRoute
 import com.yapp.breake.presentation.main.component.BrakeSnackbar
@@ -47,32 +61,73 @@ private fun MainScreenContent(
 	// 2. MainTabRoute 화면일 때 하단 네비게이션 바를 띄우고, 그 외는 안띄우기 위한 Route 구독
 	val currentRoute by navigator.currentRoute.collectAsStateWithLifecycle()
 
+	// 바텀 패딩 조정 용도 (스낵바 높이 위치 및 하단 네비게이션 바 상호작용)
+	val dynamicPaddingsProvider = remember { DynamicPaddingsProvider() }
+	val density = LocalDensity.current
+
 	Scaffold(
 		modifier = modifier,
 		content = { padding ->
-			MainNavHost(
-				navigator = navigator,
-				padding = padding,
-				onChangeDarkTheme = onChangeDarkTheme,
-			)
-		},
-		bottomBar = {
-			MainBottomNavBar(
-				modifier = Modifier
-					.navigationBarsPadding()
-					.fillMaxWidth()
-					.padding(bottom = 34.dp)
-					.wrapContentWidth(Alignment.CenterHorizontally),
-				visible = currentRoute is MainTabRoute,
-				tabs = MainTab.entries.toPersistentList(),
-				currentTab = when (currentRoute) {
-					is MainTabRoute.Home -> MainTab.HOME
-					is MainTabRoute.Report -> MainTab.REPORT
-					is MainTabRoute.Setting -> MainTab.SETTING
-					else -> null
-				},
-				onTabSelected = navigator::navigate,
-			)
+			Box(
+				modifier = Modifier.fillMaxSize(),
+			) {
+				CompositionLocalProvider(
+					LocalDynamicPaddings provides dynamicPaddingsProvider,
+				) {
+					MainNavHost(
+						navigator = navigator,
+						padding = padding,
+						onChangeDarkTheme = onChangeDarkTheme,
+					)
+				}
+
+				Box(
+					modifier = Modifier
+						.align(Alignment.BottomCenter)
+						.clickable(
+							interactionSource = remember { MutableInteractionSource() },
+							indication = null,
+						) { /* 터치 이벤트 가로채기 */ }
+						.onGloballyPositioned { coordinates ->
+							with(density) {
+								dynamicPaddingsProvider.updateBottomNavHeight(
+									coordinates.size.height.toDp() + 12.dp,
+								)
+							}
+						}
+						.fillMaxWidth()
+						.background(
+							brush = Brush.verticalGradient(
+								colors = listOf(
+									Color.Transparent,
+									Gray900.copy(alpha = 0.1f),
+									Gray900.copy(alpha = 0.3f),
+									Gray900.copy(alpha = 0.5f),
+									Gray900.copy(alpha = 0.8f),
+									Gray900.copy(alpha = 0.9f),
+									Gray900, Gray900, Gray900,
+								),
+							),
+						)
+						.wrapContentWidth(Alignment.CenterHorizontally)
+						.navigationBarsPadding()
+						.padding(bottom = 34.dp),
+				) {
+					MainBottomNavBar(
+						modifier = Modifier
+							.background(Color.Transparent),
+						visible = currentRoute is MainTabRoute,
+						tabs = MainTab.entries.toPersistentList(),
+						currentTab = when (currentRoute) {
+							is MainTabRoute.Home -> MainTab.HOME
+							is MainTabRoute.Report -> MainTab.REPORT
+							is MainTabRoute.Setting -> MainTab.SETTING
+							else -> null
+						},
+						onTabSelected = navigator::navigate,
+					)
+				}
+			}
 		},
 		contentWindowInsets = WindowInsets(0.dp),
 		snackbarHost = {
@@ -86,17 +141,23 @@ private fun MainScreenContent(
 				// 현재 화면에 따라 스낵바 y 축 위치 조정
 				modifier = Modifier.then(
 					when (currentRoute) {
-						is MainTabRoute -> Modifier.padding(bottom = 0.dp)
+						is MainTabRoute -> Modifier.padding(
+							bottom = dynamicPaddingsProvider.paddings.bottomNavBarHeight,
+						)
 
 						InitialRoute.Login ->
 							Modifier
 								.navigationBarsPadding()
-								.padding(bottom = 130.dp)	// 기존 190, 배포 환경 구성 완료 전까지 감추기
+								.padding(
+									bottom = dynamicPaddingsProvider.paddings.twoButtonHeight,
+								)
 
 						else ->
 							Modifier
 								.navigationBarsPadding()
-								.padding(bottom = 80.dp)
+								.padding(
+									bottom = dynamicPaddingsProvider.paddings.oneButtonHeight,
+								)
 					},
 				),
 			)

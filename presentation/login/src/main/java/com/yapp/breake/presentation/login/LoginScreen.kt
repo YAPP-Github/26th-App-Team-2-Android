@@ -13,9 +13,14 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
@@ -28,6 +33,7 @@ import com.google.android.gms.auth.api.identity.Identity
 import com.google.android.gms.common.api.ApiException
 import com.yapp.breake.core.auth.kakao.KakaoScreen
 import com.yapp.breake.core.designsystem.theme.BrakeTheme
+import com.yapp.breake.core.designsystem.theme.LocalDynamicPaddings
 import com.yapp.breake.core.designsystem.theme.LocalPadding
 import com.yapp.breake.core.navigation.compositionlocal.LocalMainAction
 import com.yapp.breake.core.navigation.compositionlocal.LocalNavigatorAction
@@ -157,6 +163,22 @@ fun LoginScreen(
 	onGoogleLoginClick: () -> Unit,
 	onkakaoLoginClick: () -> Unit,
 ) {
+	val density = LocalDensity.current
+	val dynamicPaddingsProvider = LocalDynamicPaddings.current
+
+	var googleButtonHeight by remember { mutableStateOf(0.dp) }
+	var kakaoButtonHeight by remember { mutableStateOf(0.dp) }
+
+	val buttonSpacing = 12.dp
+	val bottomPadding = 24.dp
+
+	LaunchedEffect(googleButtonHeight, kakaoButtonHeight) {
+		if (googleButtonHeight > 0.dp && kakaoButtonHeight > 0.dp) {
+			val totalHeight = googleButtonHeight + kakaoButtonHeight + buttonSpacing + bottomPadding
+			dynamicPaddingsProvider.updateTwoButtonHeight(totalHeight)
+		}
+	}
+
 	ConstraintLayout(
 		modifier = Modifier.fillMaxSize(),
 	) {
@@ -206,6 +228,9 @@ fun LoginScreen(
 			modifier = Modifier
 				.padding(horizontal = padding)
 				.widthIn(max = 400.dp)
+				.onGloballyPositioned { coordinates ->
+					googleButtonHeight = with(density) { coordinates.size.height.toDp() }
+				}
 				.constrainAs(googleLoginButton) {
 					bottom.linkTo(kakaoLoginButton.top, margin = 12.dp)
 					start.linkTo(parent.start)
@@ -220,6 +245,9 @@ fun LoginScreen(
 				.padding(horizontal = padding)
 				.padding(bottom = 24.dp)
 				.widthIn(max = 400.dp)
+				.onGloballyPositioned { coordinates ->
+					kakaoButtonHeight = with(density) { coordinates.size.height.toDp() }
+				}
 				.constrainAs(kakaoLoginButton) {
 					bottom.linkTo(parent.bottom)
 					start.linkTo(parent.start)
