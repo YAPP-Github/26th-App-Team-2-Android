@@ -5,11 +5,14 @@ import android.os.Build
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.OnBackPressedCallback
-import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Modifier
 import com.yapp.breake.core.common.BlockingConstants
-import com.yapp.breake.core.designsystem.component.BaseScaffold
 import com.yapp.breake.core.designsystem.theme.BrakeTheme
 import com.yapp.breake.core.model.app.AppGroupState
 import com.yapp.breake.core.util.OverlayData
@@ -43,12 +46,6 @@ class OverlayActivity : ComponentActivity() {
 
 		onBackPressedDispatcher.addCallback(this, callback)
 		showOverlay(intent.action)
-
-		setContent {
-			BrakeTheme {
-				BaseScaffold { }
-			}
-		}
 	}
 
 	private fun showOverlay(action: String?) {
@@ -87,38 +84,44 @@ class OverlayActivity : ComponentActivity() {
 		}
 
 		BrakeTheme {
-			when (overlayData.appGroupState) {
-				AppGroupState.NeedSetting -> {
-					TimerRoute(
-						appName = overlayData.appName,
-						groupName = overlayData.groupName,
-						groupId = overlayData.groupId,
-						onExitManageApp = ::onExitManageApp,
-						onCloseOverlay = ::finishAndRemoveTask,
-					)
-				}
+			Box(
+				modifier = Modifier
+					.fillMaxSize()
+					.background(MaterialTheme.colorScheme.background),
+			) {
+				when (overlayData.appGroupState) {
+					AppGroupState.NeedSetting -> {
+						TimerRoute(
+							appName = overlayData.appName,
+							groupName = overlayData.groupName,
+							groupId = overlayData.groupId,
+							onExitManageApp = ::onExitManageApp,
+							onCloseOverlay = ::finishAndRemoveTask,
+						)
+					}
 
-				AppGroupState.SnoozeBlocking -> {
-					SnoozeRoute(
-						groupId = overlayData.groupId,
-						groupName = overlayData.groupName,
-						snoozesCount = overlayData.snoozesCount,
-						onCloseOverlay = ::finishAndRemoveTask,
-						onStartHome = ::onStartHome,
-						onExitManageApp = ::onExitManageApp,
-					)
-				}
+					AppGroupState.SnoozeBlocking -> {
+						SnoozeRoute(
+							groupId = overlayData.groupId,
+							groupName = overlayData.groupName,
+							snoozesCount = overlayData.snoozesCount,
+							onCloseOverlay = ::finishAndRemoveTask,
+							onStartHome = ::onStartHome,
+							onExitManageApp = ::onExitManageApp,
+						)
+					}
 
-				AppGroupState.Blocking -> {
-					BlockingOverlay(
-						appName = overlayData.appName,
-						groupName = overlayData.groupName,
-						onStartHome = ::onStartHome,
-						onExitManageApp = ::onExitManageApp,
-					)
-				}
+					AppGroupState.Blocking -> {
+						BlockingOverlay(
+							appName = overlayData.appName,
+							groupName = overlayData.groupName,
+							onStartHome = ::onStartHome,
+							onExitManageApp = ::onExitManageApp,
+						)
+					}
 
-				AppGroupState.Using -> {}
+					AppGroupState.Using -> {}
+				}
 			}
 		}
 	}

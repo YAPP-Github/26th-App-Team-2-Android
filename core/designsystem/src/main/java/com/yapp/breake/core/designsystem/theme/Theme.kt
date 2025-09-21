@@ -1,12 +1,14 @@
 package com.yapp.breake.core.designsystem.theme
 
 import android.app.Activity
+import android.os.Build
 import androidx.compose.material3.LocalContentColor
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.darkColorScheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.SideEffect
+import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.platform.LocalInspectionMode
 import androidx.compose.ui.platform.LocalView
 import androidx.core.view.WindowCompat
@@ -40,6 +42,15 @@ fun BrakeTheme(
 			val window = (view.context as Activity).window
 			WindowCompat.getInsetsController(window, view).isAppearanceLightStatusBars = !darkTheme
 			WindowCompat.getInsetsController(window, view).isAppearanceLightNavigationBars = !darkTheme
+
+			// API level Before EnableEdgeToEdge is Available
+			@Suppress("DEPRECATION")
+			if (Build.VERSION.SDK_INT < Build.VERSION_CODES.R) {
+				window.apply {
+					statusBarColor = colorScheme.background.toArgb()
+					navigationBarColor = colorScheme.background.toArgb()
+				}
+			}
 		}
 	}
 
