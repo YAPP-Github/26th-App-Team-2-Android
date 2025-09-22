@@ -2,6 +2,7 @@ package com.yapp.breake.overlay.main.utils
 
 import android.content.Context
 import android.graphics.PixelFormat
+import android.os.Build
 import android.os.Bundle
 import android.view.Gravity
 import android.view.WindowManager
@@ -20,6 +21,7 @@ import androidx.savedstate.SavedStateRegistry
 import androidx.savedstate.SavedStateRegistryController
 import androidx.savedstate.SavedStateRegistryOwner
 import androidx.savedstate.setViewTreeSavedStateRegistryOwner
+import timber.log.Timber
 
 class OverlayViewHolder(private val context: Context) {
 	var view: ComposeView? = null
@@ -64,6 +66,16 @@ class OverlayViewHolder(private val context: Context) {
 		).apply {
 			gravity = Gravity.CENTER
 			softInputMode = WindowManager.LayoutParams.SOFT_INPUT_ADJUST_UNSPECIFIED
+
+			if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+				fitInsetsTypes = 0
+			} else {
+				// API 30 미만에서는 deprecated 플래그 사용
+				@Suppress("DEPRECATION")
+				flags = flags or WindowManager.LayoutParams.FLAG_LAYOUT_INSET_DECOR
+			}
+
+			layoutInDisplayCutoutMode = WindowManager.LayoutParams.LAYOUT_IN_DISPLAY_CUTOUT_MODE_SHORT_EDGES
 		}
 
 		try {
@@ -121,6 +133,7 @@ class OverlayLifecycleManager : LifecycleOwner, SavedStateRegistryOwner, ViewMod
 	}
 
 	fun handleLifecycleEvent(event: Lifecycle.Event) {
+		Timber.d("OverlayLifecycleManager - handleLifecycleEvent: $event")
 		lifecycleRegistry.handleLifecycleEvent(event)
 	}
 
