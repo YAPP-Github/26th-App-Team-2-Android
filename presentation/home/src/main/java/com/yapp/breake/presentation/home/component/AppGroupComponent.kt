@@ -17,6 +17,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import com.yapp.breake.core.designsystem.component.HorizontalSpacer
 import com.yapp.breake.core.designsystem.theme.BrakeTheme
@@ -51,8 +52,9 @@ internal fun AppGroupTitle(
 			text = name,
 			style = BrakeTheme.typography.body16M,
 			color = MaterialTheme.colorScheme.onSurface,
-			maxLines = 2,
+			maxLines = 1,
 			modifier = Modifier.weight(1f),
+			overflow = TextOverflow.Ellipsis,
 		)
 		HorizontalSpacer(8.dp)
 		GroupStateIcon.entries.find { it.groupState == appGroupState }?.icon?.invoke(Modifier)

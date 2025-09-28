@@ -134,7 +134,7 @@ internal fun ListScreen(
 									onEditClick = { onEditClick(appGroup) },
 									showSummary = true,
 									modifier = Modifier
-										.width(containerWidth * 0.8f)
+										.width(containerWidth * 0.6f)
 										.background(AppItemGradient)
 										.padding(16.dp),
 								)
