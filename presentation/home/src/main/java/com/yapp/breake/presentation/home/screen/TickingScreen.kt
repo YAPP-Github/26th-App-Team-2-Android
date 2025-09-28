@@ -4,6 +4,7 @@ import androidx.compose.foundation.LocalOverscrollFactory
 import androidx.compose.foundation.background
 import androidx.compose.foundation.gestures.ScrollableDefaults
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
@@ -207,22 +208,32 @@ internal fun TickingScreen(
 						item { VerticalSpacer(12.dp) }
 
 						item {
-							CompositionLocalProvider(LocalOverscrollFactory provides null) {
-								LazyRow(
-									flingBehavior = ScrollableDefaults.flingBehavior(),
-									state = needSettingState,
-									contentPadding = PaddingValues(horizontal = 28.dp),
-									horizontalArrangement = Arrangement.spacedBy(12.dp),
-								) {
-									itemsIndexed(notUsingGroups) { index, appGroup ->
-										AppGroupItem(
-											appGroup = appGroup,
-											onEditClick = { onEditClick(appGroup) },
-											modifier = Modifier
-												.width(214.dp)
-												.background(AppItemGradient)
-												.padding(16.dp),
-										)
+							BoxWithConstraints {
+								val containerWidth = this.maxWidth
+
+								CompositionLocalProvider(LocalOverscrollFactory provides null) {
+									LazyRow(
+										modifier = Modifier.fillMaxWidth(),
+										flingBehavior = ScrollableDefaults.flingBehavior(),
+										state = needSettingState,
+										contentPadding = PaddingValues(horizontal = 28.dp),
+										horizontalArrangement = if (appGroups.size == 1) {
+											Arrangement.Start
+										} else {
+											Arrangement.spacedBy(12.dp)
+										},
+									) {
+										itemsIndexed(notUsingGroups) { index, appGroup ->
+											AppGroupItem(
+												appGroup = appGroup,
+												onEditClick = { onEditClick(appGroup) },
+												showSummary = true,
+												modifier = Modifier
+													.width(containerWidth * 0.6f)
+													.background(AppItemGradient)
+													.padding(16.dp),
+											)
+										}
 									}
 								}
 							}
