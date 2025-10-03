@@ -58,7 +58,7 @@ internal fun CircularProgressTimer(
 			val radius = (this.size.minDimension - strokeWidthPx) / 2
 
 			drawCircle(
-				color = backgroundColor,
+				color = backgroundColor.copy(alpha = 0.1f),
 				radius = radius,
 				center = center,
 				style = Stroke(

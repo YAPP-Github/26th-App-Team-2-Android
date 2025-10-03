@@ -114,14 +114,19 @@ internal fun ListScreen(
 				VerticalSpacer(12.dp)
 
 				BoxWithConstraints {
-					val containerWidth = maxWidth
+					val containerWidth = this.maxWidth
 
 					CompositionLocalProvider(LocalOverscrollFactory provides null) {
 						LazyRow(
+							modifier = Modifier.fillMaxWidth(),
 							flingBehavior = ScrollableDefaults.flingBehavior(),
 							state = needSettingState,
 							contentPadding = PaddingValues(horizontal = 28.dp),
-							horizontalArrangement = Arrangement.spacedBy(12.dp),
+							horizontalArrangement = if (appGroups.size == 1) {
+								Arrangement.Start
+							} else {
+								Arrangement.spacedBy(12.dp)
+							},
 						) {
 							items(appGroups) { appGroup ->
 								AppGroupItem(
@@ -129,7 +134,7 @@ internal fun ListScreen(
 									onEditClick = { onEditClick(appGroup) },
 									showSummary = true,
 									modifier = Modifier
-										.width(containerWidth * 0.8f)
+										.width(containerWidth * 0.6f)
 										.background(AppItemGradient)
 										.padding(16.dp),
 								)

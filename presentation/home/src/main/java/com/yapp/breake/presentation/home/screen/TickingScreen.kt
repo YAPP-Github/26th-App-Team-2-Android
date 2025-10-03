@@ -4,6 +4,7 @@ import androidx.compose.foundation.LocalOverscrollFactory
 import androidx.compose.foundation.background
 import androidx.compose.foundation.gestures.ScrollableDefaults
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
@@ -38,8 +39,8 @@ import androidx.compose.ui.unit.dp
 import com.yapp.breake.core.designsystem.component.HorizontalSpacer
 import com.yapp.breake.core.designsystem.component.VerticalSpacer
 import com.yapp.breake.core.designsystem.theme.AppItemGradient
-import com.yapp.breake.core.designsystem.theme.BlockingTimerBackgroundGradient
 import com.yapp.breake.core.designsystem.theme.BrakeTheme
+import com.yapp.breake.core.designsystem.theme.Gray700
 import com.yapp.breake.core.designsystem.theme.Gray900
 import com.yapp.breake.core.designsystem.theme.LocalDynamicPaddings
 import com.yapp.breake.core.model.app.AppGroup
@@ -178,12 +179,23 @@ internal fun TickingScreen(
 											.padding(top = 16.dp, bottom = 10.dp),
 									)
 								} else {
+									val bg = painterResource(R.drawable.blocking_group_background)
+
 									BlockingAppGroup(
 										appGroup = tickingGroups[index],
 										onEditClick = { onEditClick(tickingGroups[index]) },
 										modifier = Modifier
 											.fillMaxWidth()
-											.background(BlockingTimerBackgroundGradient)
+											.background(Gray700.copy(alpha = 0.3f))
+											.drawBehind {
+												with(bg) {
+													draw(
+														size = size,
+														alpha = 1f,
+														colorFilter = null,
+													)
+												}
+											}
 											.padding(horizontal = 24.dp)
 											.padding(top = 16.dp, bottom = 19.dp),
 									)
@@ -207,22 +219,32 @@ internal fun TickingScreen(
 						item { VerticalSpacer(12.dp) }
 
 						item {
-							CompositionLocalProvider(LocalOverscrollFactory provides null) {
-								LazyRow(
-									flingBehavior = ScrollableDefaults.flingBehavior(),
-									state = needSettingState,
-									contentPadding = PaddingValues(horizontal = 28.dp),
-									horizontalArrangement = Arrangement.spacedBy(12.dp),
-								) {
-									itemsIndexed(notUsingGroups) { index, appGroup ->
-										AppGroupItem(
-											appGroup = appGroup,
-											onEditClick = { onEditClick(appGroup) },
-											modifier = Modifier
-												.width(214.dp)
-												.background(AppItemGradient)
-												.padding(16.dp),
-										)
+							BoxWithConstraints {
+								val containerWidth = this.maxWidth
+
+								CompositionLocalProvider(LocalOverscrollFactory provides null) {
+									LazyRow(
+										modifier = Modifier.fillMaxWidth(),
+										flingBehavior = ScrollableDefaults.flingBehavior(),
+										state = needSettingState,
+										contentPadding = PaddingValues(horizontal = 28.dp),
+										horizontalArrangement = if (appGroups.size == 1) {
+											Arrangement.Start
+										} else {
+											Arrangement.spacedBy(12.dp)
+										},
+									) {
+										itemsIndexed(notUsingGroups) { index, appGroup ->
+											AppGroupItem(
+												appGroup = appGroup,
+												onEditClick = { onEditClick(appGroup) },
+												showSummary = true,
+												modifier = Modifier
+													.width(containerWidth * 0.6f)
+													.background(AppItemGradient)
+													.padding(16.dp),
+											)
+										}
 									}
 								}
 							}
