@@ -39,8 +39,8 @@ import androidx.compose.ui.unit.dp
 import com.yapp.breake.core.designsystem.component.HorizontalSpacer
 import com.yapp.breake.core.designsystem.component.VerticalSpacer
 import com.yapp.breake.core.designsystem.theme.AppItemGradient
-import com.yapp.breake.core.designsystem.theme.BlockingTimerBackgroundGradient
 import com.yapp.breake.core.designsystem.theme.BrakeTheme
+import com.yapp.breake.core.designsystem.theme.Gray700
 import com.yapp.breake.core.designsystem.theme.Gray900
 import com.yapp.breake.core.designsystem.theme.LocalDynamicPaddings
 import com.yapp.breake.core.model.app.AppGroup
@@ -179,12 +179,23 @@ internal fun TickingScreen(
 											.padding(top = 16.dp, bottom = 10.dp),
 									)
 								} else {
+									val bg = painterResource(R.drawable.blocking_group_background)
+
 									BlockingAppGroup(
 										appGroup = tickingGroups[index],
 										onEditClick = { onEditClick(tickingGroups[index]) },
 										modifier = Modifier
 											.fillMaxWidth()
-											.background(BlockingTimerBackgroundGradient)
+											.background(Gray700.copy(alpha = 0.3f))
+											.drawBehind {
+												with(bg) {
+													draw(
+														size = size,
+														alpha = 1f,
+														colorFilter = null,
+													)
+												}
+											}
 											.padding(horizontal = 24.dp)
 											.padding(top = 16.dp, bottom = 19.dp),
 									)
