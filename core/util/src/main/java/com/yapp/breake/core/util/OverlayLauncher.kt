@@ -4,7 +4,6 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import com.yapp.breake.core.common.BlockingConstants
-import com.yapp.breake.core.model.app.AppGroup
 import com.yapp.breake.core.model.app.AppGroupState
 import timber.log.Timber
 
@@ -12,7 +11,8 @@ object OverlayLauncher {
 
 	fun startOverlay(
 		context: Context,
-		appGroup: AppGroup,
+		groupId: Long,
+		groupName: String,
 		appName: String?,
 		appGroupState: AppGroupState,
 		snoozesCount: Int = 0,
@@ -21,10 +21,10 @@ object OverlayLauncher {
 
 		val overlayData = OverlayData(
 			appGroupState = appGroupState,
-			groupId = appGroup.id,
+			groupId = groupId,
 			snoozesCount = snoozesCount,
 			appName = appName ?: "Unknown App",
-			groupName = appGroup.name,
+			groupName = groupName,
 		)
 
 		// 이미 OverlayActivity가 실행 중인지 확인

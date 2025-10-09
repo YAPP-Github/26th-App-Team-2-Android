@@ -12,8 +12,6 @@ import com.yapp.breake.core.model.accessibility.IntentConfig
 import com.yapp.breake.core.model.app.AppGroupState
 import com.yapp.breake.core.util.OverlayLauncher
 import com.yapp.breake.core.util.getAppNameFromPackage
-import com.yapp.breake.domain.repository.AppGroupRepository
-import com.yapp.breake.domain.usecase.FindAppGroupUseCase
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -26,13 +24,13 @@ import javax.inject.Inject
 class AppLaunchDetectionService : AccessibilityService() {
 
 	@Inject
-	lateinit var findAppGroupUsecase: FindAppGroupUseCase
-
-	@Inject
-	lateinit var appGroupRepository: AppGroupRepository
+	lateinit var cachedDatabase: CachedDatabase
 
 	private val serviceJob = SupervisorJob()
 	private val serviceScope = CoroutineScope(Dispatchers.IO + serviceJob)
+
+	// StateFlow의 최신 값을 저장할 변수
+	private var cachedGroups: List<CachedTargetAppGroup> = emptyList()
 
 	/** 현재 유저의 사용 앱 캐싱, AccessibilityService 활용이 가장 정확도가 높음 **/
 	private var currentAppPkg: String? = null
@@ -114,6 +112,13 @@ class AppLaunchDetectionService : AccessibilityService() {
 			registerReceiver(alarmReceiver, IntentFilter(IntentConfig.RECEIVER_IDENTITY))
 			registerReceiver(screenReaderReceiver, screenIntentFilter)
 		}
+
+		// 서비스 시작 시 캐싱 구독 초기화
+		serviceScope.launch {
+			cachedDatabase.cachedAppGroups.collect { groups ->
+				cachedGroups = groups
+			}
+		}
 	}
 
 	override fun onAccessibilityEvent(event: AccessibilityEvent?) {
@@ -147,12 +152,18 @@ class AppLaunchDetectionService : AccessibilityService() {
 	private fun findAppGroupAndAction(packageName: String) {
 
 		serviceScope.launch {
-			val appGroup = findAppGroupUsecase(packageName)
-			val blockingState = appGroup?.appGroupState
-
-			blockingState?.let {
-				Timber.i("앱 그룹: ${appGroup.name}, 상태: $it")
+			val targetApp = cachedGroups.find { app ->
+				app.apps.any { it.packageName == packageName }
 			}
+
+			if (targetApp == null) {
+				Timber.d("$packageName 는 관리 대상 앱이 아닙니다.")
+				return@launch
+			}
+
+			val blockingState = targetApp.groupState
+
+			Timber.i("앱 그룹 발견: ${targetApp.groupName}, 상태: $blockingState, 앱: $packageName")
 
 			val appName = getAppNameFromPackage(packageName) ?: packageName
 
@@ -160,7 +171,8 @@ class AppLaunchDetectionService : AccessibilityService() {
 				AppGroupState.NeedSetting, AppGroupState.Blocking -> {
 					OverlayLauncher.startOverlay(
 						context = applicationContext,
-						appGroup = appGroup,
+						groupId = targetApp.groupId,
+						groupName = targetApp.groupName,
 						appName = appName,
 						appGroupState = blockingState,
 					)
@@ -170,7 +182,9 @@ class AppLaunchDetectionService : AccessibilityService() {
 					Timber.i("$packageName 앱은 사용 상태입니다. 아무 작업도 하지 않습니다.")
 				}
 
-				else -> {}
+				else -> {
+					Timber.d("$packageName 앱은 상태가 $blockingState 입니다.")
+				}
 			}
 		}
 	}
@@ -186,8 +200,8 @@ class AppLaunchDetectionService : AccessibilityService() {
 		val appGroupState = getGroupStateFromIntent(intent)
 
 		serviceScope.launch {
-			val appGroup = appGroupRepository.getAppGroupById(groupId)
-			val appsPkgs = appGroup?.let { it.apps.map { it.packageName }.toSet() } ?: emptySet()
+			val appGroup = cachedGroups.find { it.groupId == groupId }
+			val appsPkgs = appGroup?.apps?.map { app -> app.packageName }?.toSet() ?: emptySet()
 
 			// Edge case : 재부팅 후 즉각 관리 앱을 실행한 경우 해당 AccessibilityService가 시작되기 전에 앱이 실행될 수 있음
 			currentAppPkg ?: monitorCurrentAppLaunch(appsPkgs)
@@ -195,10 +209,11 @@ class AppLaunchDetectionService : AccessibilityService() {
 			// 관리 앱이 실행 중인 경우 오버레이 띄우기
 			appGroup?.apps?.forEach {
 				if (it.packageName == currentAppPkg) {
-					val appName = appGroup.apps.find { it.packageName == currentAppPkg }?.name
+					val appName = appGroup.apps.find { app -> app.packageName == currentAppPkg }?.name
 					OverlayLauncher.startOverlay(
 						context = applicationContext,
-						appGroup = appGroup,
+						groupId = appGroup.groupId,
+						groupName = appGroup.groupName,
 						appName = appName,
 						appGroupState = appGroupState,
 						snoozesCount = appGroup.snoozesCount,
