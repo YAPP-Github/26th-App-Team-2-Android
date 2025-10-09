@@ -126,29 +126,20 @@ class OverlayActivity : ComponentActivity() {
 		}
 	}
 
-	override fun onWindowFocusChanged(hasFocus: Boolean) {
-		super.onWindowFocusChanged(hasFocus)
-		Timber.d("onWindowFocusChanged: hasFocus = $hasFocus")
+	override fun onUserLeaveHint() {
+		super.onUserLeaveHint()
 
-		if (!hasFocus) {
-			overlayViewHolder.remove()
-			finishAndRemoveTask()
-		}
-	}
-
-	// Recent Apps 버튼, Device Home 버튼, Back 버튼을 눌렀을 때, 즉 오버레이 화면을 벗어나면 해당 액티비티 즉각 종료
-	override fun onPause() {
-		super.onPause()
+		// Recent Apps 버튼, 홈 버튼, Back 버튼을 눌렀을 때, 즉 오버레이 화면을 벗어나면 해당 액티비티 즉각 종료
 		overlayViewHolder.remove()
 		finishAndRemoveTask()
 	}
 
-	// onPause 에서 이미 종료 처리
+	// 액티비티가 종료될 때 오버레이 뷰 제거
 	override fun onStop() {
+		super.onStop()
 		Timber.d("onStop called")
 		overlayViewHolder.remove()
 		finishAndRemoveTask()
-		super.onStop()
 	}
 
 	override fun onNewIntent(intent: Intent) {
