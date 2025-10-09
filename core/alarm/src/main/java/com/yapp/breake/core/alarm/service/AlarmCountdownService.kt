@@ -1,11 +1,13 @@
 package com.yapp.breake.core.alarm.service
 
+import android.app.ActivityManager
 import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.app.PendingIntent
 import android.app.Service
 import android.content.Context
 import android.content.Intent
+import android.graphics.Bitmap
 import android.graphics.drawable.VectorDrawable
 import android.os.IBinder
 import androidx.core.app.NotificationCompat
@@ -16,6 +18,8 @@ import com.yapp.breake.core.alarm.R
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
+import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.cancel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
@@ -29,15 +33,32 @@ import kotlin.time.Duration.Companion.seconds
 class AlarmCountdownService : Service() {
 
 	private var serviceJob: Job? = null
+	private val serviceScope = CoroutineScope(Dispatchers.Main + SupervisorJob())
 	private var notificationManager: NotificationManager? = null
 	private var initialRemainingTime: Long = 0L
 	private var remainingNotificationShown = false
 	private val remainingTimeAlert = 60_000L
+	private var isForegroundStarted = false
+
+	private val largeIconBitmap: Bitmap? by lazy {
+		try {
+			(
+				ResourcesCompat.getDrawable(
+					this.resources,
+					R.drawable.ic_large_alarm,
+					null,
+				) as VectorDrawable
+				).toBitmap()
+		} catch (e: Exception) {
+			Timber.w("Failed to decode large icon: ${e.message}")
+			null
+		}
+	}
 
 	override fun onCreate() {
 		super.onCreate()
 		Timber.d("AlarmCountdownService onCreate")
-		notificationManager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+		notificationManager = getSystemService(NOTIFICATION_SERVICE) as NotificationManager
 		createNotificationChannel()
 		showInitialNotification()
 	}
@@ -74,24 +95,25 @@ class AlarmCountdownService : Service() {
 
 	override fun onDestroy() {
 		super.onDestroy()
-		serviceJob?.cancel()
+		serviceScope.cancel()
+		Timber.d("AlarmCountdownService destroyed")
 	}
 
 	private fun startCountdown(groupName: String, triggerTime: LocalDateTime) {
 		serviceJob?.cancel()
 		remainingNotificationShown = false
+		isForegroundStarted = false
 
-		val now = LocalDateTime.now()
-		initialRemainingTime =
-			triggerTime.atZone(ZoneId.systemDefault()).toInstant().toEpochMilli() -
-			now.atZone(ZoneId.systemDefault()).toInstant().toEpochMilli()
+		val triggerTimeMillis =
+			triggerTime.atZone(ZoneId.systemDefault()).toInstant().toEpochMilli()
+		initialRemainingTime = triggerTimeMillis - System.currentTimeMillis()
 
-		serviceJob = CoroutineScope(Dispatchers.Main).launch {
+		// 초기 notification 표시
+		updateCustomNotification(groupName, initialRemainingTime, triggerTime)
+
+		serviceJob = serviceScope.launch {
 			while (isActive) {
-				val currentTime = LocalDateTime.now()
-				val remainingTime =
-					triggerTime.atZone(ZoneId.systemDefault()).toInstant().toEpochMilli() -
-						currentTime.atZone(ZoneId.systemDefault()).toInstant().toEpochMilli()
+				val remainingTime = triggerTimeMillis - System.currentTimeMillis()
 
 				if (remainingTime <= 0) {
 					Timber.d("Countdown finished, stopping service")
@@ -105,7 +127,19 @@ class AlarmCountdownService : Service() {
 				}
 
 				updateCustomNotification(groupName, remainingTime, triggerTime)
-				delay(1.seconds)
+
+				// delay 시간 계산: 1분 이하면 1초, 1분 이상이면 다음 분까지의 시간
+				val delayTime = if (remainingTime <= 60_000) {
+					1.seconds
+				} else {
+					val secondsUntilNextMinute = (remainingTime % 60_000) / 1000
+					if (secondsUntilNextMinute > 0) {
+						secondsUntilNextMinute.seconds
+					} else {
+						60.seconds
+					}
+				}
+				delay(delayTime)
 			}
 		}
 	}
@@ -117,11 +151,26 @@ class AlarmCountdownService : Service() {
 	) {
 		val targetTime =
 			triggerTime.format(
-				DateTimeFormatter.ofPattern(getString(R.string.time_format_hour_minute), Locale.getDefault()),
+				DateTimeFormatter.ofPattern(
+					getString(R.string.time_format_hour_minute),
+					Locale.getDefault(),
+				),
 			)
 
-		val totalMinutes = (remainingTimeMillis / (1000 * 60)).toInt()
-		val collapsedTitle = getString(R.string.alarm_using_format, groupName, totalMinutes)
+		// 1분 이하일 때는 초 단위로 표시
+		val displayText = if (remainingTimeMillis <= 60_000) {
+			val seconds = (remainingTimeMillis / 1000).toInt()
+			try {
+				getString(R.string.alarm_using_format_seconds, groupName, seconds)
+			} catch (_: Exception) {
+				"$groupName 사용 중 (${seconds}초 남음)"
+			}
+		} else {
+			// 1분 이상일 때는 분 단위로 표시
+			val totalMinutes = (remainingTimeMillis / 60_000).toInt()
+			getString(R.string.alarm_using_format, groupName, totalMinutes)
+		}
+
 		val collapsedContent = getString(R.string.alarm_available_until_format, targetTime)
 
 		val progress = if (initialRemainingTime > 0) {
@@ -131,25 +180,12 @@ class AlarmCountdownService : Service() {
 			0
 		}
 
-		val largeIcon = try {
-			(
-				ResourcesCompat.getDrawable(
-					this.resources,
-					R.drawable.ic_large_alarm,
-					null,
-				) as VectorDrawable
-				).toBitmap()
-		} catch (e: Exception) {
-			Timber.w("Failed to decode large icon: ${e.message}")
-			null
-		}
-
 		val contentIntent = createMainActivityPendingIntent()
 
 		val notification = NotificationCompat.Builder(this, CHANNEL_ID)
 			.setSmallIcon(R.drawable.ic_alarm)
 			.setColor(ContextCompat.getColor(this, android.R.color.transparent))
-			.setContentTitle(collapsedTitle)
+			.setContentTitle(displayText)
 			.setContentText(collapsedContent)
 			.setContentIntent(contentIntent)
 			.setProgress(100, progress, false)
@@ -163,18 +199,31 @@ class AlarmCountdownService : Service() {
 			.setShowWhen(false)
 			.setStyle(
 				NotificationCompat.BigPictureStyle()
-					.setBigContentTitle(collapsedTitle)
+					.setBigContentTitle(displayText)
 					.setSummaryText(collapsedContent)
-					.bigLargeIcon(largeIcon),
+					.bigLargeIcon(largeIconBitmap),
 			)
 			.build()
 
 		notification.flags = notification.flags or android.app.Notification.FLAG_NO_CLEAR
 
 		try {
-			startForeground(NOTIFICATION_ID, notification)
+			if (!isForegroundStarted) {
+				// 최초 1회만 startForeground 호출
+				startForeground(NOTIFICATION_ID, notification)
+				isForegroundStarted = true
+				Timber.d("Foreground service started")
+			} else {
+				// 기존 호출된 notification 을 ID 를 통해 추적하여 notify 로 업데이트
+				notificationManager?.notify(NOTIFICATION_ID, notification)
+				if (remainingTimeMillis <= 60_000) {
+					Timber.d("Notification updated: ${remainingTimeMillis / 1000} seconds remaining")
+				} else {
+					Timber.d("Notification updated: ${remainingTimeMillis / 60_000} minutes remaining")
+				}
+			}
 		} catch (e: Exception) {
-			Timber.e("Failed to update custom notification: $e")
+			Timber.e("Failed to update notification: $e")
 		}
 	}
 
@@ -182,7 +231,7 @@ class AlarmCountdownService : Service() {
 		val channel = NotificationChannel(
 			CHANNEL_ID,
 			getString(R.string.alarm_countdown_channel_name),
-			NotificationManager.IMPORTANCE_DEFAULT,
+			NotificationManager.IMPORTANCE_HIGH,
 		).apply {
 			description = getString(R.string.alarm_countdown_channel_description)
 			enableLights(false)
@@ -228,6 +277,7 @@ class AlarmCountdownService : Service() {
 
 		try {
 			startForeground(NOTIFICATION_ID, notification)
+			isForegroundStarted = true
 			Timber.d("Initial notification shown")
 		} catch (e: Exception) {
 			Timber.e("Failed to show initial notification: $e")
@@ -285,7 +335,7 @@ class AlarmCountdownService : Service() {
 		const val EXTRA_TRIGGER_TIME = "EXTRA_TRIGGER_TIME"
 		const val ACTION_CANCEL_ALARM = "ACTION_CANCEL_ALARM"
 
-		fun start(context: Context, groupName: String, triggerTime: LocalDateTime) {
+		fun startForegroundNotification(context: Context, groupName: String, triggerTime: LocalDateTime) {
 			try {
 				Timber.d("Starting AlarmCountdownService")
 				val intent = Intent(context, AlarmCountdownService::class.java).apply {
@@ -308,6 +358,16 @@ class AlarmCountdownService : Service() {
 				context.stopService(intent)
 			} catch (e: Exception) {
 				Timber.e("포그라운드 서비스 중지 실패: $e")
+			}
+		}
+
+		fun isRunning(context: Context): Boolean {
+			val manager = context.getSystemService(ACTIVITY_SERVICE) as ActivityManager
+			return manager.let { activityManager ->
+				@Suppress("DEPRECATION")
+				activityManager.getRunningServices(Int.MAX_VALUE).any { serviceInfo ->
+					serviceInfo.service.className == AlarmCountdownService::class.java.name
+				}
 			}
 		}
 	}
