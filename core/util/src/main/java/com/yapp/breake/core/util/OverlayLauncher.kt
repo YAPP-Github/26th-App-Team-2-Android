@@ -57,4 +57,12 @@ object OverlayLauncher {
 
 		context.startActivity(intent)
 	}
+
+	fun closeOverlay(context: Context) {
+		Timber.d("OverlayActivity 종료 신호를 전송합니다.")
+		val intent = Intent(BlockingConstants.ACTION_CLOSE_OVERLAY).apply {
+			`package` = context.packageName
+		}
+		context.sendBroadcast(intent)
+	}
 }

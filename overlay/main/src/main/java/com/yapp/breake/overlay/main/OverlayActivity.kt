@@ -1,6 +1,10 @@
 package com.yapp.breake.overlay.main
 
+import android.annotation.SuppressLint
+import android.content.BroadcastReceiver
+import android.content.Context
 import android.content.Intent
+import android.content.IntentFilter
 import android.os.Build
 import android.os.Bundle
 import androidx.activity.ComponentActivity
@@ -39,10 +43,27 @@ class OverlayActivity : ComponentActivity() {
 		}
 	}
 
+	private val closeReceiver = object : BroadcastReceiver() {
+		override fun onReceive(context: Context?, intent: Intent?) {
+			if (intent?.action == BlockingConstants.ACTION_CLOSE_OVERLAY) {
+				Timber.d("종료 신호를 받았습니다. OverlayActivity를 종료합니다.")
+				removeOverlay()
+			}
+		}
+	}
+
 	override fun onCreate(savedInstanceState: Bundle?) {
-		enableEdgeToEdge()
 		super.onCreate(savedInstanceState)
+		enableEdgeToEdge()
 		Timber.d("OverlayActivity onCreate called")
+
+		val filter = IntentFilter(BlockingConstants.ACTION_CLOSE_OVERLAY)
+		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+			registerReceiver(closeReceiver, filter, RECEIVER_NOT_EXPORTED)
+		} else {
+			@SuppressLint("UnspecifiedRegisterReceiverFlag")
+			registerReceiver(closeReceiver, filter)
+		}
 
 		onBackPressedDispatcher.addCallback(this, callback)
 		showOverlay(intent.action)
@@ -96,7 +117,7 @@ class OverlayActivity : ComponentActivity() {
 							groupName = overlayData.groupName,
 							groupId = overlayData.groupId,
 							onExitManageApp = ::onExitManageApp,
-							onCloseOverlay = ::finishAndRemoveTask,
+							onCloseOverlay = ::removeOverlay,
 						)
 					}
 
@@ -105,7 +126,7 @@ class OverlayActivity : ComponentActivity() {
 							groupId = overlayData.groupId,
 							groupName = overlayData.groupName,
 							snoozesCount = overlayData.snoozesCount,
-							onCloseOverlay = ::finishAndRemoveTask,
+							onCloseOverlay = ::removeOverlay,
 							onStartHome = ::onStartHome,
 							onExitManageApp = ::onExitManageApp,
 						)
@@ -128,16 +149,20 @@ class OverlayActivity : ComponentActivity() {
 
 	override fun onUserLeaveHint() {
 		super.onUserLeaveHint()
+		Timber.d("onUserLeaveHint called")
 
 		// Recent Apps 버튼, 홈 버튼, Back 버튼을 눌렀을 때, 즉 오버레이 화면을 벗어나면 해당 액티비티 즉각 종료
-		overlayViewHolder.remove()
-		finishAndRemoveTask()
+		removeOverlay()
 	}
 
 	// 액티비티가 종료될 때 오버레이 뷰 제거
 	override fun onStop() {
 		super.onStop()
 		Timber.d("onStop called")
+		removeOverlay()
+	}
+
+	private fun removeOverlay() {
 		overlayViewHolder.remove()
 		finishAndRemoveTask()
 	}
@@ -162,7 +187,12 @@ class OverlayActivity : ComponentActivity() {
 			addCategory(Intent.CATEGORY_HOME)
 			flags = Intent.FLAG_ACTIVITY_NEW_TASK
 		}
-		finishAndRemoveTask()
+		removeOverlay()
 		startActivity(homeIntent)
+	}
+
+	override fun onDestroy() {
+		super.onDestroy()
+		unregisterReceiver(closeReceiver)
 	}
 }

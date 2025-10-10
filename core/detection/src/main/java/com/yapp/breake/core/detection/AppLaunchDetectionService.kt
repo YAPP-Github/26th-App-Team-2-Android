@@ -139,6 +139,11 @@ class AppLaunchDetectionService : AccessibilityService() {
 						currentAppPkg = packageName
 					}
 
+					if (isRecentsScreen(packageName, className)) {
+						OverlayLauncher.closeOverlay(applicationContext)
+						return
+					}
+
 					findAppGroupAndAction(packageName)
 				}
 			}
@@ -147,6 +152,28 @@ class AppLaunchDetectionService : AccessibilityService() {
 
 	private fun isActivity(className: String): Boolean {
 		return className.contains(".") && !className.startsWith("android.widget") // 예: android.widget.Toast 제외
+	}
+
+	private fun isRecentsScreen(pkg: String, cls: String): Boolean {
+		// pixel 디바이스에서 Recent Screen 이동 시 서비스 앱 Activity 의 onPause 감지 불가
+		// 따라서 AccessibilityEvent 로 Recent Screen 진입 감지하여 오버레이 종료 처리
+		if (pkg == "com.android.systemui" &&
+			(
+				cls.contains("Recents", ignoreCase = true) ||
+					cls.contains("Overview", ignoreCase = true)
+				)
+		) {
+			return true
+		}
+
+		//  Google Pixel Launcher
+		if (pkg == "com.google.android.apps.nexuslauncher" &&
+			cls.contains("NexusLauncherActivity", ignoreCase = true)
+		) {
+			return true
+		}
+
+		return false
 	}
 
 	private fun findAppGroupAndAction(packageName: String) {

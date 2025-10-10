@@ -2,6 +2,7 @@ package com.yapp.breake.core.common
 
 object BlockingConstants {
 	const val ACTION_SHOW_OVERLAY = "com.yapp.breake.SHOW_OVERLAY"
+	const val ACTION_CLOSE_OVERLAY = "com.yapp.breake.ACTION_CLOSE_OVERLAY"
 	const val EXTRA_BLOCKING_STATE = "extra_blocking_state"
 	const val EXTRA_GROUP_ID = "extra_group_id"
 	const val EXTRA_OVERLAY_DATA = "extra_overlay_data"
