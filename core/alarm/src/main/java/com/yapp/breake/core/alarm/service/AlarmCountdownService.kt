@@ -60,7 +60,6 @@ class AlarmCountdownService : Service() {
 		Timber.d("AlarmCountdownService onCreate")
 		notificationManager = getSystemService(NOTIFICATION_SERVICE) as NotificationManager
 		createNotificationChannel()
-		showInitialNotification()
 	}
 
 	override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
@@ -107,9 +106,6 @@ class AlarmCountdownService : Service() {
 		val triggerTimeMillis =
 			triggerTime.atZone(ZoneId.systemDefault()).toInstant().toEpochMilli()
 		initialRemainingTime = triggerTimeMillis - System.currentTimeMillis()
-
-		// 초기 notification 표시
-		updateCustomNotification(groupName, initialRemainingTime, triggerTime)
 
 		serviceJob = serviceScope.launch {
 			while (isActive) {
@@ -213,14 +209,14 @@ class AlarmCountdownService : Service() {
 				startForeground(NOTIFICATION_ID, notification)
 				isForegroundStarted = true
 				Timber.d("Foreground service started")
+			}
+
+			// 기존 호출된 notification 을 ID 를 통해 추적하여 notify 로 업데이트
+			notificationManager?.notify(NOTIFICATION_ID, notification)
+			if (remainingTimeMillis <= 60_000) {
+				Timber.d("Notification updated: ${remainingTimeMillis / 1000} seconds remaining")
 			} else {
-				// 기존 호출된 notification 을 ID 를 통해 추적하여 notify 로 업데이트
-				notificationManager?.notify(NOTIFICATION_ID, notification)
-				if (remainingTimeMillis <= 60_000) {
-					Timber.d("Notification updated: ${remainingTimeMillis / 1000} seconds remaining")
-				} else {
-					Timber.d("Notification updated: ${remainingTimeMillis / 60_000} minutes remaining")
-				}
+				Timber.d("Notification updated: ${remainingTimeMillis / 60_000} minutes remaining")
 			}
 		} catch (e: Exception) {
 			Timber.e("Failed to update notification: $e")
@@ -256,32 +252,6 @@ class AlarmCountdownService : Service() {
 		notificationManager?.createNotificationChannel(channel)
 		notificationManager?.createNotificationChannel(warningChannel)
 		Timber.d("Notification channels created")
-	}
-
-	private fun showInitialNotification() {
-		val contentIntent = createMainActivityPendingIntent()
-
-		val notification = NotificationCompat.Builder(this, CHANNEL_ID)
-			.setSmallIcon(R.drawable.ic_alarm)
-			.setContentTitle(getString(R.string.alarm_preparing_title))
-			.setContentText(getString(R.string.alarm_preparing_content))
-			.setContentIntent(contentIntent)
-			.setPriority(NotificationCompat.PRIORITY_HIGH)
-			.setCategory(NotificationCompat.CATEGORY_ALARM)
-			.setOngoing(true)
-			.setAutoCancel(false)
-			.setSilent(true)
-			.setVisibility(NotificationCompat.VISIBILITY_PUBLIC)
-			.setShowWhen(false)
-			.build()
-
-		try {
-			startForeground(NOTIFICATION_ID, notification)
-			isForegroundStarted = true
-			Timber.d("Initial notification shown")
-		} catch (e: Exception) {
-			Timber.e("Failed to show initial notification: $e")
-		}
 	}
 
 	private fun showWarningNotification() {
@@ -335,7 +305,11 @@ class AlarmCountdownService : Service() {
 		const val EXTRA_TRIGGER_TIME = "EXTRA_TRIGGER_TIME"
 		const val ACTION_CANCEL_ALARM = "ACTION_CANCEL_ALARM"
 
-		fun startForegroundNotification(context: Context, groupName: String, triggerTime: LocalDateTime) {
+		fun startForegroundNotification(
+			context: Context,
+			groupName: String,
+			triggerTime: LocalDateTime,
+		) {
 			try {
 				Timber.d("Starting AlarmCountdownService")
 				val intent = Intent(context, AlarmCountdownService::class.java).apply {
