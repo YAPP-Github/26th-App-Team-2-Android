@@ -6,6 +6,7 @@
     <string name="alarm_preparing_title">알람 준비중…</string>
     <string name="alarm_preparing_content">카운트다운을 시작합니다</string>
     <string name="alarm_using_format">%1$s 사용중 • %2$d분 남음</string>
+	<string name="alarm_using_format_seconds">%1$s 사용 중 • %2$d초 남음</string>
     <string name="alarm_available_until_format">%1$s까지 사용 가능</string>
     <string name="alarm_cancel_action">취소</string>
 

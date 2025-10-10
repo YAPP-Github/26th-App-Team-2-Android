@@ -23,7 +23,7 @@ dependencies {
 	implementation(projects.core.database)
 	implementation(projects.core.common)
 	implementation(projects.core.appscanner)
-	implementation(projects.domain)
+	implementation(projects.core.detection)
 
 	implementation(libs.datastore)
 	implementation(libs.retrofit.core)

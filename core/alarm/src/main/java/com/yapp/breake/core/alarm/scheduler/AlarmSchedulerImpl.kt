@@ -40,9 +40,10 @@ class AlarmSchedulerImpl @Inject constructor(
 		Timber.d("$triggerTime 에 알람을 예약합니다. ID: $groupId, 액션: ${action.name}")
 
 		return try {
-			if (action == AlarmAction.ACTION_USING) {
-				AlarmCountdownService.start(context, groupName, triggerTime)
+			if (action == AlarmAction.ACTION_USING && !AlarmCountdownService.isRunning(context)) {
+				AlarmCountdownService.startForegroundNotification(context, groupName, triggerTime)
 			}
+			Timber.e("foreground service 실행중인지 ${AlarmCountdownService.isRunning(context)}")
 			scheduleAlarm(triggerTime, intent)
 			Result.success(triggerTime)
 		} catch (se: SecurityException) {

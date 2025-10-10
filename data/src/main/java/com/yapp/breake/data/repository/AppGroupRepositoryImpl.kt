@@ -1,5 +1,6 @@
 package com.yapp.breake.data.repository
 
+import com.yapp.breake.core.detection.CachedDatabase
 import com.yapp.breake.core.model.app.AppGroup
 import com.yapp.breake.core.model.app.AppGroupState
 import com.yapp.breake.data.local.source.AppGroupLocalDataSource
@@ -17,6 +18,7 @@ internal class AppGroupRepositoryImpl @Inject constructor(
 	private val appGroupLocalDataSource: AppGroupLocalDataSource,
 	private val appGroupRemoteDataSource: AppGroupRemoteDataSource,
 	private val appLocalDataSource: AppLocalDataSource,
+	private val cachedDatabase: CachedDatabase,
 ) : AppGroupRepository {
 
 	override suspend fun insertAppGroup(appGroup: AppGroup): AppGroup {
@@ -25,6 +27,8 @@ internal class AppGroupRepositoryImpl @Inject constructor(
 				appGroup = appGroup,
 			).map { updatedGroup ->
 				appGroupLocalDataSource.insertAppGroup(updatedGroup)
+				// API 성공 후에 캐시 업데이트
+				cachedDatabase.updateAppGroupInCache(updatedGroup)
 				updatedGroup
 			}
 		} else {
@@ -32,6 +36,8 @@ internal class AppGroupRepositoryImpl @Inject constructor(
 				appGroup = appGroup,
 			).map { newGroup ->
 				appGroupLocalDataSource.insertAppGroup(newGroup)
+				// API 성공 후에 캐시에 추가
+				cachedDatabase.addAppGroupToCache(newGroup)
 				newGroup
 			}
 		}.first()
@@ -45,12 +51,14 @@ internal class AppGroupRepositoryImpl @Inject constructor(
 			groupId = groupId,
 			onSuccess = {
 				appGroupLocalDataSource.deleteAppGroupById(groupId = groupId)
+				cachedDatabase.removeAppGroupFromCache(groupId)
 			},
 		)
 	}
 
 	override suspend fun clearAppGroup() {
 		appGroupLocalDataSource.clearAppGroup()
+		cachedDatabase.clearCache()
 	}
 
 	override fun observeAppGroup(): Flow<List<AppGroup>> {
@@ -62,7 +70,12 @@ internal class AppGroupRepositoryImpl @Inject constructor(
 						remoteList.forEach {
 							appLocalDataSource.insertApps(it.id, it.apps)
 						}
+						// 원격에서 가져온 데이터로 캐시 초기화
+						cachedDatabase.initializeCachedState(remoteList)
 					}
+				} else {
+					// DB 변경 시마다 캐시 업데이트
+					cachedDatabase.initializeCachedState(localList)
 				}
 			}
 	}
@@ -77,6 +90,7 @@ internal class AppGroupRepositoryImpl @Inject constructor(
 		startTime: LocalDateTime?,
 		endTime: LocalDateTime?,
 	): Result<Unit> {
+		cachedDatabase.updateCachedState(groupId = groupId, appGroupState = appGroupState)
 		return try {
 			appGroupLocalDataSource.updateAppGroupState(
 				groupId = groupId,
@@ -113,6 +127,11 @@ internal class AppGroupRepositoryImpl @Inject constructor(
 				parentGroupId = groupId,
 				snoozeTime = LocalDateTime.now(),
 			)
+			// Snooze 삽입 후 캐시의 snoozesCount 업데이트
+			val updatedGroup = appGroupLocalDataSource.getAppGroupById(groupId)
+			updatedGroup?.let {
+				cachedDatabase.updateSnoozeCount(groupId, it.snoozesCount)
+			}
 			Result.success(Unit)
 		} catch (e: Exception) {
 			Result.failure(e)
@@ -124,6 +143,8 @@ internal class AppGroupRepositoryImpl @Inject constructor(
 			appGroupLocalDataSource.resetSnooze(
 				groupId = groupId,
 			)
+			// Snooze 리셋 후 캐시의 snoozesCount를 0으로 업데이트
+			cachedDatabase.updateSnoozeCount(groupId, 0)
 			Result.success(Unit)
 		} catch (e: Exception) {
 			Result.failure(e)
