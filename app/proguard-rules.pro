@@ -38,14 +38,14 @@
 ## ------------------ kakao -------------------
 
 # navigation.route 패키지 전체 보호
--keep class com.yapp.breake.core.navigation.route.** { *; }
+-keep class com.teambrake.brake.core.navigation.route.** { *; }
 
 # Parcelize 및 관련된 클래스 보존
 -keep @kotlinx.parcelize.Parcelize class * { *; }
 -keepclassmembers class * implements android.os.Parcelable {
     public static final android.os.Parcelable$Creator CREATOR;
 }
--keep class com.yapp.breake.core.util.OverlayData { *; }
--keep class com.yapp.breake.core.util.OverlayData$* { *; }
--keep enum com.yapp.breake.core.model.app.AppGroupState { *; }
+-keep class com.teambrake.brake.core.util.OverlayData { *; }
+-keep class com.teambrake.brake.core.util.OverlayData$* { *; }
+-keep enum com.teambrake.brake.core.model.app.AppGroupState { *; }
 

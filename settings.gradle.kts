@@ -17,7 +17,7 @@ dependencyResolutionManagement {
 	}
 }
 
-rootProject.name = "Breake"
+rootProject.name = "Brake"
 
 // Application
 include(":app")

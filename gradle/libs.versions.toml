@@ -5,8 +5,8 @@ minSdk = "28"
 targetSdk = "35"
 
 ## App version
-versionCode = "13"
-versionName = "1.1.4"
+versionCode = "1"
+versionName = "1.1.5"
 
 ## Android gradle plugin
 agp = "8.10.1"
@@ -332,12 +332,12 @@ baselineprofile = { id = "androidx.baselineprofile", version.ref = "baselineprof
 roborazzi-plugin = { id = "io.github.takahirom.roborazzi", version.ref = "roborazzi" }
 
 # Custom Plugins
-breake-android-application = { id = "breake.android.application"}
-breake-android-compose = { id = "breake.android.compose"}
-breake-android-feature = { id = "breake.android.feature"}
-breake-android-library = { id = "breake.android.library"}
-breake-kotlin-library = { id = "breake.kotlin.library"}
-breake-android-room = { id = "breake.android.room"}
-breake-android-hilt = { id = "breake.android.hilt"}
-breake-work-hilt = { id = "breake.work.hilt"}
-breake-kotlin-hilt = { id = "breake.kotlin.hilt"}
+brake-android-application = { id = "brake.android.application"}
+brake-android-compose = { id = "brake.android.compose"}
+brake-android-feature = { id = "brake.android.feature"}
+brake-android-library = { id = "brake.android.library"}
+brake-kotlin-library = { id = "brake.kotlin.library"}
+brake-android-room = { id = "brake.android.room"}
+brake-android-hilt = { id = "brake.android.hilt"}
+brake-work-hilt = { id = "brake.work.hilt"}
+brake-kotlin-hilt = { id = "brake.kotlin.hilt"}

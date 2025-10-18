@@ -13,20 +13,20 @@ dependencies {
 gradlePlugin {
 	plugins {
 		register("androidHilt") {
-			id = "breake.android.hilt"
-			implementationClass = "com.yapp.breake.HiltAndroidPlugin"
+			id = "brake.android.hilt"
+			implementationClass = "com.teambrake.brake.HiltAndroidPlugin"
 		}
 		register("workHilt") {
-			id = "breake.work.hilt"
-			implementationClass = "com.yapp.breake.HiltWorkPlugin"
+			id = "brake.work.hilt"
+			implementationClass = "com.teambrake.brake.HiltWorkPlugin"
 		}
 		register("kotlinHilt") {
-			id = "breake.kotlin.hilt"
-			implementationClass = "com.yapp.breake.HiltKotlinPlugin"
+			id = "brake.kotlin.hilt"
+			implementationClass = "com.teambrake.brake.HiltKotlinPlugin"
 		}
 		register("androidRoom") {
-			id = "breake.android.room"
-			implementationClass = "com.yapp.breake.AndroidRoomPlugin"
+			id = "brake.android.room"
+			implementationClass = "com.teambrake.brake.AndroidRoomPlugin"
 		}
 	}
 }
