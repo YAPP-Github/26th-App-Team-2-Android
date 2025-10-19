@@ -1,0 +1,14 @@
+package com.teambrake.brake.domain.usecase
+
+import com.teambrake.brake.core.model.app.AppGroupState
+import java.time.LocalDateTime
+
+interface SetAlarmUseCase {
+	suspend operator fun invoke(
+		groupId: Long,
+		groupName: String,
+		appGroupState: AppGroupState,
+		second: Int = 0,
+		isUsingApp: Boolean = false,
+	): Result<LocalDateTime>
+}

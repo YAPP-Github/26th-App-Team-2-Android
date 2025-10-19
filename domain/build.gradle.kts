@@ -1,5 +1,5 @@
 plugins {
-	alias(libs.plugins.breake.kotlin.library)
+	alias(libs.plugins.brake.kotlin.library)
 }
 
 dependencies {

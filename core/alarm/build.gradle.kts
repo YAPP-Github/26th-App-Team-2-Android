@@ -1,9 +1,9 @@
-import com.yapp.breake.setNamespace
+import com.teambrake.brake.setNamespace
 
 plugins {
-	alias(libs.plugins.breake.android.library)
-	alias(libs.plugins.breake.android.hilt)
-	alias(libs.plugins.breake.work.hilt)
+	alias(libs.plugins.brake.android.library)
+	alias(libs.plugins.brake.android.hilt)
+	alias(libs.plugins.brake.work.hilt)
 }
 
 android {

@@ -3,8 +3,8 @@ import java.util.Date
 import java.util.TimeZone
 
 plugins {
-	alias(libs.plugins.breake.android.application)
-	alias(libs.plugins.breake.work.hilt)
+	alias(libs.plugins.brake.android.application)
+	alias(libs.plugins.brake.work.hilt)
 	id("com.google.android.gms.oss-licenses-plugin")
 	alias(libs.plugins.google.services)
 	alias(libs.plugins.firebase.crashlytics)
@@ -13,10 +13,10 @@ plugins {
 }
 
 android {
-	namespace = "com.yapp.breake"
+	namespace = "com.teambrake.brake"
 
 	defaultConfig {
-		applicationId = "com.yapp.breake"
+		applicationId = "com.teambrake.brake"
 	}
 	packaging {
 		resources {
