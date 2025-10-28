@@ -345,7 +345,12 @@ fun SelectedAppItem(
 		) {
 			Image(
 				painter = BitmapPainter(
-					app.icon?.toBitmap()?.asImageBitmap() ?: ImageBitmap(24, 24),
+					// 앱이 삭제된 경우 drawable 크기가 0이므로 기본 크기 이미지로 대체
+					app.icon?.let { drawable ->
+						val w = drawable.intrinsicWidth
+						val h = drawable.intrinsicHeight
+						if (w > 0 && h > 0) drawable.toBitmap().asImageBitmap() else null
+					} ?: ImageBitmap(24, 24),
 				),
 				contentDescription = null,
 				modifier = Modifier
@@ -388,9 +393,27 @@ private fun GroupRegistryScreenPreview() {
 				groupId = 1L,
 				groupName = "그룹 이름",
 				selectedApps = persistentListOf(
-					SelectedAppModel(index = 0, name = "앱1", packageName = "", icon = null, id = 1L),
-					SelectedAppModel(index = 1, name = "앱2", packageName = "", icon = null, id = 2L),
-					SelectedAppModel(index = 2, name = "앱3", packageName = "", icon = null, id = 3L),
+					SelectedAppModel(
+						index = 0,
+						name = "앱1",
+						packageName = "",
+						icon = null,
+						id = 1L,
+					),
+					SelectedAppModel(
+						index = 1,
+						name = "앱2",
+						packageName = "",
+						icon = null,
+						id = 2L,
+					),
+					SelectedAppModel(
+						index = 2,
+						name = "앱3",
+						packageName = "",
+						icon = null,
+						id = 3L,
+					),
 				),
 				apps = persistentListOf(
 					AppModel(
