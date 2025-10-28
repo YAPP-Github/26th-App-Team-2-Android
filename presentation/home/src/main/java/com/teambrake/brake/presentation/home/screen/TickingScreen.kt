@@ -41,7 +41,6 @@ import com.teambrake.brake.core.designsystem.component.VerticalSpacer
 import com.teambrake.brake.core.designsystem.theme.AppItemGradient
 import com.teambrake.brake.core.designsystem.theme.BrakeTheme
 import com.teambrake.brake.core.designsystem.theme.Gray700
-import com.teambrake.brake.core.designsystem.theme.Gray900
 import com.teambrake.brake.core.designsystem.theme.LocalDynamicPaddings
 import com.teambrake.brake.core.model.app.AppGroup
 import com.teambrake.brake.core.model.app.AppGroupState
@@ -93,6 +92,7 @@ internal fun TickingScreen(
 	}
 
 	val bottomPadding = LocalDynamicPaddings.current.paddings.bottomNavBarHeight
+	val colorScheme = BrakeTheme.colorScheme
 
 	// LazyColumn, LazyRow 의 오버 스크롤시 내부 요소의 늘어짐 방지
 	CompositionLocalProvider(LocalOverscrollFactory provides null) {
@@ -109,7 +109,7 @@ internal fun TickingScreen(
 							verticalAlignment = Alignment.CenterVertically,
 							modifier = Modifier
 								.fillMaxWidth()
-								.background(Gray900)
+								.background(color = colorScheme.background)
 								.padding(top = 16.dp)
 								.padding(horizontal = 24.dp),
 						) {

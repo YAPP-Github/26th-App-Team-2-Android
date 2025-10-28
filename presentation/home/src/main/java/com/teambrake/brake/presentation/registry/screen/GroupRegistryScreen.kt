@@ -24,6 +24,7 @@ import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.material3.ButtonColors
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
@@ -60,7 +61,6 @@ import com.teambrake.brake.core.designsystem.theme.Gray300
 import com.teambrake.brake.core.designsystem.theme.Gray500
 import com.teambrake.brake.core.designsystem.theme.Gray800
 import com.teambrake.brake.core.designsystem.theme.Gray850
-import com.teambrake.brake.core.designsystem.theme.Gray900
 import com.teambrake.brake.core.designsystem.theme.White
 import com.teambrake.brake.core.ui.isValidInput
 import com.teambrake.brake.presentation.home.R
@@ -87,6 +87,8 @@ fun GroupRegistryScreen(
 	BackHandler {
 		onBackClick()
 	}
+
+	val colorScheme = MaterialTheme.colorScheme
 
 	BaseScaffold(
 		contentPadding = PaddingValues(padding),
@@ -213,7 +215,7 @@ fun GroupRegistryScreen(
 							painter = painterResource(R.drawable.ic_plus),
 							contentDescription = null,
 							modifier = Modifier.size(24.dp),
-							tint = Gray900,
+							tint = colorScheme.onPrimary,
 						)
 					}
 				}

@@ -2,6 +2,7 @@ package com.teambrake.brake.core.designsystem.theme
 
 import android.app.Activity
 import android.os.Build
+import androidx.compose.material3.ColorScheme
 import androidx.compose.material3.LocalContentColor
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.darkColorScheme
@@ -25,7 +26,7 @@ private val DarkColorScheme = darkColorScheme(
 	onSurfaceVariant = Gray300,
 	outline = Gray800,
 	outlineVariant = Gray800,
-	background = Gray900,
+	background = Gray950,
 	onBackground = White,
 )
 
@@ -75,4 +76,8 @@ object BrakeTheme {
 	val paddings: BrakePadding
 		@Composable
 		get() = LocalPadding.current
+
+	val colorScheme: ColorScheme
+		@Composable
+		get() = DarkColorScheme
 }

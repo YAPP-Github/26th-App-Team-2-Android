@@ -21,7 +21,6 @@ import androidx.compose.ui.unit.dp
 import com.teambrake.brake.core.designsystem.component.HorizontalSpacer
 import com.teambrake.brake.core.designsystem.theme.BrakeTheme
 import com.teambrake.brake.core.designsystem.theme.Error
-import com.teambrake.brake.core.designsystem.theme.Gray950
 import com.teambrake.brake.core.designsystem.util.MultipleEventsCutter
 import com.teambrake.brake.core.designsystem.util.get
 import com.teambrake.brake.presentation.home.R
@@ -36,7 +35,7 @@ internal fun StopButton(
 	Button(
 		shape = RoundedCornerShape(8.dp),
 		colors = ButtonDefaults.buttonColors(
-			containerColor = Gray950.copy(alpha = 0.35f),
+			containerColor = BrakeTheme.colorScheme.background.copy(alpha = 0.35f),
 			contentColor = Error,
 		),
 		contentPadding = PaddingValues(vertical = 12.dp, horizontal = 20.dp),
