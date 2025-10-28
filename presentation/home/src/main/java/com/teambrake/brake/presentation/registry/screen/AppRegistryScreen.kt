@@ -217,6 +217,11 @@ fun AppItem(
 	Row(
 		modifier = Modifier
 			.fillMaxWidth()
+			.clickable(
+				indication = null,
+				interactionSource = interactionSource,
+				onClick = onSelectClick,
+			)
 			.padding(horizontal = 12.dp, vertical = 8.dp),
 		verticalAlignment = Alignment.CenterVertically,
 		horizontalArrangement = Arrangement.Start,
@@ -241,25 +246,13 @@ fun AppItem(
 				app.icon?.toBitmap()?.asImageBitmap() ?: ImageBitmap(24, 24),
 			),
 			contentDescription = null,
-			modifier = Modifier
-				.size(28.dp)
-				.clickable(
-					indication = null,
-					interactionSource = interactionSource,
-					onClick = onSelectClick,
-				),
+			modifier = Modifier.size(28.dp),
 		)
 
 		HorizontalSpacer(12.dp)
 
 		Text(
 			text = app.name,
-			modifier = Modifier
-				.clickable(
-					indication = null,
-					interactionSource = interactionSource,
-					onClick = onSelectClick,
-				),
 			style = BrakeTheme.typography.body16M,
 			color = White,
 			maxLines = 1,
