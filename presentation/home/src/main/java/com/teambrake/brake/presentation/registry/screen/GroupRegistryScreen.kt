@@ -53,7 +53,6 @@ import com.teambrake.brake.core.designsystem.component.HorizontalSpacer
 import com.teambrake.brake.core.designsystem.component.LargeButton
 import com.teambrake.brake.core.designsystem.component.TopAppbarType
 import com.teambrake.brake.core.designsystem.component.VerticalSpacer
-import com.teambrake.brake.core.designsystem.modifier.clickableSingle
 import com.teambrake.brake.core.designsystem.theme.BrakeTheme
 import com.teambrake.brake.core.designsystem.theme.ButtonYellow
 import com.teambrake.brake.core.designsystem.theme.Gray200
@@ -335,8 +334,7 @@ fun SelectedAppItem(
 	Row(
 		modifier = Modifier
 			.fillMaxWidth()
-			.padding(vertical = 8.dp, horizontal = 12.dp)
-			.clickableSingle(onDeleteClick),
+			.padding(vertical = 8.dp, horizontal = 12.dp),
 		horizontalArrangement = Arrangement.Absolute.SpaceBetween,
 	) {
 		Row(
