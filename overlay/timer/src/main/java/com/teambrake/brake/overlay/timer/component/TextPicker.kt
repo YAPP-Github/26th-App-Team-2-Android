@@ -32,7 +32,6 @@ import com.teambrake.brake.core.designsystem.theme.Gray400
 import com.teambrake.brake.core.designsystem.theme.Gray50
 import com.teambrake.brake.core.designsystem.theme.Gray600
 import com.teambrake.brake.core.designsystem.theme.Gray850
-import com.teambrake.brake.core.designsystem.theme.Gray900
 import com.teambrake.brake.core.designsystem.theme.White
 import dev.chrisbanes.snapper.ExperimentalSnapperApi
 import dev.chrisbanes.snapper.SnapperLayoutInfo
@@ -61,6 +60,8 @@ internal fun TextPicker(
 	val itemHeight = 80.dp
 	val totalHeight = itemHeight * rowCount
 	val totalWidth = 200.dp
+
+	val colorScheme = BrakeTheme.colorScheme
 
 	LaunchedEffect(isScrollInProgress) {
 		onScrollStateChanged(isScrollInProgress)
@@ -101,7 +102,7 @@ internal fun TextPicker(
 					.height(itemHeight + 12.dp)
 					.width(120.dp)
 					.clip(RoundedCornerShape(16.dp))
-					.background(Gray900),
+					.background(colorScheme.onPrimary),
 			)
 		}
 

@@ -24,6 +24,7 @@ import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.material3.ButtonColors
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
@@ -52,7 +53,6 @@ import com.teambrake.brake.core.designsystem.component.HorizontalSpacer
 import com.teambrake.brake.core.designsystem.component.LargeButton
 import com.teambrake.brake.core.designsystem.component.TopAppbarType
 import com.teambrake.brake.core.designsystem.component.VerticalSpacer
-import com.teambrake.brake.core.designsystem.modifier.clickableSingle
 import com.teambrake.brake.core.designsystem.theme.BrakeTheme
 import com.teambrake.brake.core.designsystem.theme.ButtonYellow
 import com.teambrake.brake.core.designsystem.theme.Gray200
@@ -60,7 +60,6 @@ import com.teambrake.brake.core.designsystem.theme.Gray300
 import com.teambrake.brake.core.designsystem.theme.Gray500
 import com.teambrake.brake.core.designsystem.theme.Gray800
 import com.teambrake.brake.core.designsystem.theme.Gray850
-import com.teambrake.brake.core.designsystem.theme.Gray900
 import com.teambrake.brake.core.designsystem.theme.White
 import com.teambrake.brake.core.ui.isValidInput
 import com.teambrake.brake.presentation.home.R
@@ -87,6 +86,8 @@ fun GroupRegistryScreen(
 	BackHandler {
 		onBackClick()
 	}
+
+	val colorScheme = MaterialTheme.colorScheme
 
 	BaseScaffold(
 		contentPadding = PaddingValues(padding),
@@ -213,7 +214,7 @@ fun GroupRegistryScreen(
 							painter = painterResource(R.drawable.ic_plus),
 							contentDescription = null,
 							modifier = Modifier.size(24.dp),
-							tint = Gray900,
+							tint = colorScheme.onPrimary,
 						)
 					}
 				}
@@ -333,8 +334,7 @@ fun SelectedAppItem(
 	Row(
 		modifier = Modifier
 			.fillMaxWidth()
-			.padding(vertical = 8.dp, horizontal = 12.dp)
-			.clickableSingle(onDeleteClick),
+			.padding(vertical = 8.dp, horizontal = 12.dp),
 		horizontalArrangement = Arrangement.Absolute.SpaceBetween,
 	) {
 		Row(
@@ -343,7 +343,12 @@ fun SelectedAppItem(
 		) {
 			Image(
 				painter = BitmapPainter(
-					app.icon?.toBitmap()?.asImageBitmap() ?: ImageBitmap(24, 24),
+					// 앱이 삭제된 경우 drawable 크기가 0이므로 기본 크기 이미지로 대체
+					app.icon?.let { drawable ->
+						val w = drawable.intrinsicWidth
+						val h = drawable.intrinsicHeight
+						if (w > 0 && h > 0) drawable.toBitmap().asImageBitmap() else null
+					} ?: ImageBitmap(24, 24),
 				),
 				contentDescription = null,
 				modifier = Modifier
@@ -386,9 +391,27 @@ private fun GroupRegistryScreenPreview() {
 				groupId = 1L,
 				groupName = "그룹 이름",
 				selectedApps = persistentListOf(
-					SelectedAppModel(index = 0, name = "앱1", packageName = "", icon = null, id = 1L),
-					SelectedAppModel(index = 1, name = "앱2", packageName = "", icon = null, id = 2L),
-					SelectedAppModel(index = 2, name = "앱3", packageName = "", icon = null, id = 3L),
+					SelectedAppModel(
+						index = 0,
+						name = "앱1",
+						packageName = "",
+						icon = null,
+						id = 1L,
+					),
+					SelectedAppModel(
+						index = 1,
+						name = "앱2",
+						packageName = "",
+						icon = null,
+						id = 2L,
+					),
+					SelectedAppModel(
+						index = 2,
+						name = "앱3",
+						packageName = "",
+						icon = null,
+						id = 3L,
+					),
 				),
 				apps = persistentListOf(
 					AppModel(

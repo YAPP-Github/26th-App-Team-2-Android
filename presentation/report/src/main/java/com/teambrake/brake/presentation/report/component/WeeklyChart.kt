@@ -44,7 +44,6 @@ import com.teambrake.brake.core.designsystem.theme.BrakeYellow
 import com.teambrake.brake.core.designsystem.theme.Gray100
 import com.teambrake.brake.core.designsystem.theme.Gray400
 import com.teambrake.brake.core.designsystem.theme.Gray700
-import com.teambrake.brake.core.designsystem.theme.Gray900
 import com.teambrake.brake.core.designsystem.theme.pretendard
 import com.teambrake.brake.core.model.app.Statistics
 import com.teambrake.brake.core.util.DateUtil
@@ -58,6 +57,7 @@ internal fun WeeklyChart(
 	statistics: List<Statistics>,
 	modifier: Modifier = Modifier,
 ) {
+	val colorScheme = BrakeTheme.colorScheme
 	val textMeasurer = rememberTextMeasurer()
 	var startAnimation by remember { mutableStateOf(false) }
 
@@ -216,7 +216,7 @@ internal fun WeeklyChart(
 					fontSize = 14.sp,
 					fontWeight = FontWeight.Medium,
 					fontFamily = pretendard,
-					color = if (isToday) Gray900 else Gray100,
+					color = if (isToday) colorScheme.onPrimary else Gray100,
 				)
 
 				val textLayoutResult = textMeasurer.measure(day, textStyle)

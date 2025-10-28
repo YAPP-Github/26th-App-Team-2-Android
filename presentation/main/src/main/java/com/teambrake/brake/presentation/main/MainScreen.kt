@@ -17,14 +17,12 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.teambrake.brake.core.designsystem.theme.DynamicPaddingsProvider
-import com.teambrake.brake.core.designsystem.theme.Gray900
 import com.teambrake.brake.core.designsystem.theme.LocalDynamicPaddings
 import com.teambrake.brake.core.navigation.route.InitialRoute
 import com.teambrake.brake.core.navigation.route.MainTabRoute
@@ -96,19 +94,6 @@ private fun MainScreenContent(
 							}
 						}
 						.fillMaxWidth()
-						.background(
-							brush = Brush.verticalGradient(
-								colors = listOf(
-									Color.Transparent,
-									Gray900.copy(alpha = 0.1f),
-									Gray900.copy(alpha = 0.3f),
-									Gray900.copy(alpha = 0.5f),
-									Gray900.copy(alpha = 0.8f),
-									Gray900.copy(alpha = 0.9f),
-									Gray900, Gray900, Gray900,
-								),
-							),
-						)
 						.wrapContentWidth(Alignment.CenterHorizontally)
 						.navigationBarsPadding()
 						.padding(bottom = 34.dp),

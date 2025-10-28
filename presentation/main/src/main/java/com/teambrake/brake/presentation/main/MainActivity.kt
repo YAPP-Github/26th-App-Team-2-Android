@@ -11,6 +11,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.statusBarsPadding
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.collectAsState
@@ -23,15 +24,14 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.window.Popup
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
-import com.teambrake.brake.presentation.main.component.BrakeSnackbarType
 import com.teambrake.brake.core.designsystem.component.DotProgressIndicator
 import com.teambrake.brake.core.designsystem.theme.BrakeTheme
-import com.teambrake.brake.core.designsystem.theme.Gray900
 import com.teambrake.brake.core.navigation.action.MainAction
 import com.teambrake.brake.core.navigation.compositionlocal.LocalMainAction
 import com.teambrake.brake.core.navigation.compositionlocal.LocalNavigatorAction
 import com.teambrake.brake.core.navigation.compositionlocal.LocalNavigatorProvider
 import com.teambrake.brake.presentation.main.component.BrakeSnackbarHostState
+import com.teambrake.brake.presentation.main.component.BrakeSnackbarType
 import com.teambrake.brake.presentation.main.component.LogoutWarningDialog
 import com.teambrake.brake.presentation.main.navigation.MainNavigator
 import com.teambrake.brake.presentation.main.navigation.rememberMainNavigator
@@ -105,7 +105,7 @@ class MainActivity : ComponentActivity() {
 								Box(
 									modifier = Modifier
 										.fillMaxSize()
-										.background(Gray900.copy(alpha = 0.8f))
+										.background(MaterialTheme.colorScheme.background.copy(alpha = 0.8f))
 										.statusBarsPadding(),
 									contentAlignment = Alignment.Center,
 								) {
