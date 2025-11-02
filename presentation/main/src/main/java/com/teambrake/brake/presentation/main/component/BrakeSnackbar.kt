@@ -14,7 +14,6 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableLongStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
@@ -31,7 +30,7 @@ import androidx.compose.ui.unit.dp
 import com.teambrake.brake.core.designsystem.R
 import com.teambrake.brake.core.designsystem.component.HorizontalSpacer
 import com.teambrake.brake.core.designsystem.theme.BrakeTheme
-import com.teambrake.brake.core.designsystem.theme.Gray850
+import com.teambrake.brake.core.designsystem.theme.Gray900
 import kotlinx.coroutines.launch
 import timber.log.Timber
 import kotlin.math.abs
@@ -80,7 +79,6 @@ private fun SnackbarContent(
 	val swipeThreshold = with(density) { 160.dp.toPx() }
 
 	var dragStartTime by remember { mutableLongStateOf(0L) }
-	var dragStartX by remember { mutableFloatStateOf(0f) }
 
 	Box(
 		modifier = modifier
@@ -94,7 +92,6 @@ private fun SnackbarContent(
 				detectHorizontalDragGestures(
 					onDragStart = { offset ->
 						dragStartTime = System.currentTimeMillis()
-						dragStartX = offset.x
 					},
 					onDragEnd = {
 						coroutineScope.launch {
@@ -136,7 +133,7 @@ private fun SnackbarContent(
 				)
 			}
 			.background(
-				color = Gray850,
+				color = Gray900,
 				shape = RoundedCornerShape(16.dp),
 			)
 			.padding(16.dp),
