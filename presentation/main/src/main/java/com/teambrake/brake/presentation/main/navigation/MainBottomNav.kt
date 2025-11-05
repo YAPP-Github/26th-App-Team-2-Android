@@ -31,35 +31,31 @@ import kotlinx.collections.immutable.ImmutableList
 
 @Composable
 internal fun MainBottomNavBar(
-	visible: Boolean,
 	tabs: ImmutableList<MainTab>,
 	currentTab: MainTab?,
 	onTabSelected: (MainTab) -> Unit,
 	modifier: Modifier = Modifier,
 ) {
-	// AnimatedVisibility 를 사용할 경우, 스낵바의 y 좌표 위치 변동 시 애니메이션 활성화 동안 스낵바의 위치가 튀는 현상 발생
-	if (visible) {
-		Row(
-			modifier = modifier
-				// REPORT 개발 후 width 조정 필요
-				.fillMaxWidth(0.70f)
-				.widthIn(max = 216.dp)
-				.wrapContentHeight()
-				.background(
-					color = Gray800,
-					shape = RoundedCornerShape(60.dp),
-				)
-				.padding(horizontal = 28.dp, vertical = 16.dp),
-			horizontalArrangement = Arrangement.SpaceBetween,
-			verticalAlignment = Alignment.CenterVertically,
-		) {
-			tabs.forEach { tab ->
-				MainBottomNavItem(
-					tab = tab,
-					selected = tab == currentTab,
-					onClick = { onTabSelected(tab) },
-				)
-			}
+	Row(
+		modifier = modifier
+			// REPORT 개발 후 width 조정 필요
+			.fillMaxWidth(0.70f)
+			.widthIn(max = 216.dp)
+			.wrapContentHeight()
+			.background(
+				color = Gray800,
+				shape = RoundedCornerShape(60.dp),
+			)
+			.padding(horizontal = 28.dp, vertical = 16.dp),
+		horizontalArrangement = Arrangement.SpaceBetween,
+		verticalAlignment = Alignment.CenterVertically,
+	) {
+		tabs.forEach { tab ->
+			MainBottomNavItem(
+				tab = tab,
+				selected = tab == currentTab,
+				onClick = { onTabSelected(tab) },
+			)
 		}
 	}
 }

@@ -98,19 +98,21 @@ private fun MainScreenContent(
 						.navigationBarsPadding()
 						.padding(bottom = 34.dp),
 				) {
-					MainBottomNavBar(
-						modifier = Modifier
-							.background(Color.Transparent),
-						visible = currentRoute is MainTabRoute,
-						tabs = MainTab.entries.toPersistentList(),
-						currentTab = when (currentRoute) {
-							is MainTabRoute.Home -> MainTab.HOME
-							is MainTabRoute.Report -> MainTab.REPORT
-							is MainTabRoute.Setting -> MainTab.SETTING
-							else -> null
-						},
-						onTabSelected = navigator::navigate,
-					)
+					// AnimatedVisibility 를 사용할 경우, 스낵바의 y 좌표 위치 변동 시 애니메이션 활성화 동안 스낵바의 위치가 튀는 현상 발생
+					val route = currentRoute
+					if (route is MainTabRoute) {
+						MainBottomNavBar(
+							modifier = Modifier
+								.background(Color.Transparent),
+							tabs = MainTab.entries.toPersistentList(),
+							currentTab = when (route) {
+								is MainTabRoute.Home -> MainTab.HOME
+								is MainTabRoute.Report -> MainTab.REPORT
+								is MainTabRoute.Setting -> MainTab.SETTING
+							},
+							onTabSelected = navigator::navigate,
+						)
+					}
 				}
 			}
 		},
