@@ -21,20 +21,16 @@ sealed class UiString {
 	 * Used in Composable fun
 	 */
 	@Composable
-	fun asString(): String {
-		return when (this) {
-			is DynamicString -> value
-			is ResourceString -> stringResource(resId, *args)
-		}
+	fun asString(): String = when (this) {
+		is DynamicString -> value
+		is ResourceString -> stringResource(resId, *args)
 	}
 
 	/**
 	 * Used in non-Composable fun
 	 */
-	fun asString(context: Context): String {
-		return when (this) {
-			is DynamicString -> value
-			is ResourceString -> context.getString(resId, *args)
-		}
+	fun asString(context: Context): String = when (this) {
+		is DynamicString -> value
+		is ResourceString -> context.getString(resId, *args)
 	}
 }

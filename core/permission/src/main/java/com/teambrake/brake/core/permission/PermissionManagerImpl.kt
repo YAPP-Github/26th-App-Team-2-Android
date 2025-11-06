@@ -22,13 +22,11 @@ class PermissionManagerImpl @Inject constructor() : PermissionManager {
 		return true
 	}
 
-	override fun isGranted(context: Context, permissionType: PermissionType): Boolean {
-		return when (permissionType) {
-			PermissionType.OVERLAY -> isOverlayPermissionGranted(context)
-			PermissionType.STATS -> isStatsPermissionGranted(context)
-			PermissionType.EXACT_ALARM -> isExactAlarmPermissionGranted(context)
-			PermissionType.ACCESSIBILITY -> isAccessibilityPermissionGranted(context)
-		}
+	override fun isGranted(context: Context, permissionType: PermissionType): Boolean = when (permissionType) {
+		PermissionType.OVERLAY -> isOverlayPermissionGranted(context)
+		PermissionType.STATS -> isStatsPermissionGranted(context)
+		PermissionType.EXACT_ALARM -> isExactAlarmPermissionGranted(context)
+		PermissionType.ACCESSIBILITY -> isAccessibilityPermissionGranted(context)
 	}
 
 	private fun isOverlayPermissionGranted(context: Context): Boolean =

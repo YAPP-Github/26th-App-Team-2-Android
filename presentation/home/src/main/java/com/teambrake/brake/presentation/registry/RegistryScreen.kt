@@ -30,7 +30,7 @@ fun RegistryRoute(
 ) {
 	val padding = LocalPadding.current.screenPaddingHorizontal
 	val registryUiState by viewModel.registryUiState.collectAsStateWithLifecycle()
-	val registryModalState by viewModel.registryModalFlow.collectAsStateWithLifecycle()
+	val registryModalState by viewModel.modalFlow.collectAsStateWithLifecycle()
 	val focusManager = LocalFocusManager.current
 	val context = LocalContext.current
 	val navAction = LocalNavigatorAction.current

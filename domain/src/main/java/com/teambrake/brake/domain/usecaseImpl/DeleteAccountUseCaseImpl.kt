@@ -12,24 +12,22 @@ class DeleteAccountUseCaseImpl @Inject constructor(
 	private val appGroupRepository: AppGroupRepository,
 	private val appRepository: AppRepository,
 ) : DeleteAccountUseCase {
-	override suspend fun invoke(onError: suspend (Throwable) -> Unit): Destination {
-		return try {
-			sessionRepository.clearRemoteAccount(
-				onError = { throwable ->
-					onError(throwable)
-					throw ServerException()
-				},
-			)
-			sessionRepository.clearEntireDataStore(onError = { throwable ->
+	override suspend fun invoke(onError: suspend (Throwable) -> Unit): Destination = try {
+		sessionRepository.clearRemoteAccount(
+			onError = { throwable ->
 				onError(throwable)
-				throw LocalException()
-			})
-			appGroupRepository.clearAppGroup()
-			appRepository.clearApps()
-			Destination.Login
-		} catch (_: Exception) {
-			Destination.NotChanged
-		}
+				throw ServerException()
+			},
+		)
+		sessionRepository.clearEntireDataStore(onError = { throwable ->
+			onError(throwable)
+			throw LocalException()
+		})
+		appGroupRepository.clearAppGroup()
+		appRepository.clearApps()
+		Destination.Login
+	} catch (_: Exception) {
+		Destination.NotChanged
 	}
 
 	companion object {

@@ -23,11 +23,9 @@ class ConstTimeProviderImpl @Inject constructor() : ConstTimeProvider {
 		Constants.BLOCKING_TIME
 	}
 
-	override fun getTime(seconds: Long): Long {
-		return if (isDebug) {
-			seconds
-		} else {
-			seconds * 60
-		}
+	override fun getTime(seconds: Long): Long = if (isDebug) {
+		seconds
+	} else {
+		seconds * 60
 	}
 }

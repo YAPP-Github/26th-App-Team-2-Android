@@ -14,19 +14,17 @@ internal class StatisticRepositoryImpl @Inject constructor(
 	private val statisticRemoteDataSource: StatisticRemoteDataSource,
 ) : StatisticRepository {
 
-	override suspend fun pushSession(appGroup: AppGroup): Result<Unit> {
-		return try {
-			statisticRemoteDataSource.pushSession(
-				appGroup = appGroup,
-				onSuccess = {
-					Result.success(Unit)
-				},
-			)
+	override suspend fun pushSession(appGroup: AppGroup): Result<Unit> = try {
+		statisticRemoteDataSource.pushSession(
+			appGroup = appGroup,
+			onSuccess = {
+				Result.success(Unit)
+			},
+		)
 
-			Result.success(Unit)
-		} catch (e: Exception) {
-			Result.failure(e)
-		}
+		Result.success(Unit)
+	} catch (e: Exception) {
+		Result.failure(e)
 	}
 
 	override fun getStatistics(

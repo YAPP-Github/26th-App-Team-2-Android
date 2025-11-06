@@ -63,12 +63,10 @@ class AlarmSchedulerImpl @Inject constructor(
 		AlarmCountdownService.stop(context)
 	}
 
-	private fun canScheduleExactAlarms(): Boolean {
-		return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
-			alarmManager.canScheduleExactAlarms()
-		} else {
-			true
-		}
+	private fun canScheduleExactAlarms(): Boolean = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+		alarmManager.canScheduleExactAlarms()
+	} else {
+		true
 	}
 
 	private fun getPendingIntent(

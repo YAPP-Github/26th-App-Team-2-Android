@@ -251,15 +251,13 @@ class AppLaunchDetectionService : AccessibilityService() {
 		}
 	}
 
-	private fun getGroupStateFromIntent(intent: Intent): AppGroupState {
-		return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-			intent.getSerializableExtra(IntentConfig.EXTRA_GROUP_STATE, AppGroupState::class.java)
-				?: AppGroupState.Blocking
-		} else {
-			@Suppress("DEPRECATION")
-			intent.getSerializableExtra(IntentConfig.EXTRA_GROUP_STATE) as? AppGroupState
-				?: AppGroupState.Blocking
-		}
+	private fun getGroupStateFromIntent(intent: Intent): AppGroupState = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+		intent.getSerializableExtra(IntentConfig.EXTRA_GROUP_STATE, AppGroupState::class.java)
+			?: AppGroupState.Blocking
+	} else {
+		@Suppress("DEPRECATION")
+		intent.getSerializableExtra(IntentConfig.EXTRA_GROUP_STATE) as? AppGroupState
+			?: AppGroupState.Blocking
 	}
 
 	private fun monitorCurrentAppLaunch(monitoredApps: Set<String>) {

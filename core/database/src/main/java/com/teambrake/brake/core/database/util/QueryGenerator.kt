@@ -20,11 +20,9 @@ fun <T : Any> generateInsertQuery(entity: T, tableName: String): String {
 	return "INSERT INTO $tableName ($columnsString) VALUES ($valuesString);"
 }
 
-private fun formatValue(value: Any?): String {
-	return when (value) {
-		is String -> "'$value'"
-		is Boolean -> if (value) "1" else "0"
-		is LocalDate -> "'${value.format(DateTimeFormatter.ISO_LOCAL_DATE)}'"
-		else -> value.toString()
-	}
+private fun formatValue(value: Any?): String = when (value) {
+	is String -> "'$value'"
+	is Boolean -> if (value) "1" else "0"
+	is LocalDate -> "'${value.format(DateTimeFormatter.ISO_LOCAL_DATE)}'"
+	else -> value.toString()
 }

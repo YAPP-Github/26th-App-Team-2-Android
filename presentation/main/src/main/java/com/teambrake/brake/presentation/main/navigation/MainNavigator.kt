@@ -72,111 +72,103 @@ internal class MainNavigator(
 			// Registry 타입은 유일하게 인자를 갖는 Route 의 클래스 이므로, else 분기로 Registry 기본 생성자 반환
 		}
 
-	fun navigatorAction(): NavigatorAction {
-		return object : NavigatorAction {
-			override fun popBackStack(navOptions: NavOptions?) = popBackStackIfNotHome()
-			override fun navigateToLogin(navOptions: NavOptions?) {
-				firebaseAnalytics.logEvent(FirebaseAnalytics.Event.SCREEN_VIEW) {
-					param(FirebaseAnalytics.Param.SCREEN_NAME, "login_screen")
-				}
-				navController.navigateToLogin(navOptions)
+	fun navigatorAction(): NavigatorAction = object : NavigatorAction {
+		override fun popBackStack(navOptions: NavOptions?) = popBackStackIfNotHome()
+		override fun navigateToLogin(navOptions: NavOptions?) {
+			firebaseAnalytics.logEvent(FirebaseAnalytics.Event.SCREEN_VIEW) {
+				param(FirebaseAnalytics.Param.SCREEN_NAME, "login_screen")
 			}
+			navController.navigateToLogin(navOptions)
+		}
 
-			override fun navigateToSignup(navOptions: NavOptions?) {
-				firebaseAnalytics.logEvent(FirebaseAnalytics.Event.SCREEN_VIEW) {
-					param(FirebaseAnalytics.Param.SCREEN_NAME, "signup_screen")
-				}
-				navController.navigateToSignup(navOptions)
+		override fun navigateToSignup(navOptions: NavOptions?) {
+			firebaseAnalytics.logEvent(FirebaseAnalytics.Event.SCREEN_VIEW) {
+				param(FirebaseAnalytics.Param.SCREEN_NAME, "signup_screen")
 			}
+			navController.navigateToSignup(navOptions)
+		}
 
-			override fun navigateToGuide(navOptions: NavOptions?) {
-				firebaseAnalytics.logEvent(FirebaseAnalytics.Event.SCREEN_VIEW) {
-					param(FirebaseAnalytics.Param.SCREEN_NAME, "onboarding_guide_screen")
-				}
-				navController.navigateToGuide(navOptions)
+		override fun navigateToGuide(navOptions: NavOptions?) {
+			firebaseAnalytics.logEvent(FirebaseAnalytics.Event.SCREEN_VIEW) {
+				param(FirebaseAnalytics.Param.SCREEN_NAME, "onboarding_guide_screen")
 			}
+			navController.navigateToGuide(navOptions)
+		}
 
-			override fun navigateToPrivacy(navOptions: NavOptions?) {
-				firebaseAnalytics.logEvent(FirebaseAnalytics.Event.SCREEN_VIEW) {
-					param(FirebaseAnalytics.Param.SCREEN_NAME, "privacy_policy_chrome_activity")
-				}
-				navController.navigateToPrivacy(navOptions)
+		override fun navigateToPrivacy(navOptions: NavOptions?) {
+			firebaseAnalytics.logEvent(FirebaseAnalytics.Event.SCREEN_VIEW) {
+				param(FirebaseAnalytics.Param.SCREEN_NAME, "privacy_policy_chrome_activity")
 			}
+			navController.navigateToPrivacy(navOptions)
+		}
 
-			override fun navigateToTerms(navOptions: NavOptions?) {
-				firebaseAnalytics.logEvent(FirebaseAnalytics.Event.SCREEN_VIEW) {
-					param(FirebaseAnalytics.Param.SCREEN_NAME, "terms_of_service_chrome_activity")
-				}
-				navController.navigateToTerms(navOptions)
+		override fun navigateToTerms(navOptions: NavOptions?) {
+			firebaseAnalytics.logEvent(FirebaseAnalytics.Event.SCREEN_VIEW) {
+				param(FirebaseAnalytics.Param.SCREEN_NAME, "terms_of_service_chrome_activity")
 			}
+			navController.navigateToTerms(navOptions)
+		}
 
-			override fun navigateToComplete(navOptions: NavOptions?) {
-				firebaseAnalytics.logEvent(FirebaseAnalytics.Event.SCREEN_VIEW) {
-					param(FirebaseAnalytics.Param.SCREEN_NAME, "onboarding_complete_screen")
-				}
-				navController.navigateToComplete(navOptions)
+		override fun navigateToComplete(navOptions: NavOptions?) {
+			firebaseAnalytics.logEvent(FirebaseAnalytics.Event.SCREEN_VIEW) {
+				param(FirebaseAnalytics.Param.SCREEN_NAME, "onboarding_complete_screen")
 			}
+			navController.navigateToComplete(navOptions)
+		}
 
-			override fun navigateToPermission(navOptions: NavOptions?) {
-				firebaseAnalytics.logEvent(FirebaseAnalytics.Event.SCREEN_VIEW) {
-					param(FirebaseAnalytics.Param.SCREEN_NAME, "permission_screen")
-				}
-				navController.navigateToPermission(navOptions)
+		override fun navigateToPermission(navOptions: NavOptions?) {
+			firebaseAnalytics.logEvent(FirebaseAnalytics.Event.SCREEN_VIEW) {
+				param(FirebaseAnalytics.Param.SCREEN_NAME, "permission_screen")
 			}
+			navController.navigateToPermission(navOptions)
+		}
 
-			override fun navigateToHome(navOptions: NavOptions?) {
-				firebaseAnalytics.logEvent(FirebaseAnalytics.Event.SCREEN_VIEW) {
-					param(FirebaseAnalytics.Param.SCREEN_NAME, "home_screen")
-				}
-				navController.navigateToHome(navOptions)
+		override fun navigateToHome(navOptions: NavOptions?) {
+			firebaseAnalytics.logEvent(FirebaseAnalytics.Event.SCREEN_VIEW) {
+				param(FirebaseAnalytics.Param.SCREEN_NAME, "home_screen")
 			}
+			navController.navigateToHome(navOptions)
+		}
 
-			override fun navigateToRegistry(groupId: Long?, navOptions: NavOptions?) {
-				firebaseAnalytics.logEvent(FirebaseAnalytics.Event.SCREEN_VIEW) {
-					param(FirebaseAnalytics.Param.SCREEN_NAME, "registry_screen")
-				}
-				navController.navigateToRegistry(groupId, navOptions)
+		override fun navigateToRegistry(groupId: Long?, navOptions: NavOptions?) {
+			firebaseAnalytics.logEvent(FirebaseAnalytics.Event.SCREEN_VIEW) {
+				param(FirebaseAnalytics.Param.SCREEN_NAME, "registry_screen")
 			}
+			navController.navigateToRegistry(groupId, navOptions)
+		}
 
-			override fun navigateToNickname(navOptions: NavOptions?) {
-				firebaseAnalytics.logEvent(FirebaseAnalytics.Event.SCREEN_VIEW) {
-					param(FirebaseAnalytics.Param.SCREEN_NAME, "nickname_screen")
-				}
-				navController.navigateToNickname(navOptions)
+		override fun navigateToNickname(navOptions: NavOptions?) {
+			firebaseAnalytics.logEvent(FirebaseAnalytics.Event.SCREEN_VIEW) {
+				param(FirebaseAnalytics.Param.SCREEN_NAME, "nickname_screen")
 			}
+			navController.navigateToNickname(navOptions)
+		}
 
-			override fun navigateToOpinion(navOptions: NavOptions?) {
-				firebaseAnalytics.logEvent(FirebaseAnalytics.Event.SCREEN_VIEW) {
-					param(FirebaseAnalytics.Param.SCREEN_NAME, "opinion_chrome_screen")
-				}
-				navController.navigateToOpinion(navOptions)
+		override fun navigateToOpinion(navOptions: NavOptions?) {
+			firebaseAnalytics.logEvent(FirebaseAnalytics.Event.SCREEN_VIEW) {
+				param(FirebaseAnalytics.Param.SCREEN_NAME, "opinion_chrome_screen")
 			}
+			navController.navigateToOpinion(navOptions)
+		}
 
-			override fun navigateToInquiry(navOptions: NavOptions?) {
-				firebaseAnalytics.logEvent(FirebaseAnalytics.Event.SCREEN_VIEW) {
-					param(FirebaseAnalytics.Param.SCREEN_NAME, "inquiry_chrome_screen")
-				}
-				navController.navigateToInquiry(navOptions)
+		override fun navigateToInquiry(navOptions: NavOptions?) {
+			firebaseAnalytics.logEvent(FirebaseAnalytics.Event.SCREEN_VIEW) {
+				param(FirebaseAnalytics.Param.SCREEN_NAME, "inquiry_chrome_screen")
 			}
+			navController.navigateToInquiry(navOptions)
 		}
 	}
 
-	fun navigatorProvider(): NavigatorProvider {
-		return object : NavigatorProvider {
-			override fun getNavOptionsClearingBackStack(): NavOptions {
-				return navOptions {
-					popUpTo(navController.graph.id) {
-						inclusive = true
-					}
-					launchSingleTop = true
-				}
+	fun navigatorProvider(): NavigatorProvider = object : NavigatorProvider {
+		override fun getNavOptionsClearingBackStack(): NavOptions = navOptions {
+			popUpTo(navController.graph.id) {
+				inclusive = true
 			}
-
-			override fun getPreviousDestination(): String {
-				return navController.previousBackStackEntry?.destination?.route
-					?: startDestination.stringRoute()
-			}
+			launchSingleTop = true
 		}
+
+		override fun getPreviousDestination(): String = navController.previousBackStackEntry?.destination?.route
+			?: startDestination.stringRoute()
 	}
 
 	fun navigate(tab: MainTab) {
@@ -229,9 +221,7 @@ internal class MainNavigator(
 		}
 	}
 
-	private inline fun <reified T : Route> isSameCurrentDestination(): Boolean {
-		return navController.currentDestination?.hasRoute<T>() == true
-	}
+	private inline fun <reified T : Route> isSameCurrentDestination(): Boolean = navController.currentDestination?.hasRoute<T>() == true
 }
 
 @Composable

@@ -18,13 +18,9 @@ class AppRepositoryImpl @Inject constructor(
 		appLocalDataSource.insertApps(parentGroupId = parentGroupId, apps = apps)
 	}
 
-	override fun observeApp(): Flow<List<App>> {
-		return appLocalDataSource.observeApp()
-	}
+	override fun observeApp(): Flow<List<App>> = appLocalDataSource.observeApp()
 
-	override suspend fun getAppGroupIdByPackage(packageName: String): Long? {
-		return appLocalDataSource.getAppGroupIdByPackage(packageName = packageName)
-	}
+	override suspend fun getAppGroupIdByPackage(packageName: String): Long? = appLocalDataSource.getAppGroupIdByPackage(packageName = packageName)
 
 	override suspend fun deleteAppByParentGroupId(parentGroupId: Long) {
 		appLocalDataSource.deleteAppByParentGroupId(parentGroupId = parentGroupId)

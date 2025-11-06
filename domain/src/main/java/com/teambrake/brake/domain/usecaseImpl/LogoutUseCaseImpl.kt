@@ -15,21 +15,19 @@ class LogoutUseCaseImpl @Inject constructor(
 	private val appGroupRepository: AppGroupRepository,
 	private val appRepository: AppRepository,
 ) : LogoutUseCase {
-	override suspend fun invoke(onError: suspend (Throwable) -> Unit): Destination {
-		return try {
-			tokenRepository.logoutRemoteAccount()
-			sessionRepository.clearEntireDataStore(
-				onError = { throwable ->
-					onError(throwable)
-					throw LocalException()
-				},
-			)
-			appGroupRepository.clearAppGroup()
-			appRepository.clearApps()
-			Destination.Login
-		} catch (_: LocalException) {
-			Destination.PermissionOrHome
-		}
+	override suspend fun invoke(onError: suspend (Throwable) -> Unit): Destination = try {
+		tokenRepository.logoutRemoteAccount()
+		sessionRepository.clearEntireDataStore(
+			onError = { throwable ->
+				onError(throwable)
+				throw LocalException()
+			},
+		)
+		appGroupRepository.clearAppGroup()
+		appRepository.clearApps()
+		Destination.Login
+	} catch (_: LocalException) {
+		Destination.PermissionOrHome
 	}
 
 	companion object {

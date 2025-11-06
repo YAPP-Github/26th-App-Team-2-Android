@@ -18,7 +18,9 @@ data class App(
 		if (icon != null) {
 			if (other.icon == null) return false
 			if (!icon.contentEquals(other.icon)) return false
-		} else if (other.icon != null) return false
+		} else if (other.icon != null) {
+			return false
+		}
 		if (category != other.category) return false
 
 		return true

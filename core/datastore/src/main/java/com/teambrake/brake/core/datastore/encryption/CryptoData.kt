@@ -27,18 +27,16 @@ internal class CryptoData {
 		return existingKey?.secretKey ?: createKey()
 	}
 
-	private fun createKey(): SecretKey {
-		return KeyGenerator.getInstance(ALGORITHM).apply {
-			init(
-				KeyGenParameterSpec.Builder(
-					"secret",
-					KeyProperties.PURPOSE_ENCRYPT or KeyProperties.PURPOSE_DECRYPT,
-				).setBlockModes(BLOCK_MODE)
-					.setEncryptionPaddings(PADDING)
-					.build(),
-			)
-		}.generateKey()
-	}
+	private fun createKey(): SecretKey = KeyGenerator.getInstance(ALGORITHM).apply {
+		init(
+			KeyGenParameterSpec.Builder(
+				"secret",
+				KeyProperties.PURPOSE_ENCRYPT or KeyProperties.PURPOSE_DECRYPT,
+			).setBlockModes(BLOCK_MODE)
+				.setEncryptionPaddings(PADDING)
+				.build(),
+		)
+	}.generateKey()
 
 	fun encrypt(bytes: ByteArray): ByteArray {
 		// cipher 초기화 및 암호화 수행

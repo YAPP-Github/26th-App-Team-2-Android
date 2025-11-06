@@ -94,7 +94,7 @@ class RegistryViewModel @Inject constructor(
 	val navigationFlow = _navigationFlow.asSharedFlow()
 
 	private val _modalFlow = MutableStateFlow<RegistryModalState>(RegistryModalState.Idle)
-	val registryModalFlow = _modalFlow.asStateFlow()
+	val modalFlow = _modalFlow.asStateFlow()
 
 	private val _lazyColumnIndexFlow = MutableSharedFlow<Int>()
 	val lazyColumnIndexFlow = _lazyColumnIndexFlow.asSharedFlow()

@@ -10,7 +10,9 @@ import timber.log.Timber
 import javax.inject.Inject
 
 @HiltAndroidApp
-class BrakeApplication : Application(), Configuration.Provider {
+class BrakeApplication :
+	Application(),
+	Configuration.Provider {
 
 	@Inject lateinit var googleAuthManager: GoogleAuthManager
 
