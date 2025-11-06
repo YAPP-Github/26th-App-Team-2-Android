@@ -91,13 +91,4 @@ class NicknameViewModel @Inject constructor(
 			)
 		}
 	}
-
-	fun popBackStack() {
-		viewModelScope.launch {
-			firebaseAnalytics.logEvent(FirebaseAnalytics.Event.SCREEN_VIEW) {
-				param(FirebaseAnalytics.Param.SCREEN_NAME, "setting_screen")
-			}
-			_navigationFlow.emit(NicknameNavState.PopBackStack)
-		}
-	}
 }

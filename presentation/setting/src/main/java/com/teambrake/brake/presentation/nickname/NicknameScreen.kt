@@ -66,14 +66,6 @@ fun NicknameRoute(
 		prevVisible = imeVisible
 	}
 
-	BackHandler {
-		if (uiState is NicknameUiState.NicknameUpdating) {
-			viewModel.cancelUpdateNickname()
-		} else {
-			viewModel::popBackStack
-		}
-	}
-
 	if (uiState is NicknameUiState.NicknameUpdating) {
 		mainAction.OnShowLoading()
 	}
@@ -110,9 +102,10 @@ fun NicknameRoute(
 	NicknameScreen(
 		padding = padding,
 		focusManager = focusManager,
-		nickname = uiState.nickname,
+		uiState = uiState,
 		onTypeNickname = viewModel::typeNickname,
 		onCompleteClick = viewModel::updateNickname,
+		onCancelUpdate = viewModel::cancelUpdateNickname,
 		onBackClick = navAction::popBackStack,
 	)
 }
@@ -121,17 +114,26 @@ fun NicknameRoute(
 fun NicknameScreen(
 	padding: Dp,
 	focusManager: FocusManager,
-	nickname: String,
+	uiState: NicknameUiState,
 	onTypeNickname: (String) -> Unit = {},
 	onCompleteClick: () -> Unit,
+	onCancelUpdate: () -> Unit,
 	onBackClick: () -> Unit,
 ) {
+	BackHandler {
+		if (uiState is NicknameUiState.NicknameUpdating) {
+			onCancelUpdate()
+		} else {
+			onBackClick()
+		}
+	}
+
 	BaseScaffold(
 		contentPadding = PaddingValues(horizontal = padding),
 		topBar = {
 			BrakeTopAppbar(
 				title = stringResource(R.string.nickname_title),
-				appbarType = TopAppbarType.Cancel,
+				appbarType = TopAppbarType.Back,
 				onClick = onBackClick,
 			)
 		},
@@ -159,7 +161,7 @@ fun NicknameScreen(
 						start.linkTo(parent.start)
 						end.linkTo(parent.end)
 					},
-				value = nickname,
+				value = uiState.nickname,
 				onValueChange = onTypeNickname,
 				label = stringResource(R.string.nickname_input_label),
 				placeholder = stringResource(R.string.nickname_input_hint),
@@ -188,7 +190,7 @@ fun NicknameScreen(
 					.navigationBarsPadding()
 					.imePadding(),
 				// 임의 제한 조건
-				enabled = nickname.isValidInput(),
+				enabled = uiState.nickname.isValidInput(),
 			)
 		}
 	}
