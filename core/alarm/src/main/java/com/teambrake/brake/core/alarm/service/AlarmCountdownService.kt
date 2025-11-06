@@ -280,22 +280,20 @@ class AlarmCountdownService : Service() {
 		}
 	}
 
-	private fun createMainActivityPendingIntent(): PendingIntent? {
-		return try {
-			val launchIntent = packageManager.getLaunchIntentForPackage(packageName)
-			launchIntent?.let { intent ->
-				intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TOP
-				PendingIntent.getActivity(
-					this,
-					0,
-					intent,
-					PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE,
-				)
-			}
-		} catch (e: Exception) {
-			Timber.e("Failed to create main activity pending intent: $e")
-			null
+	private fun createMainActivityPendingIntent(): PendingIntent? = try {
+		val launchIntent = packageManager.getLaunchIntentForPackage(packageName)
+		launchIntent?.let { intent ->
+			intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TOP
+			PendingIntent.getActivity(
+				this,
+				0,
+				intent,
+				PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE,
+			)
 		}
+	} catch (e: Exception) {
+		Timber.e("Failed to create main activity pending intent: $e")
+		null
 	}
 
 	companion object {

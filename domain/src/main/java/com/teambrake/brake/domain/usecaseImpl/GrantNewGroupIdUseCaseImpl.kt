@@ -7,7 +7,5 @@ import javax.inject.Inject
 class GrantNewGroupIdUseCaseImpl @Inject constructor(
 	private val appGroupRepository: AppGroupRepository,
 ) : GrantNewGroupIdUseCase {
-	override suspend fun invoke(onError: suspend (Throwable) -> Unit): Long {
-		return appGroupRepository.getAvailableMinGroupId()
-	}
+	override suspend fun invoke(onError: suspend (Throwable) -> Unit): Long = appGroupRepository.getAvailableMinGroupId()
 }

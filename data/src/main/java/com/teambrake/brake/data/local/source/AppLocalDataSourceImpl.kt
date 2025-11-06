@@ -42,24 +42,20 @@ internal class AppLocalDataSourceImpl @Inject constructor(
 
 	override fun observeApp(
 		onError: suspend (Throwable) -> Unit,
-	): Flow<List<App>> {
-		return appDao.observeApps()
-			.map { appEntities ->
-				appEntities.map { it.toApp(appScanner) }
-			}
-			.catch { onError(Throwable("앱 목록 관찰에 실패했습니다")) }
-	}
+	): Flow<List<App>> = appDao.observeApps()
+		.map { appEntities ->
+			appEntities.map { it.toApp(appScanner) }
+		}
+		.catch { onError(Throwable("앱 목록 관찰에 실패했습니다")) }
 
 	override suspend fun getAppGroupIdByPackage(
 		packageName: String,
 		onError: suspend (Throwable) -> Unit,
-	): Long? {
-		return try {
-			appDao.getAppByPackageName(packageName)?.parentGroupId
-		} catch (e: Exception) {
-			onError(Throwable("앱 그룹 ID 조회에 실패했습니다"))
-			null
-		}
+	): Long? = try {
+		appDao.getAppByPackageName(packageName)?.parentGroupId
+	} catch (e: Exception) {
+		onError(Throwable("앱 그룹 ID 조회에 실패했습니다"))
+		null
 	}
 
 	override suspend fun deleteAppByParentGroupId(

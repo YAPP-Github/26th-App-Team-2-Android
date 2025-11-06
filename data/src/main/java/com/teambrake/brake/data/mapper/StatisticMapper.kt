@@ -10,15 +10,13 @@ import java.time.format.DateTimeFormatter
 private val dateFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd")
 private val timeFormatter = DateTimeFormatter.ofPattern("HH:mm:ss")
 
-internal fun StatisticData.toStatistics(): List<Statistics> {
-	return statistics.map { statistic ->
-		Statistics(
-			date = LocalDate.parse(statistic.date, dateFormatter),
-			dayOfWeek = statistic.dayOfWeek,
-			actualTime = stringToDuration(statistic.actualTime),
-			goalTime = stringToDuration(statistic.goalTime),
-		)
-	}
+internal fun StatisticData.toStatistics(): List<Statistics> = statistics.map { statistic ->
+	Statistics(
+		date = LocalDate.parse(statistic.date, dateFormatter),
+		dayOfWeek = statistic.dayOfWeek,
+		actualTime = stringToDuration(statistic.actualTime),
+		goalTime = stringToDuration(statistic.goalTime),
+	)
 }
 
 private fun stringToDuration(timeString: String): Duration {
@@ -26,6 +24,4 @@ private fun stringToDuration(timeString: String): Duration {
 	return Duration.between(LocalTime.MIDNIGHT, localTime)
 }
 
-internal fun LocalDate.toDateString(): String {
-	return this.format(dateFormatter)
-}
+internal fun LocalDate.toDateString(): String = this.format(dateFormatter)

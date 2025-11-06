@@ -21,27 +21,25 @@ internal class AppGroupRepositoryImpl @Inject constructor(
 	private val cachedDatabase: CachedDatabase,
 ) : AppGroupRepository {
 
-	override suspend fun insertAppGroup(appGroup: AppGroup): AppGroup {
-		return if (appGroupLocalDataSource.isAppGroupExists(appGroup.id)) {
-			appGroupRemoteDataSource.updateAppGroup(
-				appGroup = appGroup,
-			).map { updatedGroup ->
-				appGroupLocalDataSource.insertAppGroup(updatedGroup)
-				// API 성공 후에 캐시 업데이트
-				cachedDatabase.updateAppGroupInCache(updatedGroup)
-				updatedGroup
-			}
-		} else {
-			appGroupRemoteDataSource.createAppGroup(
-				appGroup = appGroup,
-			).map { newGroup ->
-				appGroupLocalDataSource.insertAppGroup(newGroup)
-				// API 성공 후에 캐시에 추가
-				cachedDatabase.addAppGroupToCache(newGroup)
-				newGroup
-			}
-		}.first()
-	}
+	override suspend fun insertAppGroup(appGroup: AppGroup): AppGroup = if (appGroupLocalDataSource.isAppGroupExists(appGroup.id)) {
+		appGroupRemoteDataSource.updateAppGroup(
+			appGroup = appGroup,
+		).map { updatedGroup ->
+			appGroupLocalDataSource.insertAppGroup(updatedGroup)
+			// API 성공 후에 캐시 업데이트
+			cachedDatabase.updateAppGroupInCache(updatedGroup)
+			updatedGroup
+		}
+	} else {
+		appGroupRemoteDataSource.createAppGroup(
+			appGroup = appGroup,
+		).map { newGroup ->
+			appGroupLocalDataSource.insertAppGroup(newGroup)
+			// API 성공 후에 캐시에 추가
+			cachedDatabase.addAppGroupToCache(newGroup)
+			newGroup
+		}
+	}.first()
 
 	override suspend fun getAvailableMinGroupId(): Long =
 		appGroupLocalDataSource.getAvailableMinGroupId()
@@ -61,28 +59,24 @@ internal class AppGroupRepositoryImpl @Inject constructor(
 		cachedDatabase.clearCache()
 	}
 
-	override fun observeAppGroup(): Flow<List<AppGroup>> {
-		return appGroupLocalDataSource.observeAppGroup()
-			.onEach { localList ->
-				if (localList.isEmpty()) {
-					appGroupRemoteDataSource.getAppGroups().collect { remoteList ->
-						appGroupLocalDataSource.insertAppGroups(remoteList)
-						remoteList.forEach {
-							appLocalDataSource.insertApps(it.id, it.apps)
-						}
-						// 원격에서 가져온 데이터로 캐시 초기화
-						cachedDatabase.initializeCachedState(remoteList)
+	override fun observeAppGroup(): Flow<List<AppGroup>> = appGroupLocalDataSource.observeAppGroup()
+		.onEach { localList ->
+			if (localList.isEmpty()) {
+				appGroupRemoteDataSource.getAppGroups().collect { remoteList ->
+					appGroupLocalDataSource.insertAppGroups(remoteList)
+					remoteList.forEach {
+						appLocalDataSource.insertApps(it.id, it.apps)
 					}
-				} else {
-					// DB 변경 시마다 캐시 업데이트
-					cachedDatabase.initializeCachedState(localList)
+					// 원격에서 가져온 데이터로 캐시 초기화
+					cachedDatabase.initializeCachedState(remoteList)
 				}
+			} else {
+				// DB 변경 시마다 캐시 업데이트
+				cachedDatabase.initializeCachedState(localList)
 			}
-	}
+		}
 
-	override suspend fun getAppGroupById(groupId: Long): AppGroup? {
-		return appGroupLocalDataSource.getAppGroupById(groupId = groupId)
-	}
+	override suspend fun getAppGroupById(groupId: Long): AppGroup? = appGroupLocalDataSource.getAppGroupById(groupId = groupId)
 
 	override suspend fun updateAppGroupState(
 		groupId: Long,
@@ -108,46 +102,40 @@ internal class AppGroupRepositoryImpl @Inject constructor(
 		groupId: Long,
 		goalMinutes: Int?,
 		sessionStartTime: LocalDateTime?,
-	): Result<Unit> {
-		return try {
-			appGroupLocalDataSource.updateGroupSessionInfo(
-				groupId = groupId,
-				goalMinutes = goalMinutes,
-				sessionStartTime = sessionStartTime,
-			)
-			Result.success(Unit)
-		} catch (e: Exception) {
-			Result.failure(e)
-		}
+	): Result<Unit> = try {
+		appGroupLocalDataSource.updateGroupSessionInfo(
+			groupId = groupId,
+			goalMinutes = goalMinutes,
+			sessionStartTime = sessionStartTime,
+		)
+		Result.success(Unit)
+	} catch (e: Exception) {
+		Result.failure(e)
 	}
 
-	override suspend fun insertSnooze(groupId: Long): Result<Unit> {
-		return try {
-			appGroupLocalDataSource.insertSnooze(
-				parentGroupId = groupId,
-				snoozeTime = LocalDateTime.now(),
-			)
-			// Snooze 삽입 후 캐시의 snoozesCount 업데이트
-			val updatedGroup = appGroupLocalDataSource.getAppGroupById(groupId)
-			updatedGroup?.let {
-				cachedDatabase.updateSnoozeCount(groupId, it.snoozesCount)
-			}
-			Result.success(Unit)
-		} catch (e: Exception) {
-			Result.failure(e)
+	override suspend fun insertSnooze(groupId: Long): Result<Unit> = try {
+		appGroupLocalDataSource.insertSnooze(
+			parentGroupId = groupId,
+			snoozeTime = LocalDateTime.now(),
+		)
+		// Snooze 삽입 후 캐시의 snoozesCount 업데이트
+		val updatedGroup = appGroupLocalDataSource.getAppGroupById(groupId)
+		updatedGroup?.let {
+			cachedDatabase.updateSnoozeCount(groupId, it.snoozesCount)
 		}
+		Result.success(Unit)
+	} catch (e: Exception) {
+		Result.failure(e)
 	}
 
-	override suspend fun resetSnooze(groupId: Long): Result<Unit> {
-		return try {
-			appGroupLocalDataSource.resetSnooze(
-				groupId = groupId,
-			)
-			// Snooze 리셋 후 캐시의 snoozesCount를 0으로 업데이트
-			cachedDatabase.updateSnoozeCount(groupId, 0)
-			Result.success(Unit)
-		} catch (e: Exception) {
-			Result.failure(e)
-		}
+	override suspend fun resetSnooze(groupId: Long): Result<Unit> = try {
+		appGroupLocalDataSource.resetSnooze(
+			groupId = groupId,
+		)
+		// Snooze 리셋 후 캐시의 snoozesCount를 0으로 업데이트
+		cachedDatabase.updateSnoozeCount(groupId, 0)
+		Result.success(Unit)
+	} catch (e: Exception) {
+		Result.failure(e)
 	}
 }

@@ -43,24 +43,20 @@ internal class AppGroupLocalDataSourceImpl @Inject constructor(
 	override suspend fun isAppGroupExists(
 		groupId: Long,
 		onError: suspend (Throwable) -> Unit,
-	): Boolean {
-		return try {
-			appGroupDao.isAppGroupExists(groupId)
-		} catch (e: Exception) {
-			onError(Throwable("앱 그룹 존재 여부 확인에 실패했습니다"))
-			false
-		}
+	): Boolean = try {
+		appGroupDao.isAppGroupExists(groupId)
+	} catch (e: Exception) {
+		onError(Throwable("앱 그룹 존재 여부 확인에 실패했습니다"))
+		false
 	}
 
 	override suspend fun getAvailableMinGroupId(
 		onError: suspend (Throwable) -> Unit,
-	): Long {
-		return try {
-			appGroupDao.getAvailableMinGroupId()
-		} catch (e: Exception) {
-			onError(Throwable("사용 가능한 그룹 ID를 가져오는데 실패했습니다"))
-			-1L
-		}
+	): Long = try {
+		appGroupDao.getAvailableMinGroupId()
+	} catch (e: Exception) {
+		onError(Throwable("사용 가능한 그룹 ID를 가져오는데 실패했습니다"))
+		-1L
 	}
 
 	override suspend fun deleteAppGroupById(
@@ -76,24 +72,20 @@ internal class AppGroupLocalDataSourceImpl @Inject constructor(
 
 	override fun observeAppGroup(
 		onError: suspend (Throwable) -> Unit,
-	): Flow<List<AppGroup>> {
-		return appGroupDao.observeAppGroup()
-			.map { appGroupEntities ->
-				appGroupEntities.map { it.toAppList(appScanner) }
-			}
-			.catch { onError(Throwable("앱 그룹 목록 관찰에 실패했습니다")) }
-	}
+	): Flow<List<AppGroup>> = appGroupDao.observeAppGroup()
+		.map { appGroupEntities ->
+			appGroupEntities.map { it.toAppList(appScanner) }
+		}
+		.catch { onError(Throwable("앱 그룹 목록 관찰에 실패했습니다")) }
 
 	override suspend fun getAppGroupById(
 		groupId: Long,
 		onError: suspend (Throwable) -> Unit,
-	): AppGroup? {
-		return try {
-			appGroupDao.getAppGroupById(groupId)?.toAppList(appScanner)
-		} catch (e: Exception) {
-			onError(Throwable("앱 그룹 정보를 가져오는데 실패했습니다"))
-			null
-		}
+	): AppGroup? = try {
+		appGroupDao.getAppGroupById(groupId)?.toAppList(appScanner)
+	} catch (e: Exception) {
+		onError(Throwable("앱 그룹 정보를 가져오는데 실패했습니다"))
+		null
 	}
 
 	override suspend fun updateAppGroupState(

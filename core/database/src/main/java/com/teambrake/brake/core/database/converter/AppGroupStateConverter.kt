@@ -6,12 +6,8 @@ import com.teambrake.brake.core.model.app.AppGroupState
 internal class AppGroupStateConverter {
 
 	@TypeConverter
-	fun fromAppGroupState(appGroupState: AppGroupState): String {
-		return appGroupState.name
-	}
+	fun fromAppGroupState(appGroupState: AppGroupState): String = appGroupState.name
 
 	@TypeConverter
-	fun toAppGroupState(value: String): AppGroupState {
-		return AppGroupState.valueOf(value)
-	}
+	fun toAppGroupState(value: String): AppGroupState = AppGroupState.valueOf(value)
 }

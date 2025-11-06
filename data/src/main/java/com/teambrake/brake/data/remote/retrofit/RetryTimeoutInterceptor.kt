@@ -33,23 +33,21 @@ class RetryTimeoutInterceptor(private val maxRetries: Int) : Interceptor {
 		}
 	}
 
-	private fun canRetryException(e: Exception): Boolean {
-		return when (e) {
-			// IP 주소를 찾을 수 없는 경우 재시도 제외
-			is UnknownHostException -> false
-			// Read, Write Timeout 관련 예외는 재시도 가능
-			is SocketTimeoutException -> true
+	private fun canRetryException(e: Exception): Boolean = when (e) {
+		// IP 주소를 찾을 수 없는 경우 재시도 제외
+		is UnknownHostException -> false
+		// Read, Write Timeout 관련 예외는 재시도 가능
+		is SocketTimeoutException -> true
 
-			// 기타 IOException은 원인을 더 자세히 검사
-			is IOException -> {
-				// 원인(cause)이 Timeout 관련 예외면 재시도 가능
-				val cause = e.cause
-				when (cause) {
-					is SocketTimeoutException -> true
-					else -> false
-				}
+		// 기타 IOException은 원인을 더 자세히 검사
+		is IOException -> {
+			// 원인(cause)이 Timeout 관련 예외면 재시도 가능
+			val cause = e.cause
+			when (cause) {
+				is SocketTimeoutException -> true
+				else -> false
 			}
-			else -> false
 		}
+		else -> false
 	}
 }

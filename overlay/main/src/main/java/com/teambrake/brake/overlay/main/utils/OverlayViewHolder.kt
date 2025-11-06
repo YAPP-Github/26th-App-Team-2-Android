@@ -113,7 +113,10 @@ class OverlayViewHolder(private val context: Context) {
 	}
 }
 
-class OverlayLifecycleManager : LifecycleOwner, SavedStateRegistryOwner, ViewModelStoreOwner {
+class OverlayLifecycleManager :
+	LifecycleOwner,
+	SavedStateRegistryOwner,
+	ViewModelStoreOwner {
 	private val lifecycleRegistry = LifecycleRegistry(this)
 	private val savedStateRegistryController = SavedStateRegistryController.create(this)
 	private val _viewModelStore = ViewModelStore()

@@ -5,8 +5,6 @@ enum class AlarmAction {
 	ACTION_BLOCKING, ;
 
 	companion object {
-		fun fromString(action: String?): AlarmAction {
-			return entries.find { it.name == action } ?: ACTION_USING
-		}
+		fun fromString(action: String?): AlarmAction = entries.find { it.name == action } ?: ACTION_USING
 	}
 }
