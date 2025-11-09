@@ -1,8 +1,8 @@
-import com.yapp.breake.setNamespace
+import com.teambrake.brake.setNamespace
 
 plugins {
-	alias(libs.plugins.breake.android.library)
-	alias(libs.plugins.breake.android.compose)
+	alias(libs.plugins.brake.android.library)
+	alias(libs.plugins.brake.android.compose)
 	alias(libs.plugins.kotlin.serialization)
 }
 
@@ -12,4 +12,5 @@ android {
 
 dependencies {
 	implementation(libs.kotlinx.serialization.json)
+	implementation(libs.androidx.compose.navigation)
 }

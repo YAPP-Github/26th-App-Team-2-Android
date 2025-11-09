@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+	<string name="login_main_message">계획한 만큼만 사용하도록\n도와드릴게요</string>
+	<string name="login_notice_full_message">아래 버튼으로 로그인 시,\n개인정보처리방침 및 이용약관에 동의하는 것으로 간주합니다.</string>
+	<string name="privacy_policy">개인정보처리방침</string>
+	<string name="terms_of_service">이용약관</string>
+
+	<string name="login_snackbar_login_user_cancelled">로그인이 취소되었습니다.</string>
+	<string name="login_snackbar_login_error">서버 문제로 인해 로그인에 실패했습니다.</string>
+	<string name="login_snackbar_login_error_need_google_services_update">현재 Google 로그인을 지원하지 않습니다.\nPlay Store 에서 Google Play 서비스를 업데이트 해주세요.</string>
+	<string name="login_snackbar_login_error_inactive">계정이 비활성화되어 있습니다. 고객센터로 문의해주세요.</string>
+	<string name="login_snackbar_next_destination_error">다음 화면으로 이동에 실패했습니다.</string>
+
+	<string name="login_kakao_button_text">카카오 로그인</string>
+	<string name="login_google_button_text">Google 로그인</string>
+</resources>

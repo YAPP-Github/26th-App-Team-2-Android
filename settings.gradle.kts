@@ -13,10 +13,11 @@ dependencyResolutionManagement {
 	repositories {
 		google()
 		mavenCentral()
+		maven { url = java.net.URI("https://devrepo.kakao.com/nexus/content/groups/public/") }
 	}
 }
 
-rootProject.name = "Breake"
+rootProject.name = "Brake"
 
 // Application
 include(":app")
@@ -24,8 +25,23 @@ include(":app")
 // Presentation
 include(
 	":presentation:main",
+	":presentation:signup",
 	":presentation:login",
-	":presentation:home"
+	":presentation:legal",
+	":presentation:onboarding",
+	":presentation:permission",
+	":presentation:home",
+	":presentation:report",
+	":presentation:setting",
+)
+
+// overlay
+include(
+	"overlay:main",
+	"overlay:ui",
+	"overlay:timer",
+	"overlay:snooze",
+	"overlay:blocking",
 )
 
 // Domain
@@ -34,12 +50,24 @@ include(":domain")
 // Data
 include(":data")
 
+// Data Test
+include(":data-test")
+
 // Core
 include(
+	":core:appscanner",
+	":core:auth",
+	":core:alarm",
+	":core:common",
 	":core:datastore",
 	":core:database",
+	":core:designsystem",
+	":core:ui",
 	":core:model",
 	":core:navigation",
-	":core:designsystem",
-	":core:testing"
+	":core:permission",
+	":core:detection",
+	":core:service",
+	":core:testing",
+	":core:util",
 )

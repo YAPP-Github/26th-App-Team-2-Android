@@ -2,15 +2,97 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools">
 
+	<!-- 인터넷 사용 권한 설정, 카카오 SDK 사용-->
+	<uses-permission android:name="android.permission.INTERNET" />
+
+	<!-- Overlay 권한 설정, 차단창 띄우기 위해 필요 -->
+	<uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />
+
+	<!-- 앱 사용량 통계 권한 설정, 앱 사용량 모니터링을 위해 필요 -->
+	<uses-permission android:name="android.permission.PACKAGE_USAGE_STATS"
+		tools:ignore="ProtectedPermissions" />
+
+	<!-- 정확한 알람 설정 권한 설정, 타이머 알림을 위해 필요 -->
+	<uses-permission android:name="android.permission.SCHEDULE_EXACT_ALARM" />
+
+	<uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
+	<uses-permission android:name="android.permission.FOREGROUND_SERVICE_SPECIAL_USE" />
+	<uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
+
     <application
-        android:name="com.yapp.breake.BreakeApplication"
-        android:allowBackup="true"
+        android:name="com.teambrake.brake.BrakeApplication"
+        android:allowBackup="false"
         android:dataExtractionRules="@xml/data_extraction_rules"
         android:fullBackupContent="@xml/backup_rules"
-        android:icon="@mipmap/ic_launcher"
+		android:enableOnBackInvokedCallback="true"
+        android:icon="@mipmap/ic_brake_launcher"
         android:label="@string/app_name"
-        android:roundIcon="@mipmap/ic_launcher_round"
+        android:roundIcon="@mipmap/ic_brake_launcher_round"
         android:supportsRtl="true"
-        tools:targetApi="31" />
+		android:theme="@style/Theme.Brake.Splash">
+
+		<receiver
+			android:name="com.teambrake.brake.core.alarm.notification.NotificationReceiver"
+			android:enabled="true"
+			android:exported="false" />
+
+		<!-- Work 라이브러리에 내장된 InitializationProvider 에서 자동 WorkManager 초기화 제외 설정 -->
+		<provider
+			android:name="androidx.startup.InitializationProvider"
+			android:authorities="${applicationId}.androidx-startup"
+			android:exported="false"
+			tools:node="merge">
+			<meta-data
+				android:name="androidx.work.WorkManagerInitializer"
+				android:value="androidx.startup"
+				tools:node="remove" />
+		</provider>
+
+		<!-- 재부팅 감지 BroadcastReceiver -->
+		<receiver
+			android:name="com.teambrake.brake.core.alarm.scheduler.ReschedulerBootReceiver"
+			android:enabled="true"
+			android:exported="false">
+			<intent-filter>
+				<action android:name="android.intent.action.BOOT_COMPLETED" />
+				<action android:name="android.intent.action.QUICKBOOT_POWERON" />
+				<action android:name="com.htc.intent.action.QUICKBOOT_POWERON"/>
+			</intent-filter>
+		</receiver>
+
+		<service
+			android:name="com.teambrake.brake.core.detection.AppLaunchDetectionService"
+			android:exported="false"
+			android:label="@string/app_name"
+			android:permission="android.permission.BIND_ACCESSIBILITY_SERVICE">
+			<intent-filter>
+				<action android:name="android.accessibilityservice.AccessibilityService" />
+			</intent-filter>
+			<meta-data
+				android:name="android.accessibilityservice"
+				android:resource="@xml/accessibility_service_config" />
+			<meta-data
+				android:name="isAccessibilityTool"
+				android:value="false" />
+		</service>
+
+		<service
+			android:name="com.teambrake.brake.core.alarm.service.AlarmCountdownService"
+			android:enabled="true"
+			android:exported="false"
+			android:foregroundServiceType="specialUse">
+			<property
+				android:name="android.app.PROPERTY_SPECIAL_USE_FGS_SUBTYPE"
+				android:value="alarm_countdown" />
+		</service>
+	</application>
+
+	<!-- 런처 아이콘을 갖는 모든 앱 쿼리 허용 -->
+	<queries>
+		<intent>
+			<action android:name="android.intent.action.MAIN"/>
+			<category android:name="android.intent.category.LAUNCHER"/>
+		</intent>
+	</queries>
 
 </manifest>

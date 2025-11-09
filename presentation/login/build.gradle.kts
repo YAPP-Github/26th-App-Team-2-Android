@@ -1,9 +1,16 @@
-import com.yapp.breake.setNamespace
+import com.teambrake.brake.setNamespace
 
 plugins {
-	alias(libs.plugins.breake.android.feature)
+	alias(libs.plugins.brake.android.feature)
 }
 
 android {
 	setNamespace("presentation.login")
+}
+
+dependencies {
+	implementation(projects.core.auth)
+	implementation(projects.core.permission)
+
+	implementation(libs.google.auth)
 }

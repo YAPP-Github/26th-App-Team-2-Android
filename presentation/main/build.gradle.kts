@@ -1,7 +1,7 @@
-import com.yapp.breake.setNamespace
+import com.teambrake.brake.setNamespace
 
 plugins {
-	alias(libs.plugins.breake.android.feature)
+	alias(libs.plugins.brake.android.feature)
 }
 
 android {
@@ -9,13 +9,21 @@ android {
 
 	defaultConfig {
 		testInstrumentationRunner =
-			"com.yapp.breake.core.testing.runner.BreakeTestRunner"
+			"com.teambrake.brake.core.testing.runner.BrakeTestRunner"
 	}
 }
 
 dependencies {
-	implementation(projects.presentation.home)
 	implementation(projects.presentation.login)
+	implementation(projects.presentation.signup)
+	implementation(projects.presentation.onboarding)
+	implementation(projects.presentation.legal)
+	implementation(projects.presentation.permission)
+	implementation(projects.presentation.home)
+	implementation(projects.presentation.report)
+	implementation(projects.presentation.setting)
+	implementation(projects.core.permission)
+
 	androidTestImplementation(projects.core.testing)
 
 	implementation(libs.androidx.core.ktx)
@@ -23,6 +31,9 @@ dependencies {
 	implementation(libs.androidx.activity.compose)
 	implementation(libs.androidx.lifecycle.runtimeCompose)
 	implementation(libs.androidx.lifecycle.viewModelCompose)
+
+	implementation(libs.core.splashscreen)
+
 	implementation(libs.kotlinx.immutable)
 	androidTestImplementation(libs.hilt.android.testing)
 	kspAndroidTest(libs.hilt.android.compiler)

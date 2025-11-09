@@ -1,12 +1,12 @@
 [versions]
 ## SDK version
-compileSdk = "35"
+compileSdk = "36"
 minSdk = "28"
 targetSdk = "35"
 
 ## App version
-versionCode = "1"
-versionName = "0.0.1"
+versionCode = "4"
+versionName = "1.1.8"
 
 ## Android gradle plugin
 agp = "8.10.1"
@@ -16,17 +16,17 @@ androidDesugarJdkLibs = "2.1.5"
 
 ## AndroidX
 # https://developer.android.com/jetpack/androidx/releases/core
-androidxCore = "1.16.0"
+androidxCore = "1.17.0"
 # https://developer.android.com/jetpack/androidx/releases/appcompat
 androidxAppCompat = "1.7.1"
 # https://developer.android.com/jetpack/androidx/releases/lifecycle
-androidxLifecycle = "2.9.1"
+androidxLifecycle = "2.9.4"
 # https://developer.android.com/jetpack/androidx/releases/activity
-androidxActivity = "1.10.1"
+androidxActivity = "1.11.0"
 # https://developer.android.com/jetpack/androidx/releases/datastore
 androidxDatastore = "1.1.7"
 # https://developer.android.com/jetpack/androidx/releases/room
-room = "2.7.1"
+room = "2.8.3"
 # https://developer.android.com/jetpack/androidx/releases/glance
 androidxGlance = "1.1.1"
 glanceExperimentalTools = "0.2.2"
@@ -34,14 +34,20 @@ glanceExperimentalTools = "0.2.2"
 profileinstaller = "1.4.1"
 # https://androidx.tech/artifacts/benchmark/benchmark-baseline-profile-gradle-plugin/index.html
 baselineprofile = "1.3.4"
+# https://developer.android.com/jetpack/androidx/releases/core#core-splashscreen
+coreSplashscreen = "1.2.0"
+
+## Credentials
+# https://developer.android.com/jetpack/androidx/releases/credentials
+androidxCredentials = "1.5.0"
 
 ## Compose
 # https://developer.android.com/develop/ui/compose/bom/bom-mapping
-androidxComposeBom = "2025.06.00"
+androidxComposeBom = "2025.11.00"
 # https://developer.android.com/jetpack/androidx/releases/navigation
-androidxComposeNavigation = "2.9.0"
+androidxComposeNavigation = "2.9.6"
 # https://developer.android.com/jetpack/androidx/releases/compose-material3
-androidxComposeMaterial3 = "1.3.2"
+androidxComposeMaterial3 = "1.4.0"
 # https://developer.android.com/jetpack/androidx/releases/compose-material3-adaptive
 androidxComposeMaterial3Adaptive = "1.1.0"  # 다양한 스크린 사이즈 대응
 # https://developer.android.com/develop/ui/compose/layouts/constraintlayout?hl=ko
@@ -53,41 +59,66 @@ composeShimmer = "1.3.2"    # Compose에서의 로딩 애니메이션 효과
 # https://github.com/ehsannarmani/ComposeCharts/releases
 composeCharts = "0.1.7"    # Compose에서 차트 그리기
 
+## Google Services
+# https://developers.google.com/android/guides/releases
+googleServices = "4.4.4"  # Google Play Services 및 Firebase 통합을 위한 Gradle 플러그인
+
+## Firebase
+# https://firebase.google.com/support/release-notes/android
+# 34.0.0 버전부터 Firebase KTX 라이브러리 없이 DSL 사용 가능
+firebaseBom = "34.5.0"  # Firebase BOM (Bill of Materials)
+firebaseCrashlytics = "3.0.6" # Firebase Crashlytics NDK 지원
+
+## Google Auth
+# https://mvnrepository.com/artifact/com.google.android.gms/play-services-auth
+googleAuth = "21.4.0"
+
 ## Kotlin Symbol Processing
 # https://github.com/google/ksp/
-ksp = "2.1.21-2.0.2"
+ksp = "2.2.21-2.0.4"
 
 ## Hilt
 # https://github.com/google/dagger/releases
-hilt = "2.56.2"
+hilt = "2.57.2"
 # https://developer.android.com/jetpack/androidx/releases/hilt
-hiltNavigationCompose = "1.2.0"
+hiltNavigationCompose = "1.3.0"
+
+# WorkManager
+# https://developer.android.com/jetpack/androidx/releases/work
+work-ktx = "2.11.0"
+# https://developer.android.com/jetpack/androidx/releases/hilt
+work-hilt = "1.3.0"
+androidxHilt = "1.3.0"  # androidx.hilt 라이브러리 버전
 
 ## Network
 # okhttp
 # # https://square.github.io/okhttp/
-okhttp = "4.12.0"
+okhttp = "5.3.0"
 # Retrofit
 # # https://github.com/square/retrofit
 retrofit = "3.0.0"
 
+## Auth
+# https://developers.kakao.com/docs/latest/ko/android/download#latest
+kakao = "2.22.0"
+
 ## Landscapist
 # https://github.com/skydoves/landscapist
-landscapist = "2.4.6"   # 이미지 로딩을 위한 Compose 전용 라이브러리
+landscapist = "2.6.1"   # 이미지 로딩을 위한 Compose 전용 라이브러리
 
 ## Kotlin
 # https://github.com/JetBrains/kotlin
-kotlin = "2.1.21"
+kotlin = "2.2.21"
 # https://github.com/Kotlin/kotlinx.serialization
-kotlinxSerializationJson = "1.8.1"
+kotlinxSerializationJson = "1.9.0"
 # https://github.com/Kotlin/kotlinx-datetime/releases
-kotlinxDatetime = "0.6.2"
+kotlinxDatetime = "0.7.1"
 # https://github.com/Kotlin/kotlinx.collections.immutable
 kotlinxImmutable = "0.4.0"
 
 ## Ktlint
 # https://github.com/JLLeitschuh/ktlint-gradle/releases
-ktlint = "12.2.0"
+ktlint = "13.1.0"
 
 ## Coroutine
 # https://github.com/cashapp/turbine
@@ -99,11 +130,20 @@ coroutine = "1.10.2"
 # 라이선스 정보 표시
 # https://developers.google.com/android/guides/opensource
 ossLicenses = "17.1.0"
-ossLicensesPlugin = "0.10.6"
+ossLicensesPlugin = "0.10.9"
 
 ## Timber
 # https://github.com/JakeWharton/timber/releases
 timber = "5.0.1"
+
+## Sandwich
+# https://github.com/skydoves/sandwich/releases
+sandwich = "2.1.3"   # 네트워크 응답을 처리하기 위한 라이브러리
+
+## Browser
+# https://developer.android.com/jetpack/androidx/releases/browser
+# 2025/08/01 기준 1.9.0 버전은 API 36만 지원
+androidxBrowser = "1.9.0"  # WebView 대신 Chrome Custom Tabs 사용
 
 ## Test
 # https://github.com/junit-team/junit4
@@ -129,10 +169,12 @@ robolectric = "4.14.1"  # JVM 환경에서 Android 테스트 실행 가능하게
 # https://kotest.io/
 kotest = "5.9.0"    # 다양한 스타일의 테스트를 위한 Kotlin 테스트 프레임워크
 # https://github.com/detekt/detekt
-detekt = "1.23.7"   # Kotlin 정적 분석 툴
+detekt = "1.23.8"   # Kotlin 정적 분석 툴
 # https://mockk.io/
 mockk = "1.13.16"
 material = "1.12.0"
+accompanistPermissions = "0.37.3"
+snapper = "0.3.0"
 
 [libraries]
 # Gradle
@@ -161,6 +203,10 @@ androidx-compose-material-icon = { module = "androidx.compose.material:material-
 androidx-constraintlayout-compose = { group = "androidx.constraintlayout", name = "constraintlayout-compose", version.ref = "androidxComposeConstraintlayout" }
 compose-compiler-gradle-plugin = { module = "org.jetbrains.kotlin:compose-compiler-gradle-plugin", version.ref = "kotlin" }
 
+# Credentials
+androidx-credentials = { group = "androidx.credentials", name = "credentials", version.ref = "androidxCredentials" }
+androidx-credentials-play-services-auth = { group = "androidx.credentials", name = "credentials-play-services-auth", version.ref = "androidxCredentials" }
+
 # Design
 compose-charts = { module = "io.github.ehsannarmani:compose-charts", version.ref = "composeCharts" }
 compose-shimmer = { group = "com.valentinilk.shimmer", name = "compose-shimmer", version.ref = "composeShimmer" }
@@ -172,6 +218,19 @@ room-compiler ={module="androidx.room:room-compiler",version.ref = "room" }
 
 # DataStore
 datastore = { group = "androidx.datastore", name = "datastore-preferences", version.ref = "androidxDatastore" }
+
+# WorkManager
+work-runtime-ktx = { group = "androidx.work", name = "work-runtime-ktx", version.ref = "work-ktx" }
+work-hilt = { group = "androidx.hilt", name = "hilt-work", version.ref = "work-hilt" }
+androidx-hilt-compiler = { group = "androidx.hilt", name = "hilt-compiler", version.ref = "androidxHilt" }
+
+# Firebase
+firebase-bom = { group = "com.google.firebase", name = "firebase-bom", version.ref = "firebaseBom" }
+firebase-analytics = { group = "com.google.firebase", name = "firebase-analytics" }
+firebase-crashlytics = { group = "com.google.firebase", name = "firebase-crashlytics-ndk" }
+
+# Google Auth
+google-auth = { group = "com.google.android.gms", name = "play-services-auth", version.ref = "googleAuth" }
 
 # Hilt
 hilt-core = { group = "com.google.dagger", name = "hilt-core", version.ref = "hilt" }
@@ -195,6 +254,9 @@ landscapist-bom = { group = "com.github.skydoves", name = "landscapist-bom", ver
 landscapist-coil = { group = "com.github.skydoves", name = "landscapist-coil", version.ref = "landscapist" }
 landscapist-placeholder = { group = "com.github.skydoves", name = "landscapist-placeholder" }
 landscapist-animation = { group = "com.github.skydoves", name = "landscapist-animation", version.ref = "landscapist" }
+
+# SplashScreen
+core-splashscreen = { group = "androidx.core", name = "core-splashscreen", version.ref = "coreSplashscreen" }
 
 # Test
 androidx-runner = { group = "androidx.test", name = "runner", version.ref = "androidxTestRunner" }
@@ -226,6 +288,7 @@ coroutines-test = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-
 timber = { group = "com.jakewharton.timber", name = "timber", version.ref = "timber" }
 
 # plugin
+kakao-user = { module = "com.kakao.sdk:v2-user", version.ref = "kakao" }
 verify-detektPlugin = { module = "io.gitlab.arturbosch.detekt:detekt-gradle-plugin", version.ref = "detekt" }
 oss-licenses-plugin = { group = "com.google.android.gms", name = "oss-licenses-plugin", version.ref = "ossLicensesPlugin" }
 
@@ -234,9 +297,21 @@ androidx-glance = { group = "androidx.glance", name = "glance", version.ref = "a
 androidx-glance-appwidget = { group = "androidx.glance", name = "glance-appwidget", version.ref = "androidxGlance" }
 glance-tools-appwidget-host = { group = "com.google.android.glance.tools", name = "appwidget-host", version.ref = "glanceExperimentalTools"}
 
+# Sandwich
+sandwich-retrofit = { group = "com.github.skydoves", name = "sandwich-retrofit", version.ref = "sandwich" }
+
+# Chrome Custom Tabs
+androidx-browser = { group = "androidx.browser", name = "browser", version.ref = "androidxBrowser" }
+
 # verify
 verify-detektFormatting = { module = "io.gitlab.arturbosch.detekt:detekt-formatting", version.ref = "detekt" }
 material = { group = "com.google.android.material", name = "material", version.ref = "material" }
+
+# permissions
+accompanist-permissions = { module = "com.google.accompanist:accompanist-permissions", version.ref = "accompanistPermissions" }
+
+# Snapper
+snapper = { module = "dev.chrisbanes.snapper:snapper", version.ref = "snapper" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
@@ -251,15 +326,18 @@ ktlint = { id = "org.jlleitschuh.gradle.ktlint", version.ref = "ktlint" }
 verify-detekt = { id = "io.gitlab.arturbosch.detekt", version.ref = "detekt" }
 compose-compiler = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
 android-test = { id = "com.android.test", version.ref = "agp" }
+google-services = { id = "com.google.gms.google-services", version.ref = "googleServices" }
+firebase-crashlytics = { id = "com.google.firebase.crashlytics", version.ref = "firebaseCrashlytics" }
 baselineprofile = { id = "androidx.baselineprofile", version.ref = "baselineprofile" }
 roborazzi-plugin = { id = "io.github.takahirom.roborazzi", version.ref = "roborazzi" }
 
 # Custom Plugins
-breake-android-application = { id = "breake.android.application"}
-breake-android-compose = { id = "breake.android.compose"}
-breake-android-feature = { id = "breake.android.feature"}
-breake-android-library = { id = "breake.android.library"}
-breake-kotlin-library = { id = "breake.kotlin.library"}
-breake-android-room = { id = "breake.android.room"}
-breake-android-hilt = { id = "breake.android.hilt"}
-breake-kotlin-hilt = { id = "breake.kotlin.hilt"}
+brake-android-application = { id = "brake.android.application"}
+brake-android-compose = { id = "brake.android.compose"}
+brake-android-feature = { id = "brake.android.feature"}
+brake-android-library = { id = "brake.android.library"}
+brake-kotlin-library = { id = "brake.kotlin.library"}
+brake-android-room = { id = "brake.android.room"}
+brake-android-hilt = { id = "brake.android.hilt"}
+brake-work-hilt = { id = "brake.work.hilt"}
+brake-kotlin-hilt = { id = "brake.kotlin.hilt"}

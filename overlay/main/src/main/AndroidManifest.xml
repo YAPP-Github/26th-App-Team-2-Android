@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android">
+
+	<uses-permission android:name="android.permission.SCHEDULE_EXACT_ALARM" />
+
+	<application>
+
+		<activity
+			android:name=".OverlayActivity"
+			android:configChanges="uiMode"
+			android:exported="true"
+			android:launchMode="singleTask"
+			android:taskAffinity=""
+			android:excludeFromRecents="true"
+			android:theme="@style/Theme.AppCompat.DayNight.NoActionBar">
+
+			<intent-filter>
+				<action android:name="com.teambrake.brake.alarm.action.SHOW_BREAK_TIME_OVERLAY" />
+				<action android:name="com.teambrake.brake.SHOW_OVERLAY" />
+
+				<category android:name="android.intent.category.DEFAULT" />
+			</intent-filter>
+
+		</activity>
+
+	</application>
+
+</manifest>

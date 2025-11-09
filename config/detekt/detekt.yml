@@ -80,7 +80,7 @@ complexity:
   active: true
   ComplexCondition:
     active: true
-    threshold: 5
+    threshold: 10
   ComplexInterface:
     active: false
     threshold: 10
@@ -212,7 +212,7 @@ exceptions:
   ObjectExtendsThrowable:
     active: false
   PrintStackTrace:
-    active: true
+    active: false
   RethrowCaughtException:
     active: true
   ReturnFromFinally:
@@ -319,7 +319,7 @@ formatting:
     active: true
 #    autoCorrect: true
   NoBlankLineBeforeRbrace:
-    active: true
+    active: false
 #    autoCorrect: true
   NoConsecutiveBlankLines:
     active: true
@@ -327,8 +327,8 @@ formatting:
   NoEmptyClassBody:
     active: true
 #    autoCorrect: true
-#  NoEmptyFirstLineInMethodBlock:
-#    active: false
+  NoEmptyFirstLineInMethodBlock:
+    active: false
 #    autoCorrect: true
   NoLineBreakAfterElse:
     active: true
@@ -461,8 +461,8 @@ naming:
 #    active: false
 #    excludes: ['**/*.kts']
 #    rootPackage: ''
-#  MatchingDeclarationName:
-#    active: true
+  MatchingDeclarationName:
+    active: false
 #    mustBeFirst: true
   MemberNameEqualsClassName:
     excludes: ['**/test/**', '**/androidTest/**', '**/commonTest/**', '**/jvmTest/**', '**/jsTest/**', '**/iosTest/**']
@@ -683,7 +683,7 @@ style:
 #    ignoreRanges: false
 #    ignoreExtensionFunctions: true
   BracesOnIfStatements:
-    active: true
+    active: false
   MandatoryBracesLoops:
     active: true
   MaxLineLength:
@@ -763,9 +763,13 @@ style:
 #    active: false
   UnusedImports:
     active: true
+  UnusedParameter:
+    active: false
 #  UnusedPrivateClass:
 #    active: true
   UnusedPrivateMember:
+    active: false
+  UnusedPrivateProperty:
     active: false
 #    allowedNames: '(_|ignored|expected|serialVersionUID)'
 #  UseArrayLiteralsInAnnotations:

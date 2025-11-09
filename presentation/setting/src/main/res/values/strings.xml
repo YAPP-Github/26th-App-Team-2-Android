@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+	<string name="setting_profile_name_not_set">!이름 오류!</string>
+
+	<string name="setting_profile_image_change">수정</string>
+
+	<string name="setting_opinion_title">의견 남기기</string>
+	<string name="setting_inquiry">문의하기</string>
+
+	<string name="setting_privacy_policy">개인정보 처리방침</string>
+	<string name="setting_terms_of_service">서비스 약관</string>
+	<string name="setting_app_version">앱 버전 정보</string>
+
+	<string name="setting_logout">로그아웃</string>
+	<string name="setting_delete_account">회원탈퇴</string>
+
+    <string name="setting_logout_dialog_title">로그아웃 하시겠습니까?</string>
+	<string name="setting_logout_dialog_confirm_text">로그아웃</string>
+	<string name="setting_logout_dialog_dismiss_text">취소</string>
+
+	<string name="setting_delete_dialog_title">정말 탈퇴하시겠어요?</string>
+	<string name="setting_delete_dialog_description">탈퇴하면 모든 계정 정보와 이용 기록이 \n삭제되며, 복구할 수 없습니다.</string>
+	<string name="setting_delete_dialog_confirm_text">탈퇴</string>
+	<string name="setting_delete_dialog_dismiss_text">취소</string>
+
+	<string name="setting_snackbar_logout_error">로그아웃 중 문제가 생겼습니다.</string>
+	<string name="setting_snackbar_delete_error">회원탈퇴 중 문제가 생겼습니다.</string>
+	<string name="setting_snackbar_delete_cancel">회원탈퇴가 취소되었습니다.</string>
+	<string name="setting_snackbar_delete_success">회원탈퇴가 완료되었습니다.</string>
+
+	<!-- Nickname -->
+	<string name="nickname_title">프로필 편집</string>
+	<string name="nickname_button_complete">저장</string>
+	<string name="nickname_input_label">닉네임</string>
+	<string name="nickname_input_hint">닉네임을 입력해주세요.</string>
+	<string name="nickname_input_warning_guide_text">공백, 특수문자 없이 2~10자를 입력해 주세요.</string>
+	<string name="nickname_input_valid_guide_text">사용 가능한 닉네임입니다.</string>
+	<string name="nickname_snackbar_update_success">닉네임이 변경되었습니다.</string>
+	<string name="nickname_snackbar_update_error">닉네임 변경을 실패했습니다. 다시 시도해주세요.</string>
+
+</resources>

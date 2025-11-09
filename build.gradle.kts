@@ -23,13 +23,20 @@ plugins {
 	alias(libs.plugins.verify.detekt) apply false
 	alias(libs.plugins.compose.compiler) apply false
 	alias(libs.plugins.android.test) apply false
+	alias(libs.plugins.google.services) apply false
+	alias(libs.plugins.firebase.crashlytics) apply false
 	alias(libs.plugins.baselineprofile) apply false
 	alias(libs.plugins.roborazzi.plugin) apply false
 }
 
-allprojects {
-	apply {
-		plugin(rootProject.libs.plugins.ktlint.get().pluginId)
+subprojects {
+	// 모든 subproject에 대해 ktlint 플러그인 적용
+	apply(plugin = rootProject.libs.plugins.ktlint.get().pluginId)
+
+	// ./gradlew build : 모든 kt 파일에 대해 ktlintFormat 실행
+	// android :app build : 어노테이션 미적용 kt 파일에 대해 ktlintFormat 실행
+	tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile>().configureEach {
+		dependsOn("ktlintFormat")
 	}
 }
 

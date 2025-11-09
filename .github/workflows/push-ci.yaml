@@ -1,0 +1,84 @@
+name: Push CI
+
+on:
+    push:
+
+jobs:
+    build:
+        if: >
+            !contains(github.event.head_commit.message, 'ci 자동 ktlintFormat 적용')
+
+        permissions:
+            contents: write
+
+        runs-on: ubuntu-latest
+
+        steps:
+            -   name: Checkout code
+                uses: actions/checkout@v4
+
+            -   name: Cache Gradle packages
+                uses: actions/cache@v4
+                with:
+                    path: |
+                        ~/.gradle/caches
+                        ~/.gradle/wrapper
+                    key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties', '**/buildSrc/**/*.kt') }}
+                    restore-keys: |
+                        ${{ runner.os }}-gradle-
+
+            -   name: set up JDK 17
+                uses: actions/setup-java@v4
+                with:
+                    java-version: '17'
+                    distribution: 'temurin'
+                    cache: gradle
+
+            -   name: Restore google-services.json
+                env:
+                    GOOGLE_SERVICES_JSON: ${{ secrets.GOOGLE_SERVICES_JSON }}
+                run: echo $GOOGLE_SERVICES_JSON | base64 --decode > ./app/google-services.json
+
+            -   name: Add Local Properties
+                env:
+                    KAKAO_REST_API_KEY_RELEASE: ${{ secrets.KAKAO_REST_API_KEY_RELEASE }}
+                    KAKAO_REST_API_KEY_DEBUG: ${{ secrets.KAKAO_REST_API_KEY_DEBUG }}
+                    KAKAO_JS_KEY_RELEASE: ${{ secrets.KAKAO_JS_KEY_RELEASE }}
+                    KAKAO_JS_KEY_DEBUG: ${{ secrets.KAKAO_JS_KEY_DEBUG }}
+                run: |
+                    echo KAKAO_REST_API_KEY_RELEASE=KAKAO_REST_API_KEY_RELEASE > ./local.properties
+                    echo KAKAO_REST_API_KEY_DEBUG=KAKAO_REST_API_KEY_DEBUG >> ./local.properties
+                    echo KAKAO_JS_KEY_RELEASE=KAKAO_JS_KEY_RELEASE >> ./local.properties
+                    echo KAKAO_JS_KEY_DEBUG=KAKAO_JS_KEY_DEBUG >> ./local.properties
+
+            -   name: Grant execute permission for gradlew
+                run: chmod +x gradlew
+
+            -   name: Build Check
+                run: ./gradlew build
+
+            -   name: Commit & Push ktlintFormat changes
+                run: |
+                    mkdir -p ~/.ssh
+                    echo "${{ secrets.DEPLOY_KEY }}" > ~/.ssh/id_rsa
+                    chmod 600 ~/.ssh/id_rsa
+                    ssh-keyscan github.com >> ~/.ssh/known_hosts
+
+                    git config user.name "github-actions[bot]"
+                    git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+
+                    ISSUE_REF=$(git log -1 --pretty=%B | grep -oE '#[0-9]+' | head -n 1)
+
+                    git add .
+
+                    if ! git diff --cached --quiet; then
+                        COMMIT_MSG="style: ci 자동 ktlintFormat 적용"
+                        if [ -n "$ISSUE_REF" ]; then
+                            COMMIT_MSG="$COMMIT_MSG ($ISSUE_REF)"
+                        fi
+                        git commit -m "$COMMIT_MSG"
+                        git remote set-url origin git@github.com:${{ github.repository }}.git
+                        git push origin HEAD:${GITHUB_REF_NAME}
+                    else
+                        echo "✅ 변경사항이 없어 커밋하지 않음."
+                    fi

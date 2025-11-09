@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="error_title">정보를 불러올 수 없어요</string>
+    <string name="error_message">인터넷 연결 확인 후 다시 시도해 주세요.</string>
+    <string name="retry">다시 시도</string>
+    <string name="retry_content_description">Retry</string>
+</resources>
