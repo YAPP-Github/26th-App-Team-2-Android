@@ -14,6 +14,7 @@ import com.teambrake.brake.domain.usecase.ResetAppGroupUsecase
 import com.teambrake.brake.domain.usecase.SetAlarmUseCase
 import com.teambrake.brake.domain.usecase.SetBlockingAlarmUseCase
 import com.teambrake.brake.domain.usecase.SetSnoozeAlarmUseCase
+import com.teambrake.brake.domain.usecase.StartOfflineModeUseCase
 import com.teambrake.brake.domain.usecase.StoreOnboardingCompletionUseCase
 import com.teambrake.brake.domain.usecase.UpdateNicknameUseCase
 import com.teambrake.brake.domain.usecaseImpl.CreateNewGroupUseCaseImpl
@@ -30,6 +31,7 @@ import com.teambrake.brake.domain.usecaseImpl.ResetAppGroupUsecaseImpl
 import com.teambrake.brake.domain.usecaseImpl.SetAlarmUsecaseImpl
 import com.teambrake.brake.domain.usecaseImpl.SetBlockingAlarmUseCaseImpl
 import com.teambrake.brake.domain.usecaseImpl.SetSnoozeAlarmUsecaseImpl
+import com.teambrake.brake.domain.usecaseImpl.StartOfflineModeUseCaseImpl
 import com.teambrake.brake.domain.usecaseImpl.StoreOnboardingCompletionUseCaseImpl
 import com.teambrake.brake.domain.usecaseImpl.UpdateNicknameUseCaseImpl
 import dagger.Binds
@@ -70,6 +72,11 @@ internal abstract class UseCaseModule {
 	abstract fun bindDecideNextDestinationFromPermissionUseCase(
 		decideNextDestinationFromPermissionUseCase: DecideNextDestinationFromPermissionUseCaseImpl,
 	): DecideNextDestinationFromPermissionUseCase
+
+	@Binds
+	abstract fun bindStartOfflineModeUseCase(
+		startOfflineModeUseCase: StartOfflineModeUseCaseImpl,
+	): StartOfflineModeUseCase
 
 	@Binds
 	abstract fun bindLogoutUseCase(
