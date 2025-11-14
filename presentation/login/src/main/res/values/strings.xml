@@ -13,4 +13,5 @@
 
 	<string name="login_kakao_button_text">카카오 로그인</string>
 	<string name="login_google_button_text">Google 로그인</string>
+	<string name="offline_mode_button_text">로그인 없이 시작</string>
 </resources>
