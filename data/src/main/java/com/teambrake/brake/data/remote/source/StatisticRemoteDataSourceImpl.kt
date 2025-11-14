@@ -8,6 +8,7 @@ import com.teambrake.brake.data.mapper.toDateString
 import com.teambrake.brake.data.mapper.toSessionRequest
 import com.teambrake.brake.data.mapper.toStatistics
 import com.teambrake.brake.data.remote.retrofit.RetrofitBrakeApi
+import com.teambrake.brake.data.remote.source.util.OfflineBlocker
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import java.time.LocalDate
@@ -15,6 +16,7 @@ import javax.inject.Inject
 
 internal class StatisticRemoteDataSourceImpl @Inject constructor(
 	private val retrofitBrakeApi: RetrofitBrakeApi,
+	private val offlineBlocker: OfflineBlocker,
 ) : StatisticRemoteDataSource {
 
 	override suspend fun pushSession(
@@ -22,17 +24,19 @@ internal class StatisticRemoteDataSourceImpl @Inject constructor(
 		onSuccess: suspend (Long) -> Unit,
 		onError: suspend (Throwable) -> Unit,
 	) {
-		val request = appGroup.toSessionRequest() ?: run {
-			onError(Throwable("세션 요청을 생성하는 중 오류가 발생했습니다"))
-			return
-		}
-
-		retrofitBrakeApi.sendSession(request)
-			.suspendOnSuccess {
-				onSuccess(data.data.sessionId)
-			}.suspendOnFailure {
-				onError(Throwable("세션을 생성하는 중 오류가 발생했습니다"))
+		offlineBlocker {
+			val request = appGroup.toSessionRequest() ?: run {
+				onError(Throwable("세션 요청을 생성하는 중 오류가 발생했습니다"))
+				return@offlineBlocker
 			}
+
+			retrofitBrakeApi.sendSession(request)
+				.suspendOnSuccess {
+					onSuccess(data.data.sessionId)
+				}.suspendOnFailure {
+					onError(Throwable("세션을 생성하는 중 오류가 발생했습니다"))
+				}
+		}
 	}
 
 	override fun getStatistic(
@@ -40,14 +44,16 @@ internal class StatisticRemoteDataSourceImpl @Inject constructor(
 		endDate: LocalDate,
 		onError: suspend (Throwable) -> Unit,
 	): Flow<List<Statistics>?> = flow {
-		retrofitBrakeApi.getStatistics(
-			start = startDate.toDateString(),
-			end = endDate.toDateString(),
-		).suspendOnSuccess {
-			emit(data.data.toStatistics())
-		}.suspendOnFailure {
-			emit(null)
-			onError(Throwable("통계 정보를 가져오는 중 오류가 발생했습니다"))
+		offlineBlocker {
+			retrofitBrakeApi.getStatistics(
+				start = startDate.toDateString(),
+				end = endDate.toDateString(),
+			).suspendOnSuccess {
+				emit(data.data.toStatistics())
+			}.suspendOnFailure {
+				emit(null)
+				onError(Throwable("통계 정보를 가져오는 중 오류가 발생했습니다"))
+			}
 		}
 	}
 }
