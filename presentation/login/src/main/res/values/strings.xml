@@ -10,8 +10,12 @@
 	<string name="login_snackbar_login_error_need_google_services_update">현재 Google 로그인을 지원하지 않습니다.\nPlay Store 에서 Google Play 서비스를 업데이트 해주세요.</string>
 	<string name="login_snackbar_login_error_inactive">계정이 비활성화되어 있습니다. 고객센터로 문의해주세요.</string>
 	<string name="login_snackbar_next_destination_error">다음 화면으로 이동에 실패했습니다.</string>
+	<string name="login_snackbar_login_error_offline">오프라인 상태에서는 로그인이 불가능합니다.</string>
+	<string name="login_snackbar_offline_mode_error">앱 문제로 오프라인 모드로 시작하는데 실패했습니다.</string>
 
 	<string name="login_kakao_button_text">카카오 로그인</string>
 	<string name="login_google_button_text">Google 로그인</string>
 	<string name="offline_mode_button_text">로그인 없이 시작</string>
+
+	<string name="offline_mode_username_default">오프라인 사용자</string>
 </resources>

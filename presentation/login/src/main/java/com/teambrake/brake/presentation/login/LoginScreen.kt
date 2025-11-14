@@ -42,6 +42,7 @@ import com.teambrake.brake.core.ui.SnackBarState
 import com.teambrake.brake.presentation.login.component.GoogleLoginButton
 import com.teambrake.brake.presentation.login.component.KakaoLoginButton
 import com.teambrake.brake.presentation.login.component.LoginNoticeText
+import com.teambrake.brake.presentation.login.component.OfflineModeButton
 import com.teambrake.brake.presentation.login.model.LoginNavState.NavigateToHome
 import com.teambrake.brake.presentation.login.model.LoginNavState.NavigateToOnboarding
 import com.teambrake.brake.presentation.login.model.LoginNavState.NavigateToPermission
@@ -144,6 +145,7 @@ internal fun LoginRoute(viewModel: LoginViewModel = hiltViewModel()) {
 			}
 		},
 		onkakaoLoginClick = viewModel::getKakaoAuthorization,
+		onOfflineModeClick = viewModel::startOfflineMode,
 	)
 
 	if (uiState == LoginUiState.LoginOnWebView) {
@@ -162,6 +164,7 @@ fun LoginScreen(
 	onTermsClick: () -> Unit,
 	onGoogleLoginClick: () -> Unit,
 	onkakaoLoginClick: () -> Unit,
+	onOfflineModeClick: () -> Unit,
 ) {
 	val density = LocalDensity.current
 	val dynamicPaddingsProvider = LocalDynamicPaddings.current
@@ -182,7 +185,7 @@ fun LoginScreen(
 	ConstraintLayout(
 		modifier = Modifier.fillMaxSize(),
 	) {
-		val (title, notice, googleLoginButton, kakaoLoginButton) = createRefs()
+		val (title, notice, offlineModeButton, googleLoginButton, kakaoLoginButton) = createRefs()
 
 		Box(
 			modifier = Modifier
@@ -213,7 +216,7 @@ fun LoginScreen(
 			modifier = Modifier
 				.constrainAs(notice) {
 					top.linkTo(title.bottom)
-					bottom.linkTo(googleLoginButton.top, margin = 20.dp)
+					bottom.linkTo(offlineModeButton.top, margin = 20.dp)
 					start.linkTo(parent.start)
 					end.linkTo(parent.end)
 					// top, bottom 과 linkTo 관계가 설정되어 있을 때, 해당 컴포넌트 y 위치를 바텀(1f)으로 조정
@@ -222,6 +225,18 @@ fun LoginScreen(
 				.padding(horizontal = padding),
 			onPrivacyClick = onPrivacyClick,
 			onTermsClick = onTermsClick,
+		)
+
+		OfflineModeButton(
+			modifier = Modifier
+				.padding(horizontal = padding)
+				.widthIn(max = 400.dp)
+				.constrainAs(offlineModeButton) {
+					bottom.linkTo(googleLoginButton.top, margin = 12.dp)
+					start.linkTo(parent.start)
+					end.linkTo(parent.end)
+				},
+			onClick = onOfflineModeClick,
 		)
 
 		GoogleLoginButton(

@@ -15,6 +15,7 @@ import com.teambrake.brake.core.ui.SnackBarState
 import com.teambrake.brake.core.ui.UiString
 import com.teambrake.brake.domain.usecase.DecideNextDestinationFromPermissionUseCase
 import com.teambrake.brake.domain.usecase.LoginUseCase
+import com.teambrake.brake.domain.usecase.StartOfflineModeUseCase
 import com.teambrake.brake.presentation.login.model.LoginNavState
 import com.teambrake.brake.presentation.login.model.LoginUiState
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -32,6 +33,7 @@ import javax.inject.Inject
 internal class LoginViewModel @Inject constructor(
 	private val loginUseCase: LoginUseCase,
 	private val decideDestinationUseCase: DecideNextDestinationFromPermissionUseCase,
+	private val startOfflineModeUseCase: StartOfflineModeUseCase,
 	private val permissionManager: PermissionManager,
 	private val googleAuthManager: GoogleAuthManager,
 	private val firebaseAnalytics: FirebaseAnalytics,
@@ -77,6 +79,58 @@ internal class LoginViewModel @Inject constructor(
 			},
 			onAlertUpdateGooglePlayServices = ::alterGoogleServicesUpdate,
 		)
+	}
+
+	fun startOfflineMode() {
+		viewModelScope.launch {
+			_uiState.value = LoginUiState.LoginLoading
+			startOfflineModeUseCase.invoke(
+				offlineNickname = R.string.offline_mode_username_default.toString(),
+				onError = { throwable ->
+					_uiState.value = LoginUiState.LoginIdle
+					_snackBarFlow.emit(
+						SnackBarState.Error(
+							uiString = UiString.ResourceString(
+								resId = R.string.login_snackbar_login_error,
+							),
+						),
+					)
+					Timber.e(throwable, "오프라인 모드 시작 중 에러 발생")
+					firebaseAnalytics.apply {
+						logEvent("cancel_client_offline_mode") {
+							param("reason", "client_error")
+						}
+						logEvent(FirebaseAnalytics.Event.SCREEN_VIEW) {
+							param(FirebaseAnalytics.Param.SCREEN_NAME, "login_screen")
+						}
+					}
+				},
+			).let { destination ->
+				when (destination) {
+					is Destination.PermissionOrHome -> {
+						_navigationFlow.emit(LoginNavState.NavigateToPermission)
+					}
+
+					is Destination.Onboarding -> {
+						_navigationFlow.emit(
+							LoginNavState.NavigateToOnboarding,
+						)
+						firebaseAnalytics.logEvent(FirebaseAnalytics.Event.TUTORIAL_BEGIN, null)
+					}
+
+					else -> {
+						_uiState.value = LoginUiState.LoginIdle
+						_snackBarFlow.emit(
+							SnackBarState.Error(
+								uiString = UiString.ResourceString(
+									resId = R.string.login_snackbar_offline_mode_error,
+								),
+							),
+						)
+					}
+				}
+			}
+		}
 	}
 
 	fun cancelGoogleAuthorization() {
@@ -213,6 +267,19 @@ internal class LoginViewModel @Inject constructor(
 						)
 						firebaseAnalytics.logEvent("cancel_server_login") {
 							param("reason", "server_not_allowed")
+						}
+					}
+					UserStatus.OFFLINE -> {
+						_uiState.value = LoginUiState.LoginIdle
+						_snackBarFlow.emit(
+							SnackBarState.Error(
+								uiString = UiString.ResourceString(
+									resId = R.string.login_snackbar_login_error_offline,
+								),
+							),
+						)
+						firebaseAnalytics.logEvent("cancel_server_login") {
+							param("reason", "server_offline")
 						}
 					}
 				}
