@@ -4,4 +4,5 @@ enum class UserStatus {
 	ACTIVE,
 	HALF_SIGNUP,
 	INACTIVE,
+	OFFLINE,
 }

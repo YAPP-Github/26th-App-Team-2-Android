@@ -32,6 +32,15 @@ internal class TokenRepositoryImpl @Inject constructor(
 	private val googleAuthManager: GoogleAuthManager,
 ) : TokenRepository {
 
+	override suspend fun setOfflineModeStatus(onError: suspend (Throwable) -> Unit) {
+		tokenLocalDataSource.updateUserToken(
+			userAccessToken = null,
+			userRefreshToken = null,
+			userStatus = UserStatus.OFFLINE,
+			onError = onError,
+		)
+	}
+
 	override fun getRemoteTokens(
 		provider: String,
 		authorizationCode: String,
