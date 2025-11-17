@@ -1,4 +1,4 @@
-package com.teambrake.brake.data.repositoryImpl
+package com.teambrake.brake.data.repository
 
 import com.teambrake.brake.core.model.app.App
 import com.teambrake.brake.data.local.source.AppLocalDataSource
