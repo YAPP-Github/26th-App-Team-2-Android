@@ -3,11 +3,14 @@ package com.teambrake.brake.data.repository
 import com.teambrake.brake.data.local.source.TokenLocalDataSource
 import com.teambrake.brake.data.local.source.UserLocalDataSource
 import com.teambrake.brake.data.remote.source.AccountRemoteDataSource
+import com.teambrake.brake.data.repository.util.OfflineBlocker
+import com.teambrake.brake.data.repository.util.OfflineException
 import com.teambrake.brake.domain.repository.SessionRepository
 import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 
-class SessionRepositoryImpl @Inject constructor(
+internal class SessionRepositoryImpl @Inject constructor(
+	private val offlineBlocker: OfflineBlocker,
 	private val userLocalDataSource: UserLocalDataSource,
 	private val tokenLocalDataSource: TokenLocalDataSource,
 	private val accountRemoteDataSource: AccountRemoteDataSource,
@@ -32,6 +35,14 @@ class SessionRepositoryImpl @Inject constructor(
 	}
 
 	override suspend fun clearRemoteAccount(onError: suspend (Throwable) -> Unit) {
-		accountRemoteDataSource.deleteAccount(onError = onError)
+		try {
+			offlineBlocker.block {
+				accountRemoteDataSource.deleteAccount(onError = onError)
+			}
+		} catch (_: OfflineException) {
+			// 오프라인 모드에서는 원격 계정 삭제 스킵
+		} catch (e: Exception) {
+			onError(e)
+		}
 	}
 }
