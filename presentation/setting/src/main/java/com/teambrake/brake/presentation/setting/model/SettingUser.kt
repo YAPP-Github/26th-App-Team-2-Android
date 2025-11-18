@@ -1,6 +1,6 @@
 package com.teambrake.brake.presentation.setting.model
 
-data class SettingUser(
+internal data class SettingUser(
 	val imageUrl: String?,
 	val name: String,
 ) {

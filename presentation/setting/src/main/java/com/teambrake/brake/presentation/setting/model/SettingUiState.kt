@@ -3,32 +3,24 @@ package com.teambrake.brake.presentation.setting.model
 import androidx.compose.runtime.Stable
 
 @Stable
-sealed interface SettingUiState {
-	val user: SettingUser
-	val appInfo: SettingAppInfo
+internal data class SettingUiState(
+	val user: SettingUser,
+	val appInfo: SettingAppInfo,
+	val status: Status,
+) {
+	enum class Status {
+		Idle,
+		Loaded,
+		LogoutWarning,
+		DeleteWarning,
+		DeletingAccount,
+	}
 
-	data class SettingIdle(
-		override val user: SettingUser = SettingUser.EMPTY,
-		override val appInfo: SettingAppInfo = SettingAppInfo.EMPTY,
-	) : SettingUiState
-
-	data class SettingLoaded(
-		override val user: SettingUser,
-		override val appInfo: SettingAppInfo,
-	) : SettingUiState
-
-	data class SettingLogoutWarning(
-		override val user: SettingUser,
-		override val appInfo: SettingAppInfo,
-	) : SettingUiState
-
-	data class SettingDeleteWarning(
-		override val user: SettingUser,
-		override val appInfo: SettingAppInfo,
-	) : SettingUiState
-
-	data class SettingDeletingAccount(
-		override val user: SettingUser,
-		override val appInfo: SettingAppInfo,
-	) : SettingUiState
+	companion object {
+		val Idle = SettingUiState(
+			user = SettingUser.EMPTY,
+			appInfo = SettingAppInfo.EMPTY,
+			status = Status.Idle,
+		)
+	}
 }

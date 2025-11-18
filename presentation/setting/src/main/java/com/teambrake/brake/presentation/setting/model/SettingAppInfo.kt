@@ -2,7 +2,7 @@ package com.teambrake.brake.presentation.setting.model
 
 import com.teambrake.brake.presentation.setting.BuildConfig
 
-data class SettingAppInfo(
+internal data class SettingAppInfo(
 	val version: String,
 	val privacyPolicy: String,
 	val termsOfService: String,
