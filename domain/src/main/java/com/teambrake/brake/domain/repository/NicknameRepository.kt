@@ -10,6 +10,7 @@ interface NicknameRepository {
 	 * @param onError 오류 발생 시 호출되는 콜백
 	 * @return [Flow]로 감싸진 [UserName] 객체
 	 */
+	@Throws(Exception::class)
 	fun getRemoteUserName(onError: suspend (Throwable) -> Unit): Flow<UserName>
 
 	fun getLocalUserName(onError: suspend (Throwable) -> Unit): Flow<String>
