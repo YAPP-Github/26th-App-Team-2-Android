@@ -19,7 +19,7 @@ import com.teambrake.brake.core.database.BrakeDatabase
 	indices = [Index(value = [AppGroupEntity.Companion.PARENT_GROUP_ID])],
 )
 data class AppEntity(
-	@PrimaryKey val id: Long,
+	@PrimaryKey(autoGenerate = true) val id: Long = 0,
 	val packageName: String,
 	val name: String,
 	val category: String,

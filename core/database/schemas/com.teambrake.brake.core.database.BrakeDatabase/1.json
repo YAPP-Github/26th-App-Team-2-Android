@@ -2,11 +2,11 @@
   "formatVersion": 1,
   "database": {
     "version": 1,
-    "identityHash": "91aaba8b38b996f0cddd761a8a7fbd0b",
+    "identityHash": "3c6906a9682ef907f3765bdbac492cb0",
     "entities": [
       {
         "tableName": "app_table",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER NOT NULL, `packageName` TEXT NOT NULL, `name` TEXT NOT NULL, `category` TEXT NOT NULL, `parentGroupId` INTEGER NOT NULL, PRIMARY KEY(`id`), FOREIGN KEY(`parentGroupId`) REFERENCES `group_table`(`groupId`) ON UPDATE NO ACTION ON DELETE CASCADE )",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `packageName` TEXT NOT NULL, `name` TEXT NOT NULL, `category` TEXT NOT NULL, `parentGroupId` INTEGER NOT NULL, FOREIGN KEY(`parentGroupId`) REFERENCES `group_table`(`groupId`) ON UPDATE NO ACTION ON DELETE CASCADE )",
         "fields": [
           {
             "fieldPath": "id",
@@ -40,7 +40,7 @@
           }
         ],
         "primaryKey": {
-          "autoGenerate": false,
+          "autoGenerate": true,
           "columnNames": [
             "id"
           ]
@@ -177,7 +177,7 @@
     ],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '91aaba8b38b996f0cddd761a8a7fbd0b')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '3c6906a9682ef907f3765bdbac492cb0')"
     ]
   }
 }
