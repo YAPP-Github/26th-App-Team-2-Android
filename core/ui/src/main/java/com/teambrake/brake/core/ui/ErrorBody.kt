@@ -27,7 +27,6 @@ import com.teambrake.brake.core.designsystem.component.HorizontalSpacer
 import com.teambrake.brake.core.designsystem.component.VerticalSpacer
 import com.teambrake.brake.core.designsystem.theme.BrakeTheme
 import com.teambrake.brake.core.designsystem.theme.Gray200
-import com.teambrake.brake.core.designsystem.theme.White
 import com.teambrake.brake.core.designsystem.util.MultipleEventsCutter
 import com.teambrake.brake.core.designsystem.util.get
 
@@ -79,8 +78,8 @@ internal fun RetryButton(
 	Button(
 		shape = RoundedCornerShape(16.dp),
 		colors = ButtonDefaults.buttonColors(
-			containerColor = BrakeTheme.colorScheme.onSurface,
-			contentColor = White,
+			containerColor = BrakeTheme.colorScheme.primary,
+			contentColor = BrakeTheme.colorScheme.surface,
 		),
 		contentPadding = PaddingValues(vertical = 15.dp, horizontal = 22.dp),
 		onClick = { multipleEventsCutter.processEvent(onRetryClick) },
