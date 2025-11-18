@@ -67,6 +67,9 @@ class NicknameViewModel @Inject constructor(
 							uiString = UiString.ResourceString(R.string.nickname_snackbar_update_error),
 						),
 					)
+					_nicknameUiState.value = NicknameUiState.NicknameIdle(
+						nickname = nickname,
+					)
 				},
 				onSuccess = {
 					_snackBarFlow.emit(

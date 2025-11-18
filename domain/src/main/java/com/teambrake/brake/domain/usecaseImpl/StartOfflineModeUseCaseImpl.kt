@@ -15,11 +15,11 @@ class StartOfflineModeUseCaseImpl @Inject constructor(
 	@Named("TokenRepo") private val localRepository: TokenRepository,
 ) : StartOfflineModeUseCase {
 	override suspend fun invoke(offlineNickname: String, onError: suspend (Throwable) -> Unit): Destination {
-		nicknameRepository.saveLocalUserName(
-			nickname = offlineNickname,
+		localRepository.setOfflineModeStatus(
 			onError = onError,
 		)
-		localRepository.setOfflineModeStatus(
+		nicknameRepository.saveLocalUserName(
+			nickname = offlineNickname,
 			onError = onError,
 		)
 		return sessionRepository.getOnboardingFlag(onError = onError).firstOrNull()

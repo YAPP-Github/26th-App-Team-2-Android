@@ -81,11 +81,11 @@ internal class LoginViewModel @Inject constructor(
 		)
 	}
 
-	fun startOfflineMode() {
+	fun startOfflineMode(nickname: String) {
 		viewModelScope.launch {
 			_uiState.value = LoginUiState.LoginLoading
 			startOfflineModeUseCase.invoke(
-				offlineNickname = R.string.offline_mode_username_default.toString(),
+				offlineNickname = nickname,
 				onError = { throwable ->
 					_uiState.value = LoginUiState.LoginIdle
 					_snackBarFlow.emit(

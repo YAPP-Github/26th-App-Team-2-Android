@@ -39,6 +39,7 @@ import com.teambrake.brake.core.navigation.compositionlocal.LocalMainAction
 import com.teambrake.brake.core.navigation.compositionlocal.LocalNavigatorAction
 import com.teambrake.brake.core.navigation.compositionlocal.LocalNavigatorProvider
 import com.teambrake.brake.core.ui.SnackBarState
+import com.teambrake.brake.core.ui.UiString
 import com.teambrake.brake.presentation.login.component.LoginNoticeText
 import com.teambrake.brake.presentation.login.component.OfflineModeButton
 import com.teambrake.brake.presentation.login.model.LoginNavState.NavigateToHome
@@ -143,7 +144,13 @@ internal fun LoginRoute(viewModel: LoginViewModel = hiltViewModel()) {
 			}
 		},
 		onkakaoLoginClick = viewModel::getKakaoAuthorization,
-		onOfflineModeClick = viewModel::startOfflineMode,
+		onOfflineModeClick = {
+			viewModel.startOfflineMode(
+				UiString.ResourceString(
+					R.string.offline_mode_username_default,
+				).asString(context),
+			)
+		},
 	)
 
 	if (uiState == LoginUiState.LoginOnWebView) {

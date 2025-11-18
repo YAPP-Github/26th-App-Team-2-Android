@@ -69,6 +69,13 @@ internal class NicknameRepositoryImpl @Inject constructor(
 					state = UserStatus.OFFLINE,
 				),
 			)
+		} else {
+			emit(
+				UserName(
+					nickname = nickname,
+					state = UserStatus.INACTIVE,
+				),
+			)
 		}
 	}
 
