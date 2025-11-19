@@ -28,8 +28,9 @@ internal class NicknameRepositoryImpl @Inject constructor(
 		}.catch { exception ->
 			if (exception is OfflineException) {
 				onError(exception)
+			} else {
+				throw exception
 			}
-			throw exception
 		}
 
 	override fun getLocalUserName(onError: suspend (Throwable) -> Unit): Flow<String> =
