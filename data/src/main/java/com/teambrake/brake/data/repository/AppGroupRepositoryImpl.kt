@@ -73,8 +73,12 @@ internal class AppGroupRepositoryImpl @Inject constructor(
 					},
 				)
 			}
+		} catch (_: OfflineException) {
+			// 오프라인 모드, 원격 앱 그룹 삭제 스킵
+		} catch (_: Exception) {
+			// 기타 예외는 무시
 		} finally {
-			// 오프라인 모드에서는 원격 삭제 스킵
+			// 항상 로컬에서 앱 그룹 삭제 및 캐시 제거를 수행 (네트워크 상태와 관계없이 실행)
 			appGroupLocalDataSource.deleteAppGroupById(groupId = groupId)
 			cachedDatabase.removeAppGroupFromCache(groupId)
 		}
