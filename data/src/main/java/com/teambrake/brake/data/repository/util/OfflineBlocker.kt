@@ -33,7 +33,7 @@ internal class OfflineBlockerImpl @Inject constructor(
 				throw OfflineException("오프라인 모드입니다. 작업이 차단되었습니다.")
 			}
 			null -> {
-				throw Exception()
+				throw Exception("사용자 상태를 가져오는데 실패했습니다.")
 			}
 			else -> {
 				runIfOnline()
@@ -51,7 +51,7 @@ internal class OfflineBlockerImpl @Inject constructor(
 				throw OfflineException("오프라인 모드입니다. 작업이 차단되었습니다.")
 			}
 			null -> {
-				throw Exception()
+				throw Exception("사용자 상태를 가져오는데 실패했습니다.")
 			}
 			else -> {
 				flowProvider().collect { emit(it) }
