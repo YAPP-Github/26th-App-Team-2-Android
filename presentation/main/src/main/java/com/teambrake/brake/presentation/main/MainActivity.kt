@@ -1,5 +1,7 @@
 package com.teambrake.brake.presentation.main
 
+import android.annotation.SuppressLint
+import android.content.pm.ActivityInfo
 import android.os.Bundle
 import android.widget.Toast
 import androidx.activity.ComponentActivity
@@ -45,6 +47,10 @@ class MainActivity : ComponentActivity() {
 
 	override fun onCreate(savedInstanceState: Bundle?) {
 		super.onCreate(savedInstanceState)
+
+		// 세로 방향으로 고정
+		@SuppressLint("SourceLockedOrientationActivity")
+		requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
 
 		// 스플래시 스크린 설치, 내부에서 API 31 미만 버전도 호환되도록 처리
 		val splashScreen = installSplashScreen()

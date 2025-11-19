@@ -5,6 +5,7 @@ import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
+import android.content.pm.ActivityInfo
 import android.os.Build
 import android.os.Bundle
 import androidx.activity.ComponentActivity
@@ -54,6 +55,11 @@ class OverlayActivity : ComponentActivity() {
 
 	override fun onCreate(savedInstanceState: Bundle?) {
 		super.onCreate(savedInstanceState)
+
+		// 세로 방향으로 고정
+		@SuppressLint("SourceLockedOrientationActivity")
+		requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
+
 		enableEdgeToEdge()
 		Timber.d("OverlayActivity onCreate called")
 
