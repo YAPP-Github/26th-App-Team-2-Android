@@ -58,6 +58,7 @@ internal class TokenRepositoryImpl @Inject constructor(
 				onError = onError,
 			)
 		}.map {
+			// TODO: authCode 습득 후에 WorkManager 를 사용하여 AuthCode 삭제 작업 예약
 			it.toData()
 		}.onEach {
 			// authCode 습득 성공 시 토큰과 유저 상태 (회원, 비회원) 저장
