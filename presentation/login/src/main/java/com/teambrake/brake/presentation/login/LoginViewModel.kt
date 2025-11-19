@@ -91,7 +91,7 @@ internal class LoginViewModel @Inject constructor(
 					_snackBarFlow.emit(
 						SnackBarState.Error(
 							uiString = UiString.ResourceString(
-								resId = R.string.login_snackbar_login_error,
+								resId = R.string.login_snackbar_offline_mode_error,
 							),
 						),
 					)
