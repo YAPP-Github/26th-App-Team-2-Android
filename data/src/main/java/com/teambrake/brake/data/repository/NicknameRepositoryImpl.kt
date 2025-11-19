@@ -71,12 +71,7 @@ internal class NicknameRepositoryImpl @Inject constructor(
 				),
 			)
 		} else {
-			emit(
-				UserName(
-					nickname = nickname,
-					state = UserStatus.INACTIVE,
-				),
-			)
+			throw it
 		}
 	}
 

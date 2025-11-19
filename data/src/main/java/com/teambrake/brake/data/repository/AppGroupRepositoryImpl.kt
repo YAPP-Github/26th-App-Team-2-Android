@@ -53,6 +53,8 @@ internal class AppGroupRepositoryImpl @Inject constructor(
 					cachedDatabase.addAppGroupToCache(appGroup)
 				}
 				emit(appGroup)
+			} else {
+				throw it
 			}
 		}.first()
 	}

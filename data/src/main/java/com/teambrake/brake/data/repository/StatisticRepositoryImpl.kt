@@ -52,6 +52,8 @@ internal class StatisticRepositoryImpl @Inject constructor(
 				onError(it)
 				// TODO: 오프라인의 경우 local db 통계 데이터를 가져오는 로직 추가 예정
 				emit(null)
+			} else {
+				throw it
 			}
 		}
 	}
