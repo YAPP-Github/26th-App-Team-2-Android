@@ -11,8 +11,8 @@ import com.teambrake.brake.data.repository.util.OfflineException
 import com.teambrake.brake.domain.repository.AppGroupRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.onStart
@@ -86,7 +86,7 @@ internal class AppGroupRepositoryImpl @Inject constructor(
 	override fun observeAppGroup(): Flow<List<AppGroup>> =
 		appGroupLocalDataSource.observeAppGroup()
 			.onStart {
-				val localList = appGroupLocalDataSource.observeAppGroup().first()
+				val localList = appGroupLocalDataSource.observeAppGroup().firstOrNull() ?: emptyList()
 				if (localList.isEmpty()) {
 					runCatching {
 						offlineBlocker.blockFlow { appGroupRemoteDataSource.getAppGroups() }
