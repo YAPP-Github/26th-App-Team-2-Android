@@ -28,10 +28,16 @@ internal class OfflineBlockerImpl @Inject constructor(
 		val status = tokenLocalDataSource.getUserStatus(
 			onError = { /* 상태를 가져오는 중 오류가 발생해도 무시 */ },
 		).firstOrNull()
-		return if (status != UserStatus.OFFLINE) {
-			runIfOnline()
-		} else {
-			throw OfflineException("오프라인 모드입니다. 작업이 차단되었습니다.")
+		return when (status) {
+			UserStatus.OFFLINE -> {
+				throw OfflineException("오프라인 모드입니다. 작업이 차단되었습니다.")
+			}
+			null -> {
+				throw Exception()
+			}
+			else -> {
+				runIfOnline()
+			}
 		}
 	}
 
@@ -40,10 +46,17 @@ internal class OfflineBlockerImpl @Inject constructor(
 		val status = tokenLocalDataSource.getUserStatus(
 			onError = { /* 상태를 가져오는 중 오류가 발생해도 무시 */ },
 		).firstOrNull()
-		if (status == UserStatus.OFFLINE) {
-			throw OfflineException("오프라인 모드입니다. 작업이 차단되었습니다.")
+		when (status) {
+			UserStatus.OFFLINE -> {
+				throw OfflineException("오프라인 모드입니다. 작업이 차단되었습니다.")
+			}
+			null -> {
+				throw Exception()
+			}
+			else -> {
+				flowProvider().collect { emit(it) }
+			}
 		}
-		flowProvider().collect { emit(it) }
 	}
 }
 
