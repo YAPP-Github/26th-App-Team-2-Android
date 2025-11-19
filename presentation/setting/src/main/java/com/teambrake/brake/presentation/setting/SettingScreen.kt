@@ -63,14 +63,14 @@ fun SettingRoute(
 	val mainAction = LocalMainAction.current
 
 	BackHandler {
-		if (uiState is SettingUiState.SettingDeletingAccount) {
+		if (uiState.status == SettingUiState.Status.DeletingAccount) {
 			viewModel.cancelDeletingAccount()
 		} else {
 			navAction.popBackStack()
 		}
 	}
 
-	if (uiState is SettingUiState.SettingDeletingAccount) {
+	if (uiState.status == SettingUiState.Status.DeletingAccount) {
 		mainAction.OnShowLoading()
 	}
 
@@ -107,8 +107,8 @@ fun SettingRoute(
 		}
 	}
 
-	when (uiState) {
-		is SettingUiState.SettingLogoutWarning -> {
+	when (uiState.status) {
+		SettingUiState.Status.LogoutWarning -> {
 			mainAction.OnShowLogoutDialog(
 				onConfirm = {
 					viewModel.dismissDialog()
@@ -118,7 +118,7 @@ fun SettingRoute(
 			)
 		}
 
-		is SettingUiState.SettingDeleteWarning -> {
+		SettingUiState.Status.DeleteWarning -> {
 			DeleteWarningDialog(
 				onDismissRequest = viewModel::dismissDialog,
 				onConfirm = {
@@ -146,7 +146,7 @@ fun SettingRoute(
 }
 
 @Composable
-fun SettingScreen(
+private fun SettingScreen(
 	screenHorizontalPadding: Dp,
 	paddingValue: PaddingValues,
 	uiState: SettingUiState,
@@ -158,7 +158,7 @@ fun SettingScreen(
 	onDeleteAccount: () -> Unit,
 	onLogout: () -> Unit,
 ) {
-	var scrollState = rememberScrollState()
+	val scrollState = rememberScrollState()
 
 	Column(
 		modifier = Modifier
@@ -188,10 +188,8 @@ fun SettingScreen(
 				HorizontalSpacer(20.dp)
 
 				Text(
-					text = if (uiState.user.name.isBlank()) {
+					text = uiState.user.name.ifBlank {
 						stringResource(R.string.setting_profile_name_not_set)
-					} else {
-						uiState.user.name
 					},
 					style = BrakeTheme.typography.subtitle22SB,
 					color = White,

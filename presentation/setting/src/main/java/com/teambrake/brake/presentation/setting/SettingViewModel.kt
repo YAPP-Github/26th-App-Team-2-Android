@@ -39,22 +39,23 @@ class SettingViewModel @Inject constructor(
 	private val _snackBarFlow = MutableSharedFlow<SnackBarState>()
 	val snackBarFlow = _snackBarFlow.asSharedFlow()
 
-	private val _uiState = MutableStateFlow<SettingUiState>(SettingUiState.SettingIdle())
-	val uiState = _uiState.asStateFlow()
+	private val _uiState = MutableStateFlow(SettingUiState.Idle)
+	internal val uiState = _uiState.asStateFlow()
 
 	private val _navigationFlow = MutableSharedFlow<SettingEffect>()
-	val navigationFlow = _navigationFlow.asSharedFlow()
+	internal val navigationFlow = _navigationFlow.asSharedFlow()
 
 	init {
 		viewModelScope.launch {
-			getNicknameUseCase({}).collect { nickname ->
+			getNicknameUseCase {}.collect { nickname ->
 				_uiState.update {
-					SettingUiState.SettingLoaded(
+					SettingUiState(
 						user = SettingUser(
 							imageUrl = null,
 							name = nickname,
 						),
 						appInfo = _uiState.value.appInfo,
+						status = SettingUiState.Status.Loaded,
 					)
 				}
 			}
@@ -93,9 +94,10 @@ class SettingViewModel @Inject constructor(
 
 	fun dismissDialog() {
 		viewModelScope.launch {
-			_uiState.value = SettingUiState.SettingIdle(
+			_uiState.value = SettingUiState(
 				user = _uiState.value.user,
 				appInfo = _uiState.value.appInfo,
+				status = SettingUiState.Status.Idle,
 			)
 		}
 	}
@@ -103,9 +105,10 @@ class SettingViewModel @Inject constructor(
 	fun tryLogout() {
 		Timber.e("Logout warning dialog shown")
 		viewModelScope.launch {
-			_uiState.value = SettingUiState.SettingLogoutWarning(
+			_uiState.value = SettingUiState(
 				user = _uiState.value.user,
 				appInfo = _uiState.value.appInfo,
+				status = SettingUiState.Status.LogoutWarning,
 			)
 		}
 	}
@@ -122,41 +125,50 @@ class SettingViewModel @Inject constructor(
 					)
 				},
 			)
-			if (dest is Destination.Login) {
-				firebaseAnalytics.logEvent("app_logout") {
-					param(FirebaseAnalytics.Param.METHOD, "user_logout")
+			when (dest) {
+				is Destination.Login -> {
+					firebaseAnalytics.logEvent("app_logout") {
+						param(FirebaseAnalytics.Param.METHOD, "user_logout")
+					}
+					_navigationFlow.emit(SettingEffect.NavigateToLogin)
 				}
-				_navigationFlow.emit(SettingEffect.NavigateToLogin)
-			} else if (dest is Destination.PermissionOrHome) {
-				Timber.e("Logout failed with destination: $dest")
-			} else {
-				Timber.e("Logout failed with destination: $dest")
+
+				is Destination.PermissionOrHome -> {
+					Timber.e("Logout failed with destination: $dest")
+				}
+
+				else -> {
+					Timber.e("Logout failed with destination: $dest")
+				}
 			}
 		}
 	}
 
 	fun tryDeleteAccount() {
 		viewModelScope.launch {
-			_uiState.value = SettingUiState.SettingDeleteWarning(
+			_uiState.value = SettingUiState(
 				user = _uiState.value.user,
 				appInfo = _uiState.value.appInfo,
+				status = SettingUiState.Status.DeleteWarning,
 			)
 		}
 	}
 
 	fun deleteAccount() {
 		_uiState.value = _uiState.value.let {
-			SettingUiState.SettingDeletingAccount(
+			SettingUiState(
 				user = it.user,
 				appInfo = it.appInfo,
+				status = SettingUiState.Status.DeletingAccount,
 			)
 		}
 		deleteJob = viewModelScope.launch {
 			val dest = deleteAccountUseCase(
 				onError = {
-					_uiState.value = SettingUiState.SettingLoaded(
+					_uiState.value = SettingUiState(
 						user = _uiState.value.user,
 						appInfo = _uiState.value.appInfo,
+						status = SettingUiState.Status.Loaded,
 					)
 					_snackBarFlow.emit(
 						SnackBarState.Error(
@@ -168,9 +180,10 @@ class SettingViewModel @Inject constructor(
 			if (dest is Destination.Login) {
 				// 로딩창 먼저 제거 후 스낵바 띄우고 화면 이동: 유저 사용성 증가
 				googleAuthManager.signOutGoogleAuth()
-				_uiState.value = SettingUiState.SettingLoaded(
+				_uiState.value = SettingUiState(
 					user = _uiState.value.user,
 					appInfo = _uiState.value.appInfo,
+					status = SettingUiState.Status.Loaded,
 				)
 				_snackBarFlow.emit(
 					SnackBarState.Success(
@@ -181,6 +194,12 @@ class SettingViewModel @Inject constructor(
 					param(FirebaseAnalytics.Param.METHOD, "user_delete")
 				}
 				_navigationFlow.emit(SettingEffect.NavigateToLogin)
+			} else {
+				_uiState.value = SettingUiState(
+					user = _uiState.value.user,
+					appInfo = _uiState.value.appInfo,
+					status = SettingUiState.Status.Idle,
+				)
 			}
 		}
 	}
@@ -189,9 +208,10 @@ class SettingViewModel @Inject constructor(
 		deleteJob?.run {
 			cancel()
 			_uiState.value = _uiState.value.let {
-				SettingUiState.SettingIdle(
+				SettingUiState(
 					user = it.user,
 					appInfo = it.appInfo,
+					status = SettingUiState.Status.Idle,
 				)
 			}
 			viewModelScope.launch {

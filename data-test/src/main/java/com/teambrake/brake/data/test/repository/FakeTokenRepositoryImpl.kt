@@ -8,6 +8,14 @@ import kotlinx.coroutines.flow.flow
 import javax.inject.Inject
 
 internal class FakeTokenRepositoryImpl @Inject constructor() : TokenRepository {
+	override suspend fun setOfflineModeStatus(onError: suspend (Throwable) -> Unit) {
+		TODO("Not yet implemented")
+	}
+
+	override suspend fun getUserStatus(onError: suspend (Throwable) -> Unit): UserStatus {
+		TODO("Not yet implemented")
+	}
+
 	override fun getRemoteTokens(
 		provider: String,
 		authorizationCode: String,

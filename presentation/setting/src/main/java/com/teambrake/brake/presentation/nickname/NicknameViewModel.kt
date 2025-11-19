@@ -17,7 +17,7 @@ import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -43,8 +43,8 @@ class NicknameViewModel @Inject constructor(
 	init {
 		viewModelScope.launch {
 			val nickname = getNicknameUseCase(
-				onError = { /* 에러 핸들링 스킵*/ },
-			).first()
+				onError = { /* 에러 핸들링 생략 */ },
+			).firstOrNull() ?: ""
 			_nicknameUiState.value = NicknameUiState.NicknameIdle(nickname = nickname)
 		}
 	}
@@ -66,6 +66,9 @@ class NicknameViewModel @Inject constructor(
 						SnackBarState.Error(
 							uiString = UiString.ResourceString(R.string.nickname_snackbar_update_error),
 						),
+					)
+					_nicknameUiState.value = NicknameUiState.NicknameIdle(
+						nickname = nickname,
 					)
 				},
 				onSuccess = {

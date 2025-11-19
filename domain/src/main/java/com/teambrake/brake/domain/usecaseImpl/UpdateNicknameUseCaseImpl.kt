@@ -23,8 +23,8 @@ class UpdateNicknameUseCaseImpl @Inject constructor(
 			onError = onError,
 		).collect {
 			when (it.state) {
-				// 닉네임 업데이트 성공 시
-				UserStatus.ACTIVE -> {
+				// 닉네임 업데이트 성공 시, 오프라인 모드 사용 시
+				UserStatus.ACTIVE, UserStatus.OFFLINE -> {
 					// DataStore에 저장된 authCode 삭제
 					tokenRepository.clearLocalAuthCode(onError = onError)
 					// 닉네임 업데이트 성공 후 콜백 호출

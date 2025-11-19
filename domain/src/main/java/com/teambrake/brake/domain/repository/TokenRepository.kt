@@ -1,9 +1,24 @@
 package com.teambrake.brake.domain.repository
 
+import com.teambrake.brake.core.model.user.UserStatus
 import com.teambrake.brake.core.model.user.UserToken
 import kotlinx.coroutines.flow.Flow
 
 interface TokenRepository {
+
+	/**
+	 * 오프라인 모드 상태 설정 메서드
+	 *
+	 * @param onError 오류 발생 시 호출되는 콜백
+	 */
+	suspend fun setOfflineModeStatus(onError: suspend (Throwable) -> Unit)
+
+	/**
+	 * 로컬에서 현재 사용자 상태를 가져오는 메서드
+	 */
+	suspend fun getUserStatus(
+		onError: suspend (Throwable) -> Unit,
+	): UserStatus
 
 	/**
 	 * 서버에서 로그인 토큰을 가져오는 메서드

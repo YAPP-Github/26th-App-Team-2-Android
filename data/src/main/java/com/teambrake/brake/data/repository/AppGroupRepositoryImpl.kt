@@ -6,52 +6,82 @@ import com.teambrake.brake.core.model.app.AppGroupState
 import com.teambrake.brake.data.local.source.AppGroupLocalDataSource
 import com.teambrake.brake.data.local.source.AppLocalDataSource
 import com.teambrake.brake.data.remote.source.AppGroupRemoteDataSource
+import com.teambrake.brake.data.repository.util.OfflineBlocker
+import com.teambrake.brake.data.repository.util.OfflineException
 import com.teambrake.brake.domain.repository.AppGroupRepository
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.flow.onStart
 import java.time.LocalDateTime
 import javax.inject.Inject
 
 internal class AppGroupRepositoryImpl @Inject constructor(
+	private val offlineBlocker: OfflineBlocker,
 	private val appGroupLocalDataSource: AppGroupLocalDataSource,
 	private val appGroupRemoteDataSource: AppGroupRemoteDataSource,
 	private val appLocalDataSource: AppLocalDataSource,
 	private val cachedDatabase: CachedDatabase,
 ) : AppGroupRepository {
 
-	override suspend fun insertAppGroup(appGroup: AppGroup): AppGroup = if (appGroupLocalDataSource.isAppGroupExists(appGroup.id)) {
-		appGroupRemoteDataSource.updateAppGroup(
-			appGroup = appGroup,
-		).map { updatedGroup ->
-			appGroupLocalDataSource.insertAppGroup(updatedGroup)
-			// API 성공 후에 캐시 업데이트
-			cachedDatabase.updateAppGroupInCache(updatedGroup)
-			updatedGroup
-		}
-	} else {
-		appGroupRemoteDataSource.createAppGroup(
-			appGroup = appGroup,
-		).map { newGroup ->
-			appGroupLocalDataSource.insertAppGroup(newGroup)
-			// API 성공 후에 캐시에 추가
-			cachedDatabase.addAppGroupToCache(newGroup)
-			newGroup
-		}
-	}.first()
+	override suspend fun insertAppGroup(appGroup: AppGroup): AppGroup {
+		val isUpdate = appGroupLocalDataSource.isAppGroupExists(appGroup.id)
+
+		return offlineBlocker.blockFlow {
+			if (isUpdate) {
+				appGroupRemoteDataSource.updateAppGroup(appGroup = appGroup)
+			} else {
+				appGroupRemoteDataSource.createAppGroup(appGroup = appGroup)
+			}
+		}.map { resultGroup ->
+			appGroupLocalDataSource.insertAppGroup(resultGroup)
+			if (isUpdate) {
+				cachedDatabase.updateAppGroupInCache(resultGroup)
+			} else {
+				cachedDatabase.addAppGroupToCache(resultGroup)
+			}
+			resultGroup
+		}.catch {
+			if (it is OfflineException) {
+				appGroupLocalDataSource.insertAppGroup(appGroup)
+				if (isUpdate) {
+					cachedDatabase.updateAppGroupInCache(appGroup)
+				} else {
+					cachedDatabase.addAppGroupToCache(appGroup)
+				}
+				emit(appGroup)
+			} else {
+				throw it
+			}
+		}.first()
+	}
 
 	override suspend fun getAvailableMinGroupId(): Long =
 		appGroupLocalDataSource.getAvailableMinGroupId()
 
 	override suspend fun deleteAppGroupByGroupId(groupId: Long) {
-		appGroupRemoteDataSource.deleteAppGroup(
-			groupId = groupId,
-			onSuccess = {
-				appGroupLocalDataSource.deleteAppGroupById(groupId = groupId)
-				cachedDatabase.removeAppGroupFromCache(groupId)
-			},
-		)
+		try {
+			offlineBlocker.block {
+				appGroupRemoteDataSource.deleteAppGroup(
+					groupId = groupId,
+					onSuccess = {
+						appGroupLocalDataSource.deleteAppGroupById(groupId = groupId)
+						cachedDatabase.removeAppGroupFromCache(groupId)
+					},
+				)
+			}
+		} catch (_: OfflineException) {
+			// 오프라인 모드, 원격 앱 그룹 삭제 스킵
+		} catch (_: Exception) {
+			// 기타 예외는 무시
+		} finally {
+			// 항상 로컬에서 앱 그룹 삭제 및 캐시 제거를 수행 (네트워크 상태와 관계없이 실행)
+			appGroupLocalDataSource.deleteAppGroupById(groupId = groupId)
+			cachedDatabase.removeAppGroupFromCache(groupId)
+		}
 	}
 
 	override suspend fun clearAppGroup() {
@@ -59,24 +89,25 @@ internal class AppGroupRepositoryImpl @Inject constructor(
 		cachedDatabase.clearCache()
 	}
 
-	override fun observeAppGroup(): Flow<List<AppGroup>> = appGroupLocalDataSource.observeAppGroup()
-		.onEach { localList ->
-			if (localList.isEmpty()) {
-				appGroupRemoteDataSource.getAppGroups().collect { remoteList ->
-					appGroupLocalDataSource.insertAppGroups(remoteList)
-					remoteList.forEach {
-						appLocalDataSource.insertApps(it.id, it.apps)
+	override fun observeAppGroup(): Flow<List<AppGroup>> =
+		appGroupLocalDataSource.observeAppGroup()
+			.onStart {
+				val localList = appGroupLocalDataSource.observeAppGroup().firstOrNull() ?: emptyList()
+				if (localList.isEmpty()) {
+					runCatching {
+						offlineBlocker.blockFlow { appGroupRemoteDataSource.getAppGroups() }
+							.collect { remoteList ->
+								appGroupLocalDataSource.insertAppGroups(remoteList)
+								remoteList.forEach { appLocalDataSource.insertApps(it.id, it.apps) }
+								cachedDatabase.initializeCachedState(remoteList)
+							}
 					}
-					// 원격에서 가져온 데이터로 캐시 초기화
-					cachedDatabase.initializeCachedState(remoteList)
 				}
-			} else {
-				// DB 변경 시마다 캐시 업데이트
-				cachedDatabase.initializeCachedState(localList)
 			}
-		}
+			.onEach { cachedDatabase.initializeCachedState(it) }
 
-	override suspend fun getAppGroupById(groupId: Long): AppGroup? = appGroupLocalDataSource.getAppGroupById(groupId = groupId)
+	override suspend fun getAppGroupById(groupId: Long): AppGroup? =
+		appGroupLocalDataSource.getAppGroupById(groupId = groupId)
 
 	override suspend fun updateAppGroupState(
 		groupId: Long,

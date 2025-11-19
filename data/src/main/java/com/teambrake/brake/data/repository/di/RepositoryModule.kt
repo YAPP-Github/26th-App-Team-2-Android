@@ -5,7 +5,7 @@ import com.teambrake.brake.data.repository.SessionRepositoryImpl
 import com.teambrake.brake.data.repository.StatisticRepositoryImpl
 import com.teambrake.brake.data.repository.TokenRepositoryImpl
 import com.teambrake.brake.data.repository.NicknameRepositoryImpl
-import com.teambrake.brake.data.repositoryImpl.AppRepositoryImpl
+import com.teambrake.brake.data.repository.AppRepositoryImpl
 import com.teambrake.brake.domain.repository.AppGroupRepository
 import com.teambrake.brake.domain.repository.AppRepository
 import com.teambrake.brake.domain.repository.SessionRepository

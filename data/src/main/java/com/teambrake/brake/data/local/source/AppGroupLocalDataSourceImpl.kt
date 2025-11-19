@@ -23,7 +23,7 @@ internal class AppGroupLocalDataSourceImpl @Inject constructor(
 	) {
 		try {
 			appGroupDao.insertAppGroup(appGroup.toGroupEntity())
-		} catch (e: Exception) {
+		} catch (_: Exception) {
 			onError(Throwable("앱 그룹 저장에 실패했습니다"))
 		}
 	}
@@ -35,7 +35,7 @@ internal class AppGroupLocalDataSourceImpl @Inject constructor(
 		try {
 			if (appGroups.isEmpty()) return
 			appGroupDao.insertAppGroups(appGroups.map(AppGroup::toGroupEntity))
-		} catch (e: Exception) {
+		} catch (_: Exception) {
 			onError(Throwable("앱 그룹 일괄 저장에 실패했습니다"))
 		}
 	}
@@ -45,7 +45,7 @@ internal class AppGroupLocalDataSourceImpl @Inject constructor(
 		onError: suspend (Throwable) -> Unit,
 	): Boolean = try {
 		appGroupDao.isAppGroupExists(groupId)
-	} catch (e: Exception) {
+	} catch (_: Exception) {
 		onError(Throwable("앱 그룹 존재 여부 확인에 실패했습니다"))
 		false
 	}
@@ -54,7 +54,7 @@ internal class AppGroupLocalDataSourceImpl @Inject constructor(
 		onError: suspend (Throwable) -> Unit,
 	): Long = try {
 		appGroupDao.getAvailableMinGroupId()
-	} catch (e: Exception) {
+	} catch (_: Exception) {
 		onError(Throwable("사용 가능한 그룹 ID를 가져오는데 실패했습니다"))
 		-1L
 	}
@@ -65,7 +65,7 @@ internal class AppGroupLocalDataSourceImpl @Inject constructor(
 	) {
 		try {
 			appGroupDao.deleteAppGroupById(groupId)
-		} catch (e: Exception) {
+		} catch (_: Exception) {
 			onError(Throwable("앱 그룹 삭제에 실패했습니다"))
 		}
 	}
@@ -76,14 +76,18 @@ internal class AppGroupLocalDataSourceImpl @Inject constructor(
 		.map { appGroupEntities ->
 			appGroupEntities.map { it.toAppList(appScanner) }
 		}
-		.catch { onError(Throwable("앱 그룹 목록 관찰에 실패했습니다")) }
+		.catch { _ ->
+			onError(Throwable("앱 그룹 목록 관찰에 실패했습니다"))
+			// 예외 발생 시 빈 리스트를 emit 하여 downstream이 .first() 등에서 예외를 던지지 않도록 빈 리스트 방출
+			emit(emptyList())
+		}
 
 	override suspend fun getAppGroupById(
 		groupId: Long,
 		onError: suspend (Throwable) -> Unit,
 	): AppGroup? = try {
 		appGroupDao.getAppGroupById(groupId)?.toAppList(appScanner)
-	} catch (e: Exception) {
+	} catch (_: Exception) {
 		onError(Throwable("앱 그룹 정보를 가져오는데 실패했습니다"))
 		null
 	}
@@ -102,7 +106,7 @@ internal class AppGroupLocalDataSourceImpl @Inject constructor(
 				startTime = startTime,
 				endTime = endTime,
 			)
-		} catch (e: Exception) {
+		} catch (_: Exception) {
 			onError(Throwable("앱 그룹 상태 업데이트에 실패했습니다"))
 		}
 	}
@@ -119,7 +123,7 @@ internal class AppGroupLocalDataSourceImpl @Inject constructor(
 				goalMinutes = goalMinutes,
 				sessionStartTime = sessionStartTime,
 			)
-		} catch (e: Exception) {
+		} catch (_: Exception) {
 			onError(Throwable("그룹 세션 정보 업데이트에 실패했습니다"))
 		}
 	}
@@ -134,7 +138,7 @@ internal class AppGroupLocalDataSourceImpl @Inject constructor(
 				parentGroupId = parentGroupId,
 				snoozeTime = snoozeTime,
 			)
-		} catch (e: Exception) {
+		} catch (_: Exception) {
 			onError(Throwable("스누즈 설정에 실패했습니다"))
 		}
 	}
@@ -145,7 +149,7 @@ internal class AppGroupLocalDataSourceImpl @Inject constructor(
 	) {
 		try {
 			appGroupDao.resetSnooze(groupId)
-		} catch (e: Exception) {
+		} catch (_: Exception) {
 			onError(Throwable("스누즈 초기화에 실패했습니다"))
 		}
 	}
@@ -153,7 +157,7 @@ internal class AppGroupLocalDataSourceImpl @Inject constructor(
 	override suspend fun clearAppGroup(onError: suspend (Throwable) -> Unit) {
 		try {
 			appGroupDao.clearAppGroup()
-		} catch (e: Exception) {
+		} catch (_: Exception) {
 			onError(Throwable("앱 그룹 초기화에 실패했습니다"))
 		}
 	}

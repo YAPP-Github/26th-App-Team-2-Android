@@ -39,9 +39,9 @@ import com.teambrake.brake.core.navigation.compositionlocal.LocalMainAction
 import com.teambrake.brake.core.navigation.compositionlocal.LocalNavigatorAction
 import com.teambrake.brake.core.navigation.compositionlocal.LocalNavigatorProvider
 import com.teambrake.brake.core.ui.SnackBarState
-import com.teambrake.brake.presentation.login.component.GoogleLoginButton
-import com.teambrake.brake.presentation.login.component.KakaoLoginButton
+import com.teambrake.brake.core.ui.UiString
 import com.teambrake.brake.presentation.login.component.LoginNoticeText
+import com.teambrake.brake.presentation.login.component.OfflineModeButton
 import com.teambrake.brake.presentation.login.model.LoginNavState.NavigateToHome
 import com.teambrake.brake.presentation.login.model.LoginNavState.NavigateToOnboarding
 import com.teambrake.brake.presentation.login.model.LoginNavState.NavigateToPermission
@@ -144,6 +144,13 @@ internal fun LoginRoute(viewModel: LoginViewModel = hiltViewModel()) {
 			}
 		},
 		onkakaoLoginClick = viewModel::getKakaoAuthorization,
+		onOfflineModeClick = {
+			viewModel.startOfflineMode(
+				UiString.ResourceString(
+					R.string.offline_mode_username_default,
+				).asString(context),
+			)
+		},
 	)
 
 	if (uiState == LoginUiState.LoginOnWebView) {
@@ -162,19 +169,21 @@ fun LoginScreen(
 	onTermsClick: () -> Unit,
 	onGoogleLoginClick: () -> Unit,
 	onkakaoLoginClick: () -> Unit,
+	onOfflineModeClick: () -> Unit,
 ) {
 	val density = LocalDensity.current
 	val dynamicPaddingsProvider = LocalDynamicPaddings.current
 
+	var offlineModeButtonHeight by remember { mutableStateOf(0.dp) }
 	var googleButtonHeight by remember { mutableStateOf(0.dp) }
 	var kakaoButtonHeight by remember { mutableStateOf(0.dp) }
 
 	val buttonSpacing = 12.dp
 	val bottomPadding = 24.dp
 
-	LaunchedEffect(googleButtonHeight, kakaoButtonHeight) {
-		if (googleButtonHeight > 0.dp && kakaoButtonHeight > 0.dp) {
-			val totalHeight = googleButtonHeight + kakaoButtonHeight + buttonSpacing + bottomPadding
+	LaunchedEffect(offlineModeButtonHeight) {
+		if (offlineModeButtonHeight > 0.dp) {
+			val totalHeight = offlineModeButtonHeight + buttonSpacing + bottomPadding
 			dynamicPaddingsProvider.updateTwoButtonHeight(totalHeight)
 		}
 	}
@@ -182,7 +191,7 @@ fun LoginScreen(
 	ConstraintLayout(
 		modifier = Modifier.fillMaxSize(),
 	) {
-		val (title, notice, googleLoginButton, kakaoLoginButton) = createRefs()
+		val (title, notice, offlineModeButton, googleLoginButton, kakaoLoginButton) = createRefs()
 
 		Box(
 			modifier = Modifier
@@ -213,7 +222,7 @@ fun LoginScreen(
 			modifier = Modifier
 				.constrainAs(notice) {
 					top.linkTo(title.bottom)
-					bottom.linkTo(googleLoginButton.top, margin = 20.dp)
+					bottom.linkTo(offlineModeButton.top, margin = 20.dp)
 					start.linkTo(parent.start)
 					end.linkTo(parent.end)
 					// top, bottom 과 linkTo 관계가 설정되어 있을 때, 해당 컴포넌트 y 위치를 바텀(1f)으로 조정
@@ -224,36 +233,54 @@ fun LoginScreen(
 			onTermsClick = onTermsClick,
 		)
 
-		GoogleLoginButton(
-			modifier = Modifier
-				.padding(horizontal = padding)
-				.widthIn(max = 400.dp)
-				.onGloballyPositioned { coordinates ->
-					googleButtonHeight = with(density) { coordinates.size.height.toDp() }
-				}
-				.constrainAs(googleLoginButton) {
-					bottom.linkTo(kakaoLoginButton.top, margin = 12.dp)
-					start.linkTo(parent.start)
-					end.linkTo(parent.end)
-				},
-			onClick = onGoogleLoginClick,
-		)
-
-		KakaoLoginButton(
+		OfflineModeButton(
 			modifier = Modifier
 				.navigationBarsPadding()
 				.padding(horizontal = padding)
 				.padding(bottom = 24.dp)
 				.widthIn(max = 400.dp)
 				.onGloballyPositioned { coordinates ->
-					kakaoButtonHeight = with(density) { coordinates.size.height.toDp() }
+					offlineModeButtonHeight = with(density) { coordinates.size.height.toDp() }
 				}
-				.constrainAs(kakaoLoginButton) {
-					bottom.linkTo(parent.bottom)
+				.constrainAs(offlineModeButton) {
+					bottom.linkTo(parent.bottom, margin = 12.dp)
 					start.linkTo(parent.start)
 					end.linkTo(parent.end)
 				},
-			onClick = onkakaoLoginClick,
+			onClick = onOfflineModeClick,
 		)
+
+		// 임시 비활성화
+//		GoogleLoginButton(
+//			modifier = Modifier
+//				.padding(horizontal = padding)
+//				.widthIn(max = 400.dp)
+//				.onGloballyPositioned { coordinates ->
+//					googleButtonHeight = with(density) { coordinates.size.height.toDp() }
+//				}
+//				.constrainAs(googleLoginButton) {
+//					bottom.linkTo(kakaoLoginButton.top, margin = 12.dp)
+//					start.linkTo(parent.start)
+//					end.linkTo(parent.end)
+//				},
+//			onClick = onGoogleLoginClick,
+//		)
+//
+//		KakaoLoginButton(
+//			modifier = Modifier
+//				.navigationBarsPadding()
+//				.padding(horizontal = padding)
+//				.padding(bottom = 24.dp)
+//				.widthIn(max = 400.dp)
+//				.onGloballyPositioned { coordinates ->
+//					kakaoButtonHeight = with(density) { coordinates.size.height.toDp() }
+//				}
+//				.constrainAs(kakaoLoginButton) {
+//					bottom.linkTo(parent.bottom)
+//					start.linkTo(parent.start)
+//					end.linkTo(parent.end)
+//				},
+//			onClick = onkakaoLoginClick,
+//		)
 	}
 }
