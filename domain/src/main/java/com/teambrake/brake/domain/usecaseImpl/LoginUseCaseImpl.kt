@@ -1,6 +1,9 @@
 package com.teambrake.brake.domain.usecaseImpl
 
 import com.teambrake.brake.core.model.user.UserStatus
+import com.teambrake.brake.domain.model.result.BrakeResult
+import com.teambrake.brake.domain.model.result.success.OfflineModeSuccess
+import com.teambrake.brake.domain.model.result.success.OnlineModeSuccess
 import com.teambrake.brake.domain.repository.NicknameRepository
 import com.teambrake.brake.domain.repository.SessionRepository
 import com.teambrake.brake.domain.repository.TokenRepository
@@ -34,13 +37,23 @@ class LoginUseCaseImpl @Inject constructor(
 	)
 		.map { userToken ->
 			if (userToken.status == UserStatus.ACTIVE) {
-				nicknameRepository.getRemoteUserName(
-					onError = onError,
-				).collect { userName ->
-					nicknameRepository.saveLocalUserName(
-						nickname = userName.nickname,
-						onError = onError,
-					)
+				val result = nicknameRepository.getRemoteUserName()
+				when (result) {
+					is BrakeResult.Success -> {
+						val success = result.data
+						val nickname = when (success) {
+							is OnlineModeSuccess -> success.data.nickname
+							is OfflineModeSuccess -> success.data.nickname
+						}
+						nicknameRepository.saveLocalUserName(
+							nickname = nickname,
+							onError = onError,
+						)
+					}
+					is BrakeResult.Error -> {
+						// 원격 사용자 이름을 가져오는 데 실패한 경우 로컬 이름을 지웁니다.
+						nicknameRepository.clearLocalName(onError = onError)
+					}
 				}
 			} else {
 				sessionRepository.updateLocalOnboardingFlag(
