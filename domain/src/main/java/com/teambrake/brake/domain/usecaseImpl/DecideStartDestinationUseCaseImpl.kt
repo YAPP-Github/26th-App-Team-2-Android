@@ -4,6 +4,7 @@ import com.teambrake.brake.core.model.user.Destination
 import com.teambrake.brake.core.model.user.UserStatus
 import com.teambrake.brake.domain.model.result.BrakeResult
 import com.teambrake.brake.domain.model.result.error.DecideStartDestinationUseCaseError
+import com.teambrake.brake.domain.model.result.error.LocalApiCallError
 import com.teambrake.brake.domain.model.result.error.UndefinedExceptionError
 import com.teambrake.brake.domain.model.result.success.ModeSuccess
 import com.teambrake.brake.domain.model.result.success.OfflineModeSuccess
@@ -13,7 +14,6 @@ import com.teambrake.brake.domain.repository.AppRepository
 import com.teambrake.brake.domain.repository.NicknameRepository
 import com.teambrake.brake.domain.repository.SessionRepository
 import com.teambrake.brake.domain.usecase.DecideStartDestinationUseCase
-import kotlinx.coroutines.flow.firstOrNull
 import javax.inject.Inject
 import javax.inject.Named
 
@@ -62,30 +62,35 @@ class DecideStartDestinationUseCaseImpl @Inject constructor(
 					}
 				}
 			}
+		} catch (e: LocalStorageException) {
+			return BrakeResult.Error(LocalApiCallError(e.e))
 		} catch (e: Exception) {
 			return BrakeResult.Error(UndefinedExceptionError(e))
 		}
 	}
 
-	private suspend fun getDestinationByOnboardingStatus(): Destination {
-		val isCompleted = sessionRepository.getOnboardingFlag { e ->
-			throw LocalStorageException(e.message ?: "Local storage error")
-		}.firstOrNull() == true
+	private suspend fun getDestinationByOnboardingStatus(): Destination =
+		when (val result = sessionRepository.getOnboardingFlag()) {
+			is BrakeResult.Success -> {
+				val isOnboardingCompleted = result.data
+				if (isOnboardingCompleted) {
+					Destination.PermissionOrHome
+				} else {
+					Destination.Onboarding
+				}
+			}
 
-		return if (isCompleted) {
-			Destination.PermissionOrHome
-		} else {
-			Destination.Onboarding
+			is BrakeResult.Error -> {
+				throw LocalStorageException(result.error.e)
+			}
 		}
-	}
 
 	private suspend fun clearAllData() {
 		appGroupRepository.clearAppGroup()
 		appRepository.clearApps()
 	}
 
-	// TODO: 간단하게 흐름을 처리하기 위해 예외 처리로 구현. 그러나 분기 처리(Result)와 예외 처리(Exception)의 구분이 필요하므로 추후 리팩토링 필요
 	companion object {
-		class LocalStorageException(override val message: String) : Exception()
+		class LocalStorageException(val e: Throwable) : Exception()
 	}
 }

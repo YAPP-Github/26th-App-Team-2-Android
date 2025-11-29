@@ -13,7 +13,6 @@ class StoreOnboardingCompletionUseCaseImpl @Inject constructor(
 	) {
 		sessionRepository.updateLocalOnboardingFlag(
 			isComplete = isComplete,
-			onError = onError,
 		)
 	}
 }
