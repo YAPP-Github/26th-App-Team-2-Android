@@ -1,16 +1,15 @@
 package com.teambrake.brake.domain.repository
 
-import kotlinx.coroutines.flow.Flow
+import com.teambrake.brake.domain.model.result.BrakeResult
+import com.teambrake.brake.domain.model.result.error.ApiCallError
+import com.teambrake.brake.domain.model.result.error.LocalApiCallError
 
 interface SessionRepository {
-	suspend fun updateLocalOnboardingFlag(
-		isComplete: Boolean,
-		onError: suspend (Throwable) -> Unit,
-	)
+	suspend fun updateLocalOnboardingFlag(isComplete: Boolean): BrakeResult<Unit, ApiCallError>
 
-	fun getOnboardingFlag(onError: suspend (Throwable) -> Unit): Flow<Boolean>
+	suspend fun getOnboardingFlag(): BrakeResult<Boolean, LocalApiCallError>
 
-	suspend fun clearEntireDataStore(onError: suspend (Throwable) -> Unit)
+	suspend fun clearEntireDataStore(): BrakeResult<Unit, ApiCallError>
 
-	suspend fun clearRemoteAccount(onError: suspend (Throwable) -> Unit)
+	suspend fun clearRemoteAccount(): BrakeResult<Unit, ApiCallError>
 }
