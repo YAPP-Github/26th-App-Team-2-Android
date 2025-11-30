@@ -8,6 +8,7 @@ import com.teambrake.brake.core.auth.google.GoogleAuthManager
 import com.teambrake.brake.core.model.user.Destination
 import com.teambrake.brake.core.ui.SnackBarState
 import com.teambrake.brake.core.ui.UiString
+import com.teambrake.brake.domain.model.result.BrakeResult
 import com.teambrake.brake.domain.usecase.DeleteAccountUseCase
 import com.teambrake.brake.domain.usecase.GetNicknameUseCase
 import com.teambrake.brake.domain.usecase.LogoutUseCase
@@ -163,8 +164,35 @@ class SettingViewModel @Inject constructor(
 			)
 		}
 		deleteJob = viewModelScope.launch {
-			val dest = deleteAccountUseCase(
-				onError = {
+			when (val result = deleteAccountUseCase()) {
+				is BrakeResult.Success -> {
+					if (result.data is Destination.Login) {
+						// 로딩창 먼저 제거 후 스낵바 띄우고 화면 이동: 유저 사용성 증가
+						googleAuthManager.signOutGoogleAuth()
+						_uiState.value = SettingUiState(
+							user = _uiState.value.user,
+							appInfo = _uiState.value.appInfo,
+							status = SettingUiState.Status.Loaded,
+						)
+						_snackBarFlow.emit(
+							SnackBarState.Success(
+								uiString = UiString.ResourceString(R.string.setting_snackbar_delete_success),
+							),
+						)
+						firebaseAnalytics.logEvent("app_delete_account") {
+							param(FirebaseAnalytics.Param.METHOD, "user_delete")
+						}
+						_navigationFlow.emit(SettingEffect.NavigateToLogin)
+					} else {
+						_uiState.value = SettingUiState(
+							user = _uiState.value.user,
+							appInfo = _uiState.value.appInfo,
+							status = SettingUiState.Status.Idle,
+						)
+					}
+				}
+
+				is BrakeResult.Error -> {
 					_uiState.value = SettingUiState(
 						user = _uiState.value.user,
 						appInfo = _uiState.value.appInfo,
@@ -175,31 +203,7 @@ class SettingViewModel @Inject constructor(
 							uiString = UiString.ResourceString(R.string.setting_snackbar_delete_error),
 						),
 					)
-				},
-			)
-			if (dest is Destination.Login) {
-				// 로딩창 먼저 제거 후 스낵바 띄우고 화면 이동: 유저 사용성 증가
-				googleAuthManager.signOutGoogleAuth()
-				_uiState.value = SettingUiState(
-					user = _uiState.value.user,
-					appInfo = _uiState.value.appInfo,
-					status = SettingUiState.Status.Loaded,
-				)
-				_snackBarFlow.emit(
-					SnackBarState.Success(
-						uiString = UiString.ResourceString(R.string.setting_snackbar_delete_success),
-					),
-				)
-				firebaseAnalytics.logEvent("app_delete_account") {
-					param(FirebaseAnalytics.Param.METHOD, "user_delete")
 				}
-				_navigationFlow.emit(SettingEffect.NavigateToLogin)
-			} else {
-				_uiState.value = SettingUiState(
-					user = _uiState.value.user,
-					appInfo = _uiState.value.appInfo,
-					status = SettingUiState.Status.Idle,
-				)
 			}
 		}
 	}
