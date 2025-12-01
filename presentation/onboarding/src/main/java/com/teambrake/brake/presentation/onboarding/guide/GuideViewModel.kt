@@ -5,9 +5,9 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.google.firebase.analytics.FirebaseAnalytics
 import com.google.firebase.analytics.logEvent
-import com.teambrake.brake.core.model.user.Destination
 import com.teambrake.brake.core.permission.PermissionManager
 import com.teambrake.brake.core.ui.UiString
+import com.teambrake.brake.domain.model.result.BrakeResult
 import com.teambrake.brake.domain.usecase.LogoutUseCase
 import com.teambrake.brake.presentation.onboarding.R
 import com.teambrake.brake.presentation.onboarding.guide.model.GuideModalState
@@ -45,20 +45,21 @@ class GuideViewModel @Inject constructor(
 
 	fun logout() {
 		viewModelScope.launch {
-			val dest = logoutUseCase(
-				onError = { error ->
+			when (logoutUseCase()) {
+				is BrakeResult.Success -> {
+					firebaseAnalytics.logEvent("logout") {
+						param("reason", "user_requested")
+					}
+					_navigationFlow.emit(GuideNavState.NavigateToLogin)
+				}
+
+				is BrakeResult.Error -> {
 					_snackBarFlow.emit(
 						UiString.ResourceString(
 							resId = R.string.onboarding_snackbar_logout_error,
 						),
 					)
-				},
-			)
-			if (dest is Destination.Login) {
-				firebaseAnalytics.logEvent("logout") {
-					param("reason", "user_requested")
 				}
-				_navigationFlow.emit(GuideNavState.NavigateToLogin)
 			}
 		}
 	}

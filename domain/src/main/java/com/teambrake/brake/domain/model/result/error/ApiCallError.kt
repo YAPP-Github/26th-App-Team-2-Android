@@ -4,9 +4,11 @@ package com.teambrake.brake.domain.model.result.error
 sealed interface DecideStartDestinationUseCaseError
 sealed interface StartOfflineModeUseCaseError
 sealed interface DeleteAccountUseCaseError
+sealed interface LogoutUseCaseError
 
 /** API Call error **/
 sealed interface ApiCallError :
 	DecideStartDestinationUseCaseError,
 	StartOfflineModeUseCaseError,
 	DeleteAccountUseCaseError,
+	LogoutUseCaseError,

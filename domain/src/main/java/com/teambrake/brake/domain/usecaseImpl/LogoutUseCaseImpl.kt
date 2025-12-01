@@ -1,6 +1,8 @@
 package com.teambrake.brake.domain.usecaseImpl
 
 import com.teambrake.brake.core.model.user.Destination
+import com.teambrake.brake.domain.model.result.BrakeResult
+import com.teambrake.brake.domain.model.result.error.LogoutUseCaseError
 import com.teambrake.brake.domain.repository.AppGroupRepository
 import com.teambrake.brake.domain.repository.AppRepository
 import com.teambrake.brake.domain.repository.SessionRepository
@@ -15,22 +17,18 @@ class LogoutUseCaseImpl @Inject constructor(
 	private val appGroupRepository: AppGroupRepository,
 	private val appRepository: AppRepository,
 ) : LogoutUseCase {
-	override suspend fun invoke(onError: suspend (Throwable) -> Unit): Destination = try {
+	override suspend fun invoke(): BrakeResult<Destination, LogoutUseCaseError> {
 		tokenRepository.logoutRemoteAccount()
-		sessionRepository.clearEntireDataStore(
-			onError = { throwable ->
-				onError(throwable)
-				throw LocalException()
-			},
-		)
-		appGroupRepository.clearAppGroup()
-		appRepository.clearApps()
-		Destination.Login
-	} catch (_: LocalException) {
-		Destination.PermissionOrHome
-	}
+		return when (val localResult = sessionRepository.clearEntireDataStore()) {
+			is BrakeResult.Success -> {
+				appGroupRepository.clearAppGroup()
+				appRepository.clearApps()
+				BrakeResult.Success(Destination.Login)
+			}
 
-	companion object {
-		class LocalException : Exception()
+			is BrakeResult.Error -> {
+				BrakeResult.Error(localResult.error)
+			}
+		}
 	}
 }

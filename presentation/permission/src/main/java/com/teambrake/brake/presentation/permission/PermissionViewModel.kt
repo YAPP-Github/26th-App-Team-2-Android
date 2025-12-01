@@ -13,6 +13,7 @@ import com.google.firebase.analytics.FirebaseAnalytics
 import com.google.firebase.analytics.logEvent
 import com.teambrake.brake.core.model.user.Destination
 import com.teambrake.brake.core.ui.UiString
+import com.teambrake.brake.domain.model.result.BrakeResult
 import com.teambrake.brake.domain.usecase.DecideNextDestinationFromPermissionUseCase
 import com.teambrake.brake.domain.usecase.LogoutUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -38,7 +39,7 @@ class PermissionViewModel @Inject constructor(
 	val snackBarFlow = _snackBarFlow.asSharedFlow()
 
 	private val _uiState =
-		MutableStateFlow<PermissionUiState>(PermissionUiState(permissions = persistentListOf()))
+		MutableStateFlow(PermissionUiState(permissions = persistentListOf()))
 	val uiState = _uiState.asStateFlow()
 
 	private val _navigationFlow = MutableSharedFlow<PermissionNavState>()
@@ -148,20 +149,21 @@ class PermissionViewModel @Inject constructor(
 
 	fun logout() {
 		viewModelScope.launch {
-			val dest = logoutUseCase(
-				onError = { error ->
+			when (logoutUseCase()) {
+				is BrakeResult.Success -> {
+					firebaseAnalytics.logEvent("app_logout") {
+						param(FirebaseAnalytics.Param.METHOD, "user_logout")
+					}
+					_navigationFlow.emit(PermissionNavState.NavigateToLogin)
+				}
+
+				is BrakeResult.Error -> {
 					_snackBarFlow.emit(
 						UiString.ResourceString(
 							resId = R.string.permission_snackbar_logout_error,
 						),
 					)
-				},
-			)
-			if (dest is Destination.Login) {
-				firebaseAnalytics.logEvent("app_logout") {
-					param(FirebaseAnalytics.Param.METHOD, "user_logout")
 				}
-				_navigationFlow.emit(PermissionNavState.NavigateToLogin)
 			}
 		}
 	}

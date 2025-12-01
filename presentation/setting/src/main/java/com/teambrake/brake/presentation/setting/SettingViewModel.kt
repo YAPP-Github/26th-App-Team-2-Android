@@ -117,29 +117,28 @@ class SettingViewModel @Inject constructor(
 	fun logout() {
 		Timber.e("Logout initiated")
 		viewModelScope.launch {
-			val dest = logoutUseCase(
-				onError = {
+			when (val result = logoutUseCase()) {
+				is BrakeResult.Success -> {
+					when (val dest = result.data) {
+						is Destination.Login -> {
+							firebaseAnalytics.logEvent("app_logout") {
+								param(FirebaseAnalytics.Param.METHOD, "user_logout")
+							}
+							_navigationFlow.emit(SettingEffect.NavigateToLogin)
+						}
+
+						else -> {
+							Timber.e("Logout failed with destination: $dest")
+						}
+					}
+				}
+
+				is BrakeResult.Error -> {
 					_snackBarFlow.emit(
 						SnackBarState.Error(
 							uiString = UiString.ResourceString(R.string.setting_snackbar_logout_error),
 						),
 					)
-				},
-			)
-			when (dest) {
-				is Destination.Login -> {
-					firebaseAnalytics.logEvent("app_logout") {
-						param(FirebaseAnalytics.Param.METHOD, "user_logout")
-					}
-					_navigationFlow.emit(SettingEffect.NavigateToLogin)
-				}
-
-				is Destination.PermissionOrHome -> {
-					Timber.e("Logout failed with destination: $dest")
-				}
-
-				else -> {
-					Timber.e("Logout failed with destination: $dest")
 				}
 			}
 		}
