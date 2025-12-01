@@ -56,10 +56,15 @@ class LoginUseCaseImpl @Inject constructor(
 					}
 				}
 			} else {
-				sessionRepository.updateLocalOnboardingFlag(
-					isComplete = false,
-					onError = onError,
-				)
+				when (sessionRepository.updateLocalOnboardingFlag(isComplete = false)) {
+					is BrakeResult.Success -> {
+						// 온보딩 플래그가 성공적으로 업데이트되었습니다.
+					}
+					is BrakeResult.Error -> {
+						// 온보딩 플래그 업데이트에 실패한 경우 로컬 이름을 지웁니	다.
+						nicknameRepository.clearLocalName(onError = onError)
+					}
+				}
 			}
 			userToken.status
 		}
