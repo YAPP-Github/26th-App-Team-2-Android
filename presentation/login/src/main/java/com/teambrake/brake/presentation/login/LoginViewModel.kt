@@ -308,8 +308,38 @@ internal class LoginViewModel @Inject constructor(
 	}
 
 	private suspend fun decideNextDestination(context: Context) {
-		val status = decideDestinationUseCase(
-			onError = { error ->
+		when (val result = decideDestinationUseCase()) {
+			is BrakeResult.Success<*> -> {
+				when (result.data) {
+					is Destination.PermissionOrHome -> if (checkPermissions(context)) {
+						_navigationFlow.emit(LoginNavState.NavigateToHome)
+						firebaseAnalytics.logEvent(FirebaseAnalytics.Event.LOGIN) {
+							param(FirebaseAnalytics.Param.METHOD, "user_login")
+						}
+					} else {
+						_navigationFlow.emit(LoginNavState.NavigateToPermission)
+						firebaseAnalytics.logEvent(FirebaseAnalytics.Event.LOGIN) {
+							param(FirebaseAnalytics.Param.METHOD, "user_login")
+						}
+					}
+
+					is Destination.Onboarding -> {
+						_navigationFlow.emit(
+							LoginNavState.NavigateToOnboarding,
+						)
+						firebaseAnalytics.apply {
+							logEvent(FirebaseAnalytics.Event.LOGIN) {
+								param(FirebaseAnalytics.Param.METHOD, "user_login")
+							}
+							logEvent(FirebaseAnalytics.Event.TUTORIAL_BEGIN, null)
+						}
+					}
+
+					else -> {}
+				}
+			}
+
+			is BrakeResult.Error<*> -> {
 				_snackBarFlow.emit(
 					SnackBarState.Error(
 						uiString = UiString.ResourceString(
@@ -325,34 +355,8 @@ internal class LoginViewModel @Inject constructor(
 						param(FirebaseAnalytics.Param.SCREEN_NAME, "login_screen")
 					}
 				}
-			},
-		)
-		when (status) {
-			is Destination.PermissionOrHome -> if (checkPermissions(context)) {
-				_navigationFlow.emit(LoginNavState.NavigateToHome)
-				firebaseAnalytics.logEvent(FirebaseAnalytics.Event.LOGIN) {
-					param(FirebaseAnalytics.Param.METHOD, "user_login")
-				}
-			} else {
-				_navigationFlow.emit(LoginNavState.NavigateToPermission)
-				firebaseAnalytics.logEvent(FirebaseAnalytics.Event.LOGIN) {
-					param(FirebaseAnalytics.Param.METHOD, "user_login")
-				}
 			}
 
-			is Destination.Onboarding -> {
-				_navigationFlow.emit(
-					LoginNavState.NavigateToOnboarding,
-				)
-				firebaseAnalytics.apply {
-					logEvent(FirebaseAnalytics.Event.LOGIN) {
-						param(FirebaseAnalytics.Param.METHOD, "user_login")
-					}
-					logEvent(FirebaseAnalytics.Event.TUTORIAL_BEGIN, null)
-				}
-			}
-
-			else -> {}
 		}
 	}
 

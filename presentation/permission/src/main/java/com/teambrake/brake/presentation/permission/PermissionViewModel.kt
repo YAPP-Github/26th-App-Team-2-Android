@@ -83,21 +83,25 @@ class PermissionViewModel @Inject constructor(
 
 	private fun decideNextDestination() {
 		viewModelScope.launch {
-			val status = decideDestinationUseCase.invoke(
-				onError = {
-					_snackBarFlow.emit(
-						UiString.ResourceString(R.string.permission_snackbar_decide_destination_error),
-					)
-				},
-			)
-			firebaseAnalytics.logEvent("done_permission", null)
-			when (status) {
-				is Destination.PermissionOrHome -> _navigationFlow.emit(PermissionNavState.NavigateToMain)
-				is Destination.Onboarding -> _navigationFlow.emit(
-					PermissionNavState.NavigateToComplete,
-				)
+			when (val result = decideDestinationUseCase()) {
+				is BrakeResult.Error -> {
+					/* No-op */
+				}
 
-				else -> {}
+				is BrakeResult.Success -> {
+					firebaseAnalytics.logEvent("done_permission", null)
+					when (result.data) {
+						Destination.PermissionOrHome -> {
+							_navigationFlow.emit(PermissionNavState.NavigateToMain)
+						}
+
+						Destination.Onboarding -> {
+							_navigationFlow.emit(PermissionNavState.NavigateToComplete)
+						}
+
+						else -> {}
+					}
+				}
 			}
 		}
 	}
