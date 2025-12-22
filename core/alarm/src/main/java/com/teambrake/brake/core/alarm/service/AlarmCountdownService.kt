@@ -229,7 +229,7 @@ class AlarmCountdownService : Service() {
 		val channel = NotificationChannel(
 			CHANNEL_ID,
 			getString(R.string.alarm_countdown_channel_name),
-			NotificationManager.IMPORTANCE_HIGH,
+			NotificationManager.IMPORTANCE_LOW,
 		).apply {
 			description = getString(R.string.alarm_countdown_channel_description)
 			enableLights(false)
