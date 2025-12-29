@@ -1,3 +1,4 @@
+import com.android.build.gradle.internal.cxx.configure.gradleLocalProperties
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.TimeZone
@@ -26,7 +27,23 @@ android {
 		}
 	}
 	buildTypes {
+		debug {
+			val amplitudeApiKey = gradleLocalProperties(rootDir, providers)
+				.getProperty("AMPLITUDE_API_KEY")
+			if (amplitudeApiKey.isNullOrEmpty()) {
+				throw IllegalArgumentException("AMPLITUDE_API_KEY must be set in local.properties")
+			}
+			buildConfigField("String", "AMPLITUDE_API_KEY", "\"$amplitudeApiKey\"")
+		}
+
 		release {
+			val amplitudeApiKey = gradleLocalProperties(rootDir, providers)
+				.getProperty("AMPLITUDE_API_KEY")
+			if (amplitudeApiKey.isNullOrEmpty()) {
+				throw IllegalArgumentException("AMPLITUDE_API_KEY must be set in local.properties")
+			}
+			buildConfigField("String", "AMPLITUDE_API_KEY", "\"$amplitudeApiKey\"")
+
 			isMinifyEnabled = true
 			isShrinkResources = true
 			isDebuggable = false
@@ -68,6 +85,9 @@ dependencies {
 	implementation(platform(libs.firebase.bom))
 	implementation(libs.firebase.analytics)
 	implementation(libs.firebase.crashlytics)
+
+	// Amplitude for Analytics
+	implementation(libs.amplitude.analytics)
 
 	implementation(libs.androidx.profileinstaller)
 	testImplementation(projects.core.testing)
