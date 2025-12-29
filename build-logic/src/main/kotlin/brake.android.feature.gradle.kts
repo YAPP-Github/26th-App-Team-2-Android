@@ -1,3 +1,4 @@
+import com.teambrake.brake.configureAmplitude
 import com.teambrake.brake.configureFirebase
 import com.teambrake.brake.libs
 import com.teambrake.brake.configureHiltAndroid
@@ -17,6 +18,7 @@ android {
 configureHiltAndroid()
 configureRoborazzi()
 configureFirebase()
+configureAmplitude()
 
 dependencies {
     implementation(project(":domain"))
