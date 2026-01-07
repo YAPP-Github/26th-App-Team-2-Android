@@ -23,7 +23,6 @@ dependencies {
 	implementation(projects.presentation.report)
 	implementation(projects.presentation.setting)
 	implementation(projects.core.permission)
-	implementation(projects.core.amplitude)
 
 	androidTestImplementation(projects.core.testing)
 

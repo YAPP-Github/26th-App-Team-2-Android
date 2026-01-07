@@ -22,6 +22,7 @@ configureAmplitude()
 
 dependencies {
     implementation(project(":domain"))
+	implementation(project(":core:amplitude"))
     implementation(project(":core:model"))
     implementation(project(":core:designsystem"))
     implementation(project(":core:navigation"))
