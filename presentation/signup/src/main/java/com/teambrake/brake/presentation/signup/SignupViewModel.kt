@@ -2,10 +2,14 @@ package com.teambrake.brake.presentation.signup
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.amplitude.android.Amplitude
 import com.teambrake.brake.presentation.signup.model.SignupEffect
 import com.teambrake.brake.presentation.signup.model.SignupUiState
 import com.google.firebase.analytics.FirebaseAnalytics
 import com.google.firebase.analytics.logEvent
+import com.teambrake.brake.core.amplitude.AmplitudeEventHelper
+import com.teambrake.brake.core.amplitude.StepDetail
+import com.teambrake.brake.core.amplitude.StepName
 import com.teambrake.brake.core.ui.UiString
 import com.teambrake.brake.domain.usecase.UpdateNicknameUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -22,6 +26,7 @@ import javax.inject.Inject
 class SignupViewModel @Inject constructor(
 	private val updateNicknameUseCase: UpdateNicknameUseCase,
 	private val firebaseAnalytics: FirebaseAnalytics,
+	private val amplitude: Amplitude,
 ) : ViewModel() {
 	private var updateJob: Job? = null
 
@@ -33,6 +38,22 @@ class SignupViewModel @Inject constructor(
 
 	private val _navigationFlow = MutableSharedFlow<SignupEffect>()
 	val navigationFlow = _navigationFlow.asSharedFlow()
+
+	init {
+		// 닉네임 설정 화면 진입 시 이벤트 트래킹
+		trackNicknameView()
+	}
+
+	/**
+	 * view_onboarding 이벤트 전송 (nickname 화면)
+	 */
+	private fun trackNicknameView() {
+		val event = AmplitudeEventHelper.createViewOnboardingEvent(
+			stepName = StepName.NICKNAME,
+			stepDetail = StepDetail.DEFAULT,
+		)
+		amplitude.track(event.getEventName(), event.toEventProperties())
+	}
 
 	fun onBackPressed() {
 		viewModelScope.launch {

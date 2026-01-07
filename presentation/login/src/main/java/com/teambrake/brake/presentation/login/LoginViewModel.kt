@@ -4,8 +4,12 @@ import android.content.Context
 import androidx.activity.result.IntentSenderRequest
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.amplitude.android.Amplitude
 import com.google.firebase.analytics.FirebaseAnalytics
 import com.google.firebase.analytics.logEvent
+import com.teambrake.brake.core.amplitude.AmplitudeEventHelper
+import com.teambrake.brake.core.amplitude.StepDetail
+import com.teambrake.brake.core.amplitude.StepName
 import com.teambrake.brake.core.auth.google.GoogleAuthManager
 import com.teambrake.brake.core.model.user.Destination
 import com.teambrake.brake.core.model.user.UserStatus
@@ -37,6 +41,7 @@ internal class LoginViewModel @Inject constructor(
 	private val permissionManager: PermissionManager,
 	private val googleAuthManager: GoogleAuthManager,
 	private val firebaseAnalytics: FirebaseAnalytics,
+	private val amplitude: Amplitude,
 ) : ViewModel() {
 
 	private val _uiState = MutableStateFlow<LoginUiState>(LoginUiState.LoginIdle)
@@ -49,6 +54,22 @@ internal class LoginViewModel @Inject constructor(
 	val navigationFlow = _navigationFlow.asSharedFlow()
 
 	private var loginJob: Job? = null
+
+	init {
+		// 로그인 화면 진입 시 이벤트 트래킹
+		trackLoginView()
+	}
+
+	/**
+	 * view_onboarding 이벤트 전송 (login 화면)
+	 */
+	private fun trackLoginView() {
+		val event = AmplitudeEventHelper.createViewOnboardingEvent(
+			stepName = StepName.LOGIN,
+			stepDetail = StepDetail.DEFAULT,
+		)
+		amplitude.track(event.getEventName(), event.toEventProperties())
+	}
 
 	fun showPrivacyPolicy() {
 		viewModelScope.launch {
