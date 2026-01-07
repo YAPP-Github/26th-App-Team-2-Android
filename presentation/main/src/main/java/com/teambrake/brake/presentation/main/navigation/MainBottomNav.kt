@@ -50,7 +50,7 @@ internal fun MainBottomNavBar(
 		horizontalArrangement = Arrangement.SpaceBetween,
 		verticalAlignment = Alignment.CenterVertically,
 	) {
-		tabs.forEach { tab ->
+		tabs.filter { it != MainTab.REPORT }.forEach { tab ->
 			MainBottomNavItem(
 				tab = tab,
 				selected = tab == currentTab,
