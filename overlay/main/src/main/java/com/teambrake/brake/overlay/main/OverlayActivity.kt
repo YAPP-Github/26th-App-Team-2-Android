@@ -17,6 +17,9 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import com.amplitude.android.Amplitude
+import com.teambrake.brake.core.amplitude.AmplitudeEventHelper
+import com.teambrake.brake.core.amplitude.TriggerSource
 import com.teambrake.brake.core.common.BlockingConstants
 import com.teambrake.brake.core.designsystem.theme.BrakeTheme
 import com.teambrake.brake.core.model.app.AppGroupState
@@ -27,9 +30,13 @@ import com.teambrake.brake.overlay.snooze.SnoozeRoute
 import com.teambrake.brake.overlay.timer.TimerRoute
 import dagger.hilt.android.AndroidEntryPoint
 import timber.log.Timber
+import javax.inject.Inject
 
 @AndroidEntryPoint
 class OverlayActivity : ComponentActivity() {
+
+	@Inject
+	lateinit var amplitude: Amplitude
 
 	private val overlayViewHolder by lazy { OverlayViewHolder(this) }
 
@@ -56,6 +63,9 @@ class OverlayActivity : ComponentActivity() {
 	override fun onCreate(savedInstanceState: Bundle?) {
 		super.onCreate(savedInstanceState)
 
+		// 앱 시작 이벤트 트래킹
+		trackAmplitudeOpenAppEvent()
+
 		// 세로 방향으로 고정
 		@SuppressLint("SourceLockedOrientationActivity")
 		requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
@@ -73,6 +83,17 @@ class OverlayActivity : ComponentActivity() {
 
 		onBackPressedDispatcher.addCallback(this, callback)
 		showOverlay(intent.action)
+	}
+
+	/**
+	 * Overlay 경우의 open_app 이벤트 트래킹
+	 */
+	private fun trackAmplitudeOpenAppEvent() {
+		val event = AmplitudeEventHelper.createOpenAppEvent(TriggerSource.SHIELD_OVERLAY)
+		amplitude.track(
+			eventType = event.getEventName(),
+			eventProperties = event.toEventProperties(),
+		)
 	}
 
 	private fun showOverlay(action: String?) {
