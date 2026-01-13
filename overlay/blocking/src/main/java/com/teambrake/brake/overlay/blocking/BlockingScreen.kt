@@ -20,7 +20,8 @@ fun BlockingOverlay(
 	onExitManageApp: () -> Unit,
 ) {
 	// 초기화 외에 아직 사용하지 않는 viewModel 이지만 향후 기능 추가를 위해 남겨둠
-	hiltViewModel(
+	@Suppress("UNUSED_VARIABLE")
+	val viewModel = hiltViewModel(
 		creationCallback = { factory: BlockingViewModel.BlockingFactory ->
 			factory.create(groupId, groupName, groupAppCount)
 		},
