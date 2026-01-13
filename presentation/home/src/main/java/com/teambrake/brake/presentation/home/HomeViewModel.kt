@@ -147,7 +147,9 @@ internal class HomeViewModel @Inject constructor(
 	 * 4. view_home 이벤트 전송
 	 */
 	private fun trackHomeView() {
-		trackAmplitudeEvent(AmplitudeEventHelper.createViewHomeEvent())
+		viewModelScope.launch(Dispatchers.IO) {
+			trackAmplitudeEvent(AmplitudeEventHelper.createViewHomeEvent())
+		}
 	}
 
 	/**

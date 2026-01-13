@@ -30,9 +30,7 @@ class BlockingViewModel @AssistedInject constructor(
 	}
 
 	init {
-		viewModelScope.launch(Dispatchers.IO) {
-			trackViewCoolDown(groupId)
-		}
+		trackViewCoolDown(groupId)
 	}
 
 	// ============ Amplitude Event Tracking Functions ============
@@ -48,13 +46,15 @@ class BlockingViewModel @AssistedInject constructor(
 	 * 15. view_cooldown 이벤트 전송
 	 * 쿨다운 화면이 나타날 때 트리거
 	 */
-	fun trackViewCoolDown(groupId: Long) {
-		trackAmplitudeEvent(
-			AmplitudeEventHelper.createViewCooldownEvent(
-				groupId = groupId.toString(),
-				groupName = groupName,
-				groupAppCount = groupAppCount,
-			),
-		)
+	private fun trackViewCoolDown(groupId: Long) {
+		viewModelScope.launch(Dispatchers.IO) {
+			trackAmplitudeEvent(
+				AmplitudeEventHelper.createViewCooldownEvent(
+					groupId = groupId.toString(),
+					groupName = groupName,
+					groupAppCount = groupAppCount,
+				),
+			)
+		}
 	}
 }
