@@ -19,6 +19,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import timber.log.Timber
 import javax.inject.Inject
 
@@ -39,19 +40,24 @@ class NotificationReceiver : BroadcastReceiver() {
 
 	private val serviceJob = SupervisorJob()
 	private val serviceScope = CoroutineScope(Dispatchers.Main + serviceJob)
-	private val backgroundScope = CoroutineScope(Dispatchers.IO)
 
 	override fun onReceive(context: Context, intent: Intent) {
-		serviceScope.launch {
-			val groupId = intent.getLongExtra(AlarmSchedulerImpl.Companion.EXTRA_GROUP_ID, 0)
-			val appGroup = appGroupRepository.getAppGroupById(groupId)
-			val intentAction = intent.action
+		val pendingResult = goAsync()
 
-			if (appGroup != null) {
-				when (AlarmAction.Companion.fromString(intentAction)) {
-					AlarmAction.ACTION_USING -> startBlocking(context, appGroup)
-					AlarmAction.ACTION_BLOCKING -> stopBlocking(context, appGroup)
+		serviceScope.launch {
+			try {
+				val groupId = intent.getLongExtra(AlarmSchedulerImpl.Companion.EXTRA_GROUP_ID, 0)
+				val appGroup = appGroupRepository.getAppGroupById(groupId)
+				val intentAction = intent.action
+
+				if (appGroup != null) {
+					when (AlarmAction.Companion.fromString(intentAction)) {
+						AlarmAction.ACTION_USING -> startBlocking(context, appGroup)
+						AlarmAction.ACTION_BLOCKING -> stopBlocking(context, appGroup)
+					}
 				}
+			} finally {
+				pendingResult.finish()
 			}
 		}
 	}
@@ -85,7 +91,7 @@ class NotificationReceiver : BroadcastReceiver() {
 		Timber.i("ID: ${appGroup.id} 차단이 해제되었습니다")
 		resetAppGroupUsecase(appGroup)
 
-		backgroundScope.launch {
+		withContext(Dispatchers.IO) {
 			val startTime = appGroup.startTime ?: java.time.LocalDateTime.now()
 			val plannedDuration = appGroup.goalMinutes ?: 0
 			val elapsedDurationInSeconds = java.time.Duration.between(
@@ -102,7 +108,7 @@ class NotificationReceiver : BroadcastReceiver() {
 				plannedDuration = plannedDuration,
 				elapsedDuration = elapsedDurationInSeconds / 60,
 				snoozeCount = snoozeCount,
-				isEarlyExit = plannedDuration <= elapsedDurationInSeconds / 60,
+				isEarlyExit = elapsedDurationInSeconds / 60 < plannedDuration,
 				groupId = appGroup.id.toString(),
 				groupName = appGroup.name,
 				groupAppCount = appGroup.apps.size,
