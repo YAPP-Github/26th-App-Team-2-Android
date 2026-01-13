@@ -74,10 +74,7 @@ class BrakeApplication :
 				override fun onActivityCreated(p0: Activity, p1: Bundle?) {}
 				override fun onActivityStarted(activity: Activity) {}
 				override fun onActivityResumed(activity: Activity) {}
-
-				override fun onActivityPaused(activity: Activity) {
-					amplitudeInstance.flush()
-				}
+				override fun onActivityPaused(activity: Activity) {}
 
 				override fun onActivityStopped(activity: Activity) {
 					amplitudeInstance.flush()
