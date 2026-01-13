@@ -55,6 +55,7 @@ include(":data-test")
 
 // Core
 include(
+	":core:amplitude",
 	":core:appscanner",
 	":core:auth",
 	":core:alarm",

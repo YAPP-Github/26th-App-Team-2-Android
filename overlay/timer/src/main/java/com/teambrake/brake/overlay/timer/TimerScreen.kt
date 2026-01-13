@@ -32,7 +32,7 @@ import com.teambrake.brake.overlay.ui.R as UiRes
 internal fun TimerScreen(
 	appName: String,
 	onTimeChange: (Int) -> Unit,
-	onComplete: () -> Unit,
+	onSetTime: () -> Unit,
 ) {
 	var isScrolling by remember { mutableStateOf(false) }
 
@@ -45,7 +45,7 @@ internal fun TimerScreen(
 			) {
 				LargeButton(
 					text = stringResource(id = UiRes.string.btn_complete),
-					onClick = onComplete,
+					onClick = onSetTime,
 					enabled = !isScrolling,
 					modifier = Modifier
 						.padding(horizontal = 16.dp),
@@ -112,7 +112,7 @@ private fun TimerScreenPreview() {
 		TimerScreen(
 			appName = "Sample App",
 			onTimeChange = { /* Do nothing */ },
-			onComplete = { /* Do nothing */ },
+			onSetTime = { /* Do nothing */ },
 		)
 	}
 }

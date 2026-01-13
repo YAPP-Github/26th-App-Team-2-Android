@@ -1,6 +1,7 @@
 package com.teambrake.brake.presentation.main
 
 import android.annotation.SuppressLint
+import android.content.Intent
 import android.content.pm.ActivityInfo
 import android.os.Bundle
 import android.widget.Toast
@@ -26,8 +27,12 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.window.Popup
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
+import com.amplitude.android.Amplitude
+import com.teambrake.brake.core.amplitude.AmplitudeEventHelper
+import com.teambrake.brake.core.amplitude.TriggerSource
 import com.teambrake.brake.core.designsystem.component.DotProgressIndicator
 import com.teambrake.brake.core.designsystem.theme.BrakeTheme
+import com.teambrake.brake.core.model.notification.NotificationIntentConfig
 import com.teambrake.brake.core.navigation.action.MainAction
 import com.teambrake.brake.core.navigation.compositionlocal.LocalMainAction
 import com.teambrake.brake.core.navigation.compositionlocal.LocalNavigatorAction
@@ -40,13 +45,21 @@ import com.teambrake.brake.presentation.main.navigation.rememberMainNavigator
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
+
+	@Inject
+	lateinit var amplitude: Amplitude
+
 	private val viewModel: MainViewModel by viewModels()
 
 	override fun onCreate(savedInstanceState: Bundle?) {
 		super.onCreate(savedInstanceState)
+
+		// 앱 시작 이벤트 트래킹
+		trackAmplitudeOpenAppEvent(intent)
 
 		// 세로 방향으로 고정
 		@SuppressLint("SourceLockedOrientationActivity")
@@ -161,8 +174,36 @@ class MainActivity : ComponentActivity() {
 		}
 	}
 
+	override fun onNewIntent(intent: Intent) {
+		super.onNewIntent(intent)
+		setIntent(intent)
+
+		// 앱이 백그라운드에서의 재진입 (notification 을 통해 진입하는 방식 포함) 이벤트 트래킹
+		trackAmplitudeOpenAppEvent(intent)
+	}
+
 	override fun onDestroy() {
 		viewModel.analyzeFinishApp()
 		super.onDestroy()
+	}
+
+	/**
+	 * open_app 이벤트 트래킹
+	 * TriggerSource에 따라 앱 진입 경로를 추적
+	 */
+	private fun trackAmplitudeOpenAppEvent(intent: Intent) {
+		val isFromNotification =
+			intent.getBooleanExtra(NotificationIntentConfig.EXTRA_OPEN_APP, false)
+		val triggerSource = if (isFromNotification) {
+			TriggerSource.NOTIFICATION
+		} else {
+			TriggerSource.APP_ICON
+		}
+
+		val event = AmplitudeEventHelper.createOpenAppEvent(triggerSource)
+		amplitude.track(
+			eventType = event.getEventName(),
+			eventProperties = event.toEventProperties(),
+		)
 	}
 }

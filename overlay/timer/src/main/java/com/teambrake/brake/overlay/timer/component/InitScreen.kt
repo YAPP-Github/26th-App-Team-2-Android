@@ -11,14 +11,14 @@ import com.teambrake.brake.overlay.ui.R as UiRes
 @Composable
 internal fun InitScreen(
 	appName: String,
-	onConfirm: () -> Unit,
+	onStart: () -> Unit,
 	onExitManageApp: () -> Unit,
 ) {
 	OverlayBase(
 		imageRes = UiRes.drawable.img_init,
 		title = stringResource(UiRes.string.init_title, appName.addJosaEulReul()),
 		buttonText = stringResource(id = UiRes.string.btn_use),
-		onButtonClick = onConfirm,
+		onButtonClick = onStart,
 		textButtonText = stringResource(id = UiRes.string.btn_not_use),
 		onTextButtonClick = onExitManageApp,
 	)
@@ -30,7 +30,7 @@ private fun InitScreenPreview() {
 	BrakeTheme {
 		InitScreen(
 			appName = "인스타그램",
-			onConfirm = {},
+			onStart = {},
 			onExitManageApp = {},
 		)
 	}

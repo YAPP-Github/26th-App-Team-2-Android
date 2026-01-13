@@ -1,9 +1,12 @@
 package com.teambrake.brake
 
+import android.app.Activity
 import android.app.Application
+import android.os.Bundle
 import androidx.hilt.work.HiltWorkerFactory
 import androidx.work.Configuration
 import androidx.work.WorkManager
+import com.amplitude.android.Amplitude
 import com.teambrake.brake.core.auth.google.GoogleAuthManager
 import dagger.hilt.android.HiltAndroidApp
 import timber.log.Timber
@@ -17,6 +20,8 @@ class BrakeApplication :
 	@Inject lateinit var googleAuthManager: GoogleAuthManager
 
 	@Inject lateinit var workerFactory: HiltWorkerFactory
+
+	@Inject lateinit var amplitudeInstance: Amplitude
 
 	/**
 	 * WorkManager 설정을 제공하는 프로퍼티
@@ -42,6 +47,8 @@ class BrakeApplication :
 		WorkManager.initialize(this, workManagerConfiguration)
 
 		initTimber()
+
+		registerAmplitudeLifecycleCallbacks()
 	}
 
 	private fun initTimber() {
@@ -56,5 +63,27 @@ class BrakeApplication :
 				},
 			)
 		}
+	}
+
+	// 앱이 백그라운드로 갈 때 Amplitude 이벤트큐에 쌓인 이벤트를 플러시(전송)하기 위한 콜백 등록
+	// 백그라운드 예시) 앱 서비스 내부에서 권한 Activity 실행 시, 홈 버튼 클릭 등
+	private fun registerAmplitudeLifecycleCallbacks() {
+		registerActivityLifecycleCallbacks(
+			object : ActivityLifecycleCallbacks {
+				override fun onActivitySaveInstanceState(p0: Activity, p1: Bundle) {}
+				override fun onActivityCreated(p0: Activity, p1: Bundle?) {}
+				override fun onActivityStarted(activity: Activity) {}
+				override fun onActivityResumed(activity: Activity) {}
+				override fun onActivityPaused(activity: Activity) {}
+
+				override fun onActivityStopped(activity: Activity) {
+					amplitudeInstance.flush()
+				}
+
+				override fun onActivityDestroyed(activity: Activity) {
+					amplitudeInstance.flush()
+				}
+			},
+		)
 	}
 }

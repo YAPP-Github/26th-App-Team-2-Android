@@ -200,6 +200,7 @@ class AppLaunchDetectionService : AccessibilityService() {
 						context = applicationContext,
 						groupId = targetApp.groupId,
 						groupName = targetApp.groupName,
+						groupAppCount = targetApp.apps.size,
 						appName = appName,
 						appGroupState = blockingState,
 					)
@@ -241,6 +242,7 @@ class AppLaunchDetectionService : AccessibilityService() {
 						context = applicationContext,
 						groupId = appGroup.groupId,
 						groupName = appGroup.groupName,
+						groupAppCount = appGroup.apps.size,
 						appName = appName,
 						appGroupState = appGroupState,
 						snoozesCount = appGroup.snoozesCount,
