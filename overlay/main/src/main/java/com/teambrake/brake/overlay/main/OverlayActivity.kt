@@ -143,6 +143,7 @@ class OverlayActivity : ComponentActivity() {
 							appName = overlayData.appName,
 							groupName = overlayData.groupName,
 							groupId = overlayData.groupId,
+							groupAppCount = overlayData.groupAppCount,
 							onExitManageApp = ::onExitManageApp,
 							onCloseOverlay = ::removeOverlay,
 						)
@@ -153,6 +154,7 @@ class OverlayActivity : ComponentActivity() {
 							groupId = overlayData.groupId,
 							groupName = overlayData.groupName,
 							snoozesCount = overlayData.snoozesCount,
+							groupAppCount = overlayData.groupAppCount,
 							onCloseOverlay = ::removeOverlay,
 							onStartHome = ::onStartHome,
 							onExitManageApp = ::onExitManageApp,
@@ -163,6 +165,8 @@ class OverlayActivity : ComponentActivity() {
 						BlockingOverlay(
 							appName = overlayData.appName,
 							groupName = overlayData.groupName,
+							groupId = overlayData.groupId,
+							groupAppCount = overlayData.groupAppCount,
 							onStartHome = ::onStartHome,
 							onExitManageApp = ::onExitManageApp,
 						)

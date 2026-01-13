@@ -6,7 +6,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.platform.LocalContext
-import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.teambrake.brake.overlay.timer.component.InitScreen
 import com.teambrake.brake.overlay.timer.component.SetCompleteScreen
@@ -16,6 +16,7 @@ fun TimerRoute(
 	appName: String,
 	groupName: String,
 	groupId: Long,
+	groupAppCount: Int,
 	onExitManageApp: () -> Unit,
 	onCloseOverlay: () -> Unit,
 ) {
@@ -23,6 +24,7 @@ fun TimerRoute(
 		appName = appName,
 		groupName = groupName,
 		groupId = groupId,
+		groupAppCount = groupAppCount,
 		onExitManageApp = onExitManageApp,
 		onCloseOverlay = onCloseOverlay,
 	)
@@ -33,22 +35,29 @@ private fun TimerOverlay(
 	appName: String,
 	groupName: String,
 	groupId: Long,
+	groupAppCount: Int,
 	onExitManageApp: () -> Unit,
 	onCloseOverlay: () -> Unit,
-	viewModel: TimerViewModel = hiltViewModel(),
 ) {
+	// hiltViewModel의 내부 factory 인자를 통해 파라미터 전달
+	val viewModel: TimerViewModel = hiltViewModel(
+		creationCallback = { factory: TimerViewModel.TimerFactory ->
+			factory.create(groupId, groupName, groupAppCount)
+		},
+	)
 	val context = LocalContext.current
 	val timerUiState by viewModel.timerUiState.collectAsStateWithLifecycle()
 
 	TimerContent(
 		appName = appName,
+		onStart = viewModel::initTimeSetting,
+		onChangeTime = viewModel::changeTime,
 		onSetTime = viewModel::setTime,
-		onConfirm = viewModel::initTimeSetting,
-		onCloseOverlay = onCloseOverlay,
-		onExitManageApp = onExitManageApp,
-		onTimerConfirm = {
-			viewModel.setBreakTimeAlarm(groupId, groupName)
+		onConfirm = {
+			viewModel.confirmBreakTimeAlarm()
+			onCloseOverlay()
 		},
+		onExitManageApp = onExitManageApp,
 		onBackPressToInit = viewModel::resetToInitialState,
 		timerUiState = timerUiState,
 	)
@@ -63,10 +72,10 @@ private fun TimerOverlay(
 @Composable
 private fun TimerContent(
 	appName: String,
-	onSetTime: (Int) -> Unit,
-	onTimerConfirm: () -> Unit,
+	onStart: () -> Unit,
+	onChangeTime: (Int) -> Unit,
+	onSetTime: () -> Unit,
 	onConfirm: () -> Unit,
-	onCloseOverlay: () -> Unit,
 	onExitManageApp: () -> Unit,
 	onBackPressToInit: () -> Unit,
 	timerUiState: TimerUiState,
@@ -75,7 +84,7 @@ private fun TimerContent(
 		TimerUiState.Init -> {
 			InitScreen(
 				appName = appName,
-				onConfirm = onConfirm,
+				onStart = onStart,
 				onExitManageApp = onExitManageApp,
 			)
 		}
@@ -87,20 +96,20 @@ private fun TimerContent(
 
 			TimerScreen(
 				appName = appName,
-				onTimeChange = onSetTime,
-				onComplete = onTimerConfirm,
+				onTimeChange = onChangeTime,
+				onSetTime = onSetTime,
 			)
 		}
 
 		is TimerUiState.SetComplete -> {
 			BackHandler {
-				onCloseOverlay()
+				onConfirm()
 			}
 
 			SetCompleteScreen(
 				durationMinutes = timerUiState.durationMinutes,
 				endTime = timerUiState.endTime,
-				onCloseOverlay = onCloseOverlay,
+				onCloseOverlay = onConfirm,
 			)
 		}
 	}
