@@ -17,7 +17,6 @@ import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import timber.log.Timber
 import java.time.LocalDateTime
 
 @HiltViewModel(assistedFactory = TimerViewModel.TimerFactory::class)
@@ -39,15 +38,26 @@ internal class TimerViewModel @AssistedInject constructor(
 		): TimerViewModel
 	}
 
-	init {
-		Timber.d("TimerViewModel created with groupId: $groupId, groupName: $groupName, groupAppCount: $groupAppCount")
-	}
-
 	private val _timerUiState = MutableStateFlow<TimerUiState>(TimerUiState.Init)
 	val timerUiState: StateFlow<TimerUiState> get() = _timerUiState
 
 	private val _toastEffect: MutableSharedFlow<String> = MutableSharedFlow()
 	val toastEffect: SharedFlow<String> get() = _toastEffect
+
+	init {
+		trackAmplitudeBlockingStartEvent()
+	}
+
+	private fun trackAmplitudeBlockingStartEvent() {
+		viewModelScope.launch(Dispatchers.IO) {
+			val event = AmplitudeEventHelper.createViewBlockingStartEvent(
+				groupId = groupId.toString(),
+				groupName = groupName,
+				groupAppCount = groupAppCount,
+			)
+			amplitude.track(event.getEventName(), event.toEventProperties())
+		}
+	}
 
 	fun resetToInitialState() {
 		_timerUiState.update {
