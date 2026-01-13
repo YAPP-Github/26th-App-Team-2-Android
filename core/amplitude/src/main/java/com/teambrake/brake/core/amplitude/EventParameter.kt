@@ -4,6 +4,7 @@ enum class EventParameter(val parameterName: String) {
 	TRIGGER_SOURCE("trigger_source"),
 	STEP_NAME("step_name"),
 	STEP_DETAIL("step_detail"),
+	STEP_INDEX("step_index"),
 	PLANNED_DURATION("planned_duration"),
 	ELAPSED_DURATION("elapsed_duration"),
 	GROUP_ID("group_id"),

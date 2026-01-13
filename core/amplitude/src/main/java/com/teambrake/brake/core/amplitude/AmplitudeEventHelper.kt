@@ -34,6 +34,24 @@ object AmplitudeEventHelper {
 		parameters = mapOf(
 			EventParameter.STEP_NAME to stepName.value,
 			EventParameter.STEP_DETAIL to stepDetail.value,
+			EventParameter.STEP_INDEX to when (stepName) {
+				StepName.LOGIN -> 1
+				StepName.NICKNAME -> 2
+				StepName.TUTORIAL -> when (stepDetail) {
+					StepDetail.STEP1 -> 3
+					StepDetail.STEP2 -> 4
+					else -> 5
+				}
+
+				StepName.PERMISSION -> when (stepDetail) {
+					StepDetail.OVERLAY -> 6
+					StepDetail.USAGE -> 7
+					StepDetail.NOTIFICATION -> 8
+					else -> 9
+				}
+
+				StepName.WELCOME -> 10
+			},
 		),
 	)
 
@@ -143,6 +161,7 @@ object AmplitudeEventHelper {
 
 	/**
 	 * 9. view_blocking_start 이벤트 생성
+	 * 타이머 설정 차단 화면의 첫번째 화면 진입 시
 	 * @param groupId 그룹 ID
 	 * @param groupName 그룹 이름
 	 * @param groupAppCount 그룹 앱 개수
@@ -163,6 +182,7 @@ object AmplitudeEventHelper {
 
 	/**
 	 * 10. view_blocking_start_set_time 이벤트 생성
+	 * 타이머 설정 차단의 두번째 화면 진입 시
 	 * @param groupId 그룹 ID
 	 * @param groupName 그룹 이름
 	 * @param groupAppCount 그룹 앱 개수
@@ -183,6 +203,7 @@ object AmplitudeEventHelper {
 
 	/**
 	 * 11. view_blocking_start_confirm 이벤트 생성
+	 * 타이머 설정 차단의 세번째 화면 진입 시
 	 * @param groupId 그룹 ID
 	 * @param groupName 그룹 이름
 	 * @param groupAppCount 그룹 앱 개수
@@ -205,20 +226,21 @@ object AmplitudeEventHelper {
 	)
 
 	/**
-	 * 12. click_session_start 이벤트 생성
+	 * 12. click_brake_session_start 이벤트 생성
+	 * 타이머 설정 차단에서
 	 * @param groupId 그룹 ID
 	 * @param groupName 그룹 이름
 	 * @param groupAppCount 그룹 앱 개수
 	 * @param plannedDuration 계획된 시간 (분)
 	 * @return 이벤트 이름과 파라미터 맵
 	 */
-	fun createClickSessionStartEvent(
+	fun createClickBrakeSessionStartEvent(
 		groupId: String,
 		groupName: String,
 		groupAppCount: Int,
 		plannedDuration: Int,
 	): AmplitudeEvent = AmplitudeEvent(
-		eventName = EventName.CLICK_SESSION_START,
+		eventName = EventName.CLICK_BRAKE_SESSION_START,
 		parameters = mapOf(
 			EventParameter.GROUP_ID to groupId,
 			EventParameter.GROUP_NAME to groupName,
@@ -265,7 +287,7 @@ object AmplitudeEventHelper {
 	)
 
 	/**
-	 * 15. end_session 이벤트 생성
+	 * 15. end_brake_session 이벤트 생성
 	 * @param plannedDuration 계획된 시간 (분)
 	 * @param elapsedDuration 경과된 시간 (분)
 	 * @param snoozeCount 스누즈 횟수 (0, 1, 2)
@@ -275,7 +297,7 @@ object AmplitudeEventHelper {
 	 * @param groupAppCount 그룹 앱 개수
 	 * @return 이벤트 이름과 파라미터 맵
 	 */
-	fun createEndSessionEvent(
+	fun createEndBrakeSessionEvent(
 		plannedDuration: Int,
 		elapsedDuration: Int,
 		snoozeCount: Int,
@@ -284,7 +306,7 @@ object AmplitudeEventHelper {
 		groupName: String,
 		groupAppCount: Int,
 	): AmplitudeEvent = AmplitudeEvent(
-		eventName = EventName.END_SESSION,
+		eventName = EventName.END_BRAKE_SESSION,
 		parameters = mapOf(
 			EventParameter.PLANNED_DURATION to plannedDuration,
 			EventParameter.ELAPSED_DURATION to elapsedDuration,
@@ -317,44 +339,41 @@ object AmplitudeEventHelper {
 	)
 
 	/**
-	 * 17. total_group_count 이벤트 생성 (User Property)
+	 * 17. total_group_count User Property 생성
 	 * @param count 총 그룹 개수
-	 * @return 이벤트 이름과 파라미터 맵
+	 * @return User Property 맵
 	 */
-	fun createTotalGroupCountEvent(
+	fun setTotalGroupCount(
 		count: Int,
-	): AmplitudeEvent = AmplitudeEvent(
-		eventName = EventName.TOTAL_GROUP_COUNT,
-		parameters = mapOf(
-			"count" to count,
+	): AmplitudeUserProperty = AmplitudeUserProperty(
+		properties = mapOf(
+			"total_group_count" to count,
 		),
 	)
 
 	/**
-	 * 18. is_onboarding_completed 이벤트 생성 (User Property)
+	 * 18. is_onboarding_completed User Property 생성
 	 * @param isCompleted 온보딩 완료 여부
-	 * @return 이벤트 이름과 파라미터 맵
+	 * @return User Property 맵
 	 */
-	fun createIsOnboardingCompletedEvent(
+	fun setIsOnboardingCompleted(
 		isCompleted: Boolean,
-	): AmplitudeEvent = AmplitudeEvent(
-		eventName = EventName.IS_ONBOARDING_COMPLETED,
-		parameters = mapOf(
-			"is_completed" to isCompleted,
+	): AmplitudeUserProperty = AmplitudeUserProperty(
+		properties = mapOf(
+			"is_onboarding_completed" to isCompleted,
 		),
 	)
 
 	/**
-	 * 19. last_session_date 이벤트 생성 (User Property)
+	 * 19. last_brake_session_date User Property 생성
 	 * @param date 마지막 세션 날짜 (YYYY-MM-DD)
-	 * @return 이벤트 이름과 파라미터 맵
+	 * @return User Property 맵
 	 */
-	fun createLastSessionDateEvent(
+	fun setLastBrakeSessionDate(
 		date: String,
-	): AmplitudeEvent = AmplitudeEvent(
-		eventName = EventName.LAST_SESSION_DATE,
-		parameters = mapOf(
-			"date" to date,
+	): AmplitudeUserProperty = AmplitudeUserProperty(
+		properties = mapOf(
+			"last_brake_session_date" to date,
 		),
 	)
 }
@@ -380,4 +399,17 @@ data class AmplitudeEvent(
 	 * 이벤트 이름을 문자열로 반환
 	 */
 	fun getEventName(): String = eventName.eventName
+}
+
+/**
+ * Amplitude User Property 데이터 클래스
+ * identify() 호출에 사용
+ */
+data class AmplitudeUserProperty(
+	val properties: Map<String, Any>,
+) {
+	/**
+	 * Amplitude SDK의 identify()에 전달할 수 있는 형태로 변환
+	 */
+	fun toUserProperties(): Map<String, Any> = properties
 }
