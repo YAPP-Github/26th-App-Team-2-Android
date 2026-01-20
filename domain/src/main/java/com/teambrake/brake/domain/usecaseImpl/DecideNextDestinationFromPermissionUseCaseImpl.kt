@@ -3,15 +3,15 @@ package com.teambrake.brake.domain.usecaseImpl
 import com.teambrake.brake.core.model.user.Destination
 import com.teambrake.brake.domain.model.result.BrakeResult
 import com.teambrake.brake.domain.model.result.error.DecideNextDestinationFromPermissionUseCaseError
-import com.teambrake.brake.domain.repository.SessionRepository
+import com.teambrake.brake.domain.repository.AuthRepository
 import com.teambrake.brake.domain.usecase.DecideNextDestinationFromPermissionUseCase
 import javax.inject.Inject
 
 class DecideNextDestinationFromPermissionUseCaseImpl @Inject constructor(
-	private val sessionRepository: SessionRepository,
+	private val authRepository: AuthRepository,
 ) : DecideNextDestinationFromPermissionUseCase {
 	override suspend fun invoke(): BrakeResult<Destination, DecideNextDestinationFromPermissionUseCaseError> =
-		when (val result = sessionRepository.getOnboardingFlag()) {
+		when (val result = authRepository.getOnboardingFlag()) {
 			is BrakeResult.Success -> {
 				val isOnboardingCompleted = result.data
 				val destination = if (isOnboardingCompleted) {

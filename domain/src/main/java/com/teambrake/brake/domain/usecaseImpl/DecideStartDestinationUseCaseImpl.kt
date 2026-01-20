@@ -13,13 +13,13 @@ import com.teambrake.brake.domain.model.result.success.PreAuthSuccess
 import com.teambrake.brake.domain.repository.AppGroupRepository
 import com.teambrake.brake.domain.repository.AppRepository
 import com.teambrake.brake.domain.repository.NicknameRepository
-import com.teambrake.brake.domain.repository.SessionRepository
+import com.teambrake.brake.domain.repository.AuthRepository
 import com.teambrake.brake.domain.usecase.DecideStartDestinationUseCase
 import javax.inject.Inject
 import javax.inject.Named
 
 class DecideStartDestinationUseCaseImpl @Inject constructor(
-	private val sessionRepository: SessionRepository,
+	private val authRepository: AuthRepository,
 	@Named("NicknameRepo") private val nicknameRepository: NicknameRepository,
 	private val appGroupRepository: AppGroupRepository,
 	private val appRepository: AppRepository,
@@ -76,7 +76,7 @@ class DecideStartDestinationUseCaseImpl @Inject constructor(
 	}
 
 	private suspend fun getDestinationByOnboardingStatus(): Destination =
-		when (val result = sessionRepository.getOnboardingFlag()) {
+		when (val result = authRepository.getOnboardingFlag()) {
 			is BrakeResult.Success -> {
 				val isOnboardingCompleted = result.data
 				if (isOnboardingCompleted) {

@@ -5,7 +5,8 @@ import com.teambrake.brake.domain.model.result.BrakeResult
 import com.teambrake.brake.domain.model.result.error.LogoutUseCaseError
 import com.teambrake.brake.domain.repository.AppGroupRepository
 import com.teambrake.brake.domain.repository.AppRepository
-import com.teambrake.brake.domain.repository.SessionRepository
+import com.teambrake.brake.domain.repository.AuthRepository
+import com.teambrake.brake.domain.repository.NicknameRepository
 import com.teambrake.brake.domain.repository.TokenRepository
 import com.teambrake.brake.domain.usecase.LogoutUseCase
 import javax.inject.Inject
@@ -13,14 +14,16 @@ import javax.inject.Named
 
 class LogoutUseCaseImpl @Inject constructor(
 	@Named("TokenRepo") private val tokenRepository: TokenRepository,
-	private val sessionRepository: SessionRepository,
+	private val nicknameRepository: NicknameRepository,
+	private val authRepository: AuthRepository,
 	private val appGroupRepository: AppGroupRepository,
 	private val appRepository: AppRepository,
 ) : LogoutUseCase {
 	override suspend fun invoke(): BrakeResult<Destination, LogoutUseCaseError> {
 		tokenRepository.logoutRemoteAccount()
-		return when (val localResult = sessionRepository.clearEntireDataStore()) {
+		return when (val localResult = authRepository.clearAuthDataStore()) {
 			is BrakeResult.Success -> {
+				nicknameRepository.clearLocalName { }
 				appGroupRepository.clearAppGroup()
 				appRepository.clearApps()
 				BrakeResult.Success(Destination.Login)

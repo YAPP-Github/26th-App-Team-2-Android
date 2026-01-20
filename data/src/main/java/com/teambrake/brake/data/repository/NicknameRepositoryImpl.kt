@@ -2,8 +2,8 @@ package com.teambrake.brake.data.repository
 
 import com.teambrake.brake.core.model.user.UserName
 import com.teambrake.brake.core.model.user.UserStatus
+import com.teambrake.brake.data.local.source.NameLocalDataSource
 import com.teambrake.brake.data.local.source.TokenLocalDataSource
-import com.teambrake.brake.data.local.source.UserLocalDataSource
 import com.teambrake.brake.data.remote.source.NameRemoteDataSource
 import com.teambrake.brake.data.repository.mapper.toData
 import com.teambrake.brake.domain.model.result.BrakeResult
@@ -15,15 +15,16 @@ import com.teambrake.brake.domain.model.result.success.OfflineAuthorizedSuccess
 import com.teambrake.brake.domain.model.result.success.OnlineAuthorizedSuccess
 import com.teambrake.brake.domain.repository.NicknameRepository
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.firstOrNull
+import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.flow.onEach
 import javax.inject.Inject
 
 internal class NicknameRepositoryImpl @Inject constructor(
 	private val tokenLocalDataSource: TokenLocalDataSource,
 	private val nameRemoteDataSource: NameRemoteDataSource,
-	private val userLocalDataSource: UserLocalDataSource,
+	private val nameLocalDataSource: NameLocalDataSource,
 ) : NicknameRepository {
 
 	override suspend fun getRemoteUserName(): BrakeResult<AuthStatusSuccess<UserName>, ApiCallError> {
@@ -48,17 +49,22 @@ internal class NicknameRepositoryImpl @Inject constructor(
 		}
 	}
 
-	override fun getLocalUserName(onError: suspend (Throwable) -> Unit): Flow<String> =
-		userLocalDataSource.getNickname(onError = onError)
+	override fun getLocalUserName(onError: suspend (Throwable) -> Unit): Flow<String> = flow {
+		nameLocalDataSource.getNickname().catch {
+			onError(Throwable("failed to get local nickname"))
+		}.collect {
+			emit(it)
+		}
+	}
 
 	override suspend fun saveLocalUserName(
 		nickname: String,
 		onError: suspend (Throwable) -> Unit,
 	) {
-		userLocalDataSource.updateNickname(
-			nickname = nickname,
-			onError = onError,
-		)
+		val result = nameLocalDataSource.updateNickname(nickname = nickname)
+		if (!result) {
+			onError(Throwable("failed to save nickname locally"))
+		}
 	}
 
 	override suspend fun updateUserName(
@@ -80,12 +86,16 @@ internal class NicknameRepositoryImpl @Inject constructor(
 			val userName = nameRemoteDataSource.updateUserName(
 				nickname = nickname,
 				onError = onError,
-			).onEach {
-				// 새로운 닉네임을 로컬에 저장
-				userLocalDataSource.updateNickname(nickname, onError = onError)
-			}.map {
+			).map {
 				it.toData()
 			}.firstOrNull()
+
+			userName?.let {
+				val localSaveResult = nameLocalDataSource.updateNickname(nickname)
+				if (!localSaveResult) {
+					onError(Throwable("failed to save nickname locally"))
+				}
+			}
 
 			if (userName != null) {
 				BrakeResult.Success(OnlineAuthorizedSuccess(userName))
@@ -98,7 +108,10 @@ internal class NicknameRepositoryImpl @Inject constructor(
 	}
 
 	override suspend fun clearLocalName(onError: suspend (Throwable) -> Unit) {
-		userLocalDataSource.clearNickname(onError = onError)
+		val result = nameLocalDataSource.clearNickname()
+		if (!result) {
+			onError(Throwable("failed to clear local nickname"))
+		}
 	}
 
 	private suspend fun checkOfflineMode(): Boolean = tokenLocalDataSource.getUserStatus(
