@@ -6,11 +6,13 @@ import com.teambrake.brake.domain.model.result.error.DeleteAccountUseCaseError
 import com.teambrake.brake.domain.repository.AppGroupRepository
 import com.teambrake.brake.domain.repository.AppRepository
 import com.teambrake.brake.domain.repository.SessionRepository
+import com.teambrake.brake.domain.repository.NicknameRepository
 import com.teambrake.brake.domain.usecase.DeleteAccountUseCase
 import javax.inject.Inject
 
 class DeleteAccountUseCaseImpl @Inject constructor(
 	private val sessionRepository: SessionRepository,
+	private val nicknameRepository: NicknameRepository,
 	private val appGroupRepository: AppGroupRepository,
 	private val appRepository: AppRepository,
 ) : DeleteAccountUseCase {
@@ -18,9 +20,10 @@ class DeleteAccountUseCaseImpl @Inject constructor(
 		when (val modeResult = sessionRepository.clearRemoteAccount()) {
 			// 1-1. Remote 계정 삭제 성공 시 로컬 데이터 스토어 전체 삭제
 			is BrakeResult.Success -> {
-				when (val localResult = sessionRepository.clearEntireDataStore()) {
+				when (val localResult = sessionRepository.clearAuthDataStore()) {
 					// 2-1. Local 데이터 스토어 전체 삭제 성공 시 로그인 화면으로 이동
 					is BrakeResult.Success -> {
+						nicknameRepository.clearLocalName {}
 						appGroupRepository.clearAppGroup()
 						appRepository.clearApps()
 						BrakeResult.Success(Destination.Login)

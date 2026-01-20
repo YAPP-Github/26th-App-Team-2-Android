@@ -9,6 +9,7 @@ import com.teambrake.brake.domain.model.result.error.UndefinedExceptionError
 import com.teambrake.brake.domain.model.result.success.AuthStatusSuccess
 import com.teambrake.brake.domain.model.result.success.OfflineAuthorizedSuccess
 import com.teambrake.brake.domain.model.result.success.OnlineAuthorizedSuccess
+import com.teambrake.brake.domain.model.result.success.PreAuthSuccess
 import com.teambrake.brake.domain.repository.AppGroupRepository
 import com.teambrake.brake.domain.repository.AppRepository
 import com.teambrake.brake.domain.repository.NicknameRepository
@@ -53,6 +54,11 @@ class DecideStartDestinationUseCaseImpl @Inject constructor(
 										return BrakeResult.Success(OnlineAuthorizedSuccess(Destination.Login))
 									}
 								}
+							}
+
+							is PreAuthSuccess -> {
+								// 1-3. 사전 인증 상태인 경우 로그인 화면으로 이동
+								return BrakeResult.Success(PreAuthSuccess(Destination.Login))
 							}
 						}
 					}

@@ -5,6 +5,7 @@ import com.teambrake.brake.domain.model.result.BrakeResult
 import com.teambrake.brake.domain.model.result.error.UndefinedExceptionError
 import com.teambrake.brake.domain.model.result.success.OfflineAuthorizedSuccess
 import com.teambrake.brake.domain.model.result.success.OnlineAuthorizedSuccess
+import com.teambrake.brake.domain.model.result.success.PreAuthSuccess
 import com.teambrake.brake.domain.repository.TokenRepository
 import com.teambrake.brake.domain.repository.NicknameRepository
 import com.teambrake.brake.domain.usecase.UpdateNicknameUseCase
@@ -32,6 +33,7 @@ class UpdateNicknameUseCaseImpl @Inject constructor(
 				val state = when (success) {
 					is OnlineAuthorizedSuccess -> success.data.state
 					is OfflineAuthorizedSuccess -> success.data.state
+					is PreAuthSuccess -> success.data.state
 				}
 				when (state) {
 					// 닉네임 업데이트 성공 시, 오프라인 모드 사용 시
