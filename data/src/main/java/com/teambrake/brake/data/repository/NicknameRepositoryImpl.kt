@@ -10,9 +10,9 @@ import com.teambrake.brake.domain.model.result.BrakeResult
 import com.teambrake.brake.domain.model.result.error.ApiCallError
 import com.teambrake.brake.domain.model.result.error.RemoteServerNotReachedError
 import com.teambrake.brake.domain.model.result.error.UndefinedExceptionError
-import com.teambrake.brake.domain.model.result.success.ModeSuccess
-import com.teambrake.brake.domain.model.result.success.OfflineModeSuccess
-import com.teambrake.brake.domain.model.result.success.OnlineModeSuccess
+import com.teambrake.brake.domain.model.result.success.AuthStatusSuccess
+import com.teambrake.brake.domain.model.result.success.OfflineAuthorizedSuccess
+import com.teambrake.brake.domain.model.result.success.OnlineAuthorizedSuccess
 import com.teambrake.brake.domain.repository.NicknameRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.firstOrNull
@@ -26,10 +26,10 @@ internal class NicknameRepositoryImpl @Inject constructor(
 	private val userLocalDataSource: UserLocalDataSource,
 ) : NicknameRepository {
 
-	override suspend fun getRemoteUserName(): BrakeResult<ModeSuccess<UserName>, ApiCallError> {
+	override suspend fun getRemoteUserName(): BrakeResult<AuthStatusSuccess<UserName>, ApiCallError> {
 		return try {
 			if (checkOfflineMode()) {
-				return BrakeResult.Success(OfflineModeSuccess(UserName("", UserStatus.OFFLINE)))
+				return BrakeResult.Success(OfflineAuthorizedSuccess(UserName("", UserStatus.OFFLINE)))
 			}
 
 			val userName = nameRemoteDataSource.getUserName { e ->
@@ -39,7 +39,7 @@ internal class NicknameRepositoryImpl @Inject constructor(
 			}.firstOrNull()
 
 			if (userName != null) {
-				BrakeResult.Success(OnlineModeSuccess(userName))
+				BrakeResult.Success(OnlineAuthorizedSuccess(userName))
 			} else {
 				BrakeResult.Error(RemoteServerNotReachedError)
 			}
@@ -64,11 +64,11 @@ internal class NicknameRepositoryImpl @Inject constructor(
 	override suspend fun updateUserName(
 		nickname: String,
 		onError: suspend (Throwable) -> Unit,
-	): BrakeResult<ModeSuccess<UserName>, ApiCallError> {
+	): BrakeResult<AuthStatusSuccess<UserName>, ApiCallError> {
 		return try {
 			if (checkOfflineMode()) {
 				return BrakeResult.Success(
-					OfflineModeSuccess(
+					OfflineAuthorizedSuccess(
 						UserName(
 							nickname = nickname,
 							state = UserStatus.OFFLINE,
@@ -88,7 +88,7 @@ internal class NicknameRepositoryImpl @Inject constructor(
 			}.firstOrNull()
 
 			if (userName != null) {
-				BrakeResult.Success(OnlineModeSuccess(userName))
+				BrakeResult.Success(OnlineAuthorizedSuccess(userName))
 			} else {
 				BrakeResult.Error(RemoteServerNotReachedError)
 			}

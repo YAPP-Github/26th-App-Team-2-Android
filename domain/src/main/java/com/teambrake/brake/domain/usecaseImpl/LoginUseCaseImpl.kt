@@ -2,8 +2,8 @@ package com.teambrake.brake.domain.usecaseImpl
 
 import com.teambrake.brake.core.model.user.UserStatus
 import com.teambrake.brake.domain.model.result.BrakeResult
-import com.teambrake.brake.domain.model.result.success.OfflineModeSuccess
-import com.teambrake.brake.domain.model.result.success.OnlineModeSuccess
+import com.teambrake.brake.domain.model.result.success.OfflineAuthorizedSuccess
+import com.teambrake.brake.domain.model.result.success.OnlineAuthorizedSuccess
 import com.teambrake.brake.domain.repository.NicknameRepository
 import com.teambrake.brake.domain.repository.SessionRepository
 import com.teambrake.brake.domain.repository.TokenRepository
@@ -42,8 +42,8 @@ class LoginUseCaseImpl @Inject constructor(
 					is BrakeResult.Success -> {
 						val success = result.data
 						val nickname = when (success) {
-							is OnlineModeSuccess -> success.data.nickname
-							is OfflineModeSuccess -> success.data.nickname
+							is OnlineAuthorizedSuccess -> success.data.nickname
+							is OfflineAuthorizedSuccess -> success.data.nickname
 						}
 						nicknameRepository.saveLocalUserName(
 							nickname = nickname,

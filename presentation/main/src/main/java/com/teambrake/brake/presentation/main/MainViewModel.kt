@@ -16,8 +16,8 @@ import com.teambrake.brake.domain.model.result.error.HttpUnsuccessfulCodeError
 import com.teambrake.brake.domain.model.result.error.LocalApiCallError
 import com.teambrake.brake.domain.model.result.error.RemoteServerNotReachedError
 import com.teambrake.brake.domain.model.result.error.UndefinedExceptionError
-import com.teambrake.brake.domain.model.result.success.OfflineModeSuccess
-import com.teambrake.brake.domain.model.result.success.OnlineModeSuccess
+import com.teambrake.brake.domain.model.result.success.OfflineAuthorizedSuccess
+import com.teambrake.brake.domain.model.result.success.OnlineAuthorizedSuccess
 import com.teambrake.brake.domain.usecase.DecideStartDestinationUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -51,8 +51,8 @@ class MainViewModel @Inject constructor(
 			val route = when (result) {
 				is BrakeResult.Success -> {
 					val data = when (val success = result.data) {
-						is OnlineModeSuccess -> success.data
-						is OfflineModeSuccess -> success.data
+						is OnlineAuthorizedSuccess -> success.data
+						is OfflineAuthorizedSuccess -> success.data
 					}
 					onDecideDestinationSuccess(data, context)
 

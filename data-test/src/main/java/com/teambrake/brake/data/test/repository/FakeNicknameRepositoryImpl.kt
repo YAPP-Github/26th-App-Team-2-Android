@@ -3,7 +3,7 @@ package com.teambrake.brake.data.test.repository
 import com.teambrake.brake.core.model.user.UserName
 import com.teambrake.brake.domain.model.result.BrakeResult
 import com.teambrake.brake.domain.model.result.error.ApiCallError
-import com.teambrake.brake.domain.model.result.success.ModeSuccess
+import com.teambrake.brake.domain.model.result.success.AuthStatusSuccess
 import com.teambrake.brake.domain.repository.NicknameRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
@@ -11,7 +11,7 @@ import javax.inject.Inject
 
 internal class FakeNicknameRepositoryImpl @Inject constructor() : NicknameRepository {
 
-	override suspend fun getRemoteUserName(): BrakeResult<ModeSuccess<UserName>, ApiCallError> {
+	override suspend fun getRemoteUserName(): BrakeResult<AuthStatusSuccess<UserName>, ApiCallError> {
 		TODO("Not yet implemented")
 	}
 
@@ -29,7 +29,7 @@ internal class FakeNicknameRepositoryImpl @Inject constructor() : NicknameReposi
 	override suspend fun updateUserName(
 		nickname: String,
 		onError: suspend (Throwable) -> Unit,
-	): BrakeResult<ModeSuccess<UserName>, ApiCallError> {
+	): BrakeResult<AuthStatusSuccess<UserName>, ApiCallError> {
 		TODO("Not yet implemented")
 	}
 

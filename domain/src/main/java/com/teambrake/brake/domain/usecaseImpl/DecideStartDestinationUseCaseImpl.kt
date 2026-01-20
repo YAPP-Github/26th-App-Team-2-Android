@@ -6,9 +6,9 @@ import com.teambrake.brake.domain.model.result.BrakeResult
 import com.teambrake.brake.domain.model.result.error.DecideStartDestinationUseCaseError
 import com.teambrake.brake.domain.model.result.error.LocalApiCallError
 import com.teambrake.brake.domain.model.result.error.UndefinedExceptionError
-import com.teambrake.brake.domain.model.result.success.ModeSuccess
-import com.teambrake.brake.domain.model.result.success.OfflineModeSuccess
-import com.teambrake.brake.domain.model.result.success.OnlineModeSuccess
+import com.teambrake.brake.domain.model.result.success.AuthStatusSuccess
+import com.teambrake.brake.domain.model.result.success.OfflineAuthorizedSuccess
+import com.teambrake.brake.domain.model.result.success.OnlineAuthorizedSuccess
 import com.teambrake.brake.domain.repository.AppGroupRepository
 import com.teambrake.brake.domain.repository.AppRepository
 import com.teambrake.brake.domain.repository.NicknameRepository
@@ -24,7 +24,7 @@ class DecideStartDestinationUseCaseImpl @Inject constructor(
 	private val appRepository: AppRepository,
 ) : DecideStartDestinationUseCase {
 
-	override suspend fun invoke(): BrakeResult<ModeSuccess<Destination>, DecideStartDestinationUseCaseError> {
+	override suspend fun invoke(): BrakeResult<AuthStatusSuccess<Destination>, DecideStartDestinationUseCaseError> {
 		try {
 			// 1. 원격 사용자 정보 가져오기
 			nicknameRepository.getRemoteUserName().let { result ->
@@ -32,25 +32,25 @@ class DecideStartDestinationUseCaseImpl @Inject constructor(
 					is BrakeResult.Success -> result.data.let { success ->
 						when (success) {
 							// 1-1. 오프라인 모드인 경우 로그인 화면으로 이동
-							is OfflineModeSuccess -> {
+							is OfflineAuthorizedSuccess -> {
 								val destination = getDestinationByOnboardingStatus()
-								return BrakeResult.Success(OfflineModeSuccess(destination))
+								return BrakeResult.Success(OfflineAuthorizedSuccess(destination))
 							}
 							// 1-2. 온라인 모드인 경우
-							is OnlineModeSuccess -> {
+							is OnlineAuthorizedSuccess -> {
 								// 2. 사용자 상태에 따른 분기 처리
 								when (success.data.state) {
 									// 2-1. 활성 상태인 경우
 									UserStatus.ACTIVE -> {
 										// 3. 온보딩 상태 확인
 										val destination = getDestinationByOnboardingStatus()
-										return BrakeResult.Success(OnlineModeSuccess(destination))
+										return BrakeResult.Success(OnlineAuthorizedSuccess(destination))
 									}
 									// 2-2. 비회원 상태인 경우
 									else -> {
 										// 비활성 상태인 경우 모든 데이터 삭제 후 로그인 화면으로 이동
 										clearAllData()
-										return BrakeResult.Success(OnlineModeSuccess(Destination.Login))
+										return BrakeResult.Success(OnlineAuthorizedSuccess(Destination.Login))
 									}
 								}
 							}
