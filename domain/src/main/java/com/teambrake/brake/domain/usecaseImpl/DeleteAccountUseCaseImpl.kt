@@ -3,43 +3,79 @@ package com.teambrake.brake.domain.usecaseImpl
 import com.teambrake.brake.core.model.user.Destination
 import com.teambrake.brake.domain.model.result.BrakeResult
 import com.teambrake.brake.domain.model.result.error.DeleteAccountUseCaseError
+import com.teambrake.brake.domain.model.result.error.LocalApiCallError
 import com.teambrake.brake.domain.repository.AppGroupRepository
 import com.teambrake.brake.domain.repository.AppRepository
 import com.teambrake.brake.domain.repository.AuthRepository
 import com.teambrake.brake.domain.repository.NicknameRepository
 import com.teambrake.brake.domain.usecase.DeleteAccountUseCase
 import javax.inject.Inject
+import javax.inject.Named
 
 class DeleteAccountUseCaseImpl @Inject constructor(
 	private val authRepository: AuthRepository,
-	private val nicknameRepository: NicknameRepository,
+	@Named("NicknameRepo") private val nicknameRepository: NicknameRepository,
 	private val appGroupRepository: AppGroupRepository,
 	private val appRepository: AppRepository,
 ) : DeleteAccountUseCase {
-	override suspend fun invoke(): BrakeResult<Destination, DeleteAccountUseCaseError> =
-		when (val modeResult = authRepository.clearRemoteAccount()) {
-			// 1-1. Remote 계정 삭제 성공 시 로컬 데이터 스토어 전체 삭제
-			is BrakeResult.Success -> {
-				when (val localResult = authRepository.clearAuthDataStore()) {
-					// 2-1. Local 데이터 스토어 전체 삭제 성공 시 로그인 화면으로 이동
-					is BrakeResult.Success -> {
-						nicknameRepository.clearLocalName {}
-						appGroupRepository.clearAppGroup()
-						appRepository.clearApps()
-						BrakeResult.Success(Destination.Login)
-					}
-
-					// 2-2. Local 데이터 스토어 전체 삭제 실패 시 아무 동작도 하지 않음
-					// (이론상 발생하지 않아야 함)
-					is BrakeResult.Error -> {
-						BrakeResult.Error(localResult.error)
-					}
-				}
+	override suspend fun invoke(): BrakeResult<Destination, DeleteAccountUseCaseError> {
+		// 1. Remote 계정 삭제
+		val remoteResult = authRepository.clearRemoteAccount()
+		when {
+			remoteResult.isSuccess -> {
+				// 성공적으로 원격 계정 삭제됨
 			}
-
-			// 1-2. Remote 계정 삭제 실패 시 아무 동작도 하지 않음
-			is BrakeResult.Error -> {
-				BrakeResult.Error(modeResult.error)
+			remoteResult.isFailure -> {
+				val exception = remoteResult.exceptionOrNull()
+				return BrakeResult.Error(LocalApiCallError(exception ?: Exception("원격 계정 삭제 실패")))
 			}
 		}
+
+		// 2. Local 데이터 스토어 전체 삭제
+		val authResult = authRepository.clearAuthDataStore()
+		when {
+			authResult.isSuccess -> {
+				// 성공적으로 인증 데이터 삭제됨
+			}
+			authResult.isFailure -> {
+				val exception = authResult.exceptionOrNull()
+				return BrakeResult.Error(LocalApiCallError(exception ?: Exception("인증 데이터 삭제 실패")))
+			}
+		}
+
+		val nicknameResult = nicknameRepository.clearLocalName()
+		when {
+			nicknameResult.isSuccess -> {
+				// 성공적으로 닉네임 삭제됨
+			}
+			nicknameResult.isFailure -> {
+				val exception = nicknameResult.exceptionOrNull()
+				return BrakeResult.Error(LocalApiCallError(exception ?: Exception("닉네임 삭제 실패")))
+			}
+		}
+
+		val appGroupResult = appGroupRepository.clearAppGroup()
+		when {
+			appGroupResult.isSuccess -> {
+				// 성공적으로 앱 그룹 삭제됨
+			}
+			appGroupResult.isFailure -> {
+				val exception = appGroupResult.exceptionOrNull()
+				return BrakeResult.Error(LocalApiCallError(exception ?: Exception("앱 그룹 삭제 실패")))
+			}
+		}
+
+		val appResult = appRepository.clearApps()
+		when {
+			appResult.isSuccess -> {
+				// 성공적으로 앱 삭제됨
+			}
+			appResult.isFailure -> {
+				val exception = appResult.exceptionOrNull()
+				return BrakeResult.Error(LocalApiCallError(exception ?: Exception("앱 삭제 실패")))
+			}
+		}
+
+		return BrakeResult.Success(Destination.Login)
+	}
 }

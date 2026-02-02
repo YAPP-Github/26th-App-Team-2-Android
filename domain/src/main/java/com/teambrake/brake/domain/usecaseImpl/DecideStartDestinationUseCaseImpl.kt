@@ -14,7 +14,9 @@ import com.teambrake.brake.domain.repository.AppGroupRepository
 import com.teambrake.brake.domain.repository.AppRepository
 import com.teambrake.brake.domain.repository.NicknameRepository
 import com.teambrake.brake.domain.repository.AuthRepository
+import com.teambrake.brake.domain.repository.TokenRepository
 import com.teambrake.brake.domain.usecase.DecideStartDestinationUseCase
+import kotlinx.coroutines.flow.first
 import javax.inject.Inject
 import javax.inject.Named
 
@@ -23,80 +25,115 @@ class DecideStartDestinationUseCaseImpl @Inject constructor(
 	@Named("NicknameRepo") private val nicknameRepository: NicknameRepository,
 	private val appGroupRepository: AppGroupRepository,
 	private val appRepository: AppRepository,
+	@Named("TokenRepo") private val tokenRepository: TokenRepository,
 ) : DecideStartDestinationUseCase {
 
 	override suspend fun invoke(): BrakeResult<AuthStatusSuccess<Destination>, DecideStartDestinationUseCaseError> {
-		try {
-			// 1. 원격 사용자 정보 가져오기
-			nicknameRepository.getRemoteUserName().let { result ->
-				when (result) {
-					is BrakeResult.Success -> result.data.let { success ->
-						when (success) {
-							// 1-1. 오프라인 모드인 경우 로그인 화면으로 이동
-							is OfflineAuthorizedSuccess -> {
-								val destination = getDestinationByOnboardingStatus()
-								return BrakeResult.Success(OfflineAuthorizedSuccess(destination))
-							}
-							// 1-2. 온라인 모드인 경우
-							is OnlineAuthorizedSuccess -> {
-								// 2. 사용자 상태에 따른 분기 처리
-								when (success.data.state) {
-									// 2-1. 활성 상태인 경우
-									UserStatus.ACTIVE -> {
-										// 3. 온보딩 상태 확인
-										val destination = getDestinationByOnboardingStatus()
-										return BrakeResult.Success(OnlineAuthorizedSuccess(destination))
-									}
-									// 2-2. 비회원 상태인 경우
-									else -> {
-										// 비활성 상태인 경우 모든 데이터 삭제 후 로그인 화면으로 이동
-										clearAllData()
-										return BrakeResult.Success(OnlineAuthorizedSuccess(Destination.Login))
-									}
-								}
-							}
+		// 1. 사용자 상태 가져오기
+		val userStatusResult = runCatching {
+			tokenRepository.getUserStatus().first()
+		}
 
-							is PreAuthSuccess -> {
-								// 1-3. 사전 인증 상태인 경우 로그인 화면으로 이동
-								return BrakeResult.Success(PreAuthSuccess(Destination.Login))
-							}
-						}
+		if (userStatusResult.isFailure) {
+			return BrakeResult.Error(UndefinedExceptionError(userStatusResult.exceptionOrNull() ?: Exception("사용자 상태 가져오기 실패")))
+		}
+
+		val userStatus = userStatusResult.getOrThrow()
+
+		// 2. 사용자 상태에 따른 분기 처리
+		return when (userStatus) {
+			// 2-1. 비활성 상태인 경우 모든 데이터 삭제 후 로그인 화면으로 이동
+			UserStatus.INACTIVE -> {
+				val clearResult = clearAllData()
+				when (clearResult) {
+					is BrakeResult.Success -> {
+						BrakeResult.Success(PreAuthSuccess(Destination.Login))
 					}
-
 					is BrakeResult.Error -> {
-						return result
+						clearResult
 					}
 				}
 			}
-		} catch (e: LocalStorageException) {
-			return BrakeResult.Error(LocalApiCallError(e.e))
-		} catch (e: Exception) {
-			return BrakeResult.Error(UndefinedExceptionError(e))
-		}
-	}
+			// 2-2. 오프라인 상태인 경우
+			UserStatus.OFFLINE -> {
+				// 3. 닉네임 가져오기
+				val nicknameResult = runCatching {
+					nicknameRepository.getNickname().first()
+				}
 
-	private suspend fun getDestinationByOnboardingStatus(): Destination =
-		when (val result = authRepository.getOnboardingFlag()) {
-			is BrakeResult.Success -> {
-				val isOnboardingCompleted = result.data
-				if (isOnboardingCompleted) {
-					Destination.PermissionOrHome
+				if (nicknameResult.isFailure) {
+					return BrakeResult.Error(UndefinedExceptionError(nicknameResult.exceptionOrNull() ?: Exception("닉네임 가져오기 실패")))
+				}
+
+				// 4. 온보딩 상태 확인
+				val destination = getDestinationByOnboardingStatus()
+					?: return BrakeResult.Error(UndefinedExceptionError(Exception("온보딩 상태 확인 실패")))
+				BrakeResult.Success(OfflineAuthorizedSuccess(destination))
+			}
+			// 2-3. 활성 상태 또는 반회원 상태인 경우
+			UserStatus.ACTIVE, UserStatus.HALF_SIGNUP -> {
+				// 3. 닉네임 가져오기
+				val nicknameResult = runCatching {
+					nicknameRepository.getNickname().first()
+				}
+
+				if (nicknameResult.isFailure) {
+					return BrakeResult.Error(UndefinedExceptionError(nicknameResult.exceptionOrNull() ?: Exception("닉네임 가져오기 실패")))
+				}
+
+				if (userStatus == UserStatus.ACTIVE) {
+					// 4. 온보딩 상태 확인
+					val destination = getDestinationByOnboardingStatus()
+						?: return BrakeResult.Error(UndefinedExceptionError(Exception("온보딩 상태 확인 실패")))
+					BrakeResult.Success(OnlineAuthorizedSuccess(destination))
 				} else {
-					Destination.Onboarding
+					// 반회원 상태인 경우 로그인 화면으로 이동
+					BrakeResult.Success(OnlineAuthorizedSuccess(Destination.Login))
 				}
 			}
+		}
+	}
 
-			is BrakeResult.Error -> {
-				throw LocalStorageException(result.error.e)
+	private suspend fun getDestinationByOnboardingStatus(): Destination? {
+		val result = runCatching {
+			authRepository.getOnboardingFlag().first()
+		}
+
+		if (result.isFailure) {
+			return null
+		}
+
+		val isOnboardingCompleted = result.getOrNull() ?: return null
+		return if (isOnboardingCompleted) {
+			Destination.PermissionOrHome
+		} else {
+			Destination.Onboarding
+		}
+	}
+
+	private suspend fun clearAllData(): BrakeResult<Unit, DecideStartDestinationUseCaseError> {
+		val appGroupResult = appGroupRepository.clearAppGroup()
+		when {
+			appGroupResult.isSuccess -> {
+				// 성공적으로 앱 그룹 삭제됨
+			}
+			appGroupResult.isFailure -> {
+				val exception = appGroupResult.exceptionOrNull()
+				return BrakeResult.Error(LocalApiCallError(exception ?: Exception("앱 그룹 삭제 실패")))
 			}
 		}
 
-	private suspend fun clearAllData() {
-		appGroupRepository.clearAppGroup()
-		appRepository.clearApps()
-	}
+		val appResult = appRepository.clearApps()
+		when {
+			appResult.isSuccess -> {
+				// 성공적으로 앱 삭제됨
+			}
+			appResult.isFailure -> {
+				val exception = appResult.exceptionOrNull()
+				return BrakeResult.Error(LocalApiCallError(exception ?: Exception("앱 삭제 실패")))
+			}
+		}
 
-	companion object {
-		class LocalStorageException(val e: Throwable) : Exception()
+		return BrakeResult.Success(Unit)
 	}
 }

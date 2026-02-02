@@ -1,8 +1,10 @@
 package com.teambrake.brake.domain.usecase
 
+import com.teambrake.brake.domain.model.result.BrakeResult
+import com.teambrake.brake.domain.model.result.error.DeleteGroupUseCaseError
+
 interface DeleteGroupUseCase {
 	suspend operator fun invoke(
-		onError: suspend (Throwable) -> Unit,
 		groupId: Long,
-	)
+	): BrakeResult<Unit, DeleteGroupUseCaseError>
 }
