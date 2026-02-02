@@ -3,7 +3,10 @@ package com.teambrake.brake.core.alarm.notification
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
+import com.amplitude.android.Amplitude
+import com.amplitude.core.events.Identify
 import com.teambrake.brake.core.alarm.scheduler.AlarmSchedulerImpl
+import com.teambrake.brake.core.amplitude.AmplitudeEventHelper
 import com.teambrake.brake.core.common.AlarmAction
 import com.teambrake.brake.core.model.accessibility.IntentConfig
 import com.teambrake.brake.core.model.app.AppGroup
@@ -16,6 +19,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import timber.log.Timber
 import javax.inject.Inject
 
@@ -31,20 +35,29 @@ class NotificationReceiver : BroadcastReceiver() {
 	@Inject
 	lateinit var resetAppGroupUsecase: ResetAppGroupUsecase
 
+	@Inject
+	lateinit var amplitude: Amplitude
+
 	private val serviceJob = SupervisorJob()
 	private val serviceScope = CoroutineScope(Dispatchers.Main + serviceJob)
 
 	override fun onReceive(context: Context, intent: Intent) {
-		serviceScope.launch {
-			val groupId = intent.getLongExtra(AlarmSchedulerImpl.Companion.EXTRA_GROUP_ID, 0)
-			val appGroup = appGroupRepository.getAppGroupById(groupId)
-			val intentAction = intent.action
+		val pendingResult = goAsync()
 
-			if (appGroup != null) {
-				when (AlarmAction.Companion.fromString(intentAction)) {
-					AlarmAction.ACTION_USING -> startBlocking(context, appGroup)
-					AlarmAction.ACTION_BLOCKING -> stopBlocking(context, appGroup)
+		serviceScope.launch {
+			try {
+				val groupId = intent.getLongExtra(AlarmSchedulerImpl.Companion.EXTRA_GROUP_ID, 0)
+				val appGroup = appGroupRepository.getAppGroupById(groupId)
+				val intentAction = intent.action
+
+				if (appGroup != null) {
+					when (AlarmAction.Companion.fromString(intentAction)) {
+						AlarmAction.ACTION_USING -> startBlocking(context, appGroup)
+						AlarmAction.ACTION_BLOCKING -> stopBlocking(context, appGroup)
+					}
 				}
+			} finally {
+				pendingResult.finish()
 			}
 		}
 	}
@@ -77,6 +90,45 @@ class NotificationReceiver : BroadcastReceiver() {
 	private suspend fun stopBlocking(context: Context, appGroup: AppGroup) {
 		Timber.i("ID: ${appGroup.id} 차단이 해제되었습니다")
 		resetAppGroupUsecase(appGroup)
+
+		withContext(Dispatchers.IO) {
+			val startTime = appGroup.startTime ?: java.time.LocalDateTime.now()
+			val plannedDuration = appGroup.goalMinutes ?: 0
+			val elapsedDurationInSeconds = java.time.Duration.between(
+				startTime,
+				java.time.LocalDateTime.now(),
+			).toSeconds().toInt()
+			val snoozeCount = appGroup.snoozesCount
+
+			/**
+			 * 15. end_brake_session 이벤트 전송
+			 * 세션이 계획된 시간보다 일찍 종료될 때 전송
+			 */
+			val event = AmplitudeEventHelper.createEndBrakeSessionEvent(
+				plannedDuration = plannedDuration,
+				elapsedDuration = elapsedDurationInSeconds / 60,
+				snoozeCount = snoozeCount,
+				isEarlyExit = elapsedDurationInSeconds / 60 < plannedDuration,
+				groupId = appGroup.id.toString(),
+				groupName = appGroup.name,
+				groupAppCount = appGroup.apps.size,
+			)
+			amplitude.track(event.getEventName(), event.toEventProperties())
+
+			/**
+			 * 19. set_last_brake_session_date 유저 속성 설정
+			 * 마지막 차단 세션 날짜를 설정하는 유저 속성
+			 */
+			val currentDate = java.time.LocalDate.now().toString() // YYYY-MM-DD 형식
+			val userProperty = AmplitudeEventHelper.setLastBrakeSessionDate(date = currentDate)
+			amplitude.identify(
+				Identify().apply {
+					userProperty.toUserProperties().forEach { (key, value) ->
+						set(key, value)
+					}
+				},
+			)
+		}
 
 		val broadcastIntent = Intent().apply {
 			action = IntentConfig.RECEIVER_IDENTITY

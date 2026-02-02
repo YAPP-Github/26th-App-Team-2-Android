@@ -3,10 +3,14 @@ package com.teambrake.brake.presentation.permission
 import android.content.Context
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.amplitude.android.Amplitude
 import com.teambrake.brake.presentation.permission.model.PermissionItem
 import com.teambrake.brake.presentation.permission.model.PermissionModalState
 import com.teambrake.brake.presentation.permission.model.PermissionNavState
 import com.teambrake.brake.presentation.permission.model.PermissionUiState
+import com.teambrake.brake.core.amplitude.AmplitudeEventHelper
+import com.teambrake.brake.core.amplitude.StepDetail
+import com.teambrake.brake.core.amplitude.StepName
 import com.teambrake.brake.core.permission.PermissionManager
 import com.teambrake.brake.core.permission.PermissionType
 import com.google.firebase.analytics.FirebaseAnalytics
@@ -33,6 +37,7 @@ class PermissionViewModel @Inject constructor(
 	private val decideDestinationUseCase: DecideNextDestinationFromPermissionUseCase,
 	private val logoutUseCase: LogoutUseCase,
 	private val firebaseAnalytics: FirebaseAnalytics,
+	private val amplitude: Amplitude,
 ) : ViewModel() {
 
 	private val _snackBarFlow = MutableSharedFlow<UiString>()
@@ -48,6 +53,25 @@ class PermissionViewModel @Inject constructor(
 	private val _modalFlow =
 		MutableStateFlow<PermissionModalState>(PermissionModalState.PermissionIdle)
 	val modalFlow = _modalFlow.asStateFlow()
+
+	/**
+	 * 권한 요청 시 view_onboarding 이벤트 전송
+	 * @param permissionItem 요청하는 권한 타입
+	 */
+	private fun trackPermissionView(permissionItem: PermissionItem) {
+		val stepDetail = when (permissionItem) {
+			PermissionItem.OVERLAY -> StepDetail.OVERLAY
+			PermissionItem.STATS -> StepDetail.USAGE
+			PermissionItem.EXACT_ALARM -> StepDetail.NOTIFICATION
+			PermissionItem.ACCESSIBILITY -> StepDetail.ACCESSIBILITY
+		}
+
+		val event = AmplitudeEventHelper.createViewOnboardingEvent(
+			stepName = StepName.PERMISSION,
+			stepDetail = stepDetail,
+		)
+		amplitude.track(event.getEventName(), event.toEventProperties())
+	}
 
 	private fun stackPermissions(context: Context): PersistentList<PermissionItem> {
 		try {
@@ -119,6 +143,9 @@ class PermissionViewModel @Inject constructor(
 	}
 
 	fun requestPermission(context: Context, type: PermissionItem) {
+		// 권한 요청 화면 진입 시 트래킹
+		trackPermissionView(type)
+
 		if (type == PermissionItem.ACCESSIBILITY) {
 			_modalFlow.value = PermissionModalState.ShowAccessibilityAgreementModal
 		} else {

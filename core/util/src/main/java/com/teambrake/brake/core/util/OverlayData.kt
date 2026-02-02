@@ -10,5 +10,6 @@ data class OverlayData(
 	val groupId: Long,
 	val appName: String,
 	val groupName: String,
+	val groupAppCount: Int,
 	val snoozesCount: Int = 0,
 ) : Parcelable

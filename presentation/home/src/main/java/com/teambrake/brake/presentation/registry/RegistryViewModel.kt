@@ -4,8 +4,11 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.toRoute
+import com.amplitude.android.Amplitude
+import com.amplitude.core.events.Identify
 import com.google.firebase.analytics.FirebaseAnalytics
 import com.google.firebase.analytics.logEvent
+import com.teambrake.brake.core.amplitude.AmplitudeEventHelper
 import com.teambrake.brake.core.appscanner.InstalledAppScanner
 import com.teambrake.brake.core.model.app.App
 import com.teambrake.brake.core.model.app.AppGroup
@@ -34,6 +37,7 @@ import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -46,6 +50,7 @@ class RegistryViewModel @Inject constructor(
 	private val deleteGroupUseCase: DeleteGroupUseCase,
 	grantNewGroupIdUseCase: GrantNewGroupIdUseCase,
 	private val firebaseAnalytics: FirebaseAnalytics,
+	private val amplitude: Amplitude,
 ) : ViewModel() {
 	private val _registryUiState: MutableStateFlow<RegistryUiState> = MutableStateFlow(
 		RegistryUiState.Group.Initial(
@@ -55,6 +60,9 @@ class RegistryViewModel @Inject constructor(
 		),
 	)
 	val registryUiState = _registryUiState.asStateFlow()
+
+	// 그룹 생성/수정 구분을 위한 플래그
+	private var isEditingExistingGroup = false
 
 	init {
 		viewModelScope.launch {
@@ -72,6 +80,9 @@ class RegistryViewModel @Inject constructor(
 				}
 
 			val targetAppGroup = appGroupRepository.getAppGroupById(groupId)
+
+			// 기존 그룹을 수정하는 경우
+			isEditingExistingGroup = targetAppGroup != null
 
 			val selectedApps =
 				persistentListOf<SelectedAppModel>().builder().apply {
@@ -238,11 +249,40 @@ class RegistryViewModel @Inject constructor(
 							UiString.ResourceString(R.string.registry_snackbar_group_creation_successful),
 						),
 					)
-					firebaseAnalytics.logEvent("create_modify_group") {
-						param("group_id", currentUiState.groupId)
-						param("group_name", currentUiState.groupName)
-						for (selectedApp in currentUiState.selectedApps) {
-							param("app_name", selectedApp.name)
+					launch(Dispatchers.IO) {
+						// Amplitude 이벤트 전송 (6번: create_app_group, 7번: edit_app_group)
+						val event = if (isEditingExistingGroup) {
+							AmplitudeEventHelper.editAppGroupEvent(
+								groupId = currentUiState.groupId.toString(),
+								groupName = currentUiState.groupName,
+								groupAppCount = currentUiState.selectedApps.size,
+							)
+						} else {
+							AmplitudeEventHelper.createAppGroupEvent(
+								groupId = currentUiState.groupId.toString(),
+								groupName = currentUiState.groupName,
+								groupAppCount = currentUiState.selectedApps.size,
+							)
+						}
+						amplitude.track(event.getEventName(), event.toEventProperties())
+
+						// 17. total_group_count User Property 업데이트
+						val totalGroupCount = appGroupRepository.observeAppGroup().first().size
+						val userProperty = AmplitudeEventHelper.setTotalGroupCount(count = totalGroupCount)
+						amplitude.identify(
+							Identify().apply {
+								userProperty.toUserProperties().forEach { (key, value) ->
+									set(key, value)
+								}
+							},
+						)
+
+						firebaseAnalytics.logEvent("create_modify_group") {
+							param("group_id", currentUiState.groupId)
+							param("group_name", currentUiState.groupName)
+							for (selectedApp in currentUiState.selectedApps) {
+								param("app_name", selectedApp.name)
+							}
 						}
 					}
 					_navigationFlow.emit(RegistryNavState.NavigateToHome)
@@ -385,11 +425,32 @@ class RegistryViewModel @Inject constructor(
 							UiString.ResourceString(R.string.registry_snackbar_group_deletion_successful),
 						),
 					)
-					firebaseAnalytics.logEvent("delete_group") {
-						param("group_id", registryUiState.value.groupId)
-						param("group_name", registryUiState.value.groupName)
-						for (selectedApp in registryUiState.value.selectedApps) {
-							param("app_name", selectedApp.name)
+					launch(Dispatchers.IO) {
+						// 8번: delete_app_group 이벤트 전송
+						val deleteEvent = AmplitudeEventHelper.deleteAppGroupEvent(
+							groupId = currentUiState.groupId.toString(),
+							groupName = currentUiState.groupName,
+							groupAppCount = currentUiState.selectedApps.size,
+						)
+						amplitude.track(deleteEvent.getEventName(), deleteEvent.toEventProperties())
+
+						// 17. total_group_count User Property 업데이트
+						val totalGroupCount = appGroupRepository.observeAppGroup().first().size
+						val userProperty = AmplitudeEventHelper.setTotalGroupCount(count = totalGroupCount)
+						amplitude.identify(
+							Identify().apply {
+								userProperty.toUserProperties().forEach { (key, value) ->
+									set(key, value)
+								}
+							},
+						)
+
+						firebaseAnalytics.logEvent("delete_group") {
+							param("group_id", currentUiState.groupId)
+							param("group_name", currentUiState.groupName)
+							for (selectedApp in currentUiState.selectedApps) {
+								param("app_name", selectedApp.name)
+							}
 						}
 					}
 					_navigationFlow.emit(RegistryNavState.NavigateToHome)

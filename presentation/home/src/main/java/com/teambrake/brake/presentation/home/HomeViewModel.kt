@@ -2,6 +2,10 @@ package com.teambrake.brake.presentation.home
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.amplitude.android.Amplitude
+import com.google.firebase.analytics.FirebaseAnalytics
+import com.google.firebase.analytics.logEvent
+import com.teambrake.brake.core.amplitude.AmplitudeEventHelper
 import com.teambrake.brake.core.model.app.AppGroup
 import com.teambrake.brake.core.model.app.AppGroupState
 import com.teambrake.brake.domain.repository.AppGroupRepository
@@ -14,6 +18,7 @@ import com.google.firebase.analytics.logEvent
 import com.teambrake.brake.domain.model.result.BrakeResult
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.collections.immutable.toPersistentList
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
@@ -29,6 +34,7 @@ internal class HomeViewModel @Inject constructor(
 	appGroupRepository: AppGroupRepository,
 	private val setBlockingAlarmUseCase: SetBlockingAlarmUseCase,
 	private val firebaseAnalytics: FirebaseAnalytics,
+	private val amplitude: Amplitude,
 ) : ViewModel() {
 
 	val homeUiState: StateFlow<HomeUiState> = appGroupRepository
@@ -47,6 +53,11 @@ internal class HomeViewModel @Inject constructor(
 	private val _homeEvent: MutableSharedFlow<HomeEvent> = MutableSharedFlow()
 	val homeEvent: MutableSharedFlow<HomeEvent> get() = _homeEvent
 
+	init {
+		// 홈 화면 진입 시 이벤트 트래킹
+		trackHomeView()
+	}
+
 	private fun returnHomeUiState(appGroups: List<AppGroup>): HomeUiState {
 		if (appGroups.isEmpty()) {
 			return HomeUiState.Nothing
@@ -54,9 +65,11 @@ internal class HomeViewModel @Inject constructor(
 
 		appGroups.forEach { appGroup ->
 			when (appGroup.appGroupState) {
-				AppGroupState.Blocking, AppGroupState.SnoozeBlocking, AppGroupState.Using -> return HomeUiState.Ticking(
-					appGroups.toPersistentList(),
-				)
+				AppGroupState.Blocking, AppGroupState.SnoozeBlocking, AppGroupState.Using -> {
+					return HomeUiState.Ticking(
+						appGroups.toPersistentList(),
+					)
+				}
 
 				AppGroupState.NeedSetting -> {}
 			}
@@ -81,6 +94,22 @@ internal class HomeViewModel @Inject constructor(
 			)
 			if (result is BrakeResult.Success) {
 				showStopUsingSuccess(appGroup.name)
+			}
+
+			launch(Dispatchers.IO) {
+				// 현재 세션 정보 계산
+				val startTime = appGroup.startTime ?: java.time.LocalDateTime.now()
+				val plannedDuration = appGroup.goalMinutes ?: 0
+				val elapsedDuration = java.time.Duration.between(
+					startTime,
+					java.time.LocalDateTime.now(),
+				).toMinutes().toInt()
+
+				trackClickEarlyExit(
+					plannedDuration = plannedDuration,
+					elapsedDuration = elapsedDuration,
+					appGroup = appGroup,
+				)
 			}
 		}
 	}
@@ -107,6 +136,43 @@ internal class HomeViewModel @Inject constructor(
 				param("group_id", "null")
 			}
 		}
+	}
+
+	// ============ Amplitude Event Tracking Functions ============
+
+	/**
+	 * Amplitude 이벤트 전송 공통 함수
+	 */
+	private fun trackAmplitudeEvent(event: com.teambrake.brake.core.amplitude.AmplitudeEvent) {
+		amplitude.track(event.getEventName(), event.toEventProperties())
+	}
+
+	/**
+	 * 4. view_home 이벤트 전송
+	 */
+	private fun trackHomeView() {
+		viewModelScope.launch(Dispatchers.IO) {
+			trackAmplitudeEvent(AmplitudeEventHelper.createViewHomeEvent())
+		}
+	}
+
+	/**
+	 * 5. click_early_exit 이벤트 전송
+	 */
+	private fun trackClickEarlyExit(
+		plannedDuration: Int,
+		elapsedDuration: Int,
+		appGroup: AppGroup,
+	) {
+		trackAmplitudeEvent(
+			AmplitudeEventHelper.createClickEarlyExitEvent(
+				plannedDuration = plannedDuration,
+				elapsedDuration = elapsedDuration,
+				groupId = appGroup.id.toString(),
+				groupName = appGroup.name,
+				groupAppCount = appGroup.apps.size,
+			),
+		)
 	}
 
 	fun dismiss() {

@@ -103,6 +103,7 @@ fun GuideRoute(
 		screenHorizontalPadding = screenHorizontalPadding,
 		onBackClick = viewModel::tryLogout,
 		onNextClick = { viewModel.continueFromGuide(context) },
+		onPageChanged = viewModel::trackTutorialPageView,
 	)
 }
 
@@ -112,6 +113,7 @@ fun GuideScreen(
 	screenHorizontalPadding: Dp,
 	onBackClick: () -> Unit,
 	onNextClick: () -> Unit,
+	onPageChanged: (Int) -> Unit,
 ) {
 	val pagerState = rememberPagerState(pageCount = { 3 })
 	val scope = rememberCoroutineScope()
@@ -124,6 +126,11 @@ fun GuideScreen(
 				pagerState.animateScrollToPage(pagerState.currentPage - 1)
 			}
 		}
+	}
+
+	// 페이지 변경 시 Amplitude 트래킹
+	LaunchedEffect(pagerState.currentPage) {
+		onPageChanged(pagerState.currentPage)
 	}
 
 	BackHandler {

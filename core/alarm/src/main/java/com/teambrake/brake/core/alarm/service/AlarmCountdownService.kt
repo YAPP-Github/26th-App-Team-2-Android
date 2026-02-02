@@ -16,6 +16,7 @@ import androidx.core.content.ContextCompat
 import androidx.core.content.res.ResourcesCompat
 import androidx.core.graphics.drawable.toBitmap
 import com.teambrake.brake.core.alarm.R
+import com.teambrake.brake.core.model.notification.NotificationIntentConfig
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
@@ -229,7 +230,7 @@ class AlarmCountdownService : Service() {
 		val channel = NotificationChannel(
 			CHANNEL_ID,
 			getString(R.string.alarm_countdown_channel_name),
-			NotificationManager.IMPORTANCE_HIGH,
+			NotificationManager.IMPORTANCE_LOW,
 		).apply {
 			description = getString(R.string.alarm_countdown_channel_description)
 			enableLights(false)
@@ -284,6 +285,9 @@ class AlarmCountdownService : Service() {
 		val launchIntent = packageManager.getLaunchIntentForPackage(packageName)
 		launchIntent?.let { intent ->
 			intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TOP
+			intent.apply {
+				putExtra(NotificationIntentConfig.EXTRA_OPEN_APP, true)
+			}
 			PendingIntent.getActivity(
 				this,
 				0,

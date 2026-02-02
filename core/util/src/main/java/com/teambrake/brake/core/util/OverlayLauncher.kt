@@ -14,6 +14,7 @@ object OverlayLauncher {
 		context: Context,
 		groupId: Long,
 		groupName: String,
+		groupAppCount: Int,
 		appName: String?,
 		appGroupState: AppGroupState,
 		snoozesCount: Int = 0,
@@ -25,6 +26,7 @@ object OverlayLauncher {
 			groupId = groupId,
 			snoozesCount = snoozesCount,
 			appName = appName ?: "Unknown App",
+			groupAppCount = groupAppCount,
 			groupName = groupName,
 		)
 

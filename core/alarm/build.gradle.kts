@@ -15,4 +15,7 @@ dependencies {
 	implementation(projects.core.common)
 	implementation(projects.core.model)
 	implementation(projects.core.util)
+
+	implementation(projects.core.amplitude)
+	implementation(libs.amplitude.analytics)
 }

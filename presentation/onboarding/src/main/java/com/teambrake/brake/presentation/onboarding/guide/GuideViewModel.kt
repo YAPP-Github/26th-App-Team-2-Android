@@ -3,8 +3,13 @@ package com.teambrake.brake.presentation.onboarding.guide
 import android.content.Context
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.amplitude.android.Amplitude
 import com.google.firebase.analytics.FirebaseAnalytics
 import com.google.firebase.analytics.logEvent
+import com.teambrake.brake.core.amplitude.AmplitudeEventHelper
+import com.teambrake.brake.core.amplitude.StepDetail
+import com.teambrake.brake.core.amplitude.StepName
+import com.teambrake.brake.core.model.user.Destination
 import com.teambrake.brake.core.permission.PermissionManager
 import com.teambrake.brake.core.ui.UiString
 import com.teambrake.brake.domain.model.result.BrakeResult
@@ -25,6 +30,7 @@ class GuideViewModel @Inject constructor(
 	private val permissionManager: PermissionManager,
 	private val logoutUseCase: LogoutUseCase,
 	private val firebaseAnalytics: FirebaseAnalytics,
+	private val amplitude: Amplitude,
 ) : ViewModel() {
 	private val _snackBarFlow = MutableSharedFlow<UiString>()
 	val snackBarFlow = _snackBarFlow.asSharedFlow()
@@ -34,6 +40,25 @@ class GuideViewModel @Inject constructor(
 
 	private val _navigationFlow = MutableSharedFlow<GuideNavState>()
 	val navigationFlow = _navigationFlow.asSharedFlow()
+
+	/**
+	 * 튜토리얼 페이지 변경 시 view_onboarding 이벤트 전송
+	 * @param pageIndex 현재 페이지 인덱스 (0, 1, 2)
+	 */
+	fun trackTutorialPageView(pageIndex: Int) {
+		val stepDetail = when (pageIndex) {
+			0 -> StepDetail.STEP1
+			1 -> StepDetail.STEP2
+			2 -> StepDetail.STEP3
+			else -> StepDetail.DEFAULT
+		}
+
+		val event = AmplitudeEventHelper.createViewOnboardingEvent(
+			stepName = StepName.TUTORIAL,
+			stepDetail = stepDetail,
+		)
+		amplitude.track(event.getEventName(), event.toEventProperties())
+	}
 
 	fun tryLogout() {
 		_modalFlow.value = GuideModalState.ShowLogoutModal

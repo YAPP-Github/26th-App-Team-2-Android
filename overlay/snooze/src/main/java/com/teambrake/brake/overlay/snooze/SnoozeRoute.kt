@@ -4,7 +4,7 @@ import android.widget.Toast
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.platform.LocalContext
-import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import com.teambrake.brake.core.common.Constants
 import com.teambrake.brake.overlay.snooze.component.SnoozeBlocking
 import com.teambrake.brake.overlay.snooze.component.SnoozeScreen
@@ -14,6 +14,7 @@ fun SnoozeRoute(
 	groupId: Long,
 	groupName: String,
 	snoozesCount: Int,
+	groupAppCount: Int,
 	onCloseOverlay: () -> Unit,
 	onStartHome: () -> Unit,
 	onExitManageApp: () -> Unit,
@@ -22,6 +23,7 @@ fun SnoozeRoute(
 		groupId = groupId,
 		groupName = groupName,
 		snoozesCount = snoozesCount,
+		groupAppCount = groupAppCount,
 		onCloseOverlay = onCloseOverlay,
 		onStartHome = onStartHome,
 		onExitManageApp = onExitManageApp,
@@ -33,11 +35,16 @@ private fun SnoozeOverlay(
 	groupId: Long,
 	groupName: String,
 	snoozesCount: Int,
+	groupAppCount: Int,
 	onCloseOverlay: () -> Unit,
 	onStartHome: () -> Unit,
 	onExitManageApp: () -> Unit,
-	viewModel: SnoozeViewModel = hiltViewModel(),
 ) {
+	val viewModel: SnoozeViewModel = hiltViewModel(
+		creationCallback = { factory: SnoozeViewModel.SnoozeFactory ->
+			factory.create(groupId, groupName, groupAppCount)
+		},
+	)
 	val context = LocalContext.current
 
 	if (snoozesCount < Constants.MAX_SNOOZE_COUNT) {
@@ -45,16 +52,24 @@ private fun SnoozeOverlay(
 			snoozeCount = snoozesCount,
 			onExitManageApp = onExitManageApp,
 			onSnooze = {
-				viewModel.setSnooze(groupId, groupName)
+				viewModel.setSnooze(snoozeNth = snoozesCount)
 				onCloseOverlay()
 			},
 		)
+
+		LaunchedEffect(Unit) {
+			viewModel.trackViewBlockingFinish()
+		}
 	} else {
 		SnoozeBlocking(
 			groupName = groupName,
 			onExitManageApp = onExitManageApp,
 			onStartHome = onStartHome,
 		)
+
+		LaunchedEffect(Unit) {
+			viewModel.trackViewCoolDown()
+		}
 	}
 
 	LaunchedEffect(Unit) {

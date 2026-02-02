@@ -9,6 +9,7 @@ android {
 }
 
 dependencies {
+	implementation(projects.core.amplitude)
 	implementation(projects.core.common)
 	implementation(projects.core.util)
 
