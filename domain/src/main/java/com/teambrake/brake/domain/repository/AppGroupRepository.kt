@@ -11,9 +11,9 @@ interface AppGroupRepository {
 
 	suspend fun getAvailableMinGroupId(): Long
 
-	suspend fun deleteAppGroupByGroupId(groupId: Long)
+	suspend fun deleteAppGroupByGroupId(groupId: Long): Result<Unit>
 
-	suspend fun clearAppGroup()
+	suspend fun clearAppGroup(): Result<Unit>
 
 	fun observeAppGroup(): Flow<List<AppGroup>>
 

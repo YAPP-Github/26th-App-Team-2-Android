@@ -8,12 +8,10 @@ import kotlinx.coroutines.flow.flow
 import javax.inject.Inject
 
 internal class FakeTokenRepositoryImpl @Inject constructor() : TokenRepository {
-	override suspend fun setOfflineModeStatus(onError: suspend (Throwable) -> Unit) {
-		TODO("Not yet implemented")
-	}
+	override suspend fun setOfflineModeStatus(): Result<Unit> = Result.success(Unit)
 
-	override suspend fun getUserStatus(onError: suspend (Throwable) -> Unit): UserStatus {
-		TODO("Not yet implemented")
+	override fun getUserStatus(): Flow<UserStatus> = flow {
+		emit(UserStatus.ACTIVE)
 	}
 
 	override fun getRemoteTokens(
@@ -39,19 +37,11 @@ internal class FakeTokenRepositoryImpl @Inject constructor() : TokenRepository {
 		onError = onError,
 	)
 
-	override suspend fun clearLocalTokens(onError: suspend (Throwable) -> Unit) {
-		// Fake 구현체 에서는 아무 동작도 하지 않음
-	}
+	override suspend fun clearLocalTokens(): Result<Unit> = Result.success(Unit)
 
-	override suspend fun refreshTokens(onError: suspend (Throwable) -> Unit) {
-		// Fake 구현체 에서는 아무 동작도 하지 않음
-	}
+	override suspend fun refreshTokens(): Result<Unit> = Result.success(Unit)
 
-	override suspend fun clearLocalAuthCode(onError: suspend (Throwable) -> Unit) {
-		// Fake 구현체에서는 아무 동작도 하지 않음
-	}
+	override suspend fun clearLocalAuthCode(): Result<Unit> = Result.success(Unit)
 
-	override fun logoutRemoteAccount() {
-		// Fake 구현체에서는 아무 동작도 하지 않음
-	}
+	override suspend fun logoutRemoteAccount(): Result<Unit> = Result.success(Unit)
 }

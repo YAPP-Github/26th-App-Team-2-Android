@@ -9,16 +9,16 @@ interface TokenRepository {
 	/**
 	 * 오프라인 모드 상태 설정 메서드
 	 *
-	 * @param onError 오류 발생 시 호출되는 콜백
+	 * @return [Result]로 감싸진 Unit
 	 */
-	suspend fun setOfflineModeStatus(onError: suspend (Throwable) -> Unit)
+	suspend fun setOfflineModeStatus(): Result<Unit>
 
 	/**
 	 * 로컬에서 현재 사용자 상태를 가져오는 메서드
+	 *
+	 * @return [Flow]로 감싸진 [UserStatus]
 	 */
-	suspend fun getUserStatus(
-		onError: suspend (Throwable) -> Unit,
-	): UserStatus
+	fun getUserStatus(): Flow<UserStatus>
 
 	/**
 	 * 서버에서 로그인 토큰을 가져오는 메서드
@@ -55,31 +55,27 @@ interface TokenRepository {
 	 *
 	 * 로컬에 저장된 AuthCode, AccessToken, RefreshToken 모두 초기화
 	 *
-	 * @param onError 오류 발생 시 호출되는 콜백
+	 * @return [Result]로 감싸진 Unit
 	 */
-	suspend fun clearLocalTokens(
-		onError: suspend (Throwable) -> Unit,
-	)
+	suspend fun clearLocalTokens(): Result<Unit>
 
-	suspend fun refreshTokens(
-		onError: suspend (Throwable) -> Unit,
-	)
+	suspend fun refreshTokens(): Result<Unit>
 
 	/**
 	 * AuthCode 비우기 메서드
 	 *
 	 * 로그인 성공 후 로컬에 AuthCode를 삭제
 	 *
-	 * @param onError 오류 발생 시 호출되는 콜백
+	 * @return [Result]로 감싸진 Unit
 	 */
-	suspend fun clearLocalAuthCode(
-		onError: suspend (Throwable) -> Unit,
-	)
+	suspend fun clearLocalAuthCode(): Result<Unit>
 
 	/**
 	 * 원격 계정 로그아웃 메서드
 	 *
 	 * 저장된 AccessToken을 이용하여 서버에 로그아웃 요청
+	 *
+	 * @return [Result]로 감싸진 Unit
 	 */
-	fun logoutRemoteAccount()
+	suspend fun logoutRemoteAccount(): Result<Unit>
 }

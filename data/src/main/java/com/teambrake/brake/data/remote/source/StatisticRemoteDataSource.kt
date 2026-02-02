@@ -6,12 +6,7 @@ import kotlinx.coroutines.flow.Flow
 import java.time.LocalDate
 
 internal interface StatisticRemoteDataSource {
-
-	suspend fun pushSession(
-		appGroup: AppGroup,
-		onSuccess: suspend (Long) -> Unit,
-		onError: suspend (Throwable) -> Unit = {},
-	)
+	suspend fun pushSession(appGroup: AppGroup): Result<Long>
 
 	fun getStatistic(
 		startDate: LocalDate,

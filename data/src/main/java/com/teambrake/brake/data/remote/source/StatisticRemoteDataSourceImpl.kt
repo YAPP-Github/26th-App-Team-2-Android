@@ -17,22 +17,19 @@ internal class StatisticRemoteDataSourceImpl @Inject constructor(
 	private val retrofitBrakeApi: RetrofitBrakeApi,
 ) : StatisticRemoteDataSource {
 
-	override suspend fun pushSession(
-		appGroup: AppGroup,
-		onSuccess: suspend (Long) -> Unit,
-		onError: suspend (Throwable) -> Unit,
-	) {
+	override suspend fun pushSession(appGroup: AppGroup): Result<Long> {
 		val request = appGroup.toSessionRequest() ?: run {
-			onError(Throwable("세션 요청을 생성하는 중 오류가 발생했습니다"))
-			return
+			return Result.failure(Throwable("세션 요청을 생성하는 중 오류가 발생했습니다"))
 		}
 
+		var result: Result<Long> = Result.failure(Throwable("알 수 없는 오류"))
 		retrofitBrakeApi.sendSession(request)
 			.suspendOnSuccess {
-				onSuccess(data.data.sessionId)
+				result = Result.success(data.data.sessionId)
 			}.suspendOnFailure {
-				onError(Throwable("세션을 생성하는 중 오류가 발생했습니다"))
+				result = Result.failure(Throwable("세션 정보를 전송하는 중 오류가 발생했습니다"))
 			}
+		return result
 	}
 
 	override fun getStatistic(

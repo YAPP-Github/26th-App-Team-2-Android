@@ -1,70 +1,62 @@
 package com.teambrake.brake.data.repository
 
-import com.teambrake.brake.core.model.user.UserStatus
 import com.teambrake.brake.data.local.source.OnboardingLocalDataSource
 import com.teambrake.brake.data.local.source.TokenLocalDataSource
 import com.teambrake.brake.data.remote.source.AccountRemoteDataSource
-import com.teambrake.brake.domain.model.result.BrakeResult
-import com.teambrake.brake.domain.model.result.error.ApiCallError
-import com.teambrake.brake.domain.model.result.error.LocalApiCallError
+import com.teambrake.brake.data.repository.base.BaseRepository
 import com.teambrake.brake.domain.repository.AuthRepository
-import kotlinx.coroutines.flow.first
-import kotlinx.coroutines.flow.firstOrNull
+import kotlinx.coroutines.flow.Flow
 import timber.log.Timber
 import javax.inject.Inject
 
 internal class AuthRepositoryImpl @Inject constructor(
-	private val onboardingLocalDataSource: OnboardingLocalDataSource,
 	private val tokenLocalDataSource: TokenLocalDataSource,
+	private val onboardingLocalDataSource: OnboardingLocalDataSource,
 	private val accountRemoteDataSource: AccountRemoteDataSource,
-) : AuthRepository {
+) : BaseRepository(tokenLocalDataSource),
+	AuthRepository {
 
-	override suspend fun updateLocalOnboardingFlag(isComplete: Boolean): BrakeResult<Unit, ApiCallError> {
+	override suspend fun updateOnboardingFlag(isComplete: Boolean): Result<Unit> = try {
 		val result = onboardingLocalDataSource.updateOnboardingFlag(isComplete = isComplete)
-		return if (result) {
-			BrakeResult.Success(Unit)
+		if (result) {
+			Result.success(Unit)
 		} else {
-			BrakeResult.Error(LocalApiCallError(Exception("Failed to update onboarding flag")))
+			Result.failure(Exception("failed to update onboarding flag locally"))
 		}
-	}
-
-	override suspend fun getOnboardingFlag(): BrakeResult<Boolean, LocalApiCallError> = try {
-		val flag = onboardingLocalDataSource.getOnboardingFlag().first()
-		BrakeResult.Success(flag)
 	} catch (e: Exception) {
-		Timber.e(e, "Error getting onboarding flag")
-		BrakeResult.Error(LocalApiCallError(e))
+		Result.failure(e)
 	}
 
-	override suspend fun clearAuthDataStore(): BrakeResult<Unit, ApiCallError> = try {
+	override fun getOnboardingFlag(): Flow<Boolean> =
+		onboardingLocalDataSource.getOnboardingFlag()
+
+	override suspend fun clearAuthDataStore(): Result<Unit> = try {
 		tokenLocalDataSource.clearUserToken(
 			onError = {
 				throw Exception(it)
 			},
 		)
-		BrakeResult.Success(Unit)
+		Result.success(Unit)
 	} catch (e: Exception) {
 		Timber.e(e, "Error clearing data store")
-		BrakeResult.Error(LocalApiCallError(e))
+		Result.failure(e)
 	}
 
-	override suspend fun clearRemoteAccount(): BrakeResult<Unit, ApiCallError> = try {
-		val isOffline = shouldFetchRemote()
-		if (!isOffline) {
+	override suspend fun clearRemoteAccount(): Result<Unit> = try {
+		if (isOnlineStatus()) {
 			accountRemoteDataSource.deleteAccount(
 				onError = {
 					throw Exception(it)
 				},
 			)
+			Result.success(Unit)
+		} else {
+			// 오프라인 모드에서는 원격 계정 삭제를 건너뜀
+			Timber.d("오프라인 모드: 원격 계정 삭제 스킵")
+			Result.success(Unit)
 		}
-		BrakeResult.Success(Unit)
 	} catch (e: Exception) {
-		BrakeResult.Error(LocalApiCallError(e))
+		Timber.e(e, "계정 삭제 중 오류 발생")
+		Result.failure(e)
 	}
-
-	private suspend fun shouldFetchRemote(): Boolean = tokenLocalDataSource.getUserStatus(
-		onError = { /* 상태를 가져오는 중 오류가 발생해도 무시 */ },
-	).firstOrNull()?.run {
-		this == UserStatus.OFFLINE
-	} ?: false
 }
