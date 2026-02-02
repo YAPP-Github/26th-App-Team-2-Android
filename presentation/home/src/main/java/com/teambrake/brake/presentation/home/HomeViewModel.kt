@@ -11,6 +11,7 @@ import com.teambrake.brake.presentation.home.contract.HomeModalState
 import com.teambrake.brake.presentation.home.contract.HomeUiState
 import com.google.firebase.analytics.FirebaseAnalytics
 import com.google.firebase.analytics.logEvent
+import com.teambrake.brake.domain.model.result.BrakeResult
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.collections.immutable.toPersistentList
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -75,9 +76,10 @@ internal class HomeViewModel @Inject constructor(
 
 	fun stopAppUsing(appGroup: AppGroup) {
 		viewModelScope.launch {
-			setBlockingAlarmUseCase(
+			val result = setBlockingAlarmUseCase(
 				groupId = appGroup.id,
-			).onSuccess {
+			)
+			if (result is BrakeResult.Success) {
 				showStopUsingSuccess(appGroup.name)
 			}
 		}

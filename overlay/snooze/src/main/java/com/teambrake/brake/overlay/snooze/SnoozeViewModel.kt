@@ -2,6 +2,7 @@ package com.teambrake.brake.overlay.snooze
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.teambrake.brake.domain.model.result.BrakeResult
 import com.teambrake.brake.domain.usecase.SetSnoozeAlarmUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -19,12 +20,17 @@ internal class SnoozeViewModel @Inject constructor(
 
 	fun setSnooze(groupId: Long, groupName: String) {
 		viewModelScope.launch {
-			setSnoozeAlarmUsecase(
-				groupId = groupId,
-				groupName = groupName,
-			).onSuccess {
-			}.onFailure {
-				sendToastMessage("알람 설정에 실패했습니다. 정확한 알람 권한을 확인해주세요.")
+			when (
+				setSnoozeAlarmUsecase(
+					groupId = groupId,
+					groupName = groupName,
+				)
+			) {
+				is BrakeResult.Error -> {
+					sendToastMessage("알람 설정에 실패했습니다. 정확한 알람 권한을 확인해주세요.")
+				}
+
+				else -> {}
 			}
 		}
 	}

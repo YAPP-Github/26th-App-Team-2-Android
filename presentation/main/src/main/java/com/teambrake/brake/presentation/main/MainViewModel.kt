@@ -18,6 +18,7 @@ import com.teambrake.brake.domain.model.result.error.RemoteServerNotReachedError
 import com.teambrake.brake.domain.model.result.error.UndefinedExceptionError
 import com.teambrake.brake.domain.model.result.success.OfflineAuthorizedSuccess
 import com.teambrake.brake.domain.model.result.success.OnlineAuthorizedSuccess
+import com.teambrake.brake.domain.model.result.success.PreAuthSuccess
 import com.teambrake.brake.domain.usecase.DecideStartDestinationUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -53,6 +54,7 @@ class MainViewModel @Inject constructor(
 					val data = when (val success = result.data) {
 						is OnlineAuthorizedSuccess -> success.data
 						is OfflineAuthorizedSuccess -> success.data
+						is PreAuthSuccess -> success.data
 					}
 					onDecideDestinationSuccess(data, context)
 
@@ -84,7 +86,7 @@ class MainViewModel @Inject constructor(
 
 	private fun onDecideDestinationError(error: DecideStartDestinationUseCaseError): Route {
 		when (error) {
-			is HttpUnsuccessfulCodeError, is LocalApiCallError, RemoteServerNotReachedError, is UndefinedExceptionError -> {
+			is HttpUnsuccessfulCodeError, is LocalApiCallError, is RemoteServerNotReachedError, is UndefinedExceptionError -> {
 				return InitialRoute.Login
 			}
 		}

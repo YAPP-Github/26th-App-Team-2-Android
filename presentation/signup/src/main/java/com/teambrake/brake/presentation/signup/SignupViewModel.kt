@@ -7,6 +7,7 @@ import com.teambrake.brake.presentation.signup.model.SignupUiState
 import com.google.firebase.analytics.FirebaseAnalytics
 import com.google.firebase.analytics.logEvent
 import com.teambrake.brake.core.ui.UiString
+import com.teambrake.brake.domain.model.result.BrakeResult
 import com.teambrake.brake.domain.usecase.UpdateNicknameUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Job
@@ -15,7 +16,6 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
-import timber.log.Timber
 import javax.inject.Inject
 
 @HiltViewModel
@@ -50,23 +50,18 @@ class SignupViewModel @Inject constructor(
 	fun onNameSubmit(name: String) {
 		_uiState.value = SignupUiState.SignupNameRegistering(name)
 		updateJob = viewModelScope.launch {
-			runCatching {
-				updateNicknameUseCase(
-					nickname = name,
-					onError = {
-						_snackBarFlow.emit(UiString.ResourceString(R.string.signup_snackbar_register_error))
-						_uiState.value = SignupUiState.SignupIdle(name)
-					},
-					onSuccess = {
-						_uiState.value = SignupUiState.SignupIdle(name)
-						firebaseAnalytics.logEvent(FirebaseAnalytics.Event.SIGN_UP) {
-							param(FirebaseAnalytics.Param.METHOD, "nickname_registration")
-						}
-						_navigationFlow.emit(SignupEffect.NavigateToOnboarding)
-					},
-				)
-			}.onFailure {
-				Timber.e(it, "닉네임 업데이트 중 에러 발생")
+			when (updateNicknameUseCase(nickname = name)) {
+				is BrakeResult.Success -> {
+					_uiState.value = SignupUiState.SignupIdle(name)
+					firebaseAnalytics.logEvent(FirebaseAnalytics.Event.SIGN_UP) {
+						param(FirebaseAnalytics.Param.METHOD, "nickname_registration")
+					}
+					_navigationFlow.emit(SignupEffect.NavigateToOnboarding)
+				}
+				is BrakeResult.Error -> {
+					_snackBarFlow.emit(UiString.ResourceString(R.string.signup_snackbar_register_error))
+					_uiState.value = SignupUiState.SignupIdle(name)
+				}
 			}
 		}
 	}

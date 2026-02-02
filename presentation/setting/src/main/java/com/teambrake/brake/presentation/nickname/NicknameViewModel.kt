@@ -6,6 +6,8 @@ import com.google.firebase.analytics.FirebaseAnalytics
 import com.google.firebase.analytics.logEvent
 import com.teambrake.brake.core.ui.SnackBarState
 import com.teambrake.brake.core.ui.UiString
+import com.teambrake.brake.domain.model.result.BrakeResult
+import com.teambrake.brake.domain.model.result.error.UndefinedExceptionError
 import com.teambrake.brake.domain.usecase.GetNicknameUseCase
 import com.teambrake.brake.domain.usecase.UpdateNicknameUseCase
 import com.teambrake.brake.presentation.nickname.model.NicknameNavState
@@ -42,10 +44,24 @@ class NicknameViewModel @Inject constructor(
 
 	init {
 		viewModelScope.launch {
-			val nickname = getNicknameUseCase(
-				onError = { /* 에러 핸들링 생략 */ },
-			).firstOrNull() ?: ""
-			_nicknameUiState.value = NicknameUiState.NicknameIdle(nickname = nickname)
+			val result = getNicknameUseCase().firstOrNull() ?: BrakeResult.Error(
+				UndefinedExceptionError(
+					Throwable("GetNicknameUseCase returned empty flow"),
+				),
+			)
+			when (result) {
+				is BrakeResult.Success -> {
+					_nicknameUiState.value = NicknameUiState.NicknameIdle(nickname = result.data)
+				}
+
+				is BrakeResult.Error -> {
+					_snackBarFlow.emit(
+						SnackBarState.Error(
+							uiString = UiString.ResourceString(R.string.nickname_snackbar_update_error),
+						),
+					)
+				}
+			}
 		}
 	}
 
@@ -59,19 +75,8 @@ class NicknameViewModel @Inject constructor(
 			nickname = nickname,
 		)
 		updateJob = viewModelScope.launch {
-			updateNicknameUseCase(
-				nickname = nickname,
-				onError = {
-					_snackBarFlow.emit(
-						SnackBarState.Error(
-							uiString = UiString.ResourceString(R.string.nickname_snackbar_update_error),
-						),
-					)
-					_nicknameUiState.value = NicknameUiState.NicknameIdle(
-						nickname = nickname,
-					)
-				},
-				onSuccess = {
+			when (updateNicknameUseCase(nickname = nickname)) {
+				is BrakeResult.Success -> {
 					_snackBarFlow.emit(
 						SnackBarState.Success(
 							uiString = UiString.ResourceString(R.string.nickname_snackbar_update_success),
@@ -81,8 +86,18 @@ class NicknameViewModel @Inject constructor(
 						param("nickname", nickname)
 					}
 					_navigationFlow.emit(NicknameNavState.NavigateToSetting)
-				},
-			)
+				}
+				is BrakeResult.Error -> {
+					_snackBarFlow.emit(
+						SnackBarState.Error(
+							uiString = UiString.ResourceString(R.string.nickname_snackbar_update_error),
+						),
+					)
+					_nicknameUiState.value = NicknameUiState.NicknameIdle(
+						nickname = nickname,
+					)
+				}
+			}
 		}
 	}
 

@@ -13,6 +13,7 @@ import com.teambrake.brake.core.model.app.AppGroupState
 import com.teambrake.brake.core.navigation.route.SubRoute
 import com.teambrake.brake.core.ui.UiString
 import com.teambrake.brake.core.util.toByteArray
+import com.teambrake.brake.domain.model.result.BrakeResult
 import com.teambrake.brake.domain.repository.AppGroupRepository
 import com.teambrake.brake.domain.usecase.CreateNewGroupUseCase
 import com.teambrake.brake.domain.usecase.DeleteGroupUseCase
@@ -58,7 +59,17 @@ class RegistryViewModel @Inject constructor(
 	init {
 		viewModelScope.launch {
 			val groupId = savedStateHandle.toRoute<SubRoute.Registry>().groupId
-				?: grantNewGroupIdUseCase({})
+				?: when (val result = grantNewGroupIdUseCase()) {
+					is BrakeResult.Success -> result.data
+					is BrakeResult.Error -> {
+						_snackBarFlow.emit(
+							RegistrySnackBarState.Error(
+								UiString.ResourceString(R.string.registry_snackbar_group_id_fetch_error),
+							),
+						)
+						return@launch
+					}
+				}
 
 			val targetAppGroup = appGroupRepository.getAppGroupById(groupId)
 
@@ -187,14 +198,7 @@ class RegistryViewModel @Inject constructor(
 	fun createNewGroup() {
 		viewModelScope.launch {
 			val currentUiState = _registryUiState.value
-			createNewGroupUseCase(
-				onError = { throwable ->
-					_snackBarFlow.emit(
-						RegistrySnackBarState.Error(
-							UiString.ResourceString(R.string.registry_snackbar_group_creation_error),
-						),
-					)
-				},
+			val result = createNewGroupUseCase(
 				group = currentUiState.let {
 					AppGroup(
 						id = it.groupId,
@@ -217,19 +221,33 @@ class RegistryViewModel @Inject constructor(
 					)
 				},
 			)
-			_snackBarFlow.emit(
-				RegistrySnackBarState.Success(
-					UiString.ResourceString(R.string.registry_snackbar_group_creation_successful),
-				),
-			)
-			firebaseAnalytics.logEvent("create_modify_group") {
-				param("group_id", currentUiState.groupId)
-				param("group_name", currentUiState.groupName)
-				for (selectedApp in currentUiState.selectedApps) {
-					param("app_name", selectedApp.name)
+
+			when (result) {
+				is BrakeResult.Error -> {
+					_snackBarFlow.emit(
+						RegistrySnackBarState.Error(
+							UiString.ResourceString(R.string.registry_snackbar_group_creation_error),
+						),
+					)
+					return@launch
+				}
+
+				is BrakeResult.Success -> {
+					_snackBarFlow.emit(
+						RegistrySnackBarState.Success(
+							UiString.ResourceString(R.string.registry_snackbar_group_creation_successful),
+						),
+					)
+					firebaseAnalytics.logEvent("create_modify_group") {
+						param("group_id", currentUiState.groupId)
+						param("group_name", currentUiState.groupName)
+						for (selectedApp in currentUiState.selectedApps) {
+							param("app_name", selectedApp.name)
+						}
+					}
+					_navigationFlow.emit(RegistryNavState.NavigateToHome)
 				}
 			}
-			_navigationFlow.emit(RegistryNavState.NavigateToHome)
 		}
 	}
 
@@ -348,30 +366,35 @@ class RegistryViewModel @Inject constructor(
 
 	fun removeGroup() {
 		viewModelScope.launch {
-			deleteGroupUseCase(
-				onError = {
+			val result = deleteGroupUseCase(groupId = registryUiState.value.groupId)
+			when (result) {
+				is BrakeResult.Error -> {
 					_snackBarFlow.emit(
 						RegistrySnackBarState.Error(
 							UiString.ResourceString(R.string.registry_snackbar_group_deletion_error),
 						),
 					)
-				},
-				groupId = registryUiState.value.groupId,
-			)
-			_modalFlow.value = RegistryModalState.Idle
-			_snackBarFlow.emit(
-				RegistrySnackBarState.Success(
-					UiString.ResourceString(R.string.registry_snackbar_group_deletion_successful),
-				),
-			)
-			firebaseAnalytics.logEvent("delete_group") {
-				param("group_id", registryUiState.value.groupId)
-				param("group_name", registryUiState.value.groupName)
-				for (selectedApp in registryUiState.value.selectedApps) {
-					param("app_name", selectedApp.name)
+					return@launch
+				}
+
+				is BrakeResult.Success -> {
+
+					_modalFlow.value = RegistryModalState.Idle
+					_snackBarFlow.emit(
+						RegistrySnackBarState.Success(
+							UiString.ResourceString(R.string.registry_snackbar_group_deletion_successful),
+						),
+					)
+					firebaseAnalytics.logEvent("delete_group") {
+						param("group_id", registryUiState.value.groupId)
+						param("group_name", registryUiState.value.groupName)
+						for (selectedApp in registryUiState.value.selectedApps) {
+							param("app_name", selectedApp.name)
+						}
+					}
+					_navigationFlow.emit(RegistryNavState.NavigateToHome)
 				}
 			}
-			_navigationFlow.emit(RegistryNavState.NavigateToHome)
 		}
 	}
 }

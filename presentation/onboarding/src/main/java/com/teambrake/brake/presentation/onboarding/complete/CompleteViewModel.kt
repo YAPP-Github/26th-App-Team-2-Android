@@ -6,6 +6,7 @@ import com.teambrake.brake.presentation.onboarding.complete.model.CompleteNavSta
 import com.google.firebase.analytics.FirebaseAnalytics
 import com.google.firebase.analytics.logEvent
 import com.teambrake.brake.core.ui.UiString
+import com.teambrake.brake.domain.model.result.BrakeResult
 import com.teambrake.brake.domain.usecase.StoreOnboardingCompletionUseCase
 import com.teambrake.brake.presentation.onboarding.R
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -27,18 +28,22 @@ class CompleteViewModel @Inject constructor(
 
 	fun completeOnboarding() {
 		viewModelScope.launch {
-			storeOnboardingCompletionUseCase(
+			val result = storeOnboardingCompletionUseCase(
 				isComplete = true,
-				onError = {
+			)
+			when (result) {
+				is BrakeResult.Success -> {
+					firebaseAnalytics.logEvent(FirebaseAnalytics.Event.TUTORIAL_COMPLETE) {
+						param(FirebaseAnalytics.Param.SUCCESS, "true")
+					}
+					_navigationFlow.emit(CompleteNavState.NavigateToMain)
+				}
+				is BrakeResult.Error -> {
 					_snackBarFlow.emit(
 						UiString.ResourceString(R.string.onboarding_snackbar_flag_save_error),
 					)
-				},
-			)
-			firebaseAnalytics.logEvent(FirebaseAnalytics.Event.TUTORIAL_COMPLETE) {
-				param(FirebaseAnalytics.Param.SUCCESS, "true")
+				}
 			}
-			_navigationFlow.emit(CompleteNavState.NavigateToMain)
 		}
 	}
 }

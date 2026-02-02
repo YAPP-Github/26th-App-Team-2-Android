@@ -3,6 +3,7 @@ package com.teambrake.brake.overlay.timer
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.teambrake.brake.core.model.app.AppGroupState
+import com.teambrake.brake.domain.model.result.BrakeResult
 import com.teambrake.brake.domain.usecase.SetAlarmUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -38,15 +39,21 @@ internal class TimerViewModel @Inject constructor(
 		val uiState = timerUiState.value as? TimerUiState.TimeSetting ?: return
 
 		viewModelScope.launch {
-			setAlarmUsecase(
-				second = uiState.time,
-				groupId = groupId,
-				groupName = groupName,
-				appGroupState = AppGroupState.Using,
-			).onSuccess {
-				confirmTime(uiState.time, it)
-			}.onFailure {
-				sendToastMessage("알람 설정에 실패했습니다. 정확한 알람 권한을 확인해주세요.")
+			when (
+				val result = setAlarmUsecase(
+					second = uiState.time,
+					groupId = groupId,
+					groupName = groupName,
+					appGroupState = AppGroupState.Using,
+				)
+			) {
+				is BrakeResult.Success -> {
+					confirmTime(uiState.time, result.data)
+				}
+
+				is BrakeResult.Error -> {
+					sendToastMessage("알람 설정에 실패했습니다. 정확한 알람 권한을 확인해주세요.")
+				}
 			}
 		}
 	}

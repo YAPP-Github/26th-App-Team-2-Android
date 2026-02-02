@@ -48,19 +48,36 @@ class SettingViewModel @Inject constructor(
 
 	init {
 		viewModelScope.launch {
-			getNicknameUseCase {}.collect { nickname ->
-				_uiState.update {
-					SettingUiState(
-						user = SettingUser(
-							imageUrl = null,
-							name = nickname,
-						),
-						appInfo = _uiState.value.appInfo,
-						status = SettingUiState.Status.Loaded,
-					)
+			getNicknameUseCase().collect { result ->
+				when (result) {
+					is BrakeResult.Success -> {
+						_uiState.update {
+							SettingUiState(
+								user = SettingUser(
+									imageUrl = null,
+									name = result.data,
+								),
+								appInfo = _uiState.value.appInfo,
+								status = SettingUiState.Status.Loaded,
+							)
+						}
+					}
+					is BrakeResult.Error -> {
+						Timber.e("Failed to get nickname: ${result.error}")
+						_snackBarFlow.emit(
+							SnackBarState.Error(
+								uiString = UiString.ResourceString(R.string.snackbar_get_nickname_error),
+							),
+						)
+					}
 				}
 			}
 		}
+	}
+
+	override fun onCleared() {
+		super.onCleared()
+		deleteJob?.cancel()
 	}
 
 	fun modifyNickname() {
