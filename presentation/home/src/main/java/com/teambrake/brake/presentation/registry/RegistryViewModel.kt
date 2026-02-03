@@ -234,21 +234,13 @@ class RegistryViewModel @Inject constructor(
 			)
 
 			when (result) {
-				is BrakeResult.Error -> {
-					_snackBarFlow.emit(
-						RegistrySnackBarState.Error(
-							UiString.ResourceString(R.string.registry_snackbar_group_creation_error),
-						),
-					)
-					return@launch
-				}
-
 				is BrakeResult.Success -> {
 					_snackBarFlow.emit(
 						RegistrySnackBarState.Success(
 							UiString.ResourceString(R.string.registry_snackbar_group_creation_successful),
 						),
 					)
+
 					launch(Dispatchers.IO) {
 						// Amplitude 이벤트 전송 (6번: create_app_group, 7번: edit_app_group)
 						val event = if (isEditingExistingGroup) {
@@ -285,7 +277,15 @@ class RegistryViewModel @Inject constructor(
 							}
 						}
 					}
+
 					_navigationFlow.emit(RegistryNavState.NavigateToHome)
+				}
+				is BrakeResult.Error -> {
+					_snackBarFlow.emit(
+						RegistrySnackBarState.Error(
+							UiString.ResourceString(R.string.registry_snackbar_group_creation_error),
+						),
+					)
 				}
 			}
 		}
@@ -406,25 +406,21 @@ class RegistryViewModel @Inject constructor(
 
 	fun removeGroup() {
 		viewModelScope.launch {
-			val result = deleteGroupUseCase(groupId = registryUiState.value.groupId)
+			val currentUiState = registryUiState.value
+
+			val result = deleteGroupUseCase(
+				groupId = currentUiState.groupId,
+			)
+
 			when (result) {
-				is BrakeResult.Error -> {
-					_snackBarFlow.emit(
-						RegistrySnackBarState.Error(
-							UiString.ResourceString(R.string.registry_snackbar_group_deletion_error),
-						),
-					)
-					return@launch
-				}
-
 				is BrakeResult.Success -> {
-
 					_modalFlow.value = RegistryModalState.Idle
 					_snackBarFlow.emit(
 						RegistrySnackBarState.Success(
 							UiString.ResourceString(R.string.registry_snackbar_group_deletion_successful),
 						),
 					)
+
 					launch(Dispatchers.IO) {
 						// 8번: delete_app_group 이벤트 전송
 						val deleteEvent = AmplitudeEventHelper.deleteAppGroupEvent(
@@ -453,7 +449,16 @@ class RegistryViewModel @Inject constructor(
 							}
 						}
 					}
+
 					_navigationFlow.emit(RegistryNavState.NavigateToHome)
+				}
+				is BrakeResult.Error -> {
+					_modalFlow.value = RegistryModalState.Idle
+					_snackBarFlow.emit(
+						RegistrySnackBarState.Error(
+							UiString.ResourceString(R.string.registry_snackbar_group_deletion_error),
+						),
+					)
 				}
 			}
 		}

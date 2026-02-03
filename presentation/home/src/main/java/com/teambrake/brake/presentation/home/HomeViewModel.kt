@@ -8,14 +8,12 @@ import com.google.firebase.analytics.logEvent
 import com.teambrake.brake.core.amplitude.AmplitudeEventHelper
 import com.teambrake.brake.core.model.app.AppGroup
 import com.teambrake.brake.core.model.app.AppGroupState
+import com.teambrake.brake.domain.model.result.BrakeResult
 import com.teambrake.brake.domain.repository.AppGroupRepository
 import com.teambrake.brake.domain.usecase.SetBlockingAlarmUseCase
 import com.teambrake.brake.presentation.home.contract.HomeEvent
 import com.teambrake.brake.presentation.home.contract.HomeModalState
 import com.teambrake.brake.presentation.home.contract.HomeUiState
-import com.google.firebase.analytics.FirebaseAnalytics
-import com.google.firebase.analytics.logEvent
-import com.teambrake.brake.domain.model.result.BrakeResult
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.collections.immutable.toPersistentList
 import kotlinx.coroutines.Dispatchers

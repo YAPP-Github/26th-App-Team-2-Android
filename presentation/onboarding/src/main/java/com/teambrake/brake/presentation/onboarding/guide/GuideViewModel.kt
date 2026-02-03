@@ -9,7 +9,6 @@ import com.google.firebase.analytics.logEvent
 import com.teambrake.brake.core.amplitude.AmplitudeEventHelper
 import com.teambrake.brake.core.amplitude.StepDetail
 import com.teambrake.brake.core.amplitude.StepName
-import com.teambrake.brake.core.model.user.Destination
 import com.teambrake.brake.core.permission.PermissionManager
 import com.teambrake.brake.core.ui.UiString
 import com.teambrake.brake.domain.model.result.BrakeResult
