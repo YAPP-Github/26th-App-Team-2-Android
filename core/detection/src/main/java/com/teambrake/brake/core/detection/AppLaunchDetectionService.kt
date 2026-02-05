@@ -34,8 +34,9 @@ class AppLaunchDetectionService : AccessibilityService() {
 
 	private val serviceJob = SupervisorJob()
 
-	// Main 디스패처 사용으로 단일 스레드에서 순차 실행 보장
-	private val serviceScope = CoroutineScope(Dispatchers.Main + serviceJob)
+	// 백그라운드 디스패처에서 단일 스레드 순차 실행 보장 (UI 스레드 차단 방지)
+	@OptIn(kotlinx.coroutines.ExperimentalCoroutinesApi::class)
+	private val serviceScope = CoroutineScope(Dispatchers.Default.limitedParallelism(1) + serviceJob)
 
 	/** 현재 유저의 사용 앱 캐싱, AccessibilityService 활용이 가장 정확도가 높음 **/
 	private var currentAppPkg: String? = null
@@ -282,15 +283,15 @@ class AppLaunchDetectionService : AccessibilityService() {
 
 		// Main 디스패처에서 순차 실행되므로 Mutex 불필요
 		serviceScope.launch {
-			// DB 읽기만 IO 스레드로 전환
-			val appGroups = withContext(Dispatchers.IO) {
-				appGroupRepository.observeAppGroup().firstOrNull()
-			}
-			if (!appGroups.isNullOrEmpty()) {
-				cachedDatabase.initializeCachedState(appGroups)
-				Timber.i("✅ 캐시 초기화 완료: ${appGroups.size}개의 앱 그룹")
-			} else {
-				Timber.w("⚠️ 초기화할 앱 그룹이 없습니다.")
+			// DB 읽기와 캐시 초기화를 모두 IO 스레드에서 처리
+			withContext(Dispatchers.IO) {
+				val appGroups = appGroupRepository.observeAppGroup().firstOrNull()
+				if (!appGroups.isNullOrEmpty()) {
+					cachedDatabase.initializeCachedState(appGroups)
+					Timber.i("✅ 캐시 초기화 완료: ${appGroups.size}개의 앱 그룹")
+				} else {
+					Timber.w("⚠️ 초기화할 앱 그룹이 없습니다.")
+				}
 			}
 		}
 

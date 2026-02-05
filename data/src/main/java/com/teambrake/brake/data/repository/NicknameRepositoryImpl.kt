@@ -65,7 +65,7 @@ internal class NicknameRepositoryImpl @Inject constructor(
 			// 로컬에 저장
 			val localSaveResult = nameLocalDataSource.updateNickname(nickname)
 			result = if (!localSaveResult) {
-				Result.failure(Exception("failed to save nickname locally"))
+				Result.failure(Exception("failed to save nickname locally after remote update"))
 			} else {
 				Result.success(userName)
 			}
@@ -82,7 +82,7 @@ internal class NicknameRepositoryImpl @Inject constructor(
 				),
 			)
 		} else {
-			Result.failure(Exception("failed to save nickname locally"))
+			Result.failure(Exception("failed to save nickname locally in offline mode"))
 		}
 	}
 

@@ -22,9 +22,8 @@ open class BaseRepository(
 		runIfOnline: suspend () -> T,
 		runIfOffline: (suspend () -> T),
 	): T {
-		val status = tokenLocalDataSource.getUserStatus(
-			onError = { /* 상태를 가져오는 중 오류가 발생해도 무시 */ },
-		).firstOrNull() ?: UserStatus.INACTIVE
+		val status = tokenLocalDataSource.getUserStatus()
+			.firstOrNull() ?: UserStatus.INACTIVE
 
 		return when (status) {
 			UserStatus.ACTIVE, UserStatus.HALF_SIGNUP -> {
@@ -43,9 +42,8 @@ open class BaseRepository(
 		flowProvider: () -> Flow<T>,
 		offlineFlowProvider: () -> Flow<T>,
 	): Flow<T> = flow {
-		val status = tokenLocalDataSource.getUserStatus(
-			onError = { /* 상태를 가져오는 중 오류가 발생해도 무시 */ },
-		).firstOrNull() ?: UserStatus.INACTIVE
+		val status = tokenLocalDataSource.getUserStatus()
+			.firstOrNull() ?: UserStatus.INACTIVE
 
 		when (status) {
 			UserStatus.ACTIVE, UserStatus.HALF_SIGNUP -> {
@@ -61,9 +59,8 @@ open class BaseRepository(
 	 * 현재 사용자가 온라인 상태인지 확인
 	 */
 	protected suspend fun isOnlineStatus(): Boolean {
-		val status = tokenLocalDataSource.getUserStatus(
-			onError = { /* 상태를 가져오는 중 오류가 발생해도 무시 */ },
-		).firstOrNull() ?: UserStatus.INACTIVE
+		val status = tokenLocalDataSource.getUserStatus()
+			.firstOrNull() ?: UserStatus.INACTIVE
 
 		return status == UserStatus.ACTIVE || status == UserStatus.HALF_SIGNUP
 	}

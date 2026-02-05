@@ -29,9 +29,10 @@ internal class AppGroupRepositoryImpl @Inject constructor(
 	AppGroupRepository {
 
 	override suspend fun insertAppGroup(appGroup: AppGroup): AppGroup = try {
-		val isUpdate = appGroupLocalDataSource.isAppGroupExists(appGroup.id) {
-			throw it
-		}
+		val isUpdate = appGroupLocalDataSource.isAppGroupExists(
+			appGroup.id,
+			onError = { throw it },
+		)
 
 		executeFlowWithStatusCheck(
 			flowProvider = {
@@ -64,7 +65,7 @@ internal class AppGroupRepositoryImpl @Inject constructor(
 	} catch (_: Exception) {
 		// 예외 발생 시 로컬에만 저장
 		appGroupLocalDataSource.insertAppGroup(appGroup)
-		if (appGroupLocalDataSource.isAppGroupExists(appGroup.id)) {
+		if (appGroupLocalDataSource.isAppGroupExists(appGroup.id, onError = { throw it })) {
 			cachedDatabase.updateAppGroupInCache(appGroup)
 		} else {
 			cachedDatabase.addAppGroupToCache(appGroup)
@@ -118,7 +119,7 @@ internal class AppGroupRepositoryImpl @Inject constructor(
 					executeFlowWithStatusCheck(
 						flowProvider = { appGroupRemoteDataSource.getAppGroups() },
 						offlineFlowProvider = {
-							kotlinx.coroutines.flow.flow {
+							flow {
 								// 오프라인 모드: 서버에서 데이터를 가져오지 않고 빈 리스트 반환
 								emit(emptyList())
 							}

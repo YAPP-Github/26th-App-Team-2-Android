@@ -69,7 +69,12 @@ class MainViewModel @Inject constructor(
 	}
 
 	private fun onDecideDestinationSuccess(destination: Destination, context: Context): Route = when (destination) {
-		is Destination.Login -> InitialRoute.Login
+		is Destination.Login -> {
+			firebaseAnalytics.logEvent(FirebaseAnalytics.Event.SCREEN_VIEW) {
+				param(FirebaseAnalytics.Param.SCREEN_NAME, "login_screen")
+			}
+			InitialRoute.Login
+		}
 
 		is Destination.Onboarding -> InitialRoute.Onboarding.Guide
 

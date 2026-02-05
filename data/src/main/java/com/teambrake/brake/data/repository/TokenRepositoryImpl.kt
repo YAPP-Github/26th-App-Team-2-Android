@@ -41,7 +41,7 @@ internal class TokenRepositoryImpl @Inject constructor(
 	}
 
 	override fun getUserStatus(): Flow<UserStatus> =
-		tokenLocalDataSource.getUserStatus(onError = {})
+		tokenLocalDataSource.getUserStatus()
 
 	override fun getRemoteTokens(
 		provider: String,
@@ -131,7 +131,7 @@ internal class TokenRepositoryImpl @Inject constructor(
 	}
 
 	override suspend fun refreshTokens(): Result<Unit> = try {
-		val refreshToken = tokenLocalDataSource.getUserRefreshToken { throw it }.firstOrNull()
+		val refreshToken = tokenLocalDataSource.getUserRefreshToken().firstOrNull()
 		refreshToken?.let {
 			executeFlowWithStatusCheck(
 				flowProvider = {
@@ -183,9 +183,10 @@ internal class TokenRepositoryImpl @Inject constructor(
 			runIfOnline = {
 				tokenRemoteDataSource.logoutAccount(
 					// 해당 함수 호출부 다음 코드 라인의 Main Thread에서 접근하여 비우는 로직보다 먼저 접근
-					accessToken = tokenLocalDataSource.getUserAccessToken {
-						Timber.e("서버에 로그아웃 요청 실패: $it")
-					}.firstOrNull() ?: "",
+					accessToken = tokenLocalDataSource.getUserAccessToken()
+						.catch { e ->
+							Timber.e("서버에 로그아웃 요청 실패: $e")
+						}.firstOrNull() ?: "",
 					onError = { throw it },
 				)
 				googleAuthManager.signOutGoogleAuth()

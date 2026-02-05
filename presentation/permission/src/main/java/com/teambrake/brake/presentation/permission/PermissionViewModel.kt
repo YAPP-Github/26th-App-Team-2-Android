@@ -109,7 +109,9 @@ class PermissionViewModel @Inject constructor(
 		viewModelScope.launch {
 			when (val result = decideDestinationUseCase()) {
 				is BrakeResult.Error -> {
-					/* No-op */
+					_snackBarFlow.emit(
+						UiString.ResourceString(R.string.permission_snackbar_permission_stack_error),
+					)
 				}
 
 				is BrakeResult.Success -> {

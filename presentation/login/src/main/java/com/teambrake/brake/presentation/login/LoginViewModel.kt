@@ -384,7 +384,7 @@ internal class LoginViewModel @Inject constructor(
 				}
 			}
 
-			is BrakeResult.Error<*> -> {
+			is BrakeResult.Error -> {
 				_snackBarFlow.emit(
 					SnackBarState.Error(
 						uiString = UiString.ResourceString(

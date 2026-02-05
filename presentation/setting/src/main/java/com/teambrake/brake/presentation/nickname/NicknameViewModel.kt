@@ -57,7 +57,7 @@ class NicknameViewModel @Inject constructor(
 				is BrakeResult.Error -> {
 					_snackBarFlow.emit(
 						SnackBarState.Error(
-							uiString = UiString.ResourceString(R.string.nickname_snackbar_update_error),
+							uiString = UiString.ResourceString(R.string.snackbar_get_nickname_error),
 						),
 					)
 				}

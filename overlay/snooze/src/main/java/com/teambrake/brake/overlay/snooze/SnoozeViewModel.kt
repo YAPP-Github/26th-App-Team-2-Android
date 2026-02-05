@@ -71,7 +71,7 @@ internal class SnoozeViewModel @AssistedInject constructor(
 					sendToastMessage("알람 설정에 실패했습니다. 정확한 알람 권한을 확인해주세요.")
 				}
 
-				else -> {
+				is BrakeResult.Success -> {
 					/**
 					 * 14. click_snooze 이벤트 전송
 					 * 스누즈 버튼 클릭 시 호출 (그룹 정보와 스누즈 횟수 필요)
