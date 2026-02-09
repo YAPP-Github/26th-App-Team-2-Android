@@ -50,8 +50,11 @@
 	<!-- Registry Group Selection -->
 	<string name="registry_group_screen_title">앱 그룹 추가</string>
 	<string name="registry_group_list_guide">사용을 자제할\n앱을 선택해주세요</string>
+	<string name="registry_textfield_name">그룹명</string>
 	<string name="registry_textfield_warning_text">공백, 특수문자 없이 2~10자를 입력해 주세요.</string>
 	<string name="registry_textfield_validation_text">사용 가능한 그룹명입니다.</string>
+	<string name="registry_group_add_app_name">목록</string>
+	<string name="registry_group_add_app_count">개</string>
 	<string name="registry_group_add_app_button">추가</string>
 	<string name="registry_group_delete_group_button">그룹 삭제</string>
 	<string name="registry_group_completion_button">완료</string>
@@ -59,7 +62,8 @@
 	<!-- Registry App Selection -->
 	<string name="registry_app_button">선택 완료</string>
 	<string name="registry_app_error_message">검색 결과가 없습니다. \'%1$s\'에 해당하는 앱이 없습니다.</string>
-	<string name="registry_app_titel">사용을 자제할 앱을 선택해주세요</string>
+	<string name="registry_app_title">사용을 자제할 앱을 선택해주세요</string>
+	<string name="registry_app_search_hint">앱 또는 카테고리 검색</string>
 
 	<!-- Registry Dialog -->
 	<string name="registry_warning_dialog_title">그룹을 삭제할까요?</string>
@@ -73,4 +77,5 @@
 	<string name="registry_snackbar_group_id_fetch_error">그룹 ID 불러오기 중 오류가 발생했습니다.</string>
 	<string name="registry_snackbar_group_deletion_successful">그룹이 삭제되었습니다.</string>
 	<string name="registry_snackbar_group_deletion_error">그룹 삭제 중 오류가 발생했습니다.</string>
+	<string name="registry_search">앱 또는 카테고리 검색</string>
 </resources>

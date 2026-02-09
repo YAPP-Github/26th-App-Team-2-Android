@@ -165,13 +165,13 @@ fun GroupRegistryScreen(
 				horizontalArrangement = Arrangement.Absolute.SpaceBetween,
 			) {
 				Text(
-					text = "목록",
+					text = stringResource(R.string.registry_group_add_app_name),
 					color = Gray200,
 					style = BrakeTheme.typography.body16M,
 				)
 
 				Text(
-					text = "${registryUiState.selectedApps.size} 개",
+					text = "${registryUiState.selectedApps.size} ${stringResource(R.string.registry_group_add_app_count)}",
 					color = White,
 					style = BrakeTheme.typography.body12M,
 				)

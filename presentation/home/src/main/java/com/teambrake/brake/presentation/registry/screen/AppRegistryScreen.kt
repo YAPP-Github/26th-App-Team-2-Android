@@ -137,7 +137,7 @@ fun AppRegistryScreen(
 				horizontalAlignment = Alignment.CenterHorizontally,
 			) {
 				Text(
-					text = stringResource(R.string.registry_app_titel),
+					text = stringResource(R.string.registry_app_title),
 					style = BrakeTheme.typography.body16M,
 					color = White,
 				)
@@ -145,7 +145,7 @@ fun AppRegistryScreen(
 				VerticalSpacer(8.dp)
 
 				Text(
-					text = "${registryUiState.apps.filter { it.isSelected }.size}개",
+					text = "${registryUiState.apps.filter { it.isSelected }.size}${stringResource(R.string.registry_group_add_app_count)}",
 					style = BrakeTheme.typography.subtitle18SB,
 					color = White,
 				)
