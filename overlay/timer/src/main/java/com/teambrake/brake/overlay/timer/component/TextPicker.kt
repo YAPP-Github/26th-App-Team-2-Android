@@ -25,6 +25,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.lerp
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.teambrake.brake.core.designsystem.theme.BrakeTheme
@@ -33,6 +34,7 @@ import com.teambrake.brake.core.designsystem.theme.Gray50
 import com.teambrake.brake.core.designsystem.theme.Gray600
 import com.teambrake.brake.core.designsystem.theme.Gray850
 import com.teambrake.brake.core.designsystem.theme.White
+import com.teambrake.brake.overlay.timer.R
 import dev.chrisbanes.snapper.ExperimentalSnapperApi
 import dev.chrisbanes.snapper.SnapperLayoutInfo
 import dev.chrisbanes.snapper.rememberLazyListSnapperLayoutInfo
@@ -155,7 +157,7 @@ internal fun TextPicker(
 			contentAlignment = Alignment.Center,
 		) {
 			Text(
-				text = "분",
+				text = " ${stringResource(R.string.overlay_timer_minute)}",
 				style = BrakeTheme.typography.body16M,
 				color = Gray50,
 				maxLines = 1,
