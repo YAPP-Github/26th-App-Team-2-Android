@@ -1,8 +1,8 @@
 package com.teambrake.brake.domain.usecaseImpl
 
+import com.teambrake.brake.domain.model.exception.toApiCallError
 import com.teambrake.brake.domain.model.result.BrakeResult
 import com.teambrake.brake.domain.model.result.error.GetNicknameUseCaseError
-import com.teambrake.brake.domain.model.result.error.UndefinedExceptionError
 import com.teambrake.brake.domain.repository.NicknameRepository
 import com.teambrake.brake.domain.usecase.GetNicknameUseCase
 import kotlinx.coroutines.flow.Flow
@@ -18,6 +18,6 @@ class GetNicknameUseCaseImpl @Inject constructor(
 		nicknameRepository.getNickname()
 			.map { BrakeResult.Success(it) as BrakeResult<String, GetNicknameUseCaseError> }
 			.catch { e ->
-				emit(BrakeResult.Error(UndefinedExceptionError(e)))
+				emit(BrakeResult.Error(e.toApiCallError()))
 			}
 }

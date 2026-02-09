@@ -34,64 +34,83 @@ class DecideStartDestinationUseCaseImpl @Inject constructor(
 			tokenRepository.getUserStatus().first()
 		}
 
-		if (userStatusResult.isFailure) {
-			return BrakeResult.Error(UndefinedExceptionError(userStatusResult.exceptionOrNull() ?: Exception("사용자 상태 가져오기 실패")))
-		}
+		return userStatusResult.fold(
+			onFailure = {
+				BrakeResult.Error(
+					UndefinedExceptionError(
+						userStatusResult.exceptionOrNull() ?: Exception("사용자 상태 가져오기 실패"),
+					),
+				)
+			},
+			onSuccess = { userStatus ->
+				// 2. 사용자 상태에 따른 분기 처리
+				when (userStatus) {
+					// 2-1. 비활성 상태인 경우 모든 데이터 삭제 후 로그인 화면으로 이동
+					UserStatus.INACTIVE -> {
+						val clearResult = clearAllData()
+						when (clearResult) {
+							is BrakeResult.Success -> {
+								BrakeResult.Success(PreAuthSuccess(Destination.Login))
+							}
 
-		val userStatus = userStatusResult.getOrThrow()
-
-		// 2. 사용자 상태에 따른 분기 처리
-		return when (userStatus) {
-			// 2-1. 비활성 상태인 경우 모든 데이터 삭제 후 로그인 화면으로 이동
-			UserStatus.INACTIVE -> {
-				val clearResult = clearAllData()
-				when (clearResult) {
-					is BrakeResult.Success -> {
-						BrakeResult.Success(PreAuthSuccess(Destination.Login))
+							is BrakeResult.Error -> {
+								clearResult
+							}
+						}
 					}
-					is BrakeResult.Error -> {
-						clearResult
+					// 2-2. 오프라인 상태인 경우
+					UserStatus.OFFLINE -> {
+						// 3. 닉네임 가져오기
+						val nicknameResult = runCatching {
+							nicknameRepository.getNickname().first()
+						}
+
+						if (nicknameResult.isFailure) {
+							return BrakeResult.Error(
+								UndefinedExceptionError(
+									nicknameResult.exceptionOrNull() ?: Exception("닉네임 가져오기 실패"),
+								),
+							)
+						}
+
+						// 4. 온보딩 상태 확인
+						val destination = getDestinationByOnboardingStatus()
+							?: return BrakeResult.Error(UndefinedExceptionError(Exception("온보딩 상태 확인 실패")))
+						BrakeResult.Success(OfflineAuthorizedSuccess(destination))
+					}
+					// 2-3. 활성 상태 또는 반회원 상태인 경우
+					UserStatus.ACTIVE, UserStatus.HALF_SIGNUP -> {
+						// 3. 닉네임 가져오기
+						val nicknameResult = runCatching {
+							nicknameRepository.getNickname().first()
+						}
+
+						nicknameResult.onSuccess { nickname ->
+							// 성공적으로 닉네임을 가져왔으면 로컬에 저장
+							nicknameRepository.saveLocalUserName(nickname)
+						}.onFailure {
+							// 닉네임 가져오기 실패 시 로컬 이름을 지움
+							nicknameRepository.clearLocalName()
+							return BrakeResult.Error(
+								UndefinedExceptionError(
+									nicknameResult.exceptionOrNull() ?: Exception("닉네임 가져오기 실패"),
+								),
+							)
+						}
+
+						if (userStatus == UserStatus.ACTIVE) {
+							// 4. 온보딩 상태 확인
+							val destination = getDestinationByOnboardingStatus()
+								?: return BrakeResult.Error(UndefinedExceptionError(Exception("온보딩 상태 확인 실패")))
+							BrakeResult.Success(OnlineAuthorizedSuccess(destination))
+						} else {
+							// 반회원 상태인 경우 로그인 화면으로 이동
+							BrakeResult.Success(OnlineAuthorizedSuccess(Destination.Login))
+						}
 					}
 				}
-			}
-			// 2-2. 오프라인 상태인 경우
-			UserStatus.OFFLINE -> {
-				// 3. 닉네임 가져오기
-				val nicknameResult = runCatching {
-					nicknameRepository.getNickname().first()
-				}
-
-				if (nicknameResult.isFailure) {
-					return BrakeResult.Error(UndefinedExceptionError(nicknameResult.exceptionOrNull() ?: Exception("닉네임 가져오기 실패")))
-				}
-
-				// 4. 온보딩 상태 확인
-				val destination = getDestinationByOnboardingStatus()
-					?: return BrakeResult.Error(UndefinedExceptionError(Exception("온보딩 상태 확인 실패")))
-				BrakeResult.Success(OfflineAuthorizedSuccess(destination))
-			}
-			// 2-3. 활성 상태 또는 반회원 상태인 경우
-			UserStatus.ACTIVE, UserStatus.HALF_SIGNUP -> {
-				// 3. 닉네임 가져오기
-				val nicknameResult = runCatching {
-					nicknameRepository.getNickname().first()
-				}
-
-				if (nicknameResult.isFailure) {
-					return BrakeResult.Error(UndefinedExceptionError(nicknameResult.exceptionOrNull() ?: Exception("닉네임 가져오기 실패")))
-				}
-
-				if (userStatus == UserStatus.ACTIVE) {
-					// 4. 온보딩 상태 확인
-					val destination = getDestinationByOnboardingStatus()
-						?: return BrakeResult.Error(UndefinedExceptionError(Exception("온보딩 상태 확인 실패")))
-					BrakeResult.Success(OnlineAuthorizedSuccess(destination))
-				} else {
-					// 반회원 상태인 경우 로그인 화면으로 이동
-					BrakeResult.Success(OnlineAuthorizedSuccess(Destination.Login))
-				}
-			}
-		}
+			},
+		)
 	}
 
 	private suspend fun getDestinationByOnboardingStatus(): Destination? {
@@ -117,6 +136,7 @@ class DecideStartDestinationUseCaseImpl @Inject constructor(
 			appGroupResult.isSuccess -> {
 				// 성공적으로 앱 그룹 삭제됨
 			}
+
 			appGroupResult.isFailure -> {
 				val exception = appGroupResult.exceptionOrNull()
 				return BrakeResult.Error(LocalApiCallError(exception ?: Exception("앱 그룹 삭제 실패")))
@@ -128,6 +148,7 @@ class DecideStartDestinationUseCaseImpl @Inject constructor(
 			appResult.isSuccess -> {
 				// 성공적으로 앱 삭제됨
 			}
+
 			appResult.isFailure -> {
 				val exception = appResult.exceptionOrNull()
 				return BrakeResult.Error(LocalApiCallError(exception ?: Exception("앱 삭제 실패")))

@@ -1,7 +1,7 @@
 package com.teambrake.brake.domain.usecaseImpl
 
+import com.teambrake.brake.domain.model.exception.toApiCallError
 import com.teambrake.brake.domain.model.result.BrakeResult
-import com.teambrake.brake.domain.model.result.error.LocalApiCallError
 import com.teambrake.brake.domain.model.result.error.UpdateNicknameUseCaseError
 import com.teambrake.brake.domain.repository.TokenRepository
 import com.teambrake.brake.domain.repository.NicknameRepository
@@ -16,37 +16,21 @@ class UpdateNicknameUseCaseImpl @Inject constructor(
 
 	override suspend fun invoke(
 		nickname: String,
-	): BrakeResult<Unit, UpdateNicknameUseCaseError> {
+	): BrakeResult<Unit, UpdateNicknameUseCaseError> =
 		// AccessToken을 사용하여 닉네임 업데이트, 로컬에 닉네임 저장
-		val result = nicknameRepository.updateUserName(nickname = nickname)
-
-		return when {
-			// Success 케이스: 닉네임 업데이트 성공
-			result.isSuccess -> {
-				// DataStore에 저장된 authCode 삭제
-				val clearResult = tokenRepository.clearLocalAuthCode()
-
-				when {
-					clearResult.isSuccess -> {
+		nicknameRepository.updateUserName(nickname = nickname).fold(
+			onSuccess = {
+				tokenRepository.clearLocalAuthCode().fold(
+					onSuccess = {
 						BrakeResult.Success(Unit)
-					}
-
-					clearResult.isFailure -> {
-						val exception = clearResult.exceptionOrNull()
-						BrakeResult.Error(LocalApiCallError(exception ?: Throwable("AuthCode 삭제 실패")))
-					}
-
-					else -> BrakeResult.Error(LocalApiCallError(Exception("예상치 못한 오류")))
-				}
-			}
-
-			// Failure 케이스: 닉네임 업데이트 실패
-			result.isFailure -> {
-				val exception = result.exceptionOrNull()
-				BrakeResult.Error(LocalApiCallError(exception ?: Throwable("닉네임 업데이트에 실패했습니다")))
-			}
-
-			else -> BrakeResult.Error(LocalApiCallError(Exception("예상치 못한 오류")))
-		}
-	}
+					},
+					onFailure = { e ->
+						BrakeResult.Error(e.toApiCallError())
+					},
+				)
+			},
+			onFailure = { e ->
+				BrakeResult.Error(e.toApiCallError())
+			},
+		)
 }

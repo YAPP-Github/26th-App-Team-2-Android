@@ -41,12 +41,13 @@ internal class TokenRepositoryImpl @Inject constructor(
 	}
 
 	override fun getUserStatus(): Flow<UserStatus> =
-		tokenLocalDataSource.getUserStatus()
+		tokenLocalDataSource.getUserStatus { e ->
+			Timber.e("유저 상태 획득 실패: $e")
+		}
 
 	override fun getRemoteTokens(
 		provider: String,
 		authorizationCode: String,
-		onError: suspend (Throwable) -> Unit,
 	): Flow<UserToken> = flow {
 		emitAll(
 			executeFlowWithStatusCheck(
@@ -54,14 +55,15 @@ internal class TokenRepositoryImpl @Inject constructor(
 					tokenRemoteDataSource.getTokens(
 						provider = provider,
 						authorizationCode = authorizationCode,
-						onError = onError,
+						onError = {
+							Timber.e("토큰 획득 실패: $it")
+						},
 					)
 				},
 				offlineFlowProvider = {
 					flow {
 						val error = Exception("오프라인 모드에서 토큰 획득 불가")
 						Timber.e("오프라인 모드에서 토큰 획득 시도")
-						onError(error)
 						throw error
 					}
 				},
@@ -75,28 +77,30 @@ internal class TokenRepositoryImpl @Inject constructor(
 					userAccessToken = it.accessToken,
 					userRefreshToken = it.refreshToken,
 					userStatus = it.status,
-					onError = onError,
+					onError = { e ->
+						Timber.e("토큰 저장 실패: $e")
+					},
 				)
 			}.catch { e ->
 				Timber.e("토큰 갱신 실패: $e")
-				onError(e)
+				throw e
 			},
 		)
 	}
 
-	override fun getRemoteTokensRetry(
-		provider: String,
-		onError: suspend (Throwable) -> Unit,
-	): Flow<UserToken> = flow {
+	override fun getRemoteTokensRetry(provider: String): Flow<UserToken> = flow {
 		executeFlowWithStatusCheck(
 			flowProvider = {
-				authLocalDataSource.getAuthCode(onError = onError)
+				authLocalDataSource.getAuthCode(
+					onError = {
+						Timber.e("로컬에서 AuthCode 획득 실패: $it")
+					},
+				)
 			},
 			offlineFlowProvider = {
 				flow {
 					val error = Exception("오프라인 모드에서 AuthCode 획득 불가")
 					Timber.e("오프라인 모드에서 AuthCode 획득 불가")
-					onError(error)
 					throw error
 				}
 			},
@@ -104,10 +108,8 @@ internal class TokenRepositoryImpl @Inject constructor(
 			getRemoteTokens(
 				provider = provider,
 				authorizationCode = authCode,
-				onError = onError,
 			).catch { e ->
 				Timber.e("토큰 재시도 실패: $e")
-				onError(e)
 			}.collect { token ->
 				emit(token)
 			}
@@ -131,7 +133,10 @@ internal class TokenRepositoryImpl @Inject constructor(
 	}
 
 	override suspend fun refreshTokens(): Result<Unit> = try {
-		val refreshToken = tokenLocalDataSource.getUserRefreshToken().firstOrNull()
+		val refreshToken = tokenLocalDataSource.getUserRefreshToken { e ->
+			Timber.e("리프레시 토큰 획득 실패: $e")
+			throw e
+		}.firstOrNull()
 		refreshToken?.let {
 			executeFlowWithStatusCheck(
 				flowProvider = {
@@ -155,7 +160,9 @@ internal class TokenRepositoryImpl @Inject constructor(
 					userAccessToken = it.accessToken,
 					userRefreshToken = it.refreshToken,
 					userStatus = it.status,
-					onError = { throw it },
+					onError = { e ->
+						Timber.e("토큰 갱신 저장 실패: $e")
+					},
 				)
 				Timber.d("refreshToken: 토큰 갱신 성공 - ${it.accessToken}, ${it.refreshToken}, ${it.status}")
 			}.catch { e ->
@@ -183,11 +190,16 @@ internal class TokenRepositoryImpl @Inject constructor(
 			runIfOnline = {
 				tokenRemoteDataSource.logoutAccount(
 					// 해당 함수 호출부 다음 코드 라인의 Main Thread에서 접근하여 비우는 로직보다 먼저 접근
-					accessToken = tokenLocalDataSource.getUserAccessToken()
-						.catch { e ->
-							Timber.e("서버에 로그아웃 요청 실패: $e")
-						}.firstOrNull() ?: "",
-					onError = { throw it },
+					accessToken = tokenLocalDataSource.getUserAccessToken { e ->
+						Timber.e("액세스 토큰 획득 실패: $e")
+					}.catch { e ->
+						Timber.e("서버에 로그아웃 요청 실패: $e")
+						throw e
+					}.firstOrNull() ?: "",
+					onError = { e ->
+						Timber.e("서버에 로그아웃 요청 실패: $e")
+						throw e
+					},
 				)
 				googleAuthManager.signOutGoogleAuth()
 			},

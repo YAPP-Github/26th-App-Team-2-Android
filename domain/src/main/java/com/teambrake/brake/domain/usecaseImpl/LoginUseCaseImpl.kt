@@ -34,7 +34,6 @@ class LoginUseCaseImpl @Inject constructor(
 	): Flow<BrakeResult<UserStatus, LoginUseCaseError>> = tokenRepository.getRemoteTokens(
 		provider = provider,
 		authorizationCode = authCode,
-		onError = { },
 	).map { userToken ->
 		when (userToken.status) {
 			UserStatus.ACTIVE -> {
@@ -68,15 +67,9 @@ class LoginUseCaseImpl @Inject constructor(
 				// 닉네임 저장
 				val saveResult = nicknameRepository.saveLocalUserName(nickname = nickname)
 
-				when {
-					saveResult.isSuccess -> {
-						// 성공적으로 닉네임 저장됨
-					}
-
-					saveResult.isFailure -> {
-						// 닉네임 저장 실패 시 로컬 이름을 지움
-						nicknameRepository.clearLocalName()
-					}
+				if (saveResult.isFailure) {
+					// 닉네임 저장 실패 시 로컬 이름을 지움
+					nicknameRepository.clearLocalName()
 				}
 			}
 

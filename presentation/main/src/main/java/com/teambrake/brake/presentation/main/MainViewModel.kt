@@ -68,34 +68,34 @@ class MainViewModel @Inject constructor(
 		}
 	}
 
-	private fun onDecideDestinationSuccess(destination: Destination, context: Context): Route = when (destination) {
-		is Destination.Login -> {
-			firebaseAnalytics.logEvent(FirebaseAnalytics.Event.SCREEN_VIEW) {
-				param(FirebaseAnalytics.Param.SCREEN_NAME, "login_screen")
+	private fun onDecideDestinationSuccess(destination: Destination, context: Context): Route =
+		when (destination) {
+			is Destination.Login -> {
+				firebaseAnalytics.logEvent(FirebaseAnalytics.Event.SCREEN_VIEW) {
+					param(FirebaseAnalytics.Param.SCREEN_NAME, "login_screen")
+				}
+				InitialRoute.Login
 			}
-			InitialRoute.Login
+
+			is Destination.Onboarding -> InitialRoute.Onboarding.Guide
+
+			is Destination.PermissionOrHome -> {
+				if (permissionManager.isAllGranted(context)) {
+					MainTabRoute.Home
+				} else {
+					InitialRoute.Permission
+				}
+			}
+
+			else -> InitialRoute.Login
 		}
 
-		is Destination.Onboarding -> InitialRoute.Onboarding.Guide
-
-		is Destination.PermissionOrHome -> {
-			if (permissionManager.isAllGranted(context)) {
-				MainTabRoute.Home
-			} else {
-				InitialRoute.Permission
-			}
-		}
-
-		else -> InitialRoute.Login
-	}
-
-	private fun onDecideDestinationError(error: DecideStartDestinationUseCaseError): Route {
+	private fun onDecideDestinationError(error: DecideStartDestinationUseCaseError): Route =
 		when (error) {
 			is HttpUnsuccessfulCodeError, is LocalApiCallError, is RemoteServerNotReachedError, is UndefinedExceptionError -> {
-				return InitialRoute.Login
+				InitialRoute.Login
 			}
 		}
-	}
 
 	fun analyzeFinishApp() {
 		firebaseAnalytics.logEvent("app_exit") {

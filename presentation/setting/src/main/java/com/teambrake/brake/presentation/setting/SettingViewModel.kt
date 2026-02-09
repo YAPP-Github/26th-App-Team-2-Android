@@ -21,6 +21,7 @@ import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import timber.log.Timber
@@ -48,7 +49,7 @@ class SettingViewModel @Inject constructor(
 
 	init {
 		viewModelScope.launch {
-			getNicknameUseCase().collect { result ->
+			getNicknameUseCase().first { result ->
 				when (result) {
 					is BrakeResult.Success -> {
 						_uiState.update {
@@ -61,6 +62,7 @@ class SettingViewModel @Inject constructor(
 								status = SettingUiState.Status.Loaded,
 							)
 						}
+						true
 					}
 					is BrakeResult.Error -> {
 						Timber.e("Failed to get nickname: ${result.error}")
@@ -69,6 +71,7 @@ class SettingViewModel @Inject constructor(
 								uiString = UiString.ResourceString(R.string.snackbar_get_nickname_error),
 							),
 						)
+						false
 					}
 				}
 			}

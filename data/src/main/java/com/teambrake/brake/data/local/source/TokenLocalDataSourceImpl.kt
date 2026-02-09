@@ -30,34 +30,38 @@ internal class TokenLocalDataSourceImpl @Inject constructor(
 		}
 	}
 
-	override fun getUserAccessToken(): Flow<String> = flow {
+	override fun getUserAccessToken(onError: suspend (Throwable) -> Unit): Flow<String> = flow {
 		userTokenDataSource.data
-			.catch { e ->
-				throw Exception("유저 인증을 가져오는데 실패했습니다", e)
+			.catch {
+				onError(Throwable("유저 인증을 가져오는데 실패했습니다"))
 			}
 			.collect { tokenData ->
 				tokenData.accessToken?.let {
 					emit(it)
-				} ?: throw Exception("유저 인증 액세스 토큰이 설정되어 있지 않습니다")
+				} ?: run {
+					onError(Throwable("유저 인증 액세스 토큰이 설정되어 있지 않습니다"))
+				}
 			}
 	}
 
-	override fun getUserRefreshToken(): Flow<String> = flow {
+	override fun getUserRefreshToken(onError: suspend (Throwable) -> Unit): Flow<String> = flow {
 		userTokenDataSource.data
-			.catch { e ->
-				throw Exception("유저 인증을 가져오는데 실패했습니다", e)
+			.catch {
+				onError(Throwable("유저 인증을 가져오는데 실패했습니다"))
 			}
 			.collect { tokenData ->
 				tokenData.refreshToken?.let {
 					emit(it)
-				} ?: throw Exception("유저 인증 리프레시 토큰이 설정되어 있지 않습니다")
+				} ?: run {
+					onError(Throwable("유저 인증 리프레시 토큰이 설정되어 있지 않습니다"))
+				}
 			}
 	}
 
-	override fun getUserStatus(): Flow<UserStatus> = flow {
+	override fun getUserStatus(onError: suspend (Throwable) -> Unit): Flow<UserStatus> = flow {
 		userTokenDataSource.data
-			.catch { e ->
-				throw Exception("유저 상태를 가져오는데 실패했습니다", e)
+			.catch {
+				onError(it)
 			}
 			.collect { tokenData ->
 				emit(tokenData.status)

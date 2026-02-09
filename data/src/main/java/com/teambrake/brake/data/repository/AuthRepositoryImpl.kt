@@ -4,9 +4,12 @@ import com.teambrake.brake.data.local.source.OnboardingLocalDataSource
 import com.teambrake.brake.data.local.source.TokenLocalDataSource
 import com.teambrake.brake.data.remote.source.AccountRemoteDataSource
 import com.teambrake.brake.data.repository.base.BaseRepository
+import com.teambrake.brake.domain.model.exception.LocalException
+import com.teambrake.brake.domain.model.exception.NetworkException
 import com.teambrake.brake.domain.repository.AuthRepository
 import kotlinx.coroutines.flow.Flow
 import timber.log.Timber
+import java.io.IOException
 import javax.inject.Inject
 
 internal class AuthRepositoryImpl @Inject constructor(
@@ -21,10 +24,12 @@ internal class AuthRepositoryImpl @Inject constructor(
 		if (result) {
 			Result.success(Unit)
 		} else {
-			Result.failure(Exception("failed to update onboarding flag locally"))
+			Timber.e("온보딩 플래그 업데이트 실패")
+			Result.failure(LocalException(Exception("failed to update onboarding flag locally")))
 		}
 	} catch (e: Exception) {
-		Result.failure(e)
+		Timber.e(e, "온보딩 플래그 업데이트 중 예외 발생")
+		Result.failure(LocalException(e))
 	}
 
 	override fun getOnboardingFlag(): Flow<Boolean> =
@@ -33,20 +38,20 @@ internal class AuthRepositoryImpl @Inject constructor(
 	override suspend fun clearAuthDataStore(): Result<Unit> = try {
 		tokenLocalDataSource.clearUserToken(
 			onError = {
-				throw Exception(it)
+				throw it
 			},
 		)
 		Result.success(Unit)
 	} catch (e: Exception) {
-		Timber.e(e, "Error clearing data store")
-		Result.failure(e)
+		Timber.e(e, "데이터 스토어 삭제 중 오류 발생")
+		Result.failure(LocalException(e))
 	}
 
 	override suspend fun clearRemoteAccount(): Result<Unit> = try {
 		if (isOnlineStatus()) {
 			accountRemoteDataSource.deleteAccount(
 				onError = {
-					throw Exception(it)
+					throw it
 				},
 			)
 			Result.success(Unit)
@@ -55,8 +60,11 @@ internal class AuthRepositoryImpl @Inject constructor(
 			Timber.d("오프라인 모드: 원격 계정 삭제 스킵")
 			Result.success(Unit)
 		}
+	} catch (e: IOException) {
+		Timber.e(e, "네트워크 오류로 원격 계정 삭제 실패")
+		Result.failure(NetworkException("원격 계정 삭제 중 네트워크 오류 발생"))
 	} catch (e: Exception) {
-		Timber.e(e, "계정 삭제 중 오류 발생")
-		Result.failure(e)
+		Timber.e(e, "원격 계정 삭제 중 오류 발생")
+		Result.failure(LocalException(e))
 	}
 }

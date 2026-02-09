@@ -21,6 +21,7 @@ import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.launch
+import timber.log.Timber
 import javax.inject.Inject
 
 @HiltViewModel
@@ -55,6 +56,7 @@ class NicknameViewModel @Inject constructor(
 				}
 
 				is BrakeResult.Error -> {
+					Timber.e("Error while getting nickname")
 					_snackBarFlow.emit(
 						SnackBarState.Error(
 							uiString = UiString.ResourceString(R.string.snackbar_get_nickname_error),

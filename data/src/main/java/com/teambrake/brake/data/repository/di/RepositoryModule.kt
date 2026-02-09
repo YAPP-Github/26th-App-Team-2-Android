@@ -36,8 +36,8 @@ internal abstract class RepositoryModule {
 	): NicknameRepository
 
 	@Binds
-	abstract fun bindSessionRepository(
-		sessionRepository: AuthRepositoryImpl,
+	abstract fun bindAuthRepository(
+		authRepository: AuthRepositoryImpl,
 	): AuthRepository
 
 	@Binds

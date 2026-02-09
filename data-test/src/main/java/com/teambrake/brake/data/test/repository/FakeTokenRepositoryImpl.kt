@@ -17,7 +17,6 @@ internal class FakeTokenRepositoryImpl @Inject constructor() : TokenRepository {
 	override fun getRemoteTokens(
 		provider: String,
 		authorizationCode: String,
-		onError: suspend (Throwable) -> Unit,
 	): Flow<UserToken> = flow {
 		emit(
 			UserToken(
@@ -28,13 +27,9 @@ internal class FakeTokenRepositoryImpl @Inject constructor() : TokenRepository {
 		)
 	}
 
-	override fun getRemoteTokensRetry(
-		provider: String,
-		onError: suspend (Throwable) -> Unit,
-	): Flow<UserToken> = getRemoteTokens(
+	override fun getRemoteTokensRetry(provider: String): Flow<UserToken> = getRemoteTokens(
 		provider = provider,
 		authorizationCode = "Fake",
-		onError = onError,
 	)
 
 	override suspend fun clearLocalTokens(): Result<Unit> = Result.success(Unit)

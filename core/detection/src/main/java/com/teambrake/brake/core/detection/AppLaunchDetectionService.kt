@@ -33,10 +33,7 @@ class AppLaunchDetectionService : AccessibilityService() {
 	lateinit var appGroupRepository: AppGroupRepository
 
 	private val serviceJob = SupervisorJob()
-
-	// 백그라운드 디스패처에서 단일 스레드 순차 실행 보장 (UI 스레드 차단 방지)
-	@OptIn(kotlinx.coroutines.ExperimentalCoroutinesApi::class)
-	private val serviceScope = CoroutineScope(Dispatchers.Default.limitedParallelism(1) + serviceJob)
+	private val serviceScope = CoroutineScope(Dispatchers.Default + serviceJob)
 
 	/** 현재 유저의 사용 앱 캐싱, AccessibilityService 활용이 가장 정확도가 높음 **/
 	private var currentAppPkg: String? = null

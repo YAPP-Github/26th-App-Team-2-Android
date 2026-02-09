@@ -16,27 +16,20 @@ class DeleteGroupUseCaseImpl @Inject constructor(
 	override suspend fun invoke(groupId: Long): BrakeResult<Unit, DeleteGroupUseCaseError> {
 		val groupResult = appGroupRepository.deleteAppGroupByGroupId(groupId)
 
-		when {
-			groupResult.isSuccess -> {
-				// 성공적으로 앱 그룹 삭제됨
-			}
-			groupResult.isFailure -> {
-				val exception = groupResult.exceptionOrNull()
-				return BrakeResult.Error(LocalApiCallError(exception ?: Exception("앱 그룹 삭제 실패")))
-			}
+		if (groupResult.isFailure) {
+			val e = groupResult.exceptionOrNull()
+			return BrakeResult.Error(LocalApiCallError(e ?: Exception("앱 그룹 삭제 실패")))
 		}
 
 		val appResult = appRepository.deleteAppByParentGroupId(groupId)
 
-		return when {
-			appResult.isSuccess -> {
+		return appResult.fold(
+			onSuccess = {
 				BrakeResult.Success(Unit)
-			}
-			appResult.isFailure -> {
-				val exception = appResult.exceptionOrNull()
-				BrakeResult.Error(LocalApiCallError(exception ?: Exception("앱 삭제 실패")))
-			}
-			else -> BrakeResult.Error(LocalApiCallError(Exception("알 수 없는 오류")))
-		}
+			},
+			onFailure = { e ->
+				BrakeResult.Error(LocalApiCallError(e))
+			},
+		)
 	}
 }

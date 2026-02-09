@@ -19,15 +19,13 @@ class CreateNewGroupUseCaseImpl @Inject constructor(
 
 		val result = appRepository.insertApps(appGroup.id, appGroup.apps)
 
-		return when {
-			result.isSuccess -> {
+		return result.fold(
+			onSuccess = {
 				BrakeResult.Success(Unit)
-			}
-			result.isFailure -> {
-				val exception = result.exceptionOrNull()
-				BrakeResult.Error(LocalApiCallError(exception ?: Exception("앱 삽입 실패")))
-			}
-			else -> BrakeResult.Error(LocalApiCallError(Exception("알 수 없는 오류")))
-		}
+			},
+			onFailure = { e ->
+				BrakeResult.Error(LocalApiCallError(e))
+			},
+		)
 	}
 }

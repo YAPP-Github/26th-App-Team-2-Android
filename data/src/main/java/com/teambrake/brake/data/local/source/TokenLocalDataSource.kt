@@ -11,11 +11,11 @@ interface TokenLocalDataSource {
 		onError: suspend (Throwable) -> Unit,
 	)
 
-	fun getUserAccessToken(): Flow<String>
+	fun getUserAccessToken(onError: suspend (Throwable) -> Unit): Flow<String>
 
-	fun getUserRefreshToken(): Flow<String>
+	fun getUserRefreshToken(onError: suspend (Throwable) -> Unit): Flow<String>
 
-	fun getUserStatus(): Flow<UserStatus>
+	fun getUserStatus(onError: suspend (Throwable) -> Unit): Flow<UserStatus>
 
 	suspend fun clearUserToken(onError: suspend (Throwable) -> Unit)
 }

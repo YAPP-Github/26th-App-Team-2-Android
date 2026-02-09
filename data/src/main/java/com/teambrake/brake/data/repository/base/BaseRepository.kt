@@ -3,8 +3,10 @@ package com.teambrake.brake.data.repository.base
 import com.teambrake.brake.core.model.user.UserStatus
 import com.teambrake.brake.data.local.source.TokenLocalDataSource
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.flow
+import timber.log.Timber
 
 open class BaseRepository(
 	private val tokenLocalDataSource: TokenLocalDataSource,
@@ -22,13 +24,18 @@ open class BaseRepository(
 		runIfOnline: suspend () -> T,
 		runIfOffline: (suspend () -> T),
 	): T {
-		val status = tokenLocalDataSource.getUserStatus()
-			.firstOrNull() ?: UserStatus.INACTIVE
+		val status = tokenLocalDataSource.getUserStatus { e ->
+			Timber.e("유저 상태 획득 실패: $e")
+			throw e
+		}.catch {
+			emit(UserStatus.INACTIVE)
+		}.firstOrNull() ?: UserStatus.INACTIVE
 
 		return when (status) {
 			UserStatus.ACTIVE, UserStatus.HALF_SIGNUP -> {
 				runIfOnline()
 			}
+
 			UserStatus.INACTIVE, UserStatus.OFFLINE -> {
 				runIfOffline.invoke()
 			}
@@ -42,8 +49,12 @@ open class BaseRepository(
 		flowProvider: () -> Flow<T>,
 		offlineFlowProvider: () -> Flow<T>,
 	): Flow<T> = flow {
-		val status = tokenLocalDataSource.getUserStatus()
-			.firstOrNull() ?: UserStatus.INACTIVE
+		val status = tokenLocalDataSource.getUserStatus { e ->
+			Timber.e("유저 상태 획득 실패: $e")
+			throw e
+		}.catch {
+			emit(UserStatus.INACTIVE)
+		}.firstOrNull() ?: UserStatus.INACTIVE
 
 		when (status) {
 			UserStatus.ACTIVE, UserStatus.HALF_SIGNUP -> {
@@ -59,8 +70,13 @@ open class BaseRepository(
 	 * 현재 사용자가 온라인 상태인지 확인
 	 */
 	protected suspend fun isOnlineStatus(): Boolean {
-		val status = tokenLocalDataSource.getUserStatus()
-			.firstOrNull() ?: UserStatus.INACTIVE
+		val status = tokenLocalDataSource.getUserStatus { e ->
+			Timber.e("유저 상태 획득 실패: $e")
+			throw e
+		}.catch { e ->
+			Timber.e("에러 발생: $e")
+			emit(UserStatus.INACTIVE)
+		}.firstOrNull() ?: UserStatus.INACTIVE
 
 		return status == UserStatus.ACTIVE || status == UserStatus.HALF_SIGNUP
 	}

@@ -33,7 +33,6 @@ interface TokenRepository {
 	fun getRemoteTokens(
 		provider: String,
 		authorizationCode: String,
-		onError: suspend (Throwable) -> Unit,
 	): Flow<UserToken>
 
 	/**
@@ -42,12 +41,10 @@ interface TokenRepository {
 	 * 카카오 인가 코드 발급 후 최초 로그인 실패 시 사용되는 메서드
 	 *
 	 * @param provider 로그인 제공자 (현재 Kakao 고정)
-	 * @param onError 오류 발생 시 호출되는 콜백
 	 * @return [Flow]로 감싸진 [UserToken] 객체
 	 */
 	fun getRemoteTokensRetry(
 		provider: String,
-		onError: suspend (Throwable) -> Unit,
 	): Flow<UserToken>
 
 	/**
