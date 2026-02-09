@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="guide_continue_button_next">Next</string>
+    <string name="guide_continue_button_confirm">OK</string>
+
+    <string name="onboarding_snackbar_logout_error">An error occurred while logging out.</string>
+
+    <string name="complete_title">Nice to meet you</string>
+    <string name="complete_description">Experience a new daily routine\nof setting and achieving goals</string>
+    <string name="complete_button">Get Started</string>
+    <string name="onboarding_snackbar_flag_save_error">An error occurred while saving onboarding completion status.</string>
+    <string name="onboarding_guide_first_description">When you open an app,\ntry setting a usage time.</string>
+    <string name="onboarding_guide_second_description">Need more time?\nSnooze for 5 extra minutes\n(up to 2 times)</string>
+    <string name="onboarding_guide_third_description">When you're done,\nyou can't use the app for 3 minutes.</string>
+</resources>

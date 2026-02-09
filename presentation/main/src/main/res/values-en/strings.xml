@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- MainTabs -->
+    <string name="tab_report">Report</string>
+    <string name="tab_home">Home</string>
+    <string name="tab_setting">Settings</string>
+    <string name="network_error">Network connection is unstable.</string>
+    <string name="unknown_error">An unknown error occurred.</string>
+
+    <string name="logout_message">Are you sure you want to log out?</string>
+    <string name="logout_confirm">OK</string>
+    <string name="logout_cancel">Cancel</string>
+
+    <string name="exit_message">Press again to exit the app.</string>
+</resources>

@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="permission_overlay_title">Please allow permission to\ndisplay over other apps</string>
+    <string name="permission_overlay_description">We'll show a blocker screen\nwhen your usage time is up.</string>
+
+    <string name="permission_stats_title">Please allow permission\nto access usage data</string>
+    <string name="permission_stats_description">We'll monitor your app usage.</string>
+
+    <string name="permission_exact_alarm_title">Please allow permission\nfor accurate notifications</string>
+    <string name="permission_exact_alarm_description">We'll send you accurate timer notifications.</string>
+
+    <string name="permission_accessibility_title">Please allow permission\nfor Accessibility Service</string>
+    <string name="permission_accessibility_description">It detects when an app is launched.</string>
+
+    <string name="permission_allow_button">Allow</string>
+
+    <string name="permission_snackbar_logout_error">A problem occurred while logging out.</string>
+    <string name="permission_snackbar_permission_stack_error">A problem occurred while checking permissions.</string>
+    <string name="permission_snackbar_decide_destination_error">A problem occurred while saving onboarding status.</string>
+    <string name="permission_dialog_accessibility_agreement_body">Brake! uses Accessibility Services permission to collect information about currently running apps and their usage status in order to enable the 'Session Timer' feature when you start using designated apps. This permission allows Brake! to identify which app is running on your screen and display a 'Session Timer' overlay when it's one of your pre-set 'Managed Apps'. The information collected is used exclusively to provide the 'Session Timer' feature and absolutely no other personal information is collected. Do you agree to activate this feature?</string>
+    <string name="permission_dialog_accessibility_agreement_title">Required for Core Features</string>
+    <string name="permission_dialog_accessibility_agreement_dismiss_button">Disagree</string>
+    <string name="permission_dialog_accessibility_agreement_confirm_button">Agree</string>
+</resources>
