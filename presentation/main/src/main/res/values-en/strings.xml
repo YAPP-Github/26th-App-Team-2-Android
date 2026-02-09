@@ -7,7 +7,7 @@
     <string name="network_error">Network connection is unstable.</string>
     <string name="unknown_error">An unknown error occurred.</string>
 
-    <string name="logout_message">Are you sure you want to log out?</string>
+    <string name="logout_message">Log out your account?</string>
     <string name="logout_confirm">OK</string>
     <string name="logout_cancel">Cancel</string>
 

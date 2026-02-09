@@ -32,7 +32,7 @@
     <string name="stop_using_dialog_title">End app usage?</string>
     <string name="stop_using_dialog_message">You finished early.\nGreat choice!</string>
     <string name="stop_using_dialog_button">End</string>
-    
+
     <!-- Content Descriptions -->
     <string name="add_button_content_description">Add Button</string>
     <string name="stop_button_content_description">Stop Using</string>
@@ -43,23 +43,23 @@
     <string name="default_app_icon_content_description">Default App Icon</string>
     <string name="app_icon_content_description">App Icon</string>
     <string name="cat_image_content_description">Cat Image</string>
-    <string name="home_stop_using_success">%s ended!\nYou can't use %s anymore.</string>
+    <string name="home_stop_using_success">%s ended!\nYou can\'t use %s anymore.</string>
 
     <!-- Registry Group Selection -->
     <string name="registry_group_screen_title">Add App Group</string>
     <string name="registry_group_list_guide">Please select apps\nyou want to control</string>
     <string name="registry_textfield_name">Group Name</string>
-    <string name="registry_textfield_warning_text">Please enter 2-10 characters without spaces or special characters.</string>
+    <string name="registry_textfield_warning_text">Please enter 2–10 characters without spaces or special characters.</string>
     <string name="registry_textfield_validation_text">This group name is available.</string>
     <string name="registry_group_add_app_name">List</string>
-    <string name="registry_group_add_app_count">count</string>
+    <string name="registry_group_add_app_count"> selected</string>
     <string name="registry_group_add_app_button">Add</string>
     <string name="registry_group_delete_group_button">Delete Group</string>
     <string name="registry_group_completion_button">Done</string>
 
     <!-- Registry App Selection -->
     <string name="registry_app_button">Done</string>
-    <string name="registry_app_error_message">No results found.\nNo app matches '%1$s'.</string>
+    <string name="registry_app_error_message">No results found.\nNo app matches \'%1$s\'.</string>
     <string name="registry_app_title">Please select apps you want to control</string>
     <string name="registry_app_search_hint">Search apps or categories</string>
 
@@ -75,7 +75,7 @@
     <string name="registry_snackbar_group_id_fetch_error">An error occurred while loading the Group ID.</string>
     <string name="registry_snackbar_group_deletion_successful">Group deleted successfully.</string>
     <string name="registry_snackbar_group_deletion_error">An error occurred while deleting the group.</string>
-    
-    
+
+
     <string name="registry_search">Search apps or categories</string>
 </resources>

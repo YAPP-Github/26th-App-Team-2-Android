@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="login_main_message">We'll help you use only as much\nas you've planned</string>
+    <string name="login_main_message">We\'ll help you use only as much\nas you\'ve planned</string>
     <string name="login_notice_full_message">By signing in with the buttons below,\nyou agree to the Privacy Policy and Terms of Service.</string>
     <string name="privacy_policy">Privacy Policy</string>
     <string name="terms_of_service">Terms of Service</string>
@@ -12,10 +12,10 @@
     <string name="login_snackbar_next_destination_error">Failed to move to the next screen.</string>
     <string name="login_snackbar_login_error_offline">Login is not possible in offline mode.</string>
     <string name="login_snackbar_offline_mode_error">Failed to start in offline mode due to an unknown issue.</string>
-    
+
     <string name="login_kakao_button_text">Kakao Login</string>
     <string name="login_google_button_text">Google Login</string>
     <string name="offline_mode_button_text">Start without Login</string>
-    
+
     <string name="offline_mode_username_default">Offline User</string>
 </resources>
