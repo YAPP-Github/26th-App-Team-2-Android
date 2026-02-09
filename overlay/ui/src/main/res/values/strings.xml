@@ -6,15 +6,15 @@
     <string name="blocking_image_content_description">Blocking image</string>
     <string name="cooldown_image_content_description">Cooldown image</string>
 
-    <string name="blocking_title">You can\'t use \n%s right now</string>
-    <string name="blocking_description">You can\'t use \n%s for %d minutes.</string>
+    <string name="blocking_title">You can\'t use %s now</string>
+    <string name="blocking_description">For %d minutes, you can\'t use %s.</string>
 
     <string name="snooze_title">Time\'s up!</string>
-    <string name="snooze_blocking_title">You can\'t use \n%s for %d minutes now</string>
+    <string name="snooze_blocking_title">For the next %d minutes,\nYou can\'t use %s.</string>
     <string name="snooze_blocking_description">Usage time is over.</string>
 
-    <string name="init_title">Do you really need to use \n%s?</string>
-    <string name="timer_title">How long will you use \n%s?</string>
+    <string name="init_title">Do you really need to use\n%s?</string>
+    <string name="timer_title">How long will you use\n%s?</string>
     <string name="timer_content"><![CDATA[You\'ve already used <b><font color="#F2FF5E">%s</font></b> today]]></string>
     <string name="timer_complete_time">Until %s</string>
 
