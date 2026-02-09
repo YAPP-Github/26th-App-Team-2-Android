@@ -1,7 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<resources>
-    <string name="auth_not_allowed_url_error">Navigation to an unauthorized URL was blocked.</string>
-    <string name="auth_error_failure_kakao_login">Failed to sign in with Kakao.</string>
-    <string name="auth_error_not_earned_auth_code">Failed to get authorization code.</string>
-    <string name="auth_error_loading_webview">An error occurred while loading the webview.</string>
-</resources>

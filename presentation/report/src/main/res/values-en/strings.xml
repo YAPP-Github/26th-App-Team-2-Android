@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<resources>
-    <string name="today_total_usage_time">Total usage time today</string>
-    <string name="hours">Hours</string>
-    <string name="minutes">Minutes</string>
-    <string name="usage_feedback_less">Great job! You used your device less than planned today!</string>
-    <string name="chart_legend_used_time">: Used time</string>
-    <string name="chart_legend_planned_time">: Planned time</string>
-</resources>

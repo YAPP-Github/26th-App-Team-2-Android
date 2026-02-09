@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+	<string name="permission_overlay_title">다른 앱 위 표시 권한을\n허용해주세요</string>
+	<string name="permission_overlay_description">앱 사용 시간이 다되면 차단창을 띄워드릴게요.</string>
+
+	<string name="permission_stats_title">사용정보 접근 권한을\n허용해주세요</string>
+	<string name="permission_stats_description">앱 사용량을 모니터링할게요.</string>
+
+	<string name="permission_exact_alarm_title">정확한 알람 설정 권한을\n허용해주세요</string>
+	<string name="permission_exact_alarm_description">정확한 타이머 알림을 보내드릴게요.</string>
+
+	<string name="permission_accessibility_title">접근성 서비스 권한을\n허용해주세요</string>
+	<string name="permission_accessibility_description">앱이 실행되는 것을 감지해요.</string>
+
+	<string name="permission_allow_button">허용하기</string>
+
+	<string name="permission_snackbar_logout_error">로그아웃 중에 문제가 생겼어요.</string>
+	<string name="permission_snackbar_permission_stack_error">권한 허용 상태 확인 중에 문제가 생겼어요.</string>
+	<string name="permission_snackbar_decide_destination_error">온보딩 상태 저장에 문제가 생겼어요.</string>
+
+	<string name="permission_dialog_accessibility_agreement_body">Brake!는 사용자가 설정한 앱의 사용을 시작할 때 ‘세션 타이머’ 기능을 사용 설정하기 위해 ‘접근성 서비스’ 권한을 활용하여 현재 실행 중인 앱 이름 및 사용 상태 정보를 수집합니다.\n\n이 권한을 통해 현재 화면에 어떤 앱이 실행 중인지 확인하여, 사용자가 미리 설정한 ‘관리 앱’일 경우 그 위에 ‘세션 타이머’를 표시합니다.\n\n수집한 정보는 오직 ‘세션 타이머’ 기능을 제공하는 목적으로만 사용되며, 다른 어떠한 개인 정보도 절대 수집하지 않습니다.\n\n이 기능 활성화에 동의하시겠습니까?</string>
+	<string name="permission_dialog_accessibility_agreement_title">핵심 기능 동작을 위해 필요해요</string>
+	<string name="permission_dialog_accessibility_agreement_dismiss_button">동의하지 않음</string>
+	<string name="permission_dialog_accessibility_agreement_confirm_button">동의</string>
+</resources>

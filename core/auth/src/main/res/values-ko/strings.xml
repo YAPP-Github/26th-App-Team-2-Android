@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+	<string name="auth_not_allowed_url_error">허용되지 않은 URL로의 이동이 차단되었습니다.</string>
+	<string name="auth_error_failure_kakao_login">카카오 로그인을 실패했습니다.</string>
+	<string name="auth_error_not_earned_auth_code">인가코드를 받지 못했습니다.</string>
+	<string name="auth_error_loading_webview">웹뷰 로딩 중 에러가 발생했습니다.</string>
+</resources>
