@@ -18,7 +18,7 @@
     <string name="setting_logout_dialog_confirm_text">Log Out</string>
     <string name="setting_logout_dialog_dismiss_text">Cancel</string>
 
-    <string name="setting_delete_dialog_title">Delete your account?</string>
+    <string name="setting_delete_dialog_title">Deactivate your account?</string>
     <string name="setting_delete_dialog_description">If you deactivate, all account info and history will be deleted and cannot be recovered.</string>
     <string name="setting_delete_dialog_confirm_text">Deactivate</string>
     <string name="setting_delete_dialog_dismiss_text">Cancel</string>
