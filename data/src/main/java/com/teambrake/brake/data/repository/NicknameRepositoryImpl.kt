@@ -2,80 +2,119 @@ package com.teambrake.brake.data.repository
 
 import com.teambrake.brake.core.model.user.UserName
 import com.teambrake.brake.core.model.user.UserStatus
-import com.teambrake.brake.data.local.source.UserLocalDataSource
+import com.teambrake.brake.data.local.source.NameLocalDataSource
+import com.teambrake.brake.data.local.source.TokenLocalDataSource
 import com.teambrake.brake.data.remote.source.NameRemoteDataSource
+import com.teambrake.brake.data.repository.base.BaseRepository
 import com.teambrake.brake.data.repository.mapper.toData
-import com.teambrake.brake.data.repository.util.OfflineBlocker
-import com.teambrake.brake.data.repository.util.OfflineException
+import com.teambrake.brake.domain.model.exception.LocalException
+import com.teambrake.brake.domain.model.exception.NetworkException
 import com.teambrake.brake.domain.repository.NicknameRepository
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.catch
+import kotlinx.coroutines.flow.emitAll
+import kotlinx.coroutines.flow.firstOrNull
+import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.flow.onEach
+import timber.log.Timber
+import java.io.IOException
 import javax.inject.Inject
 
 internal class NicknameRepositoryImpl @Inject constructor(
-	private val offlineBlocker: OfflineBlocker,
+	tokenLocalDataSource: TokenLocalDataSource,
 	private val nameRemoteDataSource: NameRemoteDataSource,
-	private val userLocalDataSource: UserLocalDataSource,
-) : NicknameRepository {
+	private val nameLocalDataSource: NameLocalDataSource,
+) : BaseRepository(tokenLocalDataSource),
+	NicknameRepository {
 
-	override fun getRemoteUserName(onError: suspend (Throwable) -> Unit): Flow<UserName> =
-		offlineBlocker.blockFlow {
-			nameRemoteDataSource.getUserName(onError = onError)
-		}.map {
-			it.toData()
-		}.catch { exception ->
-			if (exception is OfflineException) {
-				onError(exception)
-			} else {
-				throw exception
-			}
+	override fun getNickname(): Flow<String> = flow {
+		if (isOnlineStatus()) {
+			// 온라인 상태: 원격에서 닉네임 가져오기
+			emitAll(
+				nameRemoteDataSource.getUserName { e ->
+					throw e
+				}.map {
+					it.toData().nickname
+				},
+			)
+		} else {
+			// 오프라인 상태: 로컬에서 닉네임 가져오기
+			emitAll(nameLocalDataSource.getNickname())
 		}
-
-	override fun getLocalUserName(onError: suspend (Throwable) -> Unit): Flow<String> =
-		userLocalDataSource.getNickname(onError = onError)
+	}
 
 	override suspend fun saveLocalUserName(
 		nickname: String,
-		onError: suspend (Throwable) -> Unit,
-	) {
-		userLocalDataSource.updateNickname(
-			nickname = nickname,
-			onError = onError,
-		)
+	): Result<Unit> = try {
+		val result = nameLocalDataSource.updateNickname(nickname = nickname)
+		if (result) {
+			Result.success(Unit)
+		} else {
+			Timber.e("로컬에 닉네임 저장 실패")
+			Result.failure(LocalException(Exception("failed to save nickname locally")))
+		}
+	} catch (e: Exception) {
+		Timber.e(e, "로컬에 닉네임 저장 중 예외 발생")
+		Result.failure(LocalException(e))
 	}
 
-	override fun updateUserName(
+	override suspend fun updateUserName(
 		nickname: String,
-		onError: suspend (Throwable) -> Unit,
-	): Flow<UserName> = offlineBlocker.blockFlow {
-		nameRemoteDataSource.updateUserName(
-			nickname = nickname,
-			onError = onError,
-		)
-	}.onEach {
-		// 새로운 닉네임을 로컬에 저장
-		userLocalDataSource.updateNickname(nickname, onError = onError)
-	}.map {
-		it.toData()
-	}.catch {
-		if (it is OfflineException) {
-			// 오프라인 모드의 경우에도 닉네임을 로컬에 저장
-			// suspend 함수이므로 flow 빌더 내에서 처리하나 추후 수정 고려
-			userLocalDataSource.updateNickname(nickname, onError = onError)
-			emit(
+	): Result<UserName> = if (isOnlineStatus()) {
+		try {
+			nameRemoteDataSource.updateUserName(
+				nickname = nickname,
+				onError = { e ->
+					Timber.e("닉네임 업데이트 실패: $e")
+					throw e
+				},
+			).map {
+				it.toData()
+			}.firstOrNull()?.let { userName ->
+				// 원격 저장 성공 시 로컬에 저장
+				val localSaveSuccess = nameLocalDataSource.updateNickname(nickname)
+				if (!localSaveSuccess) {
+					Timber.e("원격 업데이트 후 로컬 저장 실패")
+					Result.failure(LocalException(Exception("failed to save nickname locally after remote update")))
+				} else {
+					Result.success(userName)
+				}
+			} ?: run {
+				Timber.e("원격에서 데이터를 받지 못함")
+				Result.failure(NetworkException("No data emitted from remote"))
+			}
+		} catch (e: IOException) {
+			Timber.e(e, "네트워크 오류로 닉네임 업데이트 실패")
+			Result.failure(NetworkException("닉네임 업데이트 중 네트워크 오류 발생"))
+		} catch (exception: Exception) {
+			Timber.e(exception, "닉네임 원격 업데이트 실패")
+			Result.failure(LocalException(exception))
+		}
+	} else {
+		// 오프라인 상태: 로컬에만 저장
+		val localSaveResult = nameLocalDataSource.updateNickname(nickname)
+		if (localSaveResult) {
+			Result.success(
 				UserName(
 					nickname = nickname,
 					state = UserStatus.OFFLINE,
 				),
 			)
 		} else {
-			throw it
+			Timber.e("오프라인 모드에서 로컬 저장 실패")
+			Result.failure(LocalException(Exception("failed to save nickname locally in offline mode")))
 		}
 	}
 
-	override suspend fun clearLocalName(onError: suspend (Throwable) -> Unit) {
-		userLocalDataSource.clearNickname(onError = onError)
+	override suspend fun clearLocalName(): Result<Unit> = try {
+		val result = nameLocalDataSource.clearNickname()
+		if (result) {
+			Result.success(Unit)
+		} else {
+			Timber.e("로컬 닉네임 삭제 실패")
+			Result.failure(LocalException(Exception("failed to clear local nickname")))
+		}
+	} catch (e: Exception) {
+		Timber.e(e, "로컬 닉네임 삭제 중 예외 발생")
+		Result.failure(LocalException(e))
 	}
 }

@@ -8,6 +8,7 @@ import com.teambrake.brake.core.auth.google.GoogleAuthManager
 import com.teambrake.brake.core.model.user.Destination
 import com.teambrake.brake.core.ui.SnackBarState
 import com.teambrake.brake.core.ui.UiString
+import com.teambrake.brake.domain.model.result.BrakeResult
 import com.teambrake.brake.domain.usecase.DeleteAccountUseCase
 import com.teambrake.brake.domain.usecase.GetNicknameUseCase
 import com.teambrake.brake.domain.usecase.LogoutUseCase
@@ -20,6 +21,7 @@ import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import timber.log.Timber
@@ -47,19 +49,38 @@ class SettingViewModel @Inject constructor(
 
 	init {
 		viewModelScope.launch {
-			getNicknameUseCase {}.collect { nickname ->
-				_uiState.update {
-					SettingUiState(
-						user = SettingUser(
-							imageUrl = null,
-							name = nickname,
-						),
-						appInfo = _uiState.value.appInfo,
-						status = SettingUiState.Status.Loaded,
-					)
+			getNicknameUseCase().first { result ->
+				when (result) {
+					is BrakeResult.Success -> {
+						_uiState.update {
+							SettingUiState(
+								user = SettingUser(
+									imageUrl = null,
+									name = result.data,
+								),
+								appInfo = _uiState.value.appInfo,
+								status = SettingUiState.Status.Loaded,
+							)
+						}
+						true
+					}
+					is BrakeResult.Error -> {
+						Timber.e("Failed to get nickname: ${result.error}")
+						_snackBarFlow.emit(
+							SnackBarState.Error(
+								uiString = UiString.ResourceString(R.string.snackbar_get_nickname_error),
+							),
+						)
+						false
+					}
 				}
 			}
 		}
+	}
+
+	override fun onCleared() {
+		super.onCleared()
+		deleteJob?.cancel()
 	}
 
 	fun modifyNickname() {
@@ -116,29 +137,28 @@ class SettingViewModel @Inject constructor(
 	fun logout() {
 		Timber.e("Logout initiated")
 		viewModelScope.launch {
-			val dest = logoutUseCase(
-				onError = {
+			when (val result = logoutUseCase()) {
+				is BrakeResult.Success -> {
+					when (val dest = result.data) {
+						is Destination.Login -> {
+							firebaseAnalytics.logEvent("app_logout") {
+								param(FirebaseAnalytics.Param.METHOD, "user_logout")
+							}
+							_navigationFlow.emit(SettingEffect.NavigateToLogin)
+						}
+
+						else -> {
+							Timber.e("Logout failed with destination: $dest")
+						}
+					}
+				}
+
+				is BrakeResult.Error -> {
 					_snackBarFlow.emit(
 						SnackBarState.Error(
 							uiString = UiString.ResourceString(R.string.setting_snackbar_logout_error),
 						),
 					)
-				},
-			)
-			when (dest) {
-				is Destination.Login -> {
-					firebaseAnalytics.logEvent("app_logout") {
-						param(FirebaseAnalytics.Param.METHOD, "user_logout")
-					}
-					_navigationFlow.emit(SettingEffect.NavigateToLogin)
-				}
-
-				is Destination.PermissionOrHome -> {
-					Timber.e("Logout failed with destination: $dest")
-				}
-
-				else -> {
-					Timber.e("Logout failed with destination: $dest")
 				}
 			}
 		}
@@ -163,8 +183,35 @@ class SettingViewModel @Inject constructor(
 			)
 		}
 		deleteJob = viewModelScope.launch {
-			val dest = deleteAccountUseCase(
-				onError = {
+			when (val result = deleteAccountUseCase()) {
+				is BrakeResult.Success -> {
+					if (result.data is Destination.Login) {
+						// 로딩창 먼저 제거 후 스낵바 띄우고 화면 이동: 유저 사용성 증가
+						googleAuthManager.signOutGoogleAuth()
+						_uiState.value = SettingUiState(
+							user = _uiState.value.user,
+							appInfo = _uiState.value.appInfo,
+							status = SettingUiState.Status.Loaded,
+						)
+						_snackBarFlow.emit(
+							SnackBarState.Success(
+								uiString = UiString.ResourceString(R.string.setting_snackbar_delete_success),
+							),
+						)
+						firebaseAnalytics.logEvent("app_delete_account") {
+							param(FirebaseAnalytics.Param.METHOD, "user_delete")
+						}
+						_navigationFlow.emit(SettingEffect.NavigateToLogin)
+					} else {
+						_uiState.value = SettingUiState(
+							user = _uiState.value.user,
+							appInfo = _uiState.value.appInfo,
+							status = SettingUiState.Status.Idle,
+						)
+					}
+				}
+
+				is BrakeResult.Error -> {
 					_uiState.value = SettingUiState(
 						user = _uiState.value.user,
 						appInfo = _uiState.value.appInfo,
@@ -175,31 +222,7 @@ class SettingViewModel @Inject constructor(
 							uiString = UiString.ResourceString(R.string.setting_snackbar_delete_error),
 						),
 					)
-				},
-			)
-			if (dest is Destination.Login) {
-				// 로딩창 먼저 제거 후 스낵바 띄우고 화면 이동: 유저 사용성 증가
-				googleAuthManager.signOutGoogleAuth()
-				_uiState.value = SettingUiState(
-					user = _uiState.value.user,
-					appInfo = _uiState.value.appInfo,
-					status = SettingUiState.Status.Loaded,
-				)
-				_snackBarFlow.emit(
-					SnackBarState.Success(
-						uiString = UiString.ResourceString(R.string.setting_snackbar_delete_success),
-					),
-				)
-				firebaseAnalytics.logEvent("app_delete_account") {
-					param(FirebaseAnalytics.Param.METHOD, "user_delete")
 				}
-				_navigationFlow.emit(SettingEffect.NavigateToLogin)
-			} else {
-				_uiState.value = SettingUiState(
-					user = _uiState.value.user,
-					appInfo = _uiState.value.appInfo,
-					status = SettingUiState.Status.Idle,
-				)
 			}
 		}
 	}

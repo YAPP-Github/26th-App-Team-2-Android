@@ -8,6 +8,7 @@ import com.google.firebase.analytics.logEvent
 import com.teambrake.brake.core.amplitude.AmplitudeEventHelper
 import com.teambrake.brake.core.model.app.AppGroup
 import com.teambrake.brake.core.model.app.AppGroupState
+import com.teambrake.brake.domain.model.result.BrakeResult
 import com.teambrake.brake.domain.repository.AppGroupRepository
 import com.teambrake.brake.domain.usecase.SetBlockingAlarmUseCase
 import com.teambrake.brake.presentation.home.contract.HomeEvent
@@ -86,9 +87,10 @@ internal class HomeViewModel @Inject constructor(
 
 	fun stopAppUsing(appGroup: AppGroup) {
 		viewModelScope.launch {
-			setBlockingAlarmUseCase(
+			val result = setBlockingAlarmUseCase(
 				groupId = appGroup.id,
-			).onSuccess {
+			)
+			if (result is BrakeResult.Success) {
 				showStopUsingSuccess(appGroup.name)
 			}
 

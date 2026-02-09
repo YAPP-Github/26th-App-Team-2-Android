@@ -2,6 +2,9 @@ package com.teambrake.brake.domain.usecaseImpl
 
 import com.teambrake.brake.core.common.AlarmAction
 import com.teambrake.brake.core.model.app.AppGroupState
+import com.teambrake.brake.domain.model.result.BrakeResult
+import com.teambrake.brake.domain.model.result.error.LocalApiCallError
+import com.teambrake.brake.domain.model.result.error.SetBlockingAlarmUseCaseError
 import com.teambrake.brake.domain.repository.AlarmScheduler
 import com.teambrake.brake.domain.repository.AppGroupRepository
 import com.teambrake.brake.domain.etc.ConstTimeProvider
@@ -17,7 +20,8 @@ class SetBlockingAlarmUseCaseImpl @Inject constructor(
 
 	override suspend operator fun invoke(
 		groupId: Long,
-	): Result<LocalDateTime> {
+	): BrakeResult<LocalDateTime, SetBlockingAlarmUseCaseError> {
+
 		alarmScheduler.cancelAlarm(
 			groupId = groupId,
 			action = AlarmAction.ACTION_USING,
@@ -26,18 +30,42 @@ class SetBlockingAlarmUseCaseImpl @Inject constructor(
 		val startTime = LocalDateTime.now()
 		val triggerTime = startTime.plusSeconds(constTimeProvider.blockingTime)
 
-		return alarmScheduler.scheduleAlarm(
+		val scheduleResult = alarmScheduler.scheduleAlarm(
 			groupId = groupId,
 			groupName = "",
 			triggerTime = triggerTime,
 			action = AlarmAction.ACTION_BLOCKING,
-		).onSuccess {
-			appGroupRepository.updateAppGroupState(
-				groupId = groupId,
-				appGroupState = AppGroupState.Blocking,
-				startTime = startTime,
-				endTime = triggerTime,
-			)
+		)
+
+		return when {
+			scheduleResult.isSuccess -> {
+				val updateResult = appGroupRepository.updateAppGroupState(
+					groupId = groupId,
+					appGroupState = AppGroupState.Blocking,
+					startTime = startTime,
+					endTime = triggerTime,
+				)
+
+				when {
+					updateResult.isSuccess -> {
+						BrakeResult.Success(triggerTime)
+					}
+
+					updateResult.isFailure -> {
+						val exception = updateResult.exceptionOrNull()
+						BrakeResult.Error(LocalApiCallError(exception ?: Exception("앱 그룹 상태 업데이트 실패")))
+					}
+
+					else -> BrakeResult.Error(LocalApiCallError(Exception("예상치 못한 오류")))
+				}
+			}
+
+			scheduleResult.isFailure -> {
+				val exception = scheduleResult.exceptionOrNull()
+				BrakeResult.Error(LocalApiCallError(exception ?: Exception("알람 스케줄링 실패")))
+			}
+
+			else -> BrakeResult.Error(LocalApiCallError(Exception("예상치 못한 오류")))
 		}
 	}
 }

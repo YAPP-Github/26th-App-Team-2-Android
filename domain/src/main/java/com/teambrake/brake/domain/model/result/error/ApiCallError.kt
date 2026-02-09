@@ -1,0 +1,40 @@
+package com.teambrake.brake.domain.model.result.error
+
+/** UseCase error **/
+sealed interface DecideStartDestinationUseCaseError
+sealed interface StartOfflineModeUseCaseError
+sealed interface DeleteAccountUseCaseError
+sealed interface LogoutUseCaseError
+sealed interface DecideNextDestinationFromPermissionUseCaseError
+sealed interface CreateNewGroupUseCaseError
+sealed interface DeleteGroupUseCaseError
+sealed interface GetNicknameUseCaseError
+sealed interface GrantNewGroupIdUseCaseError
+sealed interface LoginUseCaseError
+sealed interface ResetAppGroupUseCaseError
+sealed interface SetAlarmUseCaseError
+sealed interface SetBlockingAlarmUseCaseError
+sealed interface SetSnoozeAlarmUseCaseError
+sealed interface StoreOnboardingCompletionUseCaseError
+sealed interface UpdateNicknameUseCaseError
+sealed interface FindAppGroupUseCaseError
+
+/** API Call error **/
+sealed interface ApiCallError :
+	DecideStartDestinationUseCaseError,
+	StartOfflineModeUseCaseError,
+	DeleteAccountUseCaseError,
+	LogoutUseCaseError,
+	DecideNextDestinationFromPermissionUseCaseError,
+	CreateNewGroupUseCaseError,
+	DeleteGroupUseCaseError,
+	GetNicknameUseCaseError,
+	GrantNewGroupIdUseCaseError,
+	LoginUseCaseError,
+	ResetAppGroupUseCaseError,
+	SetAlarmUseCaseError,
+	SetBlockingAlarmUseCaseError,
+	SetSnoozeAlarmUseCaseError,
+	StoreOnboardingCompletionUseCaseError,
+	UpdateNicknameUseCaseError,
+	FindAppGroupUseCaseError

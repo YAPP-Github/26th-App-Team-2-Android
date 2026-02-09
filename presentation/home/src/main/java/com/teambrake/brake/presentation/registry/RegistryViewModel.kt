@@ -16,6 +16,7 @@ import com.teambrake.brake.core.model.app.AppGroupState
 import com.teambrake.brake.core.navigation.route.SubRoute
 import com.teambrake.brake.core.ui.UiString
 import com.teambrake.brake.core.util.toByteArray
+import com.teambrake.brake.domain.model.result.BrakeResult
 import com.teambrake.brake.domain.repository.AppGroupRepository
 import com.teambrake.brake.domain.usecase.CreateNewGroupUseCase
 import com.teambrake.brake.domain.usecase.DeleteGroupUseCase
@@ -66,7 +67,17 @@ class RegistryViewModel @Inject constructor(
 	init {
 		viewModelScope.launch {
 			val groupId = savedStateHandle.toRoute<SubRoute.Registry>().groupId
-				?: grantNewGroupIdUseCase({})
+				?: when (val result = grantNewGroupIdUseCase()) {
+					is BrakeResult.Success -> result.data
+					is BrakeResult.Error -> {
+						_snackBarFlow.emit(
+							RegistrySnackBarState.Error(
+								UiString.ResourceString(R.string.registry_snackbar_group_id_fetch_error),
+							),
+						)
+						return@launch
+					}
+				}
 
 			val targetAppGroup = appGroupRepository.getAppGroupById(groupId)
 
@@ -198,14 +209,7 @@ class RegistryViewModel @Inject constructor(
 	fun createNewGroup() {
 		viewModelScope.launch {
 			val currentUiState = _registryUiState.value
-			createNewGroupUseCase(
-				onError = { throwable ->
-					_snackBarFlow.emit(
-						RegistrySnackBarState.Error(
-							UiString.ResourceString(R.string.registry_snackbar_group_creation_error),
-						),
-					)
-				},
+			val result = createNewGroupUseCase(
 				group = currentUiState.let {
 					AppGroup(
 						id = it.groupId,
@@ -228,50 +232,62 @@ class RegistryViewModel @Inject constructor(
 					)
 				},
 			)
-			_snackBarFlow.emit(
-				RegistrySnackBarState.Success(
-					UiString.ResourceString(R.string.registry_snackbar_group_creation_successful),
-				),
-			)
 
-			launch(Dispatchers.IO) {
-				// Amplitude 이벤트 전송 (6번: create_app_group, 7번: edit_app_group)
-				val event = if (isEditingExistingGroup) {
-					AmplitudeEventHelper.editAppGroupEvent(
-						groupId = currentUiState.groupId.toString(),
-						groupName = currentUiState.groupName,
-						groupAppCount = currentUiState.selectedApps.size,
+			when (result) {
+				is BrakeResult.Success -> {
+					_snackBarFlow.emit(
+						RegistrySnackBarState.Success(
+							UiString.ResourceString(R.string.registry_snackbar_group_creation_successful),
+						),
 					)
-				} else {
-					AmplitudeEventHelper.createAppGroupEvent(
-						groupId = currentUiState.groupId.toString(),
-						groupName = currentUiState.groupName,
-						groupAppCount = currentUiState.selectedApps.size,
-					)
-				}
-				amplitude.track(event.getEventName(), event.toEventProperties())
 
-				// 17. total_group_count User Property 업데이트
-				val totalGroupCount = appGroupRepository.observeAppGroup().first().size
-				val userProperty = AmplitudeEventHelper.setTotalGroupCount(count = totalGroupCount)
-				amplitude.identify(
-					Identify().apply {
-						userProperty.toUserProperties().forEach { (key, value) ->
-							set(key, value)
+					launch(Dispatchers.IO) {
+						// Amplitude 이벤트 전송 (6번: create_app_group, 7번: edit_app_group)
+						val event = if (isEditingExistingGroup) {
+							AmplitudeEventHelper.editAppGroupEvent(
+								groupId = currentUiState.groupId.toString(),
+								groupName = currentUiState.groupName,
+								groupAppCount = currentUiState.selectedApps.size,
+							)
+						} else {
+							AmplitudeEventHelper.createAppGroupEvent(
+								groupId = currentUiState.groupId.toString(),
+								groupName = currentUiState.groupName,
+								groupAppCount = currentUiState.selectedApps.size,
+							)
 						}
-					},
-				)
+						amplitude.track(event.getEventName(), event.toEventProperties())
 
-				firebaseAnalytics.logEvent("create_modify_group") {
-					param("group_id", currentUiState.groupId)
-					param("group_name", currentUiState.groupName)
-					for (selectedApp in currentUiState.selectedApps) {
-						param("app_name", selectedApp.name)
+						// 17. total_group_count User Property 업데이트
+						val totalGroupCount = appGroupRepository.observeAppGroup().first().size
+						val userProperty = AmplitudeEventHelper.setTotalGroupCount(count = totalGroupCount)
+						amplitude.identify(
+							Identify().apply {
+								userProperty.toUserProperties().forEach { (key, value) ->
+									set(key, value)
+								}
+							},
+						)
+
+						firebaseAnalytics.logEvent("create_modify_group") {
+							param("group_id", currentUiState.groupId)
+							param("group_name", currentUiState.groupName)
+							for (selectedApp in currentUiState.selectedApps) {
+								param("app_name", selectedApp.name)
+							}
+						}
 					}
+
+					_navigationFlow.emit(RegistryNavState.NavigateToHome)
+				}
+				is BrakeResult.Error -> {
+					_snackBarFlow.emit(
+						RegistrySnackBarState.Error(
+							UiString.ResourceString(R.string.registry_snackbar_group_creation_error),
+						),
+					)
 				}
 			}
-
-			_navigationFlow.emit(RegistryNavState.NavigateToHome)
 		}
 	}
 
@@ -392,53 +408,59 @@ class RegistryViewModel @Inject constructor(
 		viewModelScope.launch {
 			val currentUiState = registryUiState.value
 
-			deleteGroupUseCase(
-				onError = {
+			val result = deleteGroupUseCase(
+				groupId = currentUiState.groupId,
+			)
+
+			when (result) {
+				is BrakeResult.Success -> {
+					_modalFlow.value = RegistryModalState.Idle
+					_snackBarFlow.emit(
+						RegistrySnackBarState.Success(
+							UiString.ResourceString(R.string.registry_snackbar_group_deletion_successful),
+						),
+					)
+
+					launch(Dispatchers.IO) {
+						// 8번: delete_app_group 이벤트 전송
+						val deleteEvent = AmplitudeEventHelper.deleteAppGroupEvent(
+							groupId = currentUiState.groupId.toString(),
+							groupName = currentUiState.groupName,
+							groupAppCount = currentUiState.selectedApps.size,
+						)
+						amplitude.track(deleteEvent.getEventName(), deleteEvent.toEventProperties())
+
+						// 17. total_group_count User Property 업데이트
+						val totalGroupCount = appGroupRepository.observeAppGroup().first().size
+						val userProperty = AmplitudeEventHelper.setTotalGroupCount(count = totalGroupCount)
+						amplitude.identify(
+							Identify().apply {
+								userProperty.toUserProperties().forEach { (key, value) ->
+									set(key, value)
+								}
+							},
+						)
+
+						firebaseAnalytics.logEvent("delete_group") {
+							param("group_id", currentUiState.groupId)
+							param("group_name", currentUiState.groupName)
+							for (selectedApp in currentUiState.selectedApps) {
+								param("app_name", selectedApp.name)
+							}
+						}
+					}
+
+					_navigationFlow.emit(RegistryNavState.NavigateToHome)
+				}
+				is BrakeResult.Error -> {
+					_modalFlow.value = RegistryModalState.Idle
 					_snackBarFlow.emit(
 						RegistrySnackBarState.Error(
 							UiString.ResourceString(R.string.registry_snackbar_group_deletion_error),
 						),
 					)
-				},
-				groupId = currentUiState.groupId,
-			)
-			_modalFlow.value = RegistryModalState.Idle
-			_snackBarFlow.emit(
-				RegistrySnackBarState.Success(
-					UiString.ResourceString(R.string.registry_snackbar_group_deletion_successful),
-				),
-			)
-
-			launch(Dispatchers.IO) {
-				// 8번: delete_app_group 이벤트 전송
-				val deleteEvent = AmplitudeEventHelper.deleteAppGroupEvent(
-					groupId = currentUiState.groupId.toString(),
-					groupName = currentUiState.groupName,
-					groupAppCount = currentUiState.selectedApps.size,
-				)
-				amplitude.track(deleteEvent.getEventName(), deleteEvent.toEventProperties())
-
-				// 17. total_group_count User Property 업데이트
-				val totalGroupCount = appGroupRepository.observeAppGroup().first().size
-				val userProperty = AmplitudeEventHelper.setTotalGroupCount(count = totalGroupCount)
-				amplitude.identify(
-					Identify().apply {
-						userProperty.toUserProperties().forEach { (key, value) ->
-							set(key, value)
-						}
-					},
-				)
-
-				firebaseAnalytics.logEvent("delete_group") {
-					param("group_id", currentUiState.groupId)
-					param("group_name", currentUiState.groupName)
-					for (selectedApp in currentUiState.selectedApps) {
-						param("app_name", selectedApp.name)
-					}
 				}
 			}
-
-			_navigationFlow.emit(RegistryNavState.NavigateToHome)
 		}
 	}
 }

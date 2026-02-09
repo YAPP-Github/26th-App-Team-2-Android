@@ -1,6 +1,8 @@
 package com.teambrake.brake.domain.usecaseImpl
 
-import com.teambrake.brake.core.model.user.UserStatus
+import com.teambrake.brake.domain.model.exception.toApiCallError
+import com.teambrake.brake.domain.model.result.BrakeResult
+import com.teambrake.brake.domain.model.result.error.UpdateNicknameUseCaseError
 import com.teambrake.brake.domain.repository.TokenRepository
 import com.teambrake.brake.domain.repository.NicknameRepository
 import com.teambrake.brake.domain.usecase.UpdateNicknameUseCase
@@ -14,29 +16,21 @@ class UpdateNicknameUseCaseImpl @Inject constructor(
 
 	override suspend fun invoke(
 		nickname: String,
-		onError: suspend (Throwable) -> Unit,
-		onSuccess: suspend () -> Unit,
-	) {
+	): BrakeResult<Unit, UpdateNicknameUseCaseError> =
 		// AccessToken을 사용하여 닉네임 업데이트, 로컬에 닉네임 저장
-		nicknameRepository.updateUserName(
-			nickname = nickname,
-			onError = onError,
-		).collect {
-			when (it.state) {
-				// 닉네임 업데이트 성공 시, 오프라인 모드 사용 시
-				UserStatus.ACTIVE, UserStatus.OFFLINE -> {
-					// DataStore에 저장된 authCode 삭제
-					tokenRepository.clearLocalAuthCode(onError = onError)
-					// 닉네임 업데이트 성공 후 콜백 호출
-					onSuccess()
-				}
-
-				// 닉네임 업데이트 실패 시
-				else -> {
-					// 에러 처리
-					onError(Throwable("닉네임 업데이트에 실패했습니다"))
-				}
-			}
-		}
-	}
+		nicknameRepository.updateUserName(nickname = nickname).fold(
+			onSuccess = {
+				tokenRepository.clearLocalAuthCode().fold(
+					onSuccess = {
+						BrakeResult.Success(Unit)
+					},
+					onFailure = { e ->
+						BrakeResult.Error(e.toApiCallError())
+					},
+				)
+			},
+			onFailure = { e ->
+				BrakeResult.Error(e.toApiCallError())
+			},
+		)
 }

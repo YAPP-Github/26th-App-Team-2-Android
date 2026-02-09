@@ -1,5 +1,6 @@
 package com.teambrake.brake.data.remote.source
 
+import com.skydoves.sandwich.fold
 import com.skydoves.sandwich.suspendOnFailure
 import com.skydoves.sandwich.suspendOnSuccess
 import com.teambrake.brake.core.model.app.AppGroup
@@ -17,22 +18,20 @@ internal class StatisticRemoteDataSourceImpl @Inject constructor(
 	private val retrofitBrakeApi: RetrofitBrakeApi,
 ) : StatisticRemoteDataSource {
 
-	override suspend fun pushSession(
-		appGroup: AppGroup,
-		onSuccess: suspend (Long) -> Unit,
-		onError: suspend (Throwable) -> Unit,
-	) {
+	override suspend fun pushSession(appGroup: AppGroup): Result<Long> {
 		val request = appGroup.toSessionRequest() ?: run {
-			onError(Throwable("세션 요청을 생성하는 중 오류가 발생했습니다"))
-			return
+			return Result.failure(Throwable("세션 요청을 생성하는 중 오류가 발생했습니다"))
 		}
 
-		retrofitBrakeApi.sendSession(request)
-			.suspendOnSuccess {
-				onSuccess(data.data.sessionId)
-			}.suspendOnFailure {
-				onError(Throwable("세션을 생성하는 중 오류가 발생했습니다"))
-			}
+		return retrofitBrakeApi.sendSession(request).fold(
+			onSuccess = { data ->
+				data
+				Result.success(data.data.sessionId)
+			},
+			onFailure = {
+				Result.failure(Throwable("세션 정보를 전송하는 중 오류가 발생했습니다"))
+			},
+		)
 	}
 
 	override fun getStatistic(

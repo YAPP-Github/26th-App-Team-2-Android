@@ -8,8 +8,10 @@ import com.teambrake.brake.data.local.source.AuthLocalDataSource
 import com.teambrake.brake.data.local.source.AuthLocalDataSourceImpl
 import com.teambrake.brake.data.local.source.TokenLocalDataSource
 import com.teambrake.brake.data.local.source.TokenLocalDataSourceImpl
-import com.teambrake.brake.data.local.source.UserLocalDataSource
-import com.teambrake.brake.data.local.source.UserLocalDataSourceImpl
+import com.teambrake.brake.data.local.source.NameLocalDataSource
+import com.teambrake.brake.data.local.source.NameLocalDataSourceImpl
+import com.teambrake.brake.data.local.source.OnboardingLocalDataSource
+import com.teambrake.brake.data.local.source.OnboardingLocalDataSourceImpl
 import dagger.Binds
 import dagger.Module
 import dagger.hilt.InstallIn
@@ -34,9 +36,15 @@ internal abstract class LocalSourceModule {
 
 	@Binds
 	@Singleton
-	abstract fun bindUserLocalDataSource(
-		userLocalDataSource: UserLocalDataSourceImpl,
-	): UserLocalDataSource
+	abstract fun bindNameLocalDataSource(
+		nameLocalDataSource: NameLocalDataSourceImpl,
+	): NameLocalDataSource
+
+	@Binds
+	@Singleton
+	abstract fun bindOnboardingLocalDataSource(
+		onboardingLocalDataSourceImpl: OnboardingLocalDataSourceImpl,
+	): OnboardingLocalDataSource
 
 	@Binds
 	@Singleton

@@ -1,14 +1,14 @@
 package com.teambrake.brake.data.repository.di
 
 import com.teambrake.brake.data.repository.AppGroupRepositoryImpl
-import com.teambrake.brake.data.repository.SessionRepositoryImpl
+import com.teambrake.brake.data.repository.AuthRepositoryImpl
 import com.teambrake.brake.data.repository.StatisticRepositoryImpl
 import com.teambrake.brake.data.repository.TokenRepositoryImpl
 import com.teambrake.brake.data.repository.NicknameRepositoryImpl
 import com.teambrake.brake.data.repository.AppRepositoryImpl
 import com.teambrake.brake.domain.repository.AppGroupRepository
 import com.teambrake.brake.domain.repository.AppRepository
-import com.teambrake.brake.domain.repository.SessionRepository
+import com.teambrake.brake.domain.repository.AuthRepository
 import com.teambrake.brake.domain.repository.StatisticRepository
 import com.teambrake.brake.domain.repository.TokenRepository
 import com.teambrake.brake.domain.repository.NicknameRepository
@@ -36,9 +36,9 @@ internal abstract class RepositoryModule {
 	): NicknameRepository
 
 	@Binds
-	abstract fun bindSessionRepository(
-		sessionRepository: SessionRepositoryImpl,
-	): SessionRepository
+	abstract fun bindAuthRepository(
+		authRepository: AuthRepositoryImpl,
+	): AuthRepository
 
 	@Binds
 	@Singleton

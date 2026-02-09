@@ -12,11 +12,14 @@ import com.teambrake.brake.core.model.accessibility.IntentConfig
 import com.teambrake.brake.core.model.app.AppGroupState
 import com.teambrake.brake.core.util.OverlayLauncher
 import com.teambrake.brake.core.util.getAppNameFromPackage
+import com.teambrake.brake.domain.repository.AppGroupRepository
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import timber.log.Timber
 import javax.inject.Inject
 
@@ -26,11 +29,11 @@ class AppLaunchDetectionService : AccessibilityService() {
 	@Inject
 	lateinit var cachedDatabase: CachedDatabase
 
-	private val serviceJob = SupervisorJob()
-	private val serviceScope = CoroutineScope(Dispatchers.IO + serviceJob)
+	@Inject
+	lateinit var appGroupRepository: AppGroupRepository
 
-	// StateFlow의 최신 값을 저장할 변수
-	private var cachedGroups: List<CachedTargetAppGroup> = emptyList()
+	private val serviceJob = SupervisorJob()
+	private val serviceScope = CoroutineScope(Dispatchers.Default + serviceJob)
 
 	/** 현재 유저의 사용 앱 캐싱, AccessibilityService 활용이 가장 정확도가 높음 **/
 	private var currentAppPkg: String? = null
@@ -112,17 +115,12 @@ class AppLaunchDetectionService : AccessibilityService() {
 			registerReceiver(alarmReceiver, IntentFilter(IntentConfig.RECEIVER_IDENTITY))
 			registerReceiver(screenReaderReceiver, screenIntentFilter)
 		}
-
-		// 서비스 시작 시 캐싱 구독 초기화
-		serviceScope.launch {
-			cachedDatabase.cachedAppGroups.collect { groups ->
-				cachedGroups = groups
-			}
-		}
 	}
 
 	override fun onAccessibilityEvent(event: AccessibilityEvent?) {
 		if (event?.eventType == AccessibilityEvent.TYPE_WINDOW_STATE_CHANGED) {
+			Timber.d("cached database hash code: ${cachedDatabase.hashCode()}")
+
 			if (!isScreenOn) return
 
 			val packageName = event.packageName?.toString()
@@ -179,6 +177,7 @@ class AppLaunchDetectionService : AccessibilityService() {
 	private fun findAppGroupAndAction(packageName: String) {
 
 		serviceScope.launch {
+			val cachedGroups = cachedDatabase.cachedAppGroups.value
 			val targetApp = cachedGroups.find { app ->
 				app.apps.any { it.packageName == packageName }
 			}
@@ -228,6 +227,7 @@ class AppLaunchDetectionService : AccessibilityService() {
 		val appGroupState = getGroupStateFromIntent(intent)
 
 		serviceScope.launch {
+			val cachedGroups = cachedDatabase.cachedAppGroups.value
 			val appGroup = cachedGroups.find { it.groupId == groupId }
 			val appsPkgs = appGroup?.apps?.map { app -> app.packageName }?.toSet() ?: emptySet()
 
@@ -273,6 +273,26 @@ class AppLaunchDetectionService : AccessibilityService() {
 			}
 		}
 		Timber.i("현재 뷰와 대응되는 앱 ${monitoredApps.joinToString(", ")} 을 발견하지 못했습니다.")
+	}
+
+	override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
+		Timber.i("onStartCommand 호출됨, flags: $flags, startId: $startId")
+
+		// Main 디스패처에서 순차 실행되므로 Mutex 불필요
+		serviceScope.launch {
+			// DB 읽기와 캐시 초기화를 모두 IO 스레드에서 처리
+			withContext(Dispatchers.IO) {
+				val appGroups = appGroupRepository.observeAppGroup().firstOrNull()
+				if (!appGroups.isNullOrEmpty()) {
+					cachedDatabase.initializeCachedState(appGroups)
+					Timber.i("✅ 캐시 초기화 완료: ${appGroups.size}개의 앱 그룹")
+				} else {
+					Timber.w("⚠️ 초기화할 앱 그룹이 없습니다.")
+				}
+			}
+		}
+
+		return START_STICKY
 	}
 
 	override fun onInterrupt() {

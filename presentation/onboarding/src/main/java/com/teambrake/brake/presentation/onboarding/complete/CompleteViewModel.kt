@@ -11,6 +11,7 @@ import com.teambrake.brake.core.amplitude.AmplitudeEventHelper
 import com.teambrake.brake.core.amplitude.StepDetail
 import com.teambrake.brake.core.amplitude.StepName
 import com.teambrake.brake.core.ui.UiString
+import com.teambrake.brake.domain.model.result.BrakeResult
 import com.teambrake.brake.domain.usecase.StoreOnboardingCompletionUseCase
 import com.teambrake.brake.presentation.onboarding.R
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -50,35 +51,38 @@ class CompleteViewModel @Inject constructor(
 
 	fun completeOnboarding() {
 		viewModelScope.launch {
-			storeOnboardingCompletionUseCase(
+			val result = storeOnboardingCompletionUseCase(
 				isComplete = true,
-				onError = {
+			)
+			when (result) {
+				is BrakeResult.Success -> {
+					launch(Dispatchers.IO) {
+						// 3. complete_onboarding 이벤트 전송
+						val completeEvent = AmplitudeEventHelper.createCompleteOnboardingEvent()
+						amplitude.track(completeEvent.getEventName(), completeEvent.toEventProperties())
+
+						// 18. is_onboarding_completed User Property 업데이트
+						val userProperty = AmplitudeEventHelper.setIsOnboardingCompleted(isCompleted = true)
+						amplitude.identify(
+							Identify().apply {
+								userProperty.toUserProperties().forEach { (key, value) ->
+									set(key, value)
+								}
+							},
+						)
+
+						firebaseAnalytics.logEvent(FirebaseAnalytics.Event.TUTORIAL_COMPLETE) {
+							param(FirebaseAnalytics.Param.SUCCESS, "true")
+						}
+					}
+					_navigationFlow.emit(CompleteNavState.NavigateToMain)
+				}
+				is BrakeResult.Error -> {
 					_snackBarFlow.emit(
 						UiString.ResourceString(R.string.onboarding_snackbar_flag_save_error),
 					)
-				},
-			)
-
-			launch(Dispatchers.IO) {
-				// 3. complete_onboarding 이벤트 전송
-				val completeEvent = AmplitudeEventHelper.createCompleteOnboardingEvent()
-				amplitude.track(completeEvent.getEventName(), completeEvent.toEventProperties())
-
-				// 18. is_onboarding_completed User Property 업데이트
-				val userProperty = AmplitudeEventHelper.setIsOnboardingCompleted(isCompleted = true)
-				amplitude.identify(
-					Identify().apply {
-						userProperty.toUserProperties().forEach { (key, value) ->
-							set(key, value)
-						}
-					},
-				)
-
-				firebaseAnalytics.logEvent(FirebaseAnalytics.Event.TUTORIAL_COMPLETE) {
-					param(FirebaseAnalytics.Param.SUCCESS, "true")
 				}
 			}
-			_navigationFlow.emit(CompleteNavState.NavigateToMain)
 		}
 	}
 }

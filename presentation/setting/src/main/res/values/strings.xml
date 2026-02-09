@@ -37,5 +37,5 @@
 	<string name="nickname_input_valid_guide_text">사용 가능한 닉네임입니다.</string>
 	<string name="nickname_snackbar_update_success">닉네임이 변경되었습니다.</string>
 	<string name="nickname_snackbar_update_error">닉네임 변경을 실패했습니다. 다시 시도해주세요.</string>
-
+	<string name="snackbar_get_nickname_error">닉네임을 불러오는 데 실패했습니다.</string>
 </resources>

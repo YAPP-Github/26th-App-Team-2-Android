@@ -2,6 +2,7 @@ package com.teambrake.brake.overlay.snooze
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.teambrake.brake.domain.model.result.BrakeResult
 import com.amplitude.android.Amplitude
 import com.teambrake.brake.core.amplitude.AmplitudeEvent
 import com.teambrake.brake.core.amplitude.AmplitudeEventHelper
@@ -60,27 +61,32 @@ internal class SnoozeViewModel @AssistedInject constructor(
 
 	fun setSnooze(snoozeNth: Int) {
 		viewModelScope.launch {
-			setSnoozeAlarmUsecase(
-				groupId = groupId,
-				groupName = groupName,
-			).onSuccess {
-			}.onFailure {
-				sendToastMessage("알람 설정에 실패했습니다. 정확한 알람 권한을 확인해주세요.")
-			}
-
-			/**
-			 * 14. click_snooze 이벤트 전송
-			 * 스누즈 버튼 클릭 시 호출 (그룹 정보와 스누즈 횟수 필요)
-			 */
-			launch(Dispatchers.IO) {
-				trackAmplitudeEvent(
-					AmplitudeEventHelper.createClickSnoozeEvent(
-						snoozeNth = snoozeNth,
-						groupId = groupId.toString(),
-						groupName = groupName,
-						groupAppCount = groupAppCount,
-					),
+			when (
+				setSnoozeAlarmUsecase(
+					groupId = groupId,
+					groupName = groupName,
 				)
+			) {
+				is BrakeResult.Error -> {
+					sendToastMessage("알람 설정에 실패했습니다. 정확한 알람 권한을 확인해주세요.")
+				}
+
+				is BrakeResult.Success -> {
+					/**
+					 * 14. click_snooze 이벤트 전송
+					 * 스누즈 버튼 클릭 시 호출 (그룹 정보와 스누즈 횟수 필요)
+					 */
+					launch(Dispatchers.IO) {
+						trackAmplitudeEvent(
+							AmplitudeEventHelper.createClickSnoozeEvent(
+								snoozeNth = snoozeNth,
+								groupId = groupId.toString(),
+								groupName = groupName,
+								groupAppCount = groupAppCount,
+							),
+						)
+					}
+				}
 			}
 		}
 	}

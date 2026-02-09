@@ -17,6 +17,11 @@ import com.teambrake.brake.core.permission.PermissionManager
 import com.teambrake.brake.core.permission.PermissionType
 import com.teambrake.brake.core.ui.SnackBarState
 import com.teambrake.brake.core.ui.UiString
+import com.teambrake.brake.domain.model.result.BrakeResult
+import com.teambrake.brake.domain.model.result.error.HttpUnsuccessfulCodeError
+import com.teambrake.brake.domain.model.result.error.LocalApiCallError
+import com.teambrake.brake.domain.model.result.error.RemoteServerNotReachedError
+import com.teambrake.brake.domain.model.result.error.UndefinedExceptionError
 import com.teambrake.brake.domain.usecase.DecideNextDestinationFromPermissionUseCase
 import com.teambrake.brake.domain.usecase.LoginUseCase
 import com.teambrake.brake.domain.usecase.StartOfflineModeUseCase
@@ -105,9 +110,34 @@ internal class LoginViewModel @Inject constructor(
 	fun startOfflineMode(nickname: String) {
 		viewModelScope.launch {
 			_uiState.value = LoginUiState.LoginLoading
-			startOfflineModeUseCase.invoke(
-				offlineNickname = nickname,
-				onError = { throwable ->
+			when (val result = startOfflineModeUseCase(offlineNickname = nickname)) {
+				is BrakeResult.Success<*> -> {
+					when (result.data) {
+						is Destination.PermissionOrHome -> {
+							_navigationFlow.emit(LoginNavState.NavigateToPermission)
+						}
+
+						is Destination.Onboarding -> {
+							_navigationFlow.emit(
+								LoginNavState.NavigateToOnboarding,
+							)
+							firebaseAnalytics.logEvent(FirebaseAnalytics.Event.TUTORIAL_BEGIN, null)
+						}
+
+						else -> {
+							_uiState.value = LoginUiState.LoginIdle
+							_snackBarFlow.emit(
+								SnackBarState.Error(
+									uiString = UiString.ResourceString(
+										resId = R.string.login_snackbar_offline_mode_error,
+									),
+								),
+							)
+						}
+					}
+				}
+
+				is BrakeResult.Error -> {
 					_uiState.value = LoginUiState.LoginIdle
 					_snackBarFlow.emit(
 						SnackBarState.Error(
@@ -116,7 +146,13 @@ internal class LoginViewModel @Inject constructor(
 							),
 						),
 					)
-					Timber.e(throwable, "오프라인 모드 시작 중 에러 발생")
+					val err = when (val e = result.error) {
+						is HttpUnsuccessfulCodeError -> Throwable("Unsuccessful HTTP code: ${e.httpCode}")
+						is LocalApiCallError -> e.e
+						is UndefinedExceptionError -> e.exception
+						RemoteServerNotReachedError -> Throwable("server not reached")
+					}
+					Timber.e(err)
 					firebaseAnalytics.apply {
 						logEvent("cancel_client_offline_mode") {
 							param("reason", "client_error")
@@ -124,30 +160,6 @@ internal class LoginViewModel @Inject constructor(
 						logEvent(FirebaseAnalytics.Event.SCREEN_VIEW) {
 							param(FirebaseAnalytics.Param.SCREEN_NAME, "login_screen")
 						}
-					}
-				},
-			).let { destination ->
-				when (destination) {
-					is Destination.PermissionOrHome -> {
-						_navigationFlow.emit(LoginNavState.NavigateToPermission)
-					}
-
-					is Destination.Onboarding -> {
-						_navigationFlow.emit(
-							LoginNavState.NavigateToOnboarding,
-						)
-						firebaseAnalytics.logEvent(FirebaseAnalytics.Event.TUTORIAL_BEGIN, null)
-					}
-
-					else -> {
-						_uiState.value = LoginUiState.LoginIdle
-						_snackBarFlow.emit(
-							SnackBarState.Error(
-								uiString = UiString.ResourceString(
-									resId = R.string.login_snackbar_offline_mode_error,
-								),
-							),
-						)
 					}
 				}
 			}
@@ -250,57 +262,81 @@ internal class LoginViewModel @Inject constructor(
 			loginUseCase(
 				authCode = authCode,
 				provider = provider,
-				onError = { throwable ->
-					_uiState.value = LoginUiState.LoginIdle
-					_snackBarFlow.emit(
-						SnackBarState.Error(
-							uiString = UiString.ResourceString(
-								resId = R.string.login_snackbar_login_error,
-							),
-						),
-					)
-					firebaseAnalytics.logEvent("cancel_server_login") {
-						param("reason", "server_error")
-					}
-				},
 			).catch {
 				Timber.e(it, "로그인 중 에러 발생")
+				_uiState.value = LoginUiState.LoginIdle
+				_snackBarFlow.emit(
+					SnackBarState.Error(
+						uiString = UiString.ResourceString(
+							resId = R.string.login_snackbar_login_error,
+						),
+					),
+				)
+				firebaseAnalytics.logEvent("cancel_server_login") {
+					param("reason", "server_error")
+				}
 			}.collect { result ->
 				when (result) {
-					UserStatus.ACTIVE -> {
-						_uiState.value = LoginUiState.LoginIdle
-						decideNextDestination(context)
-					}
+					is BrakeResult.Success -> {
+						when (result.data) {
+							UserStatus.ACTIVE -> {
+								_uiState.value = LoginUiState.LoginIdle
+								decideNextDestination(context)
+							}
 
-					UserStatus.HALF_SIGNUP -> {
-						_uiState.value = LoginUiState.LoginIdle
-						_navigationFlow.emit(LoginNavState.NavigateToSignup)
-					}
+							UserStatus.HALF_SIGNUP -> {
+								_uiState.value = LoginUiState.LoginIdle
+								_navigationFlow.emit(LoginNavState.NavigateToSignup)
+							}
 
-					UserStatus.INACTIVE -> {
-						_uiState.value = LoginUiState.LoginIdle
-						_snackBarFlow.emit(
-							SnackBarState.Error(
-								uiString = UiString.ResourceString(
-									resId = R.string.login_snackbar_login_error_inactive,
-								),
-							),
-						)
-						firebaseAnalytics.logEvent("cancel_server_login") {
-							param("reason", "server_not_allowed")
+							UserStatus.INACTIVE -> {
+								_uiState.value = LoginUiState.LoginIdle
+								_snackBarFlow.emit(
+									SnackBarState.Error(
+										uiString = UiString.ResourceString(
+											resId = R.string.login_snackbar_login_error_inactive,
+										),
+									),
+								)
+								firebaseAnalytics.logEvent("cancel_server_login") {
+									param("reason", "server_not_allowed")
+								}
+							}
+
+							UserStatus.OFFLINE -> {
+								_uiState.value = LoginUiState.LoginIdle
+								_snackBarFlow.emit(
+									SnackBarState.Error(
+										uiString = UiString.ResourceString(
+											resId = R.string.login_snackbar_login_error_offline,
+										),
+									),
+								)
+								firebaseAnalytics.logEvent("cancel_server_login") {
+									param("reason", "server_offline")
+								}
+							}
 						}
 					}
-					UserStatus.OFFLINE -> {
+
+					is BrakeResult.Error -> {
 						_uiState.value = LoginUiState.LoginIdle
 						_snackBarFlow.emit(
 							SnackBarState.Error(
 								uiString = UiString.ResourceString(
-									resId = R.string.login_snackbar_login_error_offline,
+									resId = R.string.login_snackbar_login_error,
 								),
 							),
 						)
+						val err = when (val e = result.error) {
+							is UndefinedExceptionError -> e.exception
+							is HttpUnsuccessfulCodeError -> Throwable("Unsuccessful HTTP code: ${e.httpCode}")
+							is LocalApiCallError -> e.e
+							RemoteServerNotReachedError -> Throwable("server not reached")
+						}
+						Timber.e(err, "로그인 에러")
 						firebaseAnalytics.logEvent("cancel_server_login") {
-							param("reason", "server_offline")
+							param("reason", "error")
 						}
 					}
 				}
@@ -317,8 +353,38 @@ internal class LoginViewModel @Inject constructor(
 	}
 
 	private suspend fun decideNextDestination(context: Context) {
-		val status = decideDestinationUseCase(
-			onError = { error ->
+		when (val result = decideDestinationUseCase()) {
+			is BrakeResult.Success<*> -> {
+				when (result.data) {
+					is Destination.PermissionOrHome -> if (checkPermissions(context)) {
+						_navigationFlow.emit(LoginNavState.NavigateToHome)
+						firebaseAnalytics.logEvent(FirebaseAnalytics.Event.LOGIN) {
+							param(FirebaseAnalytics.Param.METHOD, "user_login")
+						}
+					} else {
+						_navigationFlow.emit(LoginNavState.NavigateToPermission)
+						firebaseAnalytics.logEvent(FirebaseAnalytics.Event.LOGIN) {
+							param(FirebaseAnalytics.Param.METHOD, "user_login")
+						}
+					}
+
+					is Destination.Onboarding -> {
+						_navigationFlow.emit(
+							LoginNavState.NavigateToOnboarding,
+						)
+						firebaseAnalytics.apply {
+							logEvent(FirebaseAnalytics.Event.LOGIN) {
+								param(FirebaseAnalytics.Param.METHOD, "user_login")
+							}
+							logEvent(FirebaseAnalytics.Event.TUTORIAL_BEGIN, null)
+						}
+					}
+
+					else -> {}
+				}
+			}
+
+			is BrakeResult.Error -> {
 				_snackBarFlow.emit(
 					SnackBarState.Error(
 						uiString = UiString.ResourceString(
@@ -334,34 +400,8 @@ internal class LoginViewModel @Inject constructor(
 						param(FirebaseAnalytics.Param.SCREEN_NAME, "login_screen")
 					}
 				}
-			},
-		)
-		when (status) {
-			is Destination.PermissionOrHome -> if (checkPermissions(context)) {
-				_navigationFlow.emit(LoginNavState.NavigateToHome)
-				firebaseAnalytics.logEvent(FirebaseAnalytics.Event.LOGIN) {
-					param(FirebaseAnalytics.Param.METHOD, "user_login")
-				}
-			} else {
-				_navigationFlow.emit(LoginNavState.NavigateToPermission)
-				firebaseAnalytics.logEvent(FirebaseAnalytics.Event.LOGIN) {
-					param(FirebaseAnalytics.Param.METHOD, "user_login")
-				}
 			}
 
-			is Destination.Onboarding -> {
-				_navigationFlow.emit(
-					LoginNavState.NavigateToOnboarding,
-				)
-				firebaseAnalytics.apply {
-					logEvent(FirebaseAnalytics.Event.LOGIN) {
-						param(FirebaseAnalytics.Param.METHOD, "user_login")
-					}
-					logEvent(FirebaseAnalytics.Event.TUTORIAL_BEGIN, null)
-				}
-			}
-
-			else -> {}
 		}
 	}
 

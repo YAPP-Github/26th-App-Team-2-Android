@@ -5,6 +5,7 @@ import androidx.lifecycle.viewModelScope
 import com.amplitude.android.Amplitude
 import com.teambrake.brake.core.amplitude.AmplitudeEventHelper
 import com.teambrake.brake.core.model.app.AppGroupState
+import com.teambrake.brake.domain.model.result.BrakeResult
 import com.teambrake.brake.domain.usecase.SetAlarmUseCase
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedFactory
@@ -128,28 +129,33 @@ internal class TimerViewModel @AssistedInject constructor(
 		viewModelScope.launch {
 			val uiState = timerUiState.value as TimerUiState.SetComplete
 
-			setAlarmUsecase(
-				second = uiState.durationMinutes,
-				groupId = groupId,
-				groupName = groupName,
-				appGroupState = AppGroupState.Using,
-			).onSuccess { endTime ->
-
-				/**
-				 * 12. click_brake_session_start 이벤트 전송
-				 * 세션 시작 시 호출 (그룹 정보 필요)
-				 */
-				launch(Dispatchers.IO) {
-					val startEvent = AmplitudeEventHelper.createClickBrakeSessionStartEvent(
-						groupId = groupId.toString(),
-						groupName = groupName,
-						groupAppCount = groupAppCount,
-						plannedDuration = uiState.durationMinutes,
-					)
-					amplitude.track(startEvent.getEventName(), startEvent.toEventProperties())
+			when (
+				setAlarmUsecase(
+					second = uiState.durationMinutes,
+					groupId = groupId,
+					groupName = groupName,
+					appGroupState = AppGroupState.Using,
+				)
+			) {
+				is BrakeResult.Success -> {
+					/**
+					 * 12. click_brake_session_start 이벤트 전송
+					 * 세션 시작 시 호출 (그룹 정보 필요)
+					 */
+					launch(Dispatchers.IO) {
+						val startEvent = AmplitudeEventHelper.createClickBrakeSessionStartEvent(
+							groupId = groupId.toString(),
+							groupName = groupName,
+							groupAppCount = groupAppCount,
+							plannedDuration = uiState.durationMinutes,
+						)
+						amplitude.track(startEvent.getEventName(), startEvent.toEventProperties())
+					}
 				}
-			}.onFailure {
-				sendToastMessage("알람 설정에 실패했습니다. 정확한 알람 권한을 확인해주세요.")
+				is BrakeResult.Error -> {
+					sendToastMessage("알람 설정에 실패했습니다. 정확한 알람 권한을 확인해주세요.")
+
+				}
 			}
 		}
 	}

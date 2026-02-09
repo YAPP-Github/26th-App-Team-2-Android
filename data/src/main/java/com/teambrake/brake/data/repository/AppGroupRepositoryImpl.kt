@@ -5,14 +5,14 @@ import com.teambrake.brake.core.model.app.AppGroup
 import com.teambrake.brake.core.model.app.AppGroupState
 import com.teambrake.brake.data.local.source.AppGroupLocalDataSource
 import com.teambrake.brake.data.local.source.AppLocalDataSource
+import com.teambrake.brake.data.local.source.TokenLocalDataSource
 import com.teambrake.brake.data.remote.source.AppGroupRemoteDataSource
-import com.teambrake.brake.data.repository.util.OfflineBlocker
-import com.teambrake.brake.data.repository.util.OfflineException
+import com.teambrake.brake.data.repository.base.BaseRepository
 import com.teambrake.brake.domain.repository.AppGroupRepository
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.firstOrNull
+import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.onStart
@@ -20,51 +20,65 @@ import java.time.LocalDateTime
 import javax.inject.Inject
 
 internal class AppGroupRepositoryImpl @Inject constructor(
-	private val offlineBlocker: OfflineBlocker,
+	tokenLocalDataSource: TokenLocalDataSource,
 	private val appGroupLocalDataSource: AppGroupLocalDataSource,
 	private val appGroupRemoteDataSource: AppGroupRemoteDataSource,
 	private val appLocalDataSource: AppLocalDataSource,
 	private val cachedDatabase: CachedDatabase,
-) : AppGroupRepository {
+) : BaseRepository(tokenLocalDataSource),
+	AppGroupRepository {
 
-	override suspend fun insertAppGroup(appGroup: AppGroup): AppGroup {
-		val isUpdate = appGroupLocalDataSource.isAppGroupExists(appGroup.id)
+	override suspend fun insertAppGroup(appGroup: AppGroup): AppGroup = try {
+		val isUpdate = appGroupLocalDataSource.isAppGroupExists(
+			appGroup.id,
+			onError = { throw it },
+		)
 
-		return offlineBlocker.blockFlow {
-			if (isUpdate) {
-				appGroupRemoteDataSource.updateAppGroup(appGroup = appGroup)
-			} else {
-				appGroupRemoteDataSource.createAppGroup(appGroup = appGroup)
-			}
-		}.map { resultGroup ->
-			appGroupLocalDataSource.insertAppGroup(resultGroup)
-			if (isUpdate) {
-				cachedDatabase.updateAppGroupInCache(resultGroup)
-			} else {
-				cachedDatabase.addAppGroupToCache(resultGroup)
-			}
-			resultGroup
-		}.catch {
-			if (it is OfflineException) {
-				appGroupLocalDataSource.insertAppGroup(appGroup)
+		executeFlowWithStatusCheck(
+			flowProvider = {
 				if (isUpdate) {
-					cachedDatabase.updateAppGroupInCache(appGroup)
+					appGroupRemoteDataSource.updateAppGroup(appGroup = appGroup)
 				} else {
-					cachedDatabase.addAppGroupToCache(appGroup)
+					appGroupRemoteDataSource.createAppGroup(appGroup = appGroup)
+				}.map { resultGroup ->
+					appGroupLocalDataSource.insertAppGroup(resultGroup)
+					if (isUpdate) {
+						cachedDatabase.updateAppGroupInCache(resultGroup)
+					} else {
+						cachedDatabase.addAppGroupToCache(resultGroup)
+					}
+					resultGroup
 				}
-				emit(appGroup)
-			} else {
-				throw it
-			}
-		}.first()
+			},
+			offlineFlowProvider = {
+				flow {
+					appGroupLocalDataSource.insertAppGroup(appGroup)
+					if (isUpdate) {
+						cachedDatabase.updateAppGroupInCache(appGroup)
+					} else {
+						cachedDatabase.addAppGroupToCache(appGroup)
+					}
+					emit(appGroup)
+				}
+			},
+		).first()
+	} catch (_: Exception) {
+		// 예외 발생 시 로컬에만 저장
+		appGroupLocalDataSource.insertAppGroup(appGroup)
+		if (appGroupLocalDataSource.isAppGroupExists(appGroup.id, onError = { throw it })) {
+			cachedDatabase.updateAppGroupInCache(appGroup)
+		} else {
+			cachedDatabase.addAppGroupToCache(appGroup)
+		}
+		appGroup
 	}
 
 	override suspend fun getAvailableMinGroupId(): Long =
 		appGroupLocalDataSource.getAvailableMinGroupId()
 
-	override suspend fun deleteAppGroupByGroupId(groupId: Long) {
-		try {
-			offlineBlocker.block {
+	override suspend fun deleteAppGroupByGroupId(groupId: Long): Result<Unit> = try {
+		executeWithStatusCheck(
+			runIfOnline = {
 				appGroupRemoteDataSource.deleteAppGroup(
 					groupId = groupId,
 					onSuccess = {
@@ -72,35 +86,50 @@ internal class AppGroupRepositoryImpl @Inject constructor(
 						cachedDatabase.removeAppGroupFromCache(groupId)
 					},
 				)
-			}
-		} catch (_: OfflineException) {
-			// 오프라인 모드, 원격 앱 그룹 삭제 스킵
-		} catch (_: Exception) {
-			// 기타 예외는 무시
-		} finally {
-			// 항상 로컬에서 앱 그룹 삭제 및 캐시 제거를 수행 (네트워크 상태와 관계없이 실행)
-			appGroupLocalDataSource.deleteAppGroupById(groupId = groupId)
-			cachedDatabase.removeAppGroupFromCache(groupId)
-		}
+			},
+			runIfOffline = {
+				// 오프라인 모드, 원격 앱 그룹 삭제 스킵
+			},
+		)
+		// 항상 로컬에서 앱 그룹 삭제 및 캐시 제거를 수행 (네트워크 상태와 관계없이 실행)
+		appGroupLocalDataSource.deleteAppGroupById(groupId = groupId)
+		cachedDatabase.removeAppGroupFromCache(groupId)
+		Result.success(Unit)
+	} catch (e: Exception) {
+		// 기타 예외 발생 시에도 로컬 삭제는 수행
+		appGroupLocalDataSource.deleteAppGroupById(groupId = groupId)
+		cachedDatabase.removeAppGroupFromCache(groupId)
+		Result.failure(e)
 	}
 
-	override suspend fun clearAppGroup() {
+	override suspend fun clearAppGroup(): Result<Unit> = try {
 		appGroupLocalDataSource.clearAppGroup()
 		cachedDatabase.clearCache()
+		Result.success(Unit)
+	} catch (e: Exception) {
+		Result.failure(e)
 	}
 
 	override fun observeAppGroup(): Flow<List<AppGroup>> =
 		appGroupLocalDataSource.observeAppGroup()
 			.onStart {
-				val localList = appGroupLocalDataSource.observeAppGroup().firstOrNull() ?: emptyList()
+				val localList =
+					appGroupLocalDataSource.observeAppGroup().firstOrNull() ?: emptyList()
 				if (localList.isEmpty()) {
-					runCatching {
-						offlineBlocker.blockFlow { appGroupRemoteDataSource.getAppGroups() }
-							.collect { remoteList ->
-								appGroupLocalDataSource.insertAppGroups(remoteList)
-								remoteList.forEach { appLocalDataSource.insertApps(it.id, it.apps) }
-								cachedDatabase.initializeCachedState(remoteList)
+					executeFlowWithStatusCheck(
+						flowProvider = { appGroupRemoteDataSource.getAppGroups() },
+						offlineFlowProvider = {
+							flow {
+								// 오프라인 모드: 서버에서 데이터를 가져오지 않고 빈 리스트 반환
+								emit(emptyList())
 							}
+						},
+					).collect { remoteList ->
+						if (remoteList.isNotEmpty()) {
+							appGroupLocalDataSource.insertAppGroups(remoteList)
+							remoteList.forEach { appLocalDataSource.insertApps(it.id, it.apps) }
+							cachedDatabase.initializeCachedState(remoteList)
+						}
 					}
 				}
 			}
