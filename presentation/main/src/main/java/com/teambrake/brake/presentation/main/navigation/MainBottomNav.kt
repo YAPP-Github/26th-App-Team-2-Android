@@ -27,6 +27,7 @@ import com.teambrake.brake.core.designsystem.theme.BrakeTheme
 import com.teambrake.brake.core.designsystem.theme.Gray700
 import com.teambrake.brake.core.designsystem.theme.Gray800
 import com.teambrake.brake.core.designsystem.theme.White
+import com.teambrake.brake.core.ui.UiString
 import kotlinx.collections.immutable.ImmutableList
 
 @Composable
@@ -82,7 +83,7 @@ private fun RowScope.MainBottomNavItem(
 	) {
 		Icon(
 			painter = painterResource(tab.iconResId),
-			contentDescription = tab.contentDescription,
+			contentDescription = UiString.ResourceString(tab.contentDescription).asString(),
 			modifier = Modifier.size(20.dp),
 			tint = if (selected) {
 				White
@@ -92,7 +93,7 @@ private fun RowScope.MainBottomNavItem(
 		)
 		Spacer(modifier = Modifier.height(4.dp))
 		Text(
-			text = tab.contentDescription,
+			text = UiString.ResourceString(tab.contentDescription).asString(),
 			style = BrakeTheme.typography.body12M,
 			color = if (selected) {
 				White

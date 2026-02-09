@@ -7,22 +7,22 @@ import com.teambrake.brake.presentation.main.R
 
 internal enum class MainTab(
 	val iconResId: Int,
-	internal val contentDescription: String,
+	internal val contentDescription: Int,
 	val route: MainTabRoute,
 ) {
 	REPORT(
 		iconResId = R.drawable.ic_chart,
-		contentDescription = "리포트",
+		contentDescription = R.string.tab_report,
 		MainTabRoute.Report,
 	),
 	HOME(
 		iconResId = R.drawable.ic_timer,
-		contentDescription = "관리",
+		contentDescription = R.string.tab_home,
 		MainTabRoute.Home,
 	),
 	SETTING(
 		iconResId = R.drawable.ic_user,
-		contentDescription = "내 정보",
+		contentDescription = R.string.tab_setting,
 		MainTabRoute.Setting,
 	),
 	;
