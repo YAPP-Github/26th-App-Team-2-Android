@@ -5,8 +5,8 @@ minSdk = "28"
 targetSdk = "35"
 
 ## App version
-versionCode = "8"
-versionName = "1.2.3"
+versionCode = "9"
+versionName = "1.2.4"
 
 ## Android gradle plugin
 agp = "8.10.1"
