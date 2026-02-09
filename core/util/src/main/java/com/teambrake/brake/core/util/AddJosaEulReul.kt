@@ -1,6 +1,15 @@
 package com.teambrake.brake.core.util
 
 fun String.addJosaEulReul(): String {
+	val appLocales = androidx.core.os.LocaleListCompat.getAdjustedDefault()
+	val isKorean = if (!appLocales.isEmpty) {
+		appLocales[0]?.language == "ko"
+	} else {
+		androidx.core.os.ConfigurationCompat.getLocales(android.content.res.Resources.getSystem().configuration)[0]?.language == "ko"
+	}
+
+	if (!isKorean) return this
+
 	if (this.isEmpty()) return "${this}를"
 
 	val lastChar = this.last()
