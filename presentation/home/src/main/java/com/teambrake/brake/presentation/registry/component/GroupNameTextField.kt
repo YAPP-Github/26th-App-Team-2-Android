@@ -21,7 +21,9 @@ import com.teambrake.brake.core.designsystem.theme.Gray200
 import com.teambrake.brake.core.designsystem.theme.Green
 import com.teambrake.brake.core.designsystem.theme.Red
 import com.teambrake.brake.core.designsystem.theme.White
+import com.teambrake.brake.core.ui.UiString
 import com.teambrake.brake.core.ui.isValidInput
+import com.teambrake.brake.presentation.home.R
 
 @Composable
 fun GroupNameTextField(
@@ -44,7 +46,7 @@ fun GroupNameTextField(
 			horizontalArrangement = Arrangement.Absolute.SpaceBetween,
 		) {
 			Text(
-				text = "그룹명",
+				text = UiString.ResourceString(R.string.registry_textfield_name).asString(),
 				color = Gray200,
 				style = BrakeTheme.typography.body16M,
 			)

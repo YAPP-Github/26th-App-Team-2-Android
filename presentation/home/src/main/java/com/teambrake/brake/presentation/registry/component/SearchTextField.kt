@@ -5,6 +5,7 @@ import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import com.teambrake.brake.core.designsystem.component.BaseTextField
 import com.teambrake.brake.core.designsystem.theme.BrakeTheme
@@ -15,7 +16,7 @@ fun SearchTextField(
 	modifier: Modifier = Modifier,
 	value: String,
 	onValueChange: (String) -> Unit,
-	placeholder: String = "앱 또는 카테고리 검색",
+	placeholder: String = stringResource(R.string.registry_search),
 	keyboardActions: KeyboardActions,
 ) {
 	BaseTextField(
