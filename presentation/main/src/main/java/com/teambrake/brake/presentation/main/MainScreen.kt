@@ -110,7 +110,7 @@ private fun MainScreenContent(
 								is MainTabRoute.Report -> MainTab.REPORT
 								is MainTabRoute.Setting -> MainTab.SETTING
 							},
-							onTabSelected = navigator::navigate,
+							onTabSelected = navigator::navigateTab,
 						)
 					}
 				}

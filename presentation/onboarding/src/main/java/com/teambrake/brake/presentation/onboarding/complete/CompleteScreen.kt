@@ -21,7 +21,6 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
-import com.teambrake.brake.presentation.onboarding.complete.model.CompleteNavState
 import com.teambrake.brake.core.designsystem.component.LargeButton
 import com.teambrake.brake.core.designsystem.component.VerticalSpacer
 import com.teambrake.brake.core.designsystem.theme.BrakeTheme
@@ -29,8 +28,8 @@ import com.teambrake.brake.core.designsystem.theme.LocalPadding
 import com.teambrake.brake.core.designsystem.theme.White
 import com.teambrake.brake.core.navigation.compositionlocal.LocalMainAction
 import com.teambrake.brake.core.navigation.compositionlocal.LocalNavigatorAction
-import com.teambrake.brake.core.navigation.compositionlocal.LocalNavigatorProvider
 import com.teambrake.brake.presentation.onboarding.R
+import com.teambrake.brake.presentation.onboarding.complete.model.CompleteNavState
 
 @Composable
 fun CompleteRoute(
@@ -39,7 +38,6 @@ fun CompleteRoute(
 	val screenHorizontalPadding = LocalPadding.current.screenPaddingHorizontal
 	val context = LocalContext.current
 	val navAction = LocalNavigatorAction.current
-	val navProvider = LocalNavigatorProvider.current
 	val mainAction = LocalMainAction.current
 
 	LaunchedEffect(true) {
@@ -54,7 +52,7 @@ fun CompleteRoute(
 		viewModel.navigationFlow.collect { effect ->
 			when (effect) {
 				CompleteNavState.NavigateToMain -> navAction.navigateToHome(
-					navOptions = navProvider.getNavOptionsClearingBackStack(),
+					clearBackStack = true,
 				)
 
 				CompleteNavState.NavigateToBack -> navAction.popBackStack()

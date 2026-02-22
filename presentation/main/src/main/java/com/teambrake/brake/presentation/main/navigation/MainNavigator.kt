@@ -3,203 +3,169 @@ package com.teambrake.brake.presentation.main.navigation
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.platform.LocalContext
-import androidx.navigation.NavDestination.Companion.hasRoute
-import androidx.navigation.NavHostController
-import androidx.navigation.NavOptions
-import androidx.navigation.compose.rememberNavController
-import androidx.navigation.navOptions
 import com.google.firebase.analytics.FirebaseAnalytics
 import com.google.firebase.analytics.logEvent
 import com.teambrake.brake.core.navigation.action.NavigatorAction
 import com.teambrake.brake.core.navigation.provider.NavigatorProvider
+import com.teambrake.brake.core.navigation.route.InitialRoute
 import com.teambrake.brake.core.navigation.route.MainTabRoute
 import com.teambrake.brake.core.navigation.route.Route
 import com.teambrake.brake.core.navigation.route.RouteStack
-import com.teambrake.brake.presentation.feeback.inquiry.navigation.navigateToInquiry
-import com.teambrake.brake.presentation.feeback.opinion.navigation.navigateToOpinion
-import com.teambrake.brake.presentation.home.navigation.navigateToHome
-import com.teambrake.brake.presentation.legal.navigation.navigateToPrivacy
-import com.teambrake.brake.presentation.legal.navigation.navigateToTerms
-import com.teambrake.brake.presentation.login.navigation.navigateToLogin
-import com.teambrake.brake.presentation.nickname.navigation.navigateToNickname
-import com.teambrake.brake.presentation.onboarding.navigation.navigateToComplete
-import com.teambrake.brake.presentation.onboarding.navigation.navigateToGuide
-import com.teambrake.brake.presentation.permission.navigation.navigateToPermission
-import com.teambrake.brake.presentation.registry.navigation.navigateToRegistry
-import com.teambrake.brake.presentation.report.navigation.navigateReport
-import com.teambrake.brake.presentation.setting.navigation.navigateSetting
-import com.teambrake.brake.presentation.signup.navigation.navigateToSignup
+import com.teambrake.brake.core.navigation.route.SubRoute
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.update
 
 internal class MainNavigator(
 	val startDestination: Route,
-	val navController: NavHostController,
 	private val firebaseAnalytics: FirebaseAnalytics,
 ) {
 	private val _routeStack = MutableStateFlow(RouteStack())
 	val routeStack: StateFlow<RouteStack> = _routeStack.asStateFlow()
 
+	fun navigate(route: Route, clearBackStack: Boolean = false) {
+		if (clearBackStack) {
+			_routeStack.update {
+				RouteStack(stack = listOf(route))
+			}
+		} else {
+			_routeStack.update { current ->
+				if (route in current.stack) {
+					current.copy(
+						stack = current.stack.takeWhile { it != route } + route
+					)
+				} else {
+					current.copy(
+						stack = current.stack + route
+					)
+				}
+			}
+		}
+	}
+
+	fun goBack() {
+		_routeStack.update { current ->
+			if (current.stack.size <= 1) {
+				current
+			} else {
+				current.copy(
+					stack = current.stack.dropLast(1)
+				)
+			}
+		}
+	}
+
 	fun navigatorAction(): NavigatorAction = object : NavigatorAction {
-		override fun popBackStack(navOptions: NavOptions?) = popBackStackIfNotHome()
-		override fun navigateToLogin(navOptions: NavOptions?) {
-			firebaseAnalytics.logEvent(FirebaseAnalytics.Event.SCREEN_VIEW) {
-				param(FirebaseAnalytics.Param.SCREEN_NAME, "login_screen")
-			}
-			navController.navigateToLogin(navOptions)
+		override fun popBackStack() {
+			goBack()
 		}
 
-		override fun navigateToSignup(navOptions: NavOptions?) {
-			firebaseAnalytics.logEvent(FirebaseAnalytics.Event.SCREEN_VIEW) {
-				param(FirebaseAnalytics.Param.SCREEN_NAME, "signup_screen")
-			}
-			navController.navigateToSignup(navOptions)
+		override fun navigateToLogin(clearBackStack: Boolean) {
+			logScreenView("login_screen")
+			navigate(InitialRoute.Login, clearBackStack)
 		}
 
-		override fun navigateToGuide(navOptions: NavOptions?) {
-			firebaseAnalytics.logEvent(FirebaseAnalytics.Event.SCREEN_VIEW) {
-				param(FirebaseAnalytics.Param.SCREEN_NAME, "onboarding_guide_screen")
-			}
-			navController.navigateToGuide(navOptions)
+		override fun navigateToSignup(clearBackStack: Boolean) {
+			logScreenView("signup_screen")
+			navigate(InitialRoute.SignUp, clearBackStack)
 		}
 
-		override fun navigateToPrivacy(navOptions: NavOptions?) {
-			firebaseAnalytics.logEvent(FirebaseAnalytics.Event.SCREEN_VIEW) {
-				param(FirebaseAnalytics.Param.SCREEN_NAME, "privacy_policy_chrome_activity")
-			}
-			navController.navigateToPrivacy(navOptions)
+		override fun navigateToGuide(clearBackStack: Boolean) {
+			logScreenView("onboarding_guide_screen")
+			navigate(InitialRoute.Onboarding.Guide, clearBackStack)
 		}
 
-		override fun navigateToTerms(navOptions: NavOptions?) {
-			firebaseAnalytics.logEvent(FirebaseAnalytics.Event.SCREEN_VIEW) {
-				param(FirebaseAnalytics.Param.SCREEN_NAME, "terms_of_service_chrome_activity")
-			}
-			navController.navigateToTerms(navOptions)
+		override fun navigateToPrivacy(clearBackStack: Boolean) {
+			logScreenView("privacy_policy_chrome_activity")
+			navigate(SubRoute.Privacy, clearBackStack)
 		}
 
-		override fun navigateToComplete(navOptions: NavOptions?) {
-			firebaseAnalytics.logEvent(FirebaseAnalytics.Event.SCREEN_VIEW) {
-				param(FirebaseAnalytics.Param.SCREEN_NAME, "onboarding_complete_screen")
-			}
-			navController.navigateToComplete(navOptions)
+		override fun navigateToTerms(clearBackStack: Boolean) {
+			logScreenView("terms_of_service_chrome_activity")
+			navigate(SubRoute.Terms, clearBackStack)
 		}
 
-		override fun navigateToPermission(navOptions: NavOptions?) {
-			firebaseAnalytics.logEvent(FirebaseAnalytics.Event.SCREEN_VIEW) {
-				param(FirebaseAnalytics.Param.SCREEN_NAME, "permission_screen")
-			}
-			navController.navigateToPermission(navOptions)
+		override fun navigateToComplete(clearBackStack: Boolean) {
+			logScreenView("onboarding_complete_screen")
+			navigate(InitialRoute.Onboarding.Complete, clearBackStack)
 		}
 
-		override fun navigateToHome(navOptions: NavOptions?) {
-			firebaseAnalytics.logEvent(FirebaseAnalytics.Event.SCREEN_VIEW) {
-				param(FirebaseAnalytics.Param.SCREEN_NAME, "home_screen")
-			}
-			navController.navigateToHome(navOptions)
+		override fun navigateToPermission(clearBackStack: Boolean) {
+			logScreenView("permission_screen")
+			navigate(InitialRoute.Permission, clearBackStack)
 		}
 
-		override fun navigateToRegistry(groupId: Long?, navOptions: NavOptions?) {
-			firebaseAnalytics.logEvent(FirebaseAnalytics.Event.SCREEN_VIEW) {
-				param(FirebaseAnalytics.Param.SCREEN_NAME, "registry_screen")
-			}
-			navController.navigateToRegistry(groupId, navOptions)
+		override fun navigateToHome(clearBackStack: Boolean) {
+			logScreenView("home_screen")
+			navigate(MainTabRoute.Home, clearBackStack)
 		}
 
-		override fun navigateToNickname(navOptions: NavOptions?) {
-			firebaseAnalytics.logEvent(FirebaseAnalytics.Event.SCREEN_VIEW) {
-				param(FirebaseAnalytics.Param.SCREEN_NAME, "nickname_screen")
-			}
-			navController.navigateToNickname(navOptions)
+		override fun navigateToRegistry(groupId: Long?, clearBackStack: Boolean) {
+			logScreenView("registry_screen")
+			navigate(SubRoute.Registry(groupId), clearBackStack)
 		}
 
-		override fun navigateToOpinion(navOptions: NavOptions?) {
-			firebaseAnalytics.logEvent(FirebaseAnalytics.Event.SCREEN_VIEW) {
-				param(FirebaseAnalytics.Param.SCREEN_NAME, "opinion_chrome_screen")
-			}
-			navController.navigateToOpinion(navOptions)
+		override fun navigateToNickname(clearBackStack: Boolean) {
+			logScreenView("nickname_screen")
+			navigate(SubRoute.Nickname, clearBackStack)
 		}
 
-		override fun navigateToInquiry(navOptions: NavOptions?) {
-			firebaseAnalytics.logEvent(FirebaseAnalytics.Event.SCREEN_VIEW) {
-				param(FirebaseAnalytics.Param.SCREEN_NAME, "inquiry_chrome_screen")
-			}
-			navController.navigateToInquiry(navOptions)
+		override fun navigateToOpinion(clearBackStack: Boolean) {
+			logScreenView("opinion_chrome_screen")
+			navigate(SubRoute.Feedback.Opinion, clearBackStack)
+		}
+
+		override fun navigateToInquiry(clearBackStack: Boolean) {
+			logScreenView("inquiry_chrome_screen")
+			navigate(SubRoute.Feedback.Inquiry, clearBackStack)
 		}
 	}
 
 	fun navigatorProvider(): NavigatorProvider = object : NavigatorProvider {
-		override fun getNavOptionsClearingBackStack(): NavOptions = navOptions {
-			popUpTo(navController.graph.id) {
-				inclusive = true
-			}
-			launchSingleTop = true
-		}
-
 		override fun getPreviousDestination(): Route? = routeStack.value.previous
 	}
 
-	fun navigate(tab: MainTab) {
-		val topNavOptions = navOptions {
-			popUpTo(navController.graph.id) {
-				inclusive = true
-			}
-			launchSingleTop = true
-		}
+	fun navigateTab(tab: MainTab) {
 		when (tab) {
 			MainTab.REPORT -> {
-				firebaseAnalytics.apply {
-					logEvent("bottom_navigation_click") {
-						param("name", "report_screen")
-					}
-					logEvent(FirebaseAnalytics.Event.SCREEN_VIEW) {
-						param(FirebaseAnalytics.Param.SCREEN_NAME, "report_screen")
-					}
-				}
-				navController.navigateReport(navOptions = topNavOptions)
+				logBottomNavigationClick("report_screen")
+				logScreenView("report_screen")
+				navigate(MainTabRoute.Report, true)
 			}
 			MainTab.HOME -> {
-				firebaseAnalytics.apply {
-					logEvent("bottom_navigation_click") {
-						param("name", "home_screen")
-					}
-					logEvent(FirebaseAnalytics.Event.SCREEN_VIEW) {
-						param(FirebaseAnalytics.Param.SCREEN_NAME, "home_screen")
-					}
-				}
-				navController.navigateToHome(navOptions = topNavOptions)
+				logBottomNavigationClick("home_screen")
+				logScreenView("home_screen")
+				navigate(MainTabRoute.Home, true)
 			}
 			MainTab.SETTING -> {
-				firebaseAnalytics.apply {
-					logEvent("bottom_navigation_click") {
-						param("name", "setting_screen")
-					}
-					logEvent(FirebaseAnalytics.Event.SCREEN_VIEW) {
-						param(FirebaseAnalytics.Param.SCREEN_NAME, "setting_screen")
-					}
-				}
-				navController.navigateSetting(navOptions = topNavOptions)
+				logBottomNavigationClick("setting_screen")
+				logScreenView("setting_screen")
+				navigate(MainTabRoute.Setting, true)
 			}
 		}
 	}
 
-	private fun popBackStackIfNotHome() {
-		if (!isSameCurrentDestination<MainTabRoute.Home>()) {
-			navController.popBackStack()
+	private fun logScreenView(screenName: String) {
+		firebaseAnalytics.logEvent(FirebaseAnalytics.Event.SCREEN_VIEW) {
+			param(FirebaseAnalytics.Param.SCREEN_NAME, screenName)
 		}
 	}
 
-	private inline fun <reified T : Route> isSameCurrentDestination(): Boolean = navController.currentDestination?.hasRoute<T>() == true
+	private fun logBottomNavigationClick(screenName: String) {
+		firebaseAnalytics.logEvent("bottom_navigation_click") {
+			param("name", screenName)
+		}
+	}
 }
 
 @Composable
 internal fun rememberMainNavigator(
 	startDestination: Route,
-	navController: NavHostController = rememberNavController(),
 ): MainNavigator {
 	val context = LocalContext.current
 	val analytics = FirebaseAnalytics.getInstance(context)
-	return remember(navController) {
-		MainNavigator(startDestination, navController, analytics)
+	return remember {
+		MainNavigator(startDestination, analytics)
 	}
 }

@@ -30,8 +30,8 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.teambrake.brake.core.designsystem.component.HorizontalSpacer
 import com.teambrake.brake.core.designsystem.component.CircleImage
+import com.teambrake.brake.core.designsystem.component.HorizontalSpacer
 import com.teambrake.brake.core.designsystem.component.SettingRow
 import com.teambrake.brake.core.designsystem.component.VerticalSpacer
 import com.teambrake.brake.core.designsystem.theme.BrakeTheme
@@ -43,7 +43,6 @@ import com.teambrake.brake.core.designsystem.theme.LocalPadding
 import com.teambrake.brake.core.designsystem.theme.White
 import com.teambrake.brake.core.navigation.compositionlocal.LocalMainAction
 import com.teambrake.brake.core.navigation.compositionlocal.LocalNavigatorAction
-import com.teambrake.brake.core.navigation.compositionlocal.LocalNavigatorProvider
 import com.teambrake.brake.core.ui.SnackBarState
 import com.teambrake.brake.presentation.setting.component.DeleteWarningDialog
 import com.teambrake.brake.presentation.setting.model.SettingEffect
@@ -59,7 +58,6 @@ fun SettingRoute(
 	val screenHorizontalPadding = LocalPadding.current.screenPaddingHorizontal
 	val context = LocalContext.current
 	val navAction = LocalNavigatorAction.current
-	val navProvider = LocalNavigatorProvider.current
 	val mainAction = LocalMainAction.current
 
 	BackHandler {
@@ -77,9 +75,7 @@ fun SettingRoute(
 	LaunchedEffect(true) {
 		viewModel.navigationFlow.collect {
 			when (it) {
-				is SettingEffect.NavigateToLogin -> navAction.navigateToLogin(
-					navProvider.getNavOptionsClearingBackStack(),
-				)
+				is SettingEffect.NavigateToLogin -> navAction.navigateToLogin(clearBackStack = true)
 				is SettingEffect.NavigateToNickname -> navAction.navigateToNickname()
 				is SettingEffect.NavigateToOpinion -> navAction.navigateToOpinion()
 				is SettingEffect.NavigateToInquiry -> navAction.navigateToInquiry()

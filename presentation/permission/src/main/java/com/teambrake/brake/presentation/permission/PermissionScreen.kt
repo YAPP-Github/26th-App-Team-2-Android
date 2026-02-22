@@ -101,7 +101,7 @@ fun PermissionRoute(
 		viewModel.navigationFlow.collect { effect ->
 			when (effect) {
 				PermissionNavState.NavigateToLogin -> {
-					navAction.navigateToLogin(navProvider.getNavOptionsClearingBackStack())
+					navAction.navigateToLogin(clearBackStack = true)
 				}
 
 				PermissionNavState.NavigateToBack -> navAction.popBackStack()
@@ -112,17 +112,11 @@ fun PermissionRoute(
 				}
 
 				PermissionNavState.NavigateToMain -> {
-					navAction.navigateToHome(
-						navOptions = navProvider.getNavOptionsClearingBackStack(),
-					)
+					navAction.navigateToHome(clearBackStack = true)
 				}
 
 				PermissionNavState.NavigateToComplete -> {
-					navAction.navigateToComplete(
-						navOptions {
-							popUpTo(InitialRoute.Permission) { inclusive = true }
-						},
-					)
+					navAction.navigateToComplete(clearBackStack = true)
 				}
 			}
 		}

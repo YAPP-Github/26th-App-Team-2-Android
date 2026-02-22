@@ -25,6 +25,7 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -36,12 +37,9 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import androidx.compose.runtime.getValue
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.teambrake.brake.presentation.onboarding.guide.model.GuideModalState
-import com.teambrake.brake.presentation.onboarding.guide.model.GuideNavState
 import com.teambrake.brake.core.designsystem.component.BrakeTopAppbar
 import com.teambrake.brake.core.designsystem.component.LargeButton
 import com.teambrake.brake.core.designsystem.component.VerticalSpacer
@@ -51,8 +49,9 @@ import com.teambrake.brake.core.designsystem.theme.LocalPadding
 import com.teambrake.brake.core.designsystem.theme.White
 import com.teambrake.brake.core.navigation.compositionlocal.LocalMainAction
 import com.teambrake.brake.core.navigation.compositionlocal.LocalNavigatorAction
-import com.teambrake.brake.core.navigation.compositionlocal.LocalNavigatorProvider
 import com.teambrake.brake.presentation.onboarding.R
+import com.teambrake.brake.presentation.onboarding.guide.model.GuideModalState
+import com.teambrake.brake.presentation.onboarding.guide.model.GuideNavState
 import kotlinx.collections.immutable.persistentListOf
 import kotlinx.coroutines.launch
 
@@ -65,7 +64,6 @@ fun GuideRoute(
 	val screenWidth = LocalConfiguration.current.screenWidthDp.dp
 	val screenHorizontalPadding = LocalPadding.current.screenPaddingHorizontal
 	val navAction = LocalNavigatorAction.current
-	val navProvider = LocalNavigatorProvider.current
 	val mainAction = LocalMainAction.current
 	val modalState by viewModel.modalFlow.collectAsStateWithLifecycle()
 
@@ -88,7 +86,7 @@ fun GuideRoute(
 		viewModel.navigationFlow.collect { effect ->
 			when (effect) {
 				GuideNavState.NavigateToLogin -> navAction.navigateToLogin(
-					navProvider.getNavOptionsClearingBackStack(),
+					clearBackStack = true,
 				)
 
 				GuideNavState.NavigateToPermission -> navAction.navigateToPermission()
