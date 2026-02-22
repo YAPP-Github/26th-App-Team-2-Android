@@ -57,7 +57,7 @@ private fun MainScreenContent(
 ) {
 	// 1. 현재 화면에 따라 실시간 스낵바 위치 조정을 위한 Route 구독
 	// 2. MainTabRoute 화면일 때 하단 네비게이션 바를 띄우고, 그 외는 안띄우기 위한 Route 구독
-	val currentRoute by navigator.currentRoute.collectAsStateWithLifecycle()
+	val routeStack by navigator.routeStack.collectAsStateWithLifecycle()
 
 	// 바텀 패딩 조정 용도 (스낵바 높이 위치 및 하단 네비게이션 바 상호작용)
 	val dynamicPaddingsProvider = remember { DynamicPaddingsProvider() }
@@ -99,13 +99,13 @@ private fun MainScreenContent(
 						.padding(bottom = 34.dp),
 				) {
 					// AnimatedVisibility 를 사용할 경우, 스낵바의 y 좌표 위치 변동 시 애니메이션 활성화 동안 스낵바의 위치가 튀는 현상 발생
-					val route = currentRoute
-					if (route is MainTabRoute) {
+					val current = routeStack.current
+					if (current is MainTabRoute) {
 						MainBottomNavBar(
 							modifier = Modifier
 								.background(Color.Transparent),
 							tabs = MainTab.entries.toPersistentList(),
-							currentTab = when (route) {
+							currentTab = when (current) {
 								is MainTabRoute.Home -> MainTab.HOME
 								is MainTabRoute.Report -> MainTab.REPORT
 								is MainTabRoute.Setting -> MainTab.SETTING
@@ -127,7 +127,7 @@ private fun MainScreenContent(
 				},
 				// 현재 화면에 따라 스낵바 y 축 위치 조정
 				modifier = Modifier.then(
-					when (currentRoute) {
+					when (routeStack.current) {
 						is MainTabRoute -> Modifier.padding(
 							bottom = dynamicPaddingsProvider.paddings.bottomNavBarHeight,
 						)

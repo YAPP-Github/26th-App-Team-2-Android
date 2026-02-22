@@ -3,7 +3,6 @@ package com.teambrake.brake.presentation.main.navigation
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.platform.LocalContext
-import androidx.navigation.NavDestination
 import androidx.navigation.NavDestination.Companion.hasRoute
 import androidx.navigation.NavHostController
 import androidx.navigation.NavOptions
@@ -13,11 +12,9 @@ import com.google.firebase.analytics.FirebaseAnalytics
 import com.google.firebase.analytics.logEvent
 import com.teambrake.brake.core.navigation.action.NavigatorAction
 import com.teambrake.brake.core.navigation.provider.NavigatorProvider
-import com.teambrake.brake.core.navigation.route.InitialRoute
 import com.teambrake.brake.core.navigation.route.MainTabRoute
 import com.teambrake.brake.core.navigation.route.Route
-import com.teambrake.brake.core.navigation.route.SubRoute
-import com.teambrake.brake.core.navigation.route.stringRoute
+import com.teambrake.brake.core.navigation.route.RouteStack
 import com.teambrake.brake.presentation.feeback.inquiry.navigation.navigateToInquiry
 import com.teambrake.brake.presentation.feeback.opinion.navigation.navigateToOpinion
 import com.teambrake.brake.presentation.home.navigation.navigateToHome
@@ -41,36 +38,8 @@ internal class MainNavigator(
 	val navController: NavHostController,
 	private val firebaseAnalytics: FirebaseAnalytics,
 ) {
-	// 기존 MainTab 상태 변화의 Composable State Producer 를 State Flow 와 함께 쓰면 recomposition 이 두 번 일어나는 문제가 있어,
-	// 하나의 State Producer 로 통합
-	private val _currentRoute = MutableStateFlow<Route>(startDestination)
-	val currentRoute: StateFlow<Route> = _currentRoute.asStateFlow()
-
-	init {
-		// NavController의 destination 변화를 감지
-		navController.addOnDestinationChangedListener { _, destination, _ ->
-			_currentRoute.value = destination.toBrakeRoute
-		}
-	}
-
-	private val NavDestination.toBrakeRoute: Route
-		get() = when (this.route) {
-			MainTabRoute.Home.stringRoute() -> MainTabRoute.Home
-			MainTabRoute.Setting.stringRoute() -> MainTabRoute.Setting
-			MainTabRoute.Report.stringRoute() -> MainTabRoute.Report
-			InitialRoute.Login.stringRoute() -> InitialRoute.Login
-			InitialRoute.SignUp.stringRoute() -> InitialRoute.SignUp
-			InitialRoute.Onboarding.Guide.stringRoute() -> InitialRoute.Onboarding.Guide
-			InitialRoute.Onboarding.Complete.stringRoute() -> InitialRoute.Onboarding.Complete
-			InitialRoute.Permission.stringRoute() -> InitialRoute.Permission
-			SubRoute.Nickname.stringRoute() -> SubRoute.Nickname
-			SubRoute.Privacy.stringRoute() -> SubRoute.Privacy
-			SubRoute.Terms.stringRoute() -> SubRoute.Terms
-			SubRoute.Feedback.Inquiry.stringRoute() -> SubRoute.Feedback.Inquiry
-			SubRoute.Feedback.Opinion.stringRoute() -> SubRoute.Feedback.Opinion
-			else -> SubRoute.Registry()
-			// Registry 타입은 유일하게 인자를 갖는 Route 의 클래스 이므로, else 분기로 Registry 기본 생성자 반환
-		}
+	private val _routeStack = MutableStateFlow(RouteStack())
+	val routeStack: StateFlow<RouteStack> = _routeStack.asStateFlow()
 
 	fun navigatorAction(): NavigatorAction = object : NavigatorAction {
 		override fun popBackStack(navOptions: NavOptions?) = popBackStackIfNotHome()
@@ -167,8 +136,7 @@ internal class MainNavigator(
 			launchSingleTop = true
 		}
 
-		override fun getPreviousDestination(): String = navController.previousBackStackEntry?.destination?.route
-			?: startDestination.stringRoute()
+		override fun getPreviousDestination(): Route? = routeStack.value.previous
 	}
 
 	fun navigate(tab: MainTab) {
