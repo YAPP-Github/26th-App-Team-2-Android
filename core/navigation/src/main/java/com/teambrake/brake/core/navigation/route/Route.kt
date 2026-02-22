@@ -1,8 +1,9 @@
 package com.teambrake.brake.core.navigation.route
 
+import androidx.navigation3.runtime.NavKey
 import timber.log.Timber
 
-interface Route
+interface Route: NavKey
 
 /**
  * 2025-08-03 기준
