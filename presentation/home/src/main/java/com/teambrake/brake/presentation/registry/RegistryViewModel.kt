@@ -28,6 +28,9 @@ import com.teambrake.brake.presentation.registry.model.RegistryNavState
 import com.teambrake.brake.presentation.registry.model.RegistrySnackBarState
 import com.teambrake.brake.presentation.registry.model.RegistryUiState
 import com.teambrake.brake.presentation.registry.model.SelectedAppModel
+import dagger.assisted.Assisted
+import dagger.assisted.AssistedFactory
+import dagger.assisted.AssistedInject
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.collections.immutable.persistentListOf
 import kotlinx.collections.immutable.toPersistentList
@@ -41,9 +44,9 @@ import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
-@HiltViewModel
-class RegistryViewModel @Inject constructor(
-	savedStateHandle: SavedStateHandle,
+@HiltViewModel(assistedFactory = RegistryViewModel.Factory::class)
+class RegistryViewModel @AssistedInject constructor(
+	@Assisted private val groupId: Long?,
 	appScanner: InstalledAppScanner,
 	private val appGroupRepository: AppGroupRepository,
 	private val createNewGroupUseCase: CreateNewGroupUseCase,
@@ -52,6 +55,12 @@ class RegistryViewModel @Inject constructor(
 	private val firebaseAnalytics: FirebaseAnalytics,
 	private val amplitude: Amplitude,
 ) : ViewModel() {
+
+	@AssistedFactory
+	interface Factory {
+		fun create(groupId: Long?): RegistryViewModel
+	}
+
 	private val _registryUiState: MutableStateFlow<RegistryUiState> = MutableStateFlow(
 		RegistryUiState.Group.Initial(
 			groupId = 0L,
@@ -66,7 +75,7 @@ class RegistryViewModel @Inject constructor(
 
 	init {
 		viewModelScope.launch {
-			val groupId = savedStateHandle.toRoute<SubRoute.Registry>().groupId
+			val groupId = groupId
 				?: when (val result = grantNewGroupIdUseCase()) {
 					is BrakeResult.Success -> result.data
 					is BrakeResult.Error -> {
