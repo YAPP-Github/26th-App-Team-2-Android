@@ -37,7 +37,6 @@ import com.teambrake.brake.core.designsystem.theme.LocalDynamicPaddings
 import com.teambrake.brake.core.designsystem.theme.LocalPadding
 import com.teambrake.brake.core.navigation.compositionlocal.LocalMainAction
 import com.teambrake.brake.core.navigation.compositionlocal.LocalNavigatorAction
-import com.teambrake.brake.core.navigation.route.LaunchMode
 import com.teambrake.brake.core.ui.SnackBarState
 import com.teambrake.brake.core.ui.UiString
 import com.teambrake.brake.presentation.login.component.LoginNoticeText
