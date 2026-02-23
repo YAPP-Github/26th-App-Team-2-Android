@@ -6,4 +6,6 @@ data class RouteStack(
 	val current: Route? = stack.lastOrNull()
 
 	val previous: Route? = stack.dropLast(1).lastOrNull()
+
+	constructor(startDestination: Route): this(stack = listOf(startDestination))
 }

@@ -3,48 +3,50 @@ package com.teambrake.brake.presentation.main.navigation
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.navigation.compose.NavHost
-import com.teambrake.brake.presentation.feeback.inquiry.navigation.inquiryNavGraph
-import com.teambrake.brake.presentation.feeback.opinion.navigation.opinionNavGraph
-import com.teambrake.brake.presentation.home.navigation.homeNavGraph
-import com.teambrake.brake.presentation.legal.navigation.legalNavGraph
-import com.teambrake.brake.presentation.login.navigation.loginNavGraph
-import com.teambrake.brake.presentation.nickname.navigation.nicknameNavGraph
-import com.teambrake.brake.presentation.onboarding.navigation.onboardingNavGraph
-import com.teambrake.brake.presentation.permission.navigation.permissionNavGraph
-import com.teambrake.brake.presentation.registry.navigation.registryNavGraph
-import com.teambrake.brake.presentation.report.navigation.reportNavGraph
-import com.teambrake.brake.presentation.setting.navigation.settingNavGraph
-import com.teambrake.brake.presentation.signup.navigation.signupNavGraph
+import androidx.navigation3.runtime.NavKey
+import androidx.navigation3.runtime.entryProvider
+import androidx.navigation3.ui.NavDisplay
+import com.teambrake.brake.presentation.feeback.inquiry.navEntry.inquiryNavEntry
+import com.teambrake.brake.presentation.feeback.opinion.navEntry.opinionNavEntry
+import com.teambrake.brake.presentation.home.navEntry.homeNavEntry
+import com.teambrake.brake.presentation.legal.navEntry.legalNavEntries
+import com.teambrake.brake.presentation.login.navEntry.loginNavEntry
+import com.teambrake.brake.presentation.nickname.navEntry.nicknameNavEntry
+import com.teambrake.brake.presentation.onboarding.navEntry.onboardingNavEntries
+import com.teambrake.brake.presentation.permission.navEntry.permissionNavEntry
+import com.teambrake.brake.presentation.registry.navEntry.registryNavEntry
+import com.teambrake.brake.presentation.report.navEntry.reportNavEntry
+import com.teambrake.brake.presentation.setting.navEntry.settingNavEntry
+import com.teambrake.brake.presentation.signup.navEntry.signupNavEntry
 
 @Composable
 internal fun MainNavHost(
-	navigator: MainNavigator,
+	backStack: List<NavKey>,
 	padding: PaddingValues,
 	onChangeDarkTheme: (Boolean) -> Unit,
 	modifier: Modifier = Modifier,
 ) {
-	val navController = navigator.navController
-
-	NavHost(
-		modifier = modifier,
-		navController = navController,
-		startDestination = navigator.startDestination,
-	) {
-		loginNavGraph()
-		signupNavGraph()
-		onboardingNavGraph()
-		legalNavGraph()
-		permissionNavGraph()
-		reportNavGraph(padding = padding)
-		homeNavGraph(padding = padding)
-		registryNavGraph()
-		settingNavGraph(
+	val entryProvider = entryProvider {
+		loginNavEntry()
+		signupNavEntry()
+		onboardingNavEntries()
+		legalNavEntries()
+		permissionNavEntry()
+		reportNavEntry(padding = padding)
+		homeNavEntry(padding = padding)
+		registryNavEntry()
+		settingNavEntry(
 			padding = padding,
 			onChangeDarkTheme = onChangeDarkTheme,
 		)
-		nicknameNavGraph()
-		inquiryNavGraph()
-		opinionNavGraph()
+		nicknameNavEntry()
+		inquiryNavEntry()
+		opinionNavEntry()
 	}
+
+	NavDisplay(
+		backStack = backStack,
+		entryProvider = entryProvider,
+		modifier = modifier,
+	)
 }

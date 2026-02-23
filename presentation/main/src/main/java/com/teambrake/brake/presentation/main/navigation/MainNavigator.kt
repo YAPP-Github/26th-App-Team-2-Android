@@ -18,10 +18,10 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 
 internal class MainNavigator(
-	val startDestination: Route,
+	startDestination: Route,
 	private val firebaseAnalytics: FirebaseAnalytics,
 ) {
-	private val _routeStack = MutableStateFlow(RouteStack())
+	private val _routeStack = MutableStateFlow(RouteStack(startDestination))
 	val routeStack: StateFlow<RouteStack> = _routeStack.asStateFlow()
 
 	fun navigate(route: Route, clearBackStack: Boolean = false) {

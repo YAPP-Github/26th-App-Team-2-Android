@@ -73,7 +73,7 @@ private fun MainScreenContent(
 					LocalDynamicPaddings provides dynamicPaddingsProvider,
 				) {
 					MainNavHost(
-						navigator = navigator,
+						backStack = routeStack.stack,
 						padding = padding,
 						onChangeDarkTheme = onChangeDarkTheme,
 					)
