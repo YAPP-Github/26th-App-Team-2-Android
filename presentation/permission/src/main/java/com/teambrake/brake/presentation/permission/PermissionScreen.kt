@@ -46,7 +46,6 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleEventObserver
 import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import androidx.navigation.navOptions
 import com.teambrake.brake.core.designsystem.component.BrakeTopAppbar
 import com.teambrake.brake.core.designsystem.component.LargeButton
 import com.teambrake.brake.core.designsystem.component.VerticalSpacer

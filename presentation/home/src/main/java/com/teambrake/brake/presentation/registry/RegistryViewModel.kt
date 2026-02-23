@@ -1,9 +1,7 @@
 package com.teambrake.brake.presentation.registry
 
-import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import androidx.navigation.toRoute
 import com.amplitude.android.Amplitude
 import com.amplitude.core.events.Identify
 import com.google.firebase.analytics.FirebaseAnalytics
@@ -13,7 +11,6 @@ import com.teambrake.brake.core.appscanner.InstalledAppScanner
 import com.teambrake.brake.core.model.app.App
 import com.teambrake.brake.core.model.app.AppGroup
 import com.teambrake.brake.core.model.app.AppGroupState
-import com.teambrake.brake.core.navigation.route.SubRoute
 import com.teambrake.brake.core.ui.UiString
 import com.teambrake.brake.core.util.toByteArray
 import com.teambrake.brake.domain.model.result.BrakeResult
@@ -42,7 +39,6 @@ import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
-import javax.inject.Inject
 
 @HiltViewModel(assistedFactory = RegistryViewModel.Factory::class)
 class RegistryViewModel @AssistedInject constructor(

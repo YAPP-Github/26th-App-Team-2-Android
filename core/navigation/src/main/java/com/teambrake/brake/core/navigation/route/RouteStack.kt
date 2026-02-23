@@ -1,11 +1,11 @@
 package com.teambrake.brake.core.navigation.route
 
 data class RouteStack(
-	val stack: List<Route> = emptyList(),
+	val backStack: List<Route> = emptyList(),
 ) {
-	val current: Route? = stack.lastOrNull()
+	val current: Route? = backStack.lastOrNull()
 
-	val previous: Route? = stack.dropLast(1).lastOrNull()
+	val previous: Route? = backStack.dropLast(1).lastOrNull()
 
-	constructor(startDestination: Route): this(stack = listOf(startDestination))
+	constructor(startDestination: Route) : this(backStack = listOf(startDestination))
 }
