@@ -3,8 +3,10 @@ package com.teambrake.brake.presentation.main.navigation
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.lifecycle.viewmodel.navigation3.rememberViewModelStoreNavEntryDecorator
 import androidx.navigation3.runtime.NavKey
 import androidx.navigation3.runtime.entryProvider
+import androidx.navigation3.runtime.rememberSaveableStateHolderNavEntryDecorator
 import androidx.navigation3.ui.NavDisplay
 import com.teambrake.brake.presentation.feeback.inquiry.navEntry.inquiryNavEntry
 import com.teambrake.brake.presentation.feeback.opinion.navEntry.opinionNavEntry
@@ -47,6 +49,10 @@ internal fun MainNavHost(
 	NavDisplay(
 		backStack = backStack,
 		entryProvider = entryProvider,
+		entryDecorators = listOf(
+			rememberSaveableStateHolderNavEntryDecorator(),
+			rememberViewModelStoreNavEntryDecorator(),
+		),
 		modifier = modifier,
 	)
 }
