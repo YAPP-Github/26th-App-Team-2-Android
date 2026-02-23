@@ -13,8 +13,8 @@ fun EntryProviderScope<NavKey>.registryNavEntry() {
 			viewModel = hiltViewModel(
 				creationCallback = { factory: RegistryViewModel.Factory ->
 					factory.create(route.groupId)
-				}
-			)
+				},
+			),
 		)
 	}
 }

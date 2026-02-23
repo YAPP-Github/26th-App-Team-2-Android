@@ -28,6 +28,7 @@ import com.teambrake.brake.core.designsystem.theme.LocalPadding
 import com.teambrake.brake.core.designsystem.theme.White
 import com.teambrake.brake.core.navigation.compositionlocal.LocalMainAction
 import com.teambrake.brake.core.navigation.compositionlocal.LocalNavigatorAction
+import com.teambrake.brake.core.navigation.route.LaunchMode
 import com.teambrake.brake.presentation.onboarding.R
 import com.teambrake.brake.presentation.onboarding.complete.model.CompleteNavState
 
@@ -51,10 +52,7 @@ fun CompleteRoute(
 	LaunchedEffect(true) {
 		viewModel.navigationFlow.collect { effect ->
 			when (effect) {
-				CompleteNavState.NavigateToMain -> navAction.navigateToHome(
-					clearBackStack = true,
-				)
-
+				CompleteNavState.NavigateToMain -> navAction.navigateToHome(LaunchMode.CLEAR_ALL)
 				CompleteNavState.NavigateToBack -> navAction.popBackStack()
 			}
 		}

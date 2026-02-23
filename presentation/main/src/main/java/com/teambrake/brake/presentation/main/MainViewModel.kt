@@ -9,6 +9,7 @@ import com.teambrake.brake.core.model.user.Destination
 import com.teambrake.brake.core.navigation.action.NavigatorAction
 import com.teambrake.brake.core.navigation.provider.NavigatorProvider
 import com.teambrake.brake.core.navigation.route.InitialRoute
+import com.teambrake.brake.core.navigation.route.LaunchMode
 import com.teambrake.brake.core.navigation.route.MainTabRoute
 import com.teambrake.brake.core.navigation.route.Route
 import com.teambrake.brake.core.navigation.route.RouteStack
@@ -48,64 +49,64 @@ internal class MainViewModel @Inject constructor(
 			goBack()
 		}
 
-		override fun navigateToLogin(clearBackStack: Boolean) {
+		override fun navigateToLogin(launchMode: LaunchMode) {
 			logScreenView("login_screen")
-			navigate(InitialRoute.Login, clearBackStack)
+			navigate(InitialRoute.Login, launchMode)
 		}
 
-		override fun navigateToSignup(clearBackStack: Boolean) {
+		override fun navigateToSignup(launchMode: LaunchMode) {
 			logScreenView("signup_screen")
-			navigate(InitialRoute.SignUp, clearBackStack)
+			navigate(InitialRoute.SignUp, launchMode)
 		}
 
-		override fun navigateToGuide(clearBackStack: Boolean) {
+		override fun navigateToGuide(launchMode: LaunchMode) {
 			logScreenView("onboarding_guide_screen")
-			navigate(InitialRoute.Onboarding.Guide, clearBackStack)
+			navigate(InitialRoute.Onboarding.Guide, launchMode)
 		}
 
-		override fun navigateToPrivacy(clearBackStack: Boolean) {
+		override fun navigateToPrivacy(launchMode: LaunchMode) {
 			logScreenView("privacy_policy_chrome_activity")
-			navigate(SubRoute.Privacy, clearBackStack)
+			navigate(SubRoute.Privacy, launchMode)
 		}
 
-		override fun navigateToTerms(clearBackStack: Boolean) {
+		override fun navigateToTerms(launchMode: LaunchMode) {
 			logScreenView("terms_of_service_chrome_activity")
-			navigate(SubRoute.Terms, clearBackStack)
+			navigate(SubRoute.Terms, launchMode)
 		}
 
-		override fun navigateToComplete(clearBackStack: Boolean) {
+		override fun navigateToComplete(launchMode: LaunchMode) {
 			logScreenView("onboarding_complete_screen")
-			navigate(InitialRoute.Onboarding.Complete, clearBackStack)
+			navigate(InitialRoute.Onboarding.Complete, launchMode)
 		}
 
-		override fun navigateToPermission(clearBackStack: Boolean) {
+		override fun navigateToPermission(launchMode: LaunchMode) {
 			logScreenView("permission_screen")
-			navigate(InitialRoute.Permission, clearBackStack)
+			navigate(InitialRoute.Permission, launchMode)
 		}
 
-		override fun navigateToHome(clearBackStack: Boolean) {
+		override fun navigateToHome(launchMode: LaunchMode) {
 			logScreenView("home_screen")
-			navigate(MainTabRoute.Home, clearBackStack)
+			navigate(MainTabRoute.Home, launchMode)
 		}
 
-		override fun navigateToRegistry(groupId: Long?, clearBackStack: Boolean) {
+		override fun navigateToRegistry(groupId: Long?, launchMode: LaunchMode) {
 			logScreenView("registry_screen")
-			navigate(SubRoute.Registry(groupId), clearBackStack)
+			navigate(SubRoute.Registry(groupId), launchMode)
 		}
 
-		override fun navigateToNickname(clearBackStack: Boolean) {
+		override fun navigateToNickname(launchMode: LaunchMode) {
 			logScreenView("nickname_screen")
-			navigate(SubRoute.Nickname, clearBackStack)
+			navigate(SubRoute.Nickname, launchMode)
 		}
 
-		override fun navigateToOpinion(clearBackStack: Boolean) {
+		override fun navigateToOpinion(launchMode: LaunchMode) {
 			logScreenView("opinion_chrome_screen")
-			navigate(SubRoute.Feedback.Opinion, clearBackStack)
+			navigate(SubRoute.Feedback.Opinion, launchMode)
 		}
 
-		override fun navigateToInquiry(clearBackStack: Boolean) {
+		override fun navigateToInquiry(launchMode: LaunchMode) {
 			logScreenView("inquiry_chrome_screen")
-			navigate(SubRoute.Feedback.Inquiry, clearBackStack)
+			navigate(SubRoute.Feedback.Inquiry, launchMode)
 		}
 	}
 
@@ -119,22 +120,30 @@ internal class MainViewModel @Inject constructor(
 		}
 	}
 
-	fun navigate(route: Route, clearBackStack: Boolean = false) {
-		if (clearBackStack) {
-			_routeStack.update {
-				RouteStack(backStack = listOf(route))
-			}
-		} else {
-			_routeStack.update { current ->
-				if (route in current.backStack) {
-					current.copy(
-						backStack = current.backStack.takeWhile { it != route } + route,
-					)
-				} else {
-					current.copy(
-						backStack = current.backStack + route,
-					)
+	fun navigate(
+		route: Route,
+		launchMode: LaunchMode = LaunchMode.STANDARD,
+	) {
+		_routeStack.update { current ->
+			when (launchMode) {
+				LaunchMode.CLEAR_ALL -> RouteStack(backStack = listOf(route))
+				LaunchMode.SINGLE_TOP -> {
+					if (route == current.current) {
+						current
+					} else {
+						current.copy(backStack = current.backStack + route)
+					}
 				}
+				LaunchMode.CLEAR_TOP -> {
+					if (route in current.backStack) {
+						current.copy(
+							backStack = current.backStack.takeWhile { it != route } + route,
+						)
+					} else {
+						current.copy(backStack = current.backStack + route)
+					}
+				}
+				LaunchMode.STANDARD -> current.copy(backStack = current.backStack + route)
 			}
 		}
 	}
@@ -156,17 +165,17 @@ internal class MainViewModel @Inject constructor(
 			MainTab.REPORT -> {
 				logBottomNavigationClick("report_screen")
 				logScreenView("report_screen")
-				navigate(MainTabRoute.Report, true)
+				navigate(MainTabRoute.Report, LaunchMode.CLEAR_ALL)
 			}
 			MainTab.HOME -> {
 				logBottomNavigationClick("home_screen")
 				logScreenView("home_screen")
-				navigate(MainTabRoute.Home, true)
+				navigate(MainTabRoute.Home, LaunchMode.CLEAR_ALL)
 			}
 			MainTab.SETTING -> {
 				logBottomNavigationClick("setting_screen")
 				logScreenView("setting_screen")
-				navigate(MainTabRoute.Setting, true)
+				navigate(MainTabRoute.Setting, LaunchMode.CLEAR_ALL)
 			}
 		}
 	}

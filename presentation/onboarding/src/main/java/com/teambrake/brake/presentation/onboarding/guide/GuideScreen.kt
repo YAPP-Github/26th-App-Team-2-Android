@@ -49,6 +49,7 @@ import com.teambrake.brake.core.designsystem.theme.LocalPadding
 import com.teambrake.brake.core.designsystem.theme.White
 import com.teambrake.brake.core.navigation.compositionlocal.LocalMainAction
 import com.teambrake.brake.core.navigation.compositionlocal.LocalNavigatorAction
+import com.teambrake.brake.core.navigation.route.LaunchMode
 import com.teambrake.brake.presentation.onboarding.R
 import com.teambrake.brake.presentation.onboarding.guide.model.GuideModalState
 import com.teambrake.brake.presentation.onboarding.guide.model.GuideNavState
@@ -85,9 +86,7 @@ fun GuideRoute(
 	LaunchedEffect(true) {
 		viewModel.navigationFlow.collect { effect ->
 			when (effect) {
-				GuideNavState.NavigateToLogin -> navAction.navigateToLogin(
-					clearBackStack = true,
-				)
+				GuideNavState.NavigateToLogin -> navAction.navigateToLogin()
 
 				GuideNavState.NavigateToPermission -> navAction.navigateToPermission()
 

@@ -58,6 +58,7 @@ import com.teambrake.brake.core.navigation.compositionlocal.LocalMainAction
 import com.teambrake.brake.core.navigation.compositionlocal.LocalNavigatorAction
 import com.teambrake.brake.core.navigation.compositionlocal.LocalNavigatorProvider
 import com.teambrake.brake.core.navigation.route.InitialRoute
+import com.teambrake.brake.core.navigation.route.LaunchMode
 import com.teambrake.brake.presentation.permission.component.OnShowAccessibilityAgreementDialog
 import com.teambrake.brake.presentation.permission.model.PermissionItem
 import com.teambrake.brake.presentation.permission.model.PermissionModalState
@@ -100,7 +101,7 @@ fun PermissionRoute(
 		viewModel.navigationFlow.collect { effect ->
 			when (effect) {
 				PermissionNavState.NavigateToLogin -> {
-					navAction.navigateToLogin(clearBackStack = true)
+					navAction.navigateToLogin()
 				}
 
 				PermissionNavState.NavigateToBack -> navAction.popBackStack()
@@ -111,11 +112,11 @@ fun PermissionRoute(
 				}
 
 				PermissionNavState.NavigateToMain -> {
-					navAction.navigateToHome(clearBackStack = true)
+					navAction.navigateToHome()
 				}
 
 				PermissionNavState.NavigateToComplete -> {
-					navAction.navigateToComplete(clearBackStack = true)
+					navAction.navigateToComplete(LaunchMode.CLEAR_ALL)
 				}
 			}
 		}

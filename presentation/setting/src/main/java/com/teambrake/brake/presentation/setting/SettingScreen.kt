@@ -43,6 +43,7 @@ import com.teambrake.brake.core.designsystem.theme.LocalPadding
 import com.teambrake.brake.core.designsystem.theme.White
 import com.teambrake.brake.core.navigation.compositionlocal.LocalMainAction
 import com.teambrake.brake.core.navigation.compositionlocal.LocalNavigatorAction
+import com.teambrake.brake.core.navigation.route.LaunchMode
 import com.teambrake.brake.core.ui.SnackBarState
 import com.teambrake.brake.presentation.setting.component.DeleteWarningDialog
 import com.teambrake.brake.presentation.setting.model.SettingEffect
@@ -75,7 +76,7 @@ fun SettingRoute(
 	LaunchedEffect(true) {
 		viewModel.navigationFlow.collect {
 			when (it) {
-				is SettingEffect.NavigateToLogin -> navAction.navigateToLogin(clearBackStack = true)
+				is SettingEffect.NavigateToLogin -> navAction.navigateToLogin()
 				is SettingEffect.NavigateToNickname -> navAction.navigateToNickname()
 				is SettingEffect.NavigateToOpinion -> navAction.navigateToOpinion()
 				is SettingEffect.NavigateToInquiry -> navAction.navigateToInquiry()
