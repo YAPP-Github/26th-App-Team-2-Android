@@ -12,7 +12,6 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalFocusManager
-import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.teambrake.brake.core.designsystem.theme.LocalPadding
 import com.teambrake.brake.core.navigation.compositionlocal.LocalMainAction
@@ -27,7 +26,7 @@ import com.teambrake.brake.presentation.registry.screen.GroupRegistryScreen
 
 @Composable
 fun RegistryRoute(
-	viewModel: RegistryViewModel = hiltViewModel(),
+	viewModel: RegistryViewModel,
 ) {
 	val padding = LocalPadding.current.screenPaddingHorizontal
 	val registryUiState by viewModel.registryUiState.collectAsStateWithLifecycle()
