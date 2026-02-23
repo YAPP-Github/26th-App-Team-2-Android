@@ -43,45 +43,7 @@ internal class MainViewModel @Inject constructor(
 	private val _routeStack = MutableStateFlow(RouteStack())
 	val routeStack: StateFlow<RouteStack> = _routeStack.asStateFlow()
 
-	init {
-		firebaseAnalytics.logEvent(FirebaseAnalytics.Event.APP_OPEN) {
-			param(FirebaseAnalytics.Param.SCREEN_NAME, "main_activity")
-		}
-	}
-
-	fun navigate(route: Route, clearBackStack: Boolean = false) {
-		if (clearBackStack) {
-			_routeStack.update {
-				RouteStack(backStack = listOf(route))
-			}
-		} else {
-			_routeStack.update { current ->
-				if (route in current.backStack) {
-					current.copy(
-						backStack = current.backStack.takeWhile { it != route } + route,
-					)
-				} else {
-					current.copy(
-						backStack = current.backStack + route,
-					)
-				}
-			}
-		}
-	}
-
-	fun goBack() {
-		_routeStack.update { current ->
-			if (current.backStack.size <= 1) {
-				current
-			} else {
-				current.copy(
-					backStack = current.backStack.dropLast(1),
-				)
-			}
-		}
-	}
-
-	fun navigatorAction(): NavigatorAction = object : NavigatorAction {
+	val navigatorAction: NavigatorAction = object : NavigatorAction {
 		override fun popBackStack() {
 			goBack()
 		}
@@ -147,8 +109,46 @@ internal class MainViewModel @Inject constructor(
 		}
 	}
 
-	fun navigatorProvider(): NavigatorProvider = object : NavigatorProvider {
+	val navigatorProvider: NavigatorProvider = object : NavigatorProvider {
 		override fun getPreviousDestination(): Route? = routeStack.value.previous
+	}
+
+	init {
+		firebaseAnalytics.logEvent(FirebaseAnalytics.Event.APP_OPEN) {
+			param(FirebaseAnalytics.Param.SCREEN_NAME, "main_activity")
+		}
+	}
+
+	fun navigate(route: Route, clearBackStack: Boolean = false) {
+		if (clearBackStack) {
+			_routeStack.update {
+				RouteStack(backStack = listOf(route))
+			}
+		} else {
+			_routeStack.update { current ->
+				if (route in current.backStack) {
+					current.copy(
+						backStack = current.backStack.takeWhile { it != route } + route,
+					)
+				} else {
+					current.copy(
+						backStack = current.backStack + route,
+					)
+				}
+			}
+		}
+	}
+
+	fun goBack() {
+		_routeStack.update { current ->
+			if (current.backStack.size <= 1) {
+				current
+			} else {
+				current.copy(
+					backStack = current.backStack.dropLast(1),
+				)
+			}
+		}
 	}
 
 	fun navigateTab(tab: MainTab) {
@@ -174,8 +174,7 @@ internal class MainViewModel @Inject constructor(
 	fun decideStartDestination(context: Context) {
 		logScreenView("login_screen")
 		viewModelScope.launch {
-			val result = decideStartDestinationUseCase()
-			val route = when (result) {
+			val route = when (val result = decideStartDestinationUseCase()) {
 				is BrakeResult.Success -> {
 					val data = when (val success = result.data) {
 						is OnlineAuthorizedSuccess -> success.data

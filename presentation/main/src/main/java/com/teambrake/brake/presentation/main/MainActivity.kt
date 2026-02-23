@@ -17,6 +17,7 @@ import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableLongStateOf
 import androidx.compose.runtime.remember
@@ -75,7 +76,9 @@ class MainActivity : ComponentActivity() {
 				routeStack.backStack.isEmpty()
 			}
 
-			viewModel.decideStartDestination(context = this@MainActivity)
+			LaunchedEffect(Unit) {
+				viewModel.decideStartDestination(context = this@MainActivity)
+			}
 
 			if (routeStack.backStack.isEmpty()) return@setContent
 
@@ -153,8 +156,8 @@ class MainActivity : ComponentActivity() {
 
 			CompositionLocalProvider(
 				LocalMainAction provides mainAction,
-				LocalNavigatorAction provides viewModel.navigatorAction(),
-				LocalNavigatorProvider provides viewModel.navigatorProvider(),
+				LocalNavigatorAction provides viewModel.navigatorAction,
+				LocalNavigatorProvider provides viewModel.navigatorProvider,
 			) {
 				BrakeTheme {
 					MainScreen(
