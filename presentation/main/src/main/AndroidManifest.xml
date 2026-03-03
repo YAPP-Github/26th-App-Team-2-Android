@@ -16,7 +16,7 @@
             android:name=".MainActivity"
             android:configChanges="uiMode"
             android:exported="true"
-			android:theme="@style/Theme.Brake.TransparentSystemBar">
+			android:theme="@style/Theme.Brake.Activity">
 
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
