@@ -27,7 +27,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
-import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.google.android.gms.auth.api.identity.Identity
 import com.google.android.gms.common.api.ApiException
@@ -37,7 +37,6 @@ import com.teambrake.brake.core.designsystem.theme.LocalDynamicPaddings
 import com.teambrake.brake.core.designsystem.theme.LocalPadding
 import com.teambrake.brake.core.navigation.compositionlocal.LocalMainAction
 import com.teambrake.brake.core.navigation.compositionlocal.LocalNavigatorAction
-import com.teambrake.brake.core.navigation.compositionlocal.LocalNavigatorProvider
 import com.teambrake.brake.core.ui.SnackBarState
 import com.teambrake.brake.core.ui.UiString
 import com.teambrake.brake.presentation.login.component.LoginNoticeText
@@ -56,7 +55,6 @@ internal fun LoginRoute(viewModel: LoginViewModel = hiltViewModel()) {
 	val context = LocalContext.current
 	val padding = LocalPadding.current.screenPaddingHorizontal
 	val navAction = LocalNavigatorAction.current
-	val navProvider = LocalNavigatorProvider.current
 	val mainAction = LocalMainAction.current
 	val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
@@ -88,9 +86,7 @@ internal fun LoginRoute(viewModel: LoginViewModel = hiltViewModel()) {
 			when (navigation) {
 				NavigateToPrivacyPolicy -> navAction.navigateToPrivacy()
 				NavigateToTermsOfService -> navAction.navigateToTerms()
-				NavigateToHome -> navAction.navigateToHome(
-					navOptions = navProvider.getNavOptionsClearingBackStack(),
-				)
+				NavigateToHome -> navAction.navigateToHome()
 				NavigateToSignup -> navAction.navigateToSignup()
 				NavigateToOnboarding -> navAction.navigateToGuide()
 				NavigateToPermission -> navAction.navigateToPermission()

@@ -41,17 +41,11 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
-import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleEventObserver
 import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import androidx.navigation.navOptions
-import com.teambrake.brake.presentation.permission.component.OnShowAccessibilityAgreementDialog
-import com.teambrake.brake.presentation.permission.model.PermissionItem
-import com.teambrake.brake.presentation.permission.model.PermissionModalState
-import com.teambrake.brake.presentation.permission.model.PermissionNavState
-import com.teambrake.brake.presentation.permission.model.PermissionUiState
 import com.teambrake.brake.core.designsystem.component.BrakeTopAppbar
 import com.teambrake.brake.core.designsystem.component.LargeButton
 import com.teambrake.brake.core.designsystem.component.VerticalSpacer
@@ -64,7 +58,12 @@ import com.teambrake.brake.core.navigation.compositionlocal.LocalMainAction
 import com.teambrake.brake.core.navigation.compositionlocal.LocalNavigatorAction
 import com.teambrake.brake.core.navigation.compositionlocal.LocalNavigatorProvider
 import com.teambrake.brake.core.navigation.route.InitialRoute
-import com.teambrake.brake.core.navigation.route.stringRoute
+import com.teambrake.brake.core.navigation.route.LaunchMode
+import com.teambrake.brake.presentation.permission.component.OnShowAccessibilityAgreementDialog
+import com.teambrake.brake.presentation.permission.model.PermissionItem
+import com.teambrake.brake.presentation.permission.model.PermissionModalState
+import com.teambrake.brake.presentation.permission.model.PermissionNavState
+import com.teambrake.brake.presentation.permission.model.PermissionUiState
 import kotlinx.collections.immutable.persistentMapOf
 import kotlinx.coroutines.launch
 
@@ -102,7 +101,7 @@ fun PermissionRoute(
 		viewModel.navigationFlow.collect { effect ->
 			when (effect) {
 				PermissionNavState.NavigateToLogin -> {
-					navAction.navigateToLogin(navProvider.getNavOptionsClearingBackStack())
+					navAction.navigateToLogin()
 				}
 
 				PermissionNavState.NavigateToBack -> navAction.popBackStack()
@@ -113,17 +112,11 @@ fun PermissionRoute(
 				}
 
 				PermissionNavState.NavigateToMain -> {
-					navAction.navigateToHome(
-						navOptions = navProvider.getNavOptionsClearingBackStack(),
-					)
+					navAction.navigateToHome()
 				}
 
 				PermissionNavState.NavigateToComplete -> {
-					navAction.navigateToComplete(
-						navOptions {
-							popUpTo(InitialRoute.Permission) { inclusive = true }
-						},
-					)
+					navAction.navigateToComplete(LaunchMode.CLEAR_ALL)
 				}
 			}
 		}
@@ -161,9 +154,7 @@ fun PermissionRoute(
 		screenWidth = screenWidth,
 		screenHorizontalPadding = screenHorizontalPadding,
 		onBackClick = {
-			if (navProvider.getPreviousDestination() ==
-				InitialRoute.Onboarding.Guide.stringRoute()
-			) {
+			if (navProvider.getPreviousDestination() == InitialRoute.Onboarding.Guide) {
 				viewModel.popBackStack()
 			} else {
 				viewModel.tryLogout()

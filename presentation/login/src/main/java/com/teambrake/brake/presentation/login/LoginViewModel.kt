@@ -112,6 +112,8 @@ internal class LoginViewModel @Inject constructor(
 			_uiState.value = LoginUiState.LoginLoading
 			when (val result = startOfflineModeUseCase(offlineNickname = nickname)) {
 				is BrakeResult.Success<*> -> {
+					_uiState.value = LoginUiState.LoginIdle
+
 					when (result.data) {
 						is Destination.PermissionOrHome -> {
 							_navigationFlow.emit(LoginNavState.NavigateToPermission)
@@ -125,7 +127,6 @@ internal class LoginViewModel @Inject constructor(
 						}
 
 						else -> {
-							_uiState.value = LoginUiState.LoginIdle
 							_snackBarFlow.emit(
 								SnackBarState.Error(
 									uiString = UiString.ResourceString(

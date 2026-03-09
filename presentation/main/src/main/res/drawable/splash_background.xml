@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+	<!-- 배경 색상 -->
+	<item android:drawable="@color/ic_brake_launcher_background" />
+
+	<!-- 가운데 로고 이미지 -->
+	<item>
+		<bitmap
+			android:gravity="center"
+			android:src="@drawable/ic_brake_launcher_foreground" />
+	</item>
+</layer-list>

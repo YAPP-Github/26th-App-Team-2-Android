@@ -1,19 +1,19 @@
 package com.teambrake.brake.core.navigation.action
 
-import androidx.navigation.NavOptions
+import com.teambrake.brake.core.navigation.route.LaunchMode
 
 interface NavigatorAction {
-	fun popBackStack(navOptions: NavOptions? = null)
-	fun navigateToLogin(navOptions: NavOptions? = null)
-	fun navigateToSignup(navOptions: NavOptions? = null)
-	fun navigateToGuide(navOptions: NavOptions? = null)
-	fun navigateToPrivacy(navOptions: NavOptions? = null)
-	fun navigateToTerms(navOptions: NavOptions? = null)
-	fun navigateToComplete(navOptions: NavOptions? = null)
-	fun navigateToPermission(navOptions: NavOptions? = null)
-	fun navigateToHome(navOptions: NavOptions? = null)
-	fun navigateToRegistry(groupId: Long?, navOptions: NavOptions? = null)
-	fun navigateToNickname(navOptions: NavOptions? = null)
-	fun navigateToOpinion(navOptions: NavOptions? = null)
-	fun navigateToInquiry(navOptions: NavOptions? = null)
+	fun popBackStack()
+	fun navigateToLogin(launchMode: LaunchMode = LaunchMode.CLEAR_ALL)
+	fun navigateToSignup(launchMode: LaunchMode = LaunchMode.STANDARD)
+	fun navigateToGuide(launchMode: LaunchMode = LaunchMode.STANDARD)
+	fun navigateToPrivacy(launchMode: LaunchMode = LaunchMode.STANDARD)
+	fun navigateToTerms(launchMode: LaunchMode = LaunchMode.STANDARD)
+	fun navigateToComplete(launchMode: LaunchMode = LaunchMode.STANDARD)
+	fun navigateToPermission(launchMode: LaunchMode = LaunchMode.STANDARD)
+	fun navigateToHome(launchMode: LaunchMode = LaunchMode.CLEAR_ALL)
+	fun navigateToRegistry(groupId: Long? = null, launchMode: LaunchMode = LaunchMode.STANDARD)
+	fun navigateToNickname(launchMode: LaunchMode = LaunchMode.STANDARD)
+	fun navigateToOpinion(launchMode: LaunchMode = LaunchMode.STANDARD)
+	fun navigateToInquiry(launchMode: LaunchMode = LaunchMode.STANDARD)
 }
