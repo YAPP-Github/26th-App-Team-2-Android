@@ -1,11 +1,13 @@
 package com.teambrake.brake.presentation.home
 
+import androidx.datastore.core.DataStore
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.amplitude.android.Amplitude
 import com.google.firebase.analytics.FirebaseAnalytics
 import com.google.firebase.analytics.logEvent
 import com.teambrake.brake.core.amplitude.AmplitudeEventHelper
+import com.teambrake.brake.core.datastore.model.DatastoreFeedback
 import com.teambrake.brake.core.model.app.AppGroup
 import com.teambrake.brake.core.model.app.AppGroupState
 import com.teambrake.brake.domain.model.result.BrakeResult
@@ -21,6 +23,8 @@ import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
@@ -33,6 +37,7 @@ internal class HomeViewModel @Inject constructor(
 	private val setBlockingAlarmUseCase: SetBlockingAlarmUseCase,
 	private val firebaseAnalytics: FirebaseAnalytics,
 	private val amplitude: Amplitude,
+	private val feedbackDataStore: DataStore<DatastoreFeedback>,
 ) : ViewModel() {
 
 	val homeUiState: StateFlow<HomeUiState> = appGroupRepository
@@ -54,6 +59,8 @@ internal class HomeViewModel @Inject constructor(
 	init {
 		// 홈 화면 진입 시 이벤트 트래킹
 		trackHomeView()
+		checkFeedbackPopup()
+		observeSessionEnd()
 	}
 
 	private fun returnHomeUiState(appGroups: List<AppGroup>): HomeUiState {
@@ -134,6 +141,57 @@ internal class HomeViewModel @Inject constructor(
 				param("group_id", "null")
 			}
 		}
+	}
+
+	// ============ Feedback Popup Functions ============
+
+	private fun checkFeedbackPopup() {
+		viewModelScope.launch(Dispatchers.IO) {
+			val feedback = feedbackDataStore.data.first()
+			if (shouldShowFeedbackPopup(feedback)) {
+				showFeedbackDialog()
+			}
+		}
+	}
+
+	private fun observeSessionEnd() {
+		viewModelScope.launch {
+			homeUiState
+				.map { it is HomeUiState.Ticking }
+				.distinctUntilChanged()
+				.collect { isTicking ->
+					if (!isTicking) {
+						val feedback = feedbackDataStore.data.first()
+						if (shouldShowFeedbackPopup(feedback)) {
+							showFeedbackDialog()
+						}
+					}
+				}
+		}
+	}
+
+	private fun shouldShowFeedbackPopup(feedback: DatastoreFeedback): Boolean =
+		feedback.sessionCount >= FeedbackConfig.REQUIRED_SESSION_COUNT && !feedback.popupShown
+
+	private fun showFeedbackDialog() {
+		_homeModalState.update { HomeModalState.FeedbackDialog }
+		trackAmplitudeEvent(AmplitudeEventHelper.createViewFeedbackPopupEvent())
+	}
+
+	fun onFeedbackAccept() {
+		viewModelScope.launch(Dispatchers.IO) {
+			feedbackDataStore.updateData { it.copy(popupShown = true) }
+		}
+		trackAmplitudeEvent(AmplitudeEventHelper.createClickFeedbackAcceptEvent())
+		_homeModalState.update { HomeModalState.Nothing }
+	}
+
+	fun onFeedbackDismiss() {
+		viewModelScope.launch(Dispatchers.IO) {
+			feedbackDataStore.updateData { it.copy(popupShown = true) }
+		}
+		trackAmplitudeEvent(AmplitudeEventHelper.createClickFeedbackDismissEvent())
+		_homeModalState.update { HomeModalState.Nothing }
 	}
 
 	// ============ Amplitude Event Tracking Functions ============

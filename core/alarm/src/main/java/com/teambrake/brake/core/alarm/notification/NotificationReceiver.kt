@@ -3,11 +3,13 @@ package com.teambrake.brake.core.alarm.notification
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
+import androidx.datastore.core.DataStore
 import com.amplitude.android.Amplitude
 import com.amplitude.core.events.Identify
 import com.teambrake.brake.core.alarm.scheduler.AlarmSchedulerImpl
 import com.teambrake.brake.core.amplitude.AmplitudeEventHelper
 import com.teambrake.brake.core.common.AlarmAction
+import com.teambrake.brake.core.datastore.model.DatastoreFeedback
 import com.teambrake.brake.core.model.accessibility.IntentConfig
 import com.teambrake.brake.core.model.app.AppGroup
 import com.teambrake.brake.core.model.app.AppGroupState
@@ -37,6 +39,9 @@ class NotificationReceiver : BroadcastReceiver() {
 
 	@Inject
 	lateinit var amplitude: Amplitude
+
+	@Inject
+	lateinit var feedbackDataStore: DataStore<DatastoreFeedback>
 
 	private val serviceJob = SupervisorJob()
 	private val serviceScope = CoroutineScope(Dispatchers.Main + serviceJob)
@@ -128,6 +133,10 @@ class NotificationReceiver : BroadcastReceiver() {
 					}
 				},
 			)
+
+			feedbackDataStore.updateData { current ->
+				current.copy(sessionCount = current.sessionCount + 1)
+			}
 		}
 
 		val broadcastIntent = Intent().apply {

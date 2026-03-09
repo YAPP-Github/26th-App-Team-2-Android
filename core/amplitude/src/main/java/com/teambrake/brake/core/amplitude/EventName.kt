@@ -17,4 +17,7 @@ enum class EventName(val eventName: String) {
 	CLICK_SNOOZE("click_snooze"),
 	END_BRAKE_SESSION("end_brake_session"),
 	VIEW_COOLDOWN("view_cooldown"),
+	VIEW_FEEDBACK_POPUP("view_feedback_popup"),
+	CLICK_FEEDBACK_ACCEPT("click_feedback_accept"),
+	CLICK_FEEDBACK_DISMISS("click_feedback_dismiss"),
 }

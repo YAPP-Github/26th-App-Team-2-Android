@@ -11,4 +11,6 @@ android {
 dependencies {
 	implementation(projects.core.util)
 	implementation(projects.core.appscanner)
+	implementation(projects.core.datastore)
+	implementation(libs.datastore)
 }

@@ -4,10 +4,12 @@ import android.content.Context
 import androidx.datastore.core.DataStore
 import androidx.datastore.dataStore
 import com.teambrake.brake.core.datastore.model.DatastoreAuthCode
+import com.teambrake.brake.core.datastore.model.DatastoreFeedback
 import com.teambrake.brake.core.datastore.model.DatastoreOnboarding
 import com.teambrake.brake.core.datastore.model.DatastoreUserInfo
 import com.teambrake.brake.core.datastore.model.DatastoreUserToken
 import com.teambrake.brake.core.datastore.serializer.AuthSerializer
+import com.teambrake.brake.core.datastore.serializer.FeedbackSerializer
 import com.teambrake.brake.core.datastore.serializer.OnboardingSerializer
 import com.teambrake.brake.core.datastore.serializer.UserInfoSerializer
 import com.teambrake.brake.core.datastore.serializer.UserSerializer
@@ -42,6 +44,11 @@ object DatastoreModule {
 		serializer = OnboardingSerializer,
 	)
 
+	private val Context.FeedbackDataStore: DataStore<DatastoreFeedback> by dataStore(
+		fileName = "feedback",
+		serializer = FeedbackSerializer,
+	)
+
 	@Provides
 	@Singleton
 	fun provideUserTokenDataStore(
@@ -65,4 +72,10 @@ object DatastoreModule {
 	fun provideOnboardingDataStore(
 		@ApplicationContext context: Context,
 	): DataStore<DatastoreOnboarding> = context.OnboardingDataStore
+
+	@Provides
+	@Singleton
+	fun provideFeedbackDataStore(
+		@ApplicationContext context: Context,
+	): DataStore<DatastoreFeedback> = context.FeedbackDataStore
 }

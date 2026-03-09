@@ -339,7 +339,31 @@ object AmplitudeEventHelper {
 	)
 
 	/**
-	 * 17. total_group_count User Property 생성
+	 * 17. view_feedback_popup 이벤트 생성
+	 */
+	fun createViewFeedbackPopupEvent(): AmplitudeEvent = AmplitudeEvent(
+		eventName = EventName.VIEW_FEEDBACK_POPUP,
+		parameters = emptyMap(),
+	)
+
+	/**
+	 * 18. click_feedback_accept 이벤트 생성
+	 */
+	fun createClickFeedbackAcceptEvent(): AmplitudeEvent = AmplitudeEvent(
+		eventName = EventName.CLICK_FEEDBACK_ACCEPT,
+		parameters = emptyMap(),
+	)
+
+	/**
+	 * 19. click_feedback_dismiss 이벤트 생성
+	 */
+	fun createClickFeedbackDismissEvent(): AmplitudeEvent = AmplitudeEvent(
+		eventName = EventName.CLICK_FEEDBACK_DISMISS,
+		parameters = emptyMap(),
+	)
+
+	/**
+	 * 20. total_group_count User Property 생성
 	 * @param count 총 그룹 개수
 	 * @return User Property 맵
 	 */

@@ -17,5 +17,7 @@ dependencies {
 	implementation(projects.core.util)
 
 	implementation(projects.core.amplitude)
+	implementation(projects.core.datastore)
+	implementation(libs.datastore)
 	implementation(libs.amplitude.analytics)
 }
