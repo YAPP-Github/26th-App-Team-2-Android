@@ -29,6 +29,7 @@ internal fun FeedbackDialog(
 		onDismissRequest = onDismissRequest,
 		onConfirmButtonClick = onAccept,
 		onDismissButtonClick = onDismiss,
+		dismissOnClickOutside = false,
 	) {
 		Column(
 			horizontalAlignment = Alignment.CenterHorizontally,
