@@ -78,4 +78,11 @@
 	<string name="registry_snackbar_group_deletion_successful">그룹이 삭제되었습니다.</string>
 	<string name="registry_snackbar_group_deletion_error">그룹 삭제 중 오류가 발생했습니다.</string>
 	<string name="registry_search">앱 또는 카테고리 검색</string>
+
+	<!-- Feedback Dialog -->
+	<string name="feedback_dialog_title">개발자와 짧은 커피챗 어떠신가요?</string>
+	<string name="feedback_dialog_message">Brake! 상위 1% 사용자인 당신의\n솔직한 의견이 궁금합니다!</string>
+	<string name="feedback_dialog_accept">좋아요!</string>
+	<string name="feedback_dialog_dismiss">다음에요</string>
+	<string name="feedback_dialog_reject">다시 보지 않기</string>
 </resources>

@@ -25,6 +25,9 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.teambrake.brake.core.designsystem.theme.LinerGradient
 import com.teambrake.brake.core.navigation.compositionlocal.LocalMainAction
 import com.teambrake.brake.core.navigation.compositionlocal.LocalNavigatorAction
+import android.content.Intent
+import android.net.Uri
+import com.teambrake.brake.presentation.home.component.FeedbackDialog
 import com.teambrake.brake.presentation.home.component.StopUsingDialog
 import com.teambrake.brake.presentation.home.contract.HomeEvent
 import com.teambrake.brake.presentation.home.contract.HomeModalState
@@ -155,6 +158,8 @@ private fun ModalContent(
 	homeModalState: HomeModalState,
 	viewModel: HomeViewModel,
 ) {
+	val context = LocalContext.current
+
 	when (homeModalState) {
 		HomeModalState.Nothing -> {}
 		is HomeModalState.StopUsingDialog -> {
@@ -164,6 +169,20 @@ private fun ModalContent(
 					viewModel.stopAppUsing(homeModalState.appGroup)
 				},
 				onDismissRequest = viewModel::dismiss,
+			)
+		}
+
+		HomeModalState.FeedbackDialog -> {
+			FeedbackDialog(
+				onAccept = {
+					viewModel.onFeedbackAccept()
+					context.startActivity(
+						Intent(Intent.ACTION_VIEW, Uri.parse(FeedbackConfig.FORM_URL)),
+					)
+				},
+				onLater = viewModel::onFeedbackLater,
+				onReject = viewModel::onFeedbackReject,
+				onDismissRequest = viewModel::onFeedbackLater,
 			)
 		}
 	}

@@ -17,4 +17,6 @@ enum class EventName(val eventName: String) {
 	CLICK_SNOOZE("click_snooze"),
 	END_BRAKE_SESSION("end_brake_session"),
 	VIEW_COOLDOWN("view_cooldown"),
+	VIEW_COFFEECHAT_POPUP("view_coffeechat_popup"),
+	CLICK_COFFEECHAT_POPUP("click_coffeechat_popup"),
 }

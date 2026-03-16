@@ -12,4 +12,7 @@ internal sealed interface HomeModalState {
 
 	@Immutable
 	data class StopUsingDialog(val appGroup: AppGroup) : HomeModalState
+
+	@Immutable
+	data object FeedbackDialog : HomeModalState
 }

@@ -43,10 +43,11 @@ fun BaseDialog(
 	onDismissRequest: () -> Unit,
 	confirmButton: (@Composable () -> Unit)? = null,
 	dismissButton: (@Composable () -> Unit)? = null,
+	dismissOnClickOutside: Boolean = true,
 	content: @Composable () -> Unit = { },
 ) {
 	Dialog(
-		properties = DialogProperties(),
+		properties = DialogProperties(dismissOnClickOutside = dismissOnClickOutside),
 		onDismissRequest = onDismissRequest,
 	) {
 		Box(
@@ -123,10 +124,12 @@ fun TwoButtonDialog(
 	onDismissRequest: () -> Unit,
 	onConfirmButtonClick: () -> Unit,
 	onDismissButtonClick: () -> Unit = onDismissRequest,
+	dismissOnClickOutside: Boolean = true,
 	content: @Composable () -> Unit,
 ) {
 	BaseDialog(
 		onDismissRequest = onDismissRequest,
+		dismissOnClickOutside = dismissOnClickOutside,
 		dismissButton = {
 			DialogButton(
 				text = dismissButtonText,

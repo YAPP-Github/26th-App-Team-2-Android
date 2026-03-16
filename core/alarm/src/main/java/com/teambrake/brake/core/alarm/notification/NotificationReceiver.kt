@@ -3,11 +3,13 @@ package com.teambrake.brake.core.alarm.notification
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
+import androidx.datastore.core.DataStore
 import com.amplitude.android.Amplitude
 import com.amplitude.core.events.Identify
 import com.teambrake.brake.core.alarm.scheduler.AlarmSchedulerImpl
 import com.teambrake.brake.core.amplitude.AmplitudeEventHelper
 import com.teambrake.brake.core.common.AlarmAction
+import com.teambrake.brake.core.datastore.model.DatastoreFeedback
 import com.teambrake.brake.core.model.accessibility.IntentConfig
 import com.teambrake.brake.core.model.app.AppGroup
 import com.teambrake.brake.core.model.app.AppGroupState
@@ -20,7 +22,6 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import timber.log.Timber
 import javax.inject.Inject
 
 @AndroidEntryPoint
@@ -37,6 +38,9 @@ class NotificationReceiver : BroadcastReceiver() {
 
 	@Inject
 	lateinit var amplitude: Amplitude
+
+	@Inject
+	lateinit var feedbackDataStore: DataStore<DatastoreFeedback>
 
 	private val serviceJob = SupervisorJob()
 	private val serviceScope = CoroutineScope(Dispatchers.Main + serviceJob)
@@ -69,8 +73,6 @@ class NotificationReceiver : BroadcastReceiver() {
 	 *  3. 알람 스케줄러 시작 - 차단이 완료되면 알람 스케줄러를 시작
 	 * */
 	private suspend fun startBlocking(context: Context, appGroup: AppGroup) {
-		Timber.i("ID: ${appGroup.id} 차단이 시작되었습니다")
-
 		val broadcastIntent = Intent().apply {
 			action = IntentConfig.RECEIVER_IDENTITY
 			setPackage(context.packageName)
@@ -88,7 +90,6 @@ class NotificationReceiver : BroadcastReceiver() {
 	}
 
 	private suspend fun stopBlocking(context: Context, appGroup: AppGroup) {
-		Timber.i("ID: ${appGroup.id} 차단이 해제되었습니다")
 		resetAppGroupUsecase(appGroup)
 
 		withContext(Dispatchers.IO) {
@@ -128,6 +129,10 @@ class NotificationReceiver : BroadcastReceiver() {
 					}
 				},
 			)
+
+			feedbackDataStore.updateData { current ->
+				current.copy(sessionCount = current.sessionCount + 1)
+			}
 		}
 
 		val broadcastIntent = Intent().apply {

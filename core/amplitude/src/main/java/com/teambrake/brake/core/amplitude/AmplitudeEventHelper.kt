@@ -339,7 +339,42 @@ object AmplitudeEventHelper {
 	)
 
 	/**
-	 * 17. total_group_count User Property 생성
+	 * 17. view_coffeechat_popup 이벤트 생성
+	 */
+	fun createViewCoffeechatPopupEvent(
+		triggerSource: CoffeechatTriggerSource,
+	): AmplitudeEvent = AmplitudeEvent(
+		eventName = EventName.VIEW_COFFEECHAT_POPUP,
+		parameters = mapOf(
+			EventParameter.TRIGGER_SOURCE to triggerSource.value,
+		),
+	)
+
+	/**
+	 * 18. click_coffeechat_popup 이벤트 생성
+	 */
+	fun createClickCoffeechatPopupEvent(
+		actionType: CoffeechatActionType,
+	): AmplitudeEvent = AmplitudeEvent(
+		eventName = EventName.CLICK_COFFEECHAT_POPUP,
+		parameters = mapOf(
+			EventParameter.ACTION_TYPE to actionType.value,
+		),
+	)
+
+	/**
+	 * coffeechat_status User Property 설정
+	 */
+	fun setCoffeechatStatus(
+		status: String,
+	): AmplitudeUserProperty = AmplitudeUserProperty(
+		properties = mapOf(
+			"coffeechat_status" to status,
+		),
+	)
+
+	/**
+	 * 20. total_group_count User Property 생성
 	 * @param count 총 그룹 개수
 	 * @return User Property 맵
 	 */
