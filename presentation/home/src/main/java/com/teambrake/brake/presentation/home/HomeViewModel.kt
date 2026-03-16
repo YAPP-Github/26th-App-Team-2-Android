@@ -6,7 +6,10 @@ import androidx.lifecycle.viewModelScope
 import com.amplitude.android.Amplitude
 import com.google.firebase.analytics.FirebaseAnalytics
 import com.google.firebase.analytics.logEvent
+import com.amplitude.core.events.Identify
 import com.teambrake.brake.core.amplitude.AmplitudeEventHelper
+import com.teambrake.brake.core.amplitude.CoffeechatActionType
+import com.teambrake.brake.core.amplitude.CoffeechatTriggerSource
 import com.teambrake.brake.core.datastore.model.DatastoreFeedback
 import com.teambrake.brake.core.model.app.AppGroup
 import com.teambrake.brake.core.model.app.AppGroupState
@@ -143,13 +146,13 @@ internal class HomeViewModel @Inject constructor(
 		}
 	}
 
-	// ============ Feedback Popup Functions ============
+	// ============ Coffeechat Popup Functions ============
 
 	private fun checkFeedbackPopup() {
 		viewModelScope.launch(Dispatchers.IO) {
 			val feedback = feedbackDataStore.data.first()
 			if (shouldShowFeedbackPopup(feedback)) {
-				showFeedbackDialog()
+				showFeedbackDialog(CoffeechatTriggerSource.APP_OPEN)
 			}
 		}
 	}
@@ -163,35 +166,78 @@ internal class HomeViewModel @Inject constructor(
 					if (!isTicking) {
 						val feedback = feedbackDataStore.data.first()
 						if (shouldShowFeedbackPopup(feedback)) {
-							showFeedbackDialog()
+							showFeedbackDialog(CoffeechatTriggerSource.SESSION_END)
 						}
 					}
 				}
 		}
 	}
 
-	private fun shouldShowFeedbackPopup(feedback: DatastoreFeedback): Boolean =
-		feedback.sessionCount >= FeedbackConfig.REQUIRED_SESSION_COUNT && !feedback.popupShown
+	private fun shouldShowFeedbackPopup(feedback: DatastoreFeedback): Boolean {
+		if (feedback.sessionCount < FeedbackConfig.REQUIRED_SESSION_COUNT) return false
 
-	private fun showFeedbackDialog() {
+		return when (feedback.status) {
+			"" -> true
+			"pending" -> {
+				val daysSinceShown = (System.currentTimeMillis() - feedback.lastShownAt) / (1000 * 60 * 60 * 24)
+				daysSinceShown >= FeedbackConfig.LATER_COOLDOWN_DAYS
+			}
+			"clicked" -> {
+				val daysSinceShown = (System.currentTimeMillis() - feedback.lastShownAt) / (1000 * 60 * 60 * 24)
+				daysSinceShown >= FeedbackConfig.ACCEPTED_COOLDOWN_DAYS
+			}
+			"rejected" -> false
+			else -> false
+		}
+	}
+
+	private fun showFeedbackDialog(triggerSource: CoffeechatTriggerSource) {
 		_homeModalState.update { HomeModalState.FeedbackDialog }
-		trackAmplitudeEvent(AmplitudeEventHelper.createViewFeedbackPopupEvent())
+		trackAmplitudeEvent(AmplitudeEventHelper.createViewCoffeechatPopupEvent(triggerSource))
 	}
 
 	fun onFeedbackAccept() {
 		viewModelScope.launch(Dispatchers.IO) {
-			feedbackDataStore.updateData { it.copy(popupShown = true) }
+			feedbackDataStore.updateData {
+				it.copy(status = "clicked", lastShownAt = System.currentTimeMillis())
+			}
 		}
-		trackAmplitudeEvent(AmplitudeEventHelper.createClickFeedbackAcceptEvent())
+		trackAmplitudeEvent(AmplitudeEventHelper.createClickCoffeechatPopupEvent(CoffeechatActionType.ACCEPT))
+		trackCoffeechatStatus("clicked")
 		_homeModalState.update { HomeModalState.Nothing }
 	}
 
-	fun onFeedbackDismiss() {
+	fun onFeedbackLater() {
 		viewModelScope.launch(Dispatchers.IO) {
-			feedbackDataStore.updateData { it.copy(popupShown = true) }
+			feedbackDataStore.updateData {
+				it.copy(status = "pending", lastShownAt = System.currentTimeMillis())
+			}
 		}
-		trackAmplitudeEvent(AmplitudeEventHelper.createClickFeedbackDismissEvent())
+		trackAmplitudeEvent(AmplitudeEventHelper.createClickCoffeechatPopupEvent(CoffeechatActionType.LATER))
+		trackCoffeechatStatus("pending")
 		_homeModalState.update { HomeModalState.Nothing }
+	}
+
+	fun onFeedbackReject() {
+		viewModelScope.launch(Dispatchers.IO) {
+			feedbackDataStore.updateData {
+				it.copy(status = "rejected", lastShownAt = System.currentTimeMillis())
+			}
+		}
+		trackAmplitudeEvent(AmplitudeEventHelper.createClickCoffeechatPopupEvent(CoffeechatActionType.REJECT))
+		trackCoffeechatStatus("rejected")
+		_homeModalState.update { HomeModalState.Nothing }
+	}
+
+	private fun trackCoffeechatStatus(status: String) {
+		val userProperty = AmplitudeEventHelper.setCoffeechatStatus(status)
+		amplitude.identify(
+			Identify().apply {
+				userProperty.toUserProperties().forEach { (key, value) ->
+					set(key, value)
+				}
+			},
+		)
 	}
 
 	// ============ Amplitude Event Tracking Functions ============

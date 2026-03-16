@@ -13,6 +13,7 @@ enum class EventParameter(val parameterName: String) {
 	SNOOZE_NTH("snooze_nth"),
 	SNOOZE_COUNT("snooze_count"),
 	IS_EARLY_EXIT("is_early_exit"),
+	ACTION_TYPE("action_type"),
 }
 
 /**
@@ -47,4 +48,21 @@ enum class StepDetail(val value: String) {
 	USAGE("usage"),
 	NOTIFICATION("notification"),
 	ACCESSIBILITY("accessibility"),
+}
+
+/**
+ * Event Parameter Values for ACTION_TYPE (coffeechat popup)
+ */
+enum class CoffeechatActionType(val value: String) {
+	ACCEPT("accept"),
+	LATER("later"),
+	REJECT("reject"),
+}
+
+/**
+ * Event Parameter Values for TRIGGER_SOURCE (coffeechat popup)
+ */
+enum class CoffeechatTriggerSource(val value: String) {
+	APP_OPEN("app_open"),
+	SESSION_END("session_end"),
 }

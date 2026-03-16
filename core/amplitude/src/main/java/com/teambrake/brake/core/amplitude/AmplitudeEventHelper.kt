@@ -339,27 +339,38 @@ object AmplitudeEventHelper {
 	)
 
 	/**
-	 * 17. view_feedback_popup 이벤트 생성
+	 * 17. view_coffeechat_popup 이벤트 생성
 	 */
-	fun createViewFeedbackPopupEvent(): AmplitudeEvent = AmplitudeEvent(
-		eventName = EventName.VIEW_FEEDBACK_POPUP,
-		parameters = emptyMap(),
+	fun createViewCoffeechatPopupEvent(
+		triggerSource: CoffeechatTriggerSource,
+	): AmplitudeEvent = AmplitudeEvent(
+		eventName = EventName.VIEW_COFFEECHAT_POPUP,
+		parameters = mapOf(
+			EventParameter.TRIGGER_SOURCE to triggerSource.value,
+		),
 	)
 
 	/**
-	 * 18. click_feedback_accept 이벤트 생성
+	 * 18. click_coffeechat_popup 이벤트 생성
 	 */
-	fun createClickFeedbackAcceptEvent(): AmplitudeEvent = AmplitudeEvent(
-		eventName = EventName.CLICK_FEEDBACK_ACCEPT,
-		parameters = emptyMap(),
+	fun createClickCoffeechatPopupEvent(
+		actionType: CoffeechatActionType,
+	): AmplitudeEvent = AmplitudeEvent(
+		eventName = EventName.CLICK_COFFEECHAT_POPUP,
+		parameters = mapOf(
+			EventParameter.ACTION_TYPE to actionType.value,
+		),
 	)
 
 	/**
-	 * 19. click_feedback_dismiss 이벤트 생성
+	 * coffeechat_status User Property 설정
 	 */
-	fun createClickFeedbackDismissEvent(): AmplitudeEvent = AmplitudeEvent(
-		eventName = EventName.CLICK_FEEDBACK_DISMISS,
-		parameters = emptyMap(),
+	fun setCoffeechatStatus(
+		status: String,
+	): AmplitudeUserProperty = AmplitudeUserProperty(
+		properties = mapOf(
+			"coffeechat_status" to status,
+		),
 	)
 
 	/**

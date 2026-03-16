@@ -84,4 +84,5 @@
 	<string name="feedback_dialog_message">여러분의 의견을 듣고 싶어요.\n피드백을 남겨주세요!</string>
 	<string name="feedback_dialog_accept">대화하기</string>
 	<string name="feedback_dialog_dismiss">다음에요</string>
+	<string name="feedback_dialog_reject">다시 보지 않기</string>
 </resources>

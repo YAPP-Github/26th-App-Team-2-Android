@@ -22,7 +22,6 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import timber.log.Timber
 import javax.inject.Inject
 
 @AndroidEntryPoint
@@ -74,8 +73,6 @@ class NotificationReceiver : BroadcastReceiver() {
 	 *  3. 알람 스케줄러 시작 - 차단이 완료되면 알람 스케줄러를 시작
 	 * */
 	private suspend fun startBlocking(context: Context, appGroup: AppGroup) {
-		Timber.i("ID: ${appGroup.id} 차단이 시작되었습니다")
-
 		val broadcastIntent = Intent().apply {
 			action = IntentConfig.RECEIVER_IDENTITY
 			setPackage(context.packageName)
@@ -93,7 +90,6 @@ class NotificationReceiver : BroadcastReceiver() {
 	}
 
 	private suspend fun stopBlocking(context: Context, appGroup: AppGroup) {
-		Timber.i("ID: ${appGroup.id} 차단이 해제되었습니다")
 		resetAppGroupUsecase(appGroup)
 
 		withContext(Dispatchers.IO) {

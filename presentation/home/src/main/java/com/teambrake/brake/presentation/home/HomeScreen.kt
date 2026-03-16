@@ -180,8 +180,9 @@ private fun ModalContent(
 						Intent(Intent.ACTION_VIEW, Uri.parse(FeedbackConfig.FORM_URL)),
 					)
 				},
-				onDismiss = viewModel::onFeedbackDismiss,
-				onDismissRequest = viewModel::onFeedbackDismiss,
+				onLater = viewModel::onFeedbackLater,
+				onReject = viewModel::onFeedbackReject,
+				onDismissRequest = viewModel::onFeedbackLater,
 			)
 		}
 	}

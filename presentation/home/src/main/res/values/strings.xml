@@ -84,4 +84,5 @@
     <string name="feedback_dialog_message">We\'d love to hear your thoughts.\nShare your feedback with us!</string>
     <string name="feedback_dialog_accept">Let\'s talk</string>
     <string name="feedback_dialog_dismiss">Maybe later</string>
+    <string name="feedback_dialog_reject">Don\'t show again</string>
 </resources>
