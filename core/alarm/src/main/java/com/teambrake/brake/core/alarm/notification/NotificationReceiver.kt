@@ -92,7 +92,7 @@ class NotificationReceiver : BroadcastReceiver() {
 		resetAppGroupUsecase(appGroup)
 
 		withContext(Dispatchers.IO) {
-			val startTime = appGroup.startTime ?: java.time.LocalDateTime.now()
+			val startTime = appGroup.sessionStartTime ?: java.time.LocalDateTime.now()
 			val plannedDuration = appGroup.goalMinutes ?: 0
 			val elapsedDurationInSeconds = java.time.Duration.between(
 				startTime,
